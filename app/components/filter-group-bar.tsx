@@ -10,7 +10,7 @@ import { faCheck } from "@fortawesome/pro-regular-svg-icons";
 import { Modal } from "./modal";
 import { ScrollView } from "react-native-gesture-handler";
 
-export function FilterGroupBar({
+export const FilterGroupBar = ({
   filterGroups,
   activeFilterIds,
   onFilterPress,
@@ -22,7 +22,7 @@ export function FilterGroupBar({
   onFilterPress: (filterId: string) => void;
   onFilterGroupPress: (filterGroupId: string) => void;
   onClearAllFilters: () => void;
-}) {
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [
     modalShowingForFilterGroupId,
@@ -127,7 +127,7 @@ export function FilterGroupBar({
       </Modal>
     </Container>
   );
-}
+};
 
 const Container = styled.View`
   margin-bottom: ${props => props.theme.spacing._18};

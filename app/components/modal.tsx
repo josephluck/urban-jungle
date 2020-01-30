@@ -5,7 +5,7 @@ import RNModal from "react-native-modal";
 import { theme } from "../theme";
 import { Heading } from "./typography";
 
-export function Modal({
+export const Modal = ({
   title,
   children,
   isVisible,
@@ -17,33 +17,31 @@ export function Modal({
   isVisible: boolean;
   onClosePress: () => void;
   onClosed?: () => void;
-}) {
-  return (
-    <RNModal
-      isVisible={isVisible}
-      backdropOpacity={0.6}
-      backdropColor={theme.colors.offBlack}
-      onSwipeComplete={onClosePress}
-      onModalHide={onClosed}
-      swipeDirection="down"
-      animationIn="fadeInUp"
-      animationOut="fadeOutDown"
-      onBackButtonPress={onClosePress}
-      onBackdropPress={onClosePress}
-      style={{ margin: 0, justifyContent: "flex-end" }}
-      hideModalContentWhileAnimating
-      hardwareAccelerated
-    >
-      <ModalContainer>
-        <CloseBar />
-        <ModalHeaderContainer>
-          <ModalHeading>{title}</ModalHeading>
-        </ModalHeaderContainer>
-        {children}
-      </ModalContainer>
-    </RNModal>
-  );
-}
+}) => (
+  <RNModal
+    isVisible={isVisible}
+    backdropOpacity={0.6}
+    backdropColor={theme.colors.offBlack}
+    onSwipeComplete={onClosePress}
+    onModalHide={onClosed}
+    swipeDirection="down"
+    animationIn="fadeInUp"
+    animationOut="fadeOutDown"
+    onBackButtonPress={onClosePress}
+    onBackdropPress={onClosePress}
+    style={{ margin: 0, justifyContent: "flex-end" }}
+    hideModalContentWhileAnimating
+    hardwareAccelerated
+  >
+    <ModalContainer>
+      <CloseBar />
+      <ModalHeaderContainer>
+        <ModalHeading>{title}</ModalHeading>
+      </ModalHeaderContainer>
+      {children}
+    </ModalContainer>
+  </RNModal>
+);
 
 const ModalContainer = styled.View`
   background-color: ${props => props.theme.colors.deepGray};

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronDown } from "@fortawesome/pro-solid-svg-icons";
 import { theme } from "../theme";
 
-export function FilterGroupButton({
+export const FilterGroupButton = ({
   isActive,
   onPress,
   value,
@@ -18,29 +18,24 @@ export function FilterGroupButton({
   value: string[];
   placeholder: string;
   style?: StyleProp<ViewStyle>;
-}) {
-  return (
-    <Container onPress={onPress} isActive={isActive} style={style}>
-      <Label isActive={isActive}>
-        {value.length
-          ? value.reduce(
-              (acc, str, i) => (i === 0 ? str : `${str}, ${acc}`),
-              ""
-            )
-          : placeholder}
-      </Label>
-      <ChevronWrap>
-        <FontAwesomeIcon
-          icon={faChevronDown}
-          style={{
-            color: isActive ? theme.colors.nearWhite : theme.colors.lightOffGray
-          }}
-          size={theme.size.iconChevron}
-        />
-      </ChevronWrap>
-    </Container>
-  );
-}
+}) => (
+  <Container onPress={onPress} isActive={isActive} style={style}>
+    <Label isActive={isActive}>
+      {value.length
+        ? value.reduce((acc, str, i) => (i === 0 ? str : `${str}, ${acc}`), "")
+        : placeholder}
+    </Label>
+    <ChevronWrap>
+      <FontAwesomeIcon
+        icon={faChevronDown}
+        style={{
+          color: isActive ? theme.colors.nearWhite : theme.colors.lightOffGray
+        }}
+        size={theme.size.iconChevron}
+      />
+    </ChevronWrap>
+  </Container>
+);
 
 const Container = styled.TouchableOpacity<{ isActive: boolean }>`
   flex-direction: row;

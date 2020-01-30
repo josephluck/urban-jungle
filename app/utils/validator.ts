@@ -11,7 +11,7 @@ export type Constraints<M extends Record<string, any>> = Record<
   Constraint[]
 >;
 
-function makeValidator<C extends Record<string, any>>(
+const makeValidator = <C extends Record<string, any>>(
   /**
    * An object of constraints to be validated against
    */
@@ -20,13 +20,13 @@ function makeValidator<C extends Record<string, any>>(
    * Don't allow for any fields that are not specified in constraints.
    */
   strictInput = true
-) {
+) => {
   const defaultConstraint: Constraint = val =>
     strictInput ? `Unexpected field ${val}` : undefined;
 
-  return function validate<F extends Record<string, any>>(
+  return <F extends Record<string, any>>(
     fields: F
-  ): Partial<Record<keyof F & keyof C, string>> {
+  ): Partial<Record<keyof F & keyof C, string>> => {
     const fieldKeys = Object.keys(fields);
     const constraintKeys = Object.keys(constraints);
     const keys = strictInput
@@ -47,24 +47,23 @@ function makeValidator<C extends Record<string, any>>(
         : errors;
     }, {});
   };
-}
+};
 
-function isValid<F>(errors: Partial<Record<keyof F, string>>): boolean {
-  return Object.keys(errors).length === 0;
-}
+const isValid = <F>(errors: Partial<Record<keyof F, string>>): boolean =>
+  Object.keys(errors).length === 0;
 
-export function validate<C extends Record<string, any>, F extends any>(
+export const validate = <C extends Record<string, any>, F extends any>(
   constraints: Constraints<C>,
   fields: F,
   /**
    * Don't allow for any fields that are not specified in constraints.
    */
   strictInput = true
-) {
+) => {
   const errors = makeValidator(constraints, strictInput)(fields);
   const result = isValid(errors) ? Ok(fields) : Err(errors);
   return result as Result<typeof errors, typeof fields>;
-}
+};
 
 export const validateArrayItems = (
   constraints: Record<string, Constraint[]>

@@ -8,10 +8,12 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import { HOME_STACK, HomeNavigator } from "../features/home/navigation/stack";
 import { theme } from "../theme";
+import { createSwitchNavigator } from "react-navigation";
+import { AUTH_STACK, AuthNavigator } from "../features/auth/navigation/stack";
 
 type TabNames = typeof HOME_STACK;
 
-export const AppNavigation = createBottomTabNavigator(
+const PrivateStack = createBottomTabNavigator(
   {
     [HOME_STACK]: {
       screen: HomeNavigator,
@@ -49,11 +51,27 @@ export const AppNavigation = createBottomTabNavigator(
   }
 );
 
-function getTabIcon(route: TabNames): IconDefinition {
+const PRIVATE_STACK = "PRIVATE_STACK";
+
+export const AppNavigation = createSwitchNavigator(
+  {
+    [AUTH_STACK]: {
+      screen: AuthNavigator
+    },
+    [PRIVATE_STACK]: {
+      screen: PrivateStack
+    }
+  },
+  {
+    initialRouteName: PRIVATE_STACK
+  }
+);
+
+const getTabIcon = (route: TabNames): IconDefinition => {
   switch (route) {
     case HOME_STACK:
       return faHome;
     default:
       return faCircle;
   }
-}
+};

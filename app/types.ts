@@ -1,22 +1,22 @@
-export interface User {
+export interface Profile {
   /**
    * Primary key.
    */
   id: string;
   /**
-   * User's name.
+   * profile's name.
    */
   name: string;
   /**
-   * User's email (for authentication).
+   * profile's email (for authentication).
    */
   email: string;
   /**
-   * Which Households the user can manage
+   * Which Households the profile can manage
    */
   householdIds: string[];
   /**
-   * Pretty picture of the User. If not provided, falls back to a placeholder.
+   * Pretty picture of the profile. If not provided, falls back to a placeholder.
    */
   avatar?: string;
 }
@@ -31,9 +31,9 @@ export interface Household {
    */
   name: string;
   /**
-   * List of user ids that can manage the Household.
+   * List of profile ids that can manage the Household.
    */
-  userIds: string[];
+  profileIds: string[];
   /**
    * A Firestore sub-collection of Plants belonging to the Household.
    * https://firebase.google.com/docs/firestore/manage-data/structure-data#subcollections
@@ -69,7 +69,7 @@ export interface Plant {
 }
 
 export interface Firestore {
-  users: Record<string, User>;
+  profiles: Record<string, Profile>;
   households: Record<string, Household>;
   plants: Record<string, Plant>;
 }

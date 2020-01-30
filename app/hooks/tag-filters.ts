@@ -12,7 +12,7 @@ export interface FilterGroup {
   filters: Filter[];
 }
 
-export function useFiltersState(groups: FilterGroup[] = []) {
+export const useFiltersState = (groups: FilterGroup[] = []) => {
   const [filterGroups, setFilterGroups] = useState<FilterGroup[]>(groups);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
@@ -41,4 +41,4 @@ export function useFiltersState(groups: FilterGroup[] = []) {
     activeFiltersHash,
     clearAllFilters
   };
-}
+};

@@ -1,9 +1,10 @@
 import { useState, useCallback } from "react";
-import { Paginated } from "../utils/normalize";
 
-export function useFetcher<F extends (...args: any[]) => Promise<any>>(
+type Paginated = any;
+
+export const useFetcher = <F extends (...args: any[]) => Promise<any>>(
   fetch: F
-) {
+) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
@@ -57,7 +58,7 @@ export function useFetcher<F extends (...args: any[]) => Promise<any>>(
     loaded,
     errored
   };
-}
+};
 
 type Fetcher = (
   from: number,
