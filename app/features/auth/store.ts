@@ -3,6 +3,7 @@ import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import { Profile } from "../../types";
 import { createHousehold } from "../households/store";
+import { Option } from "space-lift";
 
 const database = () => firebase.firestore().collection("profiles");
 
@@ -18,11 +19,16 @@ const store = stately<AuthState>({
   profile: null
 });
 
-export const selectUser = store.createSelector(s => s.user);
 export const selectInitializing = store.createSelector(s => s.initializing);
+export const selectUser = store.createSelector(s => s.user);
+export const selectProfile = store.createSelector(s => s.profile);
 
 const setUser = store.createMutator(
   (state, user: firebase.User) => (state.user = user)
+);
+
+const setProfile = store.createMutator(
+  (state, profile: Profile) => (state.profile = profile)
 );
 
 const setInitializing = store.createMutator(
@@ -31,8 +37,10 @@ const setInitializing = store.createMutator(
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
-    setUser(user);
-    await fetchOrCreateProfile();
+    setUser(user); // NB: this deals with sign out as well
+    if (user) {
+      await fetchOrCreateProfile();
+    }
     setInitializing(false);
   });
 });
@@ -42,7 +50,6 @@ export const signIn = store.createEffect(
     const response = await firebase
       .auth()
       .signInWithEmailAndPassword(email, password);
-    await fetchProfile();
     return response;
   }
 );
@@ -60,9 +67,13 @@ export const signOut = store.createEffect(async () => {
   await firebase.auth().signOut();
 });
 
-export const fetchOrCreateProfile = store.createEffect(async () => {
-  const profile = await fetchProfile();
-  return profile ? profile : await createProfile();
+export const fetchOrCreateProfile = store.createEffect(async state => {
+  if (state.user && state.user.uid) {
+    const profile = await fetchProfile();
+    return profile.isDefined() ? profile.get() : await createProfile();
+  } else {
+    console.error('Cannot fetch or create profile - User is not authenticated')
+  }
 });
 
 export const createProfile = store.createEffect(async state => {
@@ -72,18 +83,22 @@ export const createProfile = store.createEffect(async state => {
     householdIds: [],
     email: state.user.email
   };
-  const response = await database().add(profile);
-  console.log("createProfile", { response });
-  await createHousehold(state.user.uid);
+  await database()
+    .doc(state.user.uid)
+    .set(profile);
+  await Promise.all([createHousehold(state.user.uid), fetchProfile()]);
   return profile;
 });
 
-export const fetchProfile = store.createEffect(async state => {
-  const response = await database()
-    .doc(state.user.uid)
-    .get();
-  console.log("fetchProfile", { response });
-  return response;
-});
+export const fetchProfile = store.createEffect(
+  async (state): Promise<Option<Profile>> => {
+    const response = await database()
+      .doc(state.user.uid)
+      .get();
+    const profile = Option((response.data() as unknown) as Profile);
+    profile.map(setProfile);
+    return profile;
+  }
+);
 
 export const useAuthStore = useStately(store);

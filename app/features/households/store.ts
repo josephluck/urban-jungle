@@ -15,18 +15,21 @@ const store = stately<HouseholdsState>({
 
 export const createHousehold = store.createEffect(
   async (_, profileId: string, household: Partial<Household> = {}) => {
+    const uid = uuid();
     const {
-      id = uuid(),
+      id = uid,
       name = "Default",
       plants = {},
       profileIds = [profileId]
     } = household;
-    const response = await database().add({
-      id,
-      name,
-      plants,
-      profileIds
-    });
+    const response = await database()
+      .doc(id)
+      .set({
+        id,
+        name,
+        plants,
+        profileIds
+      });
     console.log("createHousehold", { response });
   }
 );

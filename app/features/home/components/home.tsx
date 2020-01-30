@@ -1,7 +1,12 @@
 import React, { useCallback, useContext } from "react";
-import { Heading } from "../../../components/typography";
+import { Heading, SubHeading } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
-import { useAuthStore, selectUser, signOut } from "../../auth/store";
+import {
+  useAuthStore,
+  selectUser,
+  signOut,
+  selectProfile
+} from "../../auth/store";
 import { Button } from "react-native";
 import { NavigationContext } from "react-navigation";
 import {
@@ -12,6 +17,7 @@ import {
 export const Home = () => {
   const { navigate } = useContext(NavigationContext);
   const user = useAuthStore(selectUser);
+  const profile = useAuthStore(selectProfile);
 
   const handleSignUp = useCallback(() => {
     navigate(createSignUpRoute());
@@ -28,7 +34,9 @@ export const Home = () => {
   if (user) {
     return (
       <ScreenLayout>
-        <Heading>My Plants</Heading>
+        <Heading>Hello</Heading>
+        {user ? <SubHeading>{user.email}</SubHeading> : null}
+        {profile ? <SubHeading>{profile.name}</SubHeading> : null}
         <Button title="Sign out" onPress={handleSignOut} />
       </ScreenLayout>
     );

@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import "firebase/firestore";
 
 firebase.initializeApp({
   apiKey: "AIzaSyCWG-WpSEo4LSKrKyAHaD5e-mx10cvZ4vg",
