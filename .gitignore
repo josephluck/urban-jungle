@@ -1,0 +1,25 @@
+# NPM etc
+
+node_modules/
+npm-debug.*
+*.log
+
+# Expo
+
+.expo/
+__generated__/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+web-report/
+
+# CDK
+
+# Transpiled service code (from JS to TS) for deployment e.g. lambdas
+.build/
+# Used internally by CDK CLI
+cdk.out/
