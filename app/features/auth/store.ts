@@ -2,6 +2,9 @@ import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import { Profile } from "../../types";
+import { createHousehold } from "../households/store";
+
+const database = () => firebase.firestore().collection("profiles");
 
 interface AuthState {
   initializing: boolean;
@@ -21,13 +24,15 @@ export const selectInitializing = store.createSelector(s => s.initializing);
 const setUser = store.createMutator(
   (state, user: firebase.User) => (state.user = user)
 );
+
 const setInitializing = store.createMutator(
   (state, initializing: boolean) => (state.initializing = initializing)
 );
 
 export const initialize = store.createEffect(() => {
-  firebase.auth().onAuthStateChanged(user => {
+  firebase.auth().onAuthStateChanged(async user => {
     setUser(user);
+    await fetchOrCreateProfile();
     setInitializing(false);
   });
 });
@@ -37,6 +42,7 @@ export const signIn = store.createEffect(
     const response = await firebase
       .auth()
       .signInWithEmailAndPassword(email, password);
+    await fetchProfile();
     return response;
   }
 );
@@ -52,6 +58,32 @@ export const signUp = store.createEffect(
 
 export const signOut = store.createEffect(async () => {
   await firebase.auth().signOut();
+});
+
+export const fetchOrCreateProfile = store.createEffect(async () => {
+  const profile = await fetchProfile();
+  return profile ? profile : await createProfile();
+});
+
+export const createProfile = store.createEffect(async state => {
+  const profile: Profile = {
+    id: state.user.uid,
+    name: "Joseph Luck",
+    householdIds: [],
+    email: state.user.email
+  };
+  const response = await database().add(profile);
+  console.log("createProfile", { response });
+  await createHousehold(state.user.uid);
+  return profile;
+});
+
+export const fetchProfile = store.createEffect(async state => {
+  const response = await database()
+    .doc(state.user.uid)
+    .get();
+  console.log("fetchProfile", { response });
+  return response;
 });
 
 export const useAuthStore = useStately(store);

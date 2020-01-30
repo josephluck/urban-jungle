@@ -41,7 +41,8 @@
     "react-navigation-stack": "^2.0.16",
     "react-navigation-tabs": "^2.7.0",
     "space-lift": "^0.8.7",
-    "styled-components": "^5.0.0"
+    "styled-components": "^5.0.0",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.19",
