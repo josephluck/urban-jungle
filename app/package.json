@@ -21,6 +21,7 @@
     "@josephluck/stately": "^1.1.5",
     "@react-native-community/masked-view": "0.1.5",
     "@react-native-community/netinfo": "4.6.0",
+    "@types/uuid": "^3.4.7",
     "aws4-react-native": "^0.0.2",
     "axios": "^0.19.2",
     "expo": "^36.0.0",
