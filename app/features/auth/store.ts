@@ -3,32 +3,36 @@ import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import { Profile } from "../../types";
 import { createHousehold } from "../households/store";
-import { Option } from "space-lift";
+import { Option, Result, Err, Ok, None } from "space-lift";
+import { IErr } from "../../utils/err";
 
 const database = () => firebase.firestore().collection("profiles");
 
 interface AuthState {
   initializing: boolean;
-  user: firebase.User | null;
-  profile: Profile | null;
+  user: Option<firebase.User>;
+  profile: Option<Profile>;
 }
 
 const store = stately<AuthState>({
   initializing: true,
-  user: null,
-  profile: null
+  user: None,
+  profile: None
 });
 
 export const selectInitializing = store.createSelector(s => s.initializing);
 export const selectUser = store.createSelector(s => s.user);
 export const selectProfile = store.createSelector(s => s.profile);
+export const selectHasAuthenticated = store.createSelector(s =>
+  Option.all([s.user, s.profile]).isDefined()
+);
 
 const setUser = store.createMutator(
-  (state, user: firebase.User) => (state.user = user)
+  (state, user: Option<firebase.User>) => (state.user = user)
 );
 
 const setProfile = store.createMutator(
-  (state, profile: Profile) => (state.profile = profile)
+  (state, profile: Option<Profile>) => (state.profile = profile)
 );
 
 const setInitializing = store.createMutator(
@@ -37,7 +41,7 @@ const setInitializing = store.createMutator(
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
-    setUser(user); // NB: this deals with sign out as well
+    setUser(Option(user)); // NB: this deals with sign out as well
     if (user) {
       await fetchOrCreateProfile();
     }
@@ -67,38 +71,51 @@ export const signOut = store.createEffect(async () => {
   await firebase.auth().signOut();
 });
 
-export const fetchOrCreateProfile = store.createEffect(async state => {
-  if (state.user && state.user.uid) {
-    const profile = await fetchProfile();
-    return profile.isDefined() ? profile.get() : await createProfile();
-  } else {
-    console.error('Cannot fetch or create profile - User is not authenticated')
-  }
-});
+export const fetchOrCreateProfile = store.createEffect(
+  async (state): Promise<Result<IErr, Profile>> =>
+    state.user.fold(
+      () => Err("UNAUTHENTICATED"),
+      async () => {
+        const profile = await fetchProfile();
+        return profile.isOk() ? profile : await createProfile();
+      }
+    )
+);
 
-export const createProfile = store.createEffect(async state => {
-  const profile: Profile = {
-    id: state.user.uid,
-    name: "Joseph Luck",
-    householdIds: [],
-    email: state.user.email
-  };
-  await database()
-    .doc(state.user.uid)
-    .set(profile);
-  await Promise.all([createHousehold(state.user.uid), fetchProfile()]);
-  return profile;
-});
+export const createProfile = store.createEffect(
+  async (state): Promise<Result<IErr, Profile>> =>
+    state.user.fold(
+      () => Err("UNAUTHENTICATED"),
+      async user => {
+        const profile: Profile = {
+          id: user.uid,
+          name: "Joseph Luck",
+          householdIds: [],
+          email: user.email!
+        };
+        await database()
+          .doc(user.uid)
+          .set(profile);
+        await Promise.all([createHousehold(user.uid), fetchProfile()]);
+        return Ok(profile);
+      }
+    )
+);
 
 export const fetchProfile = store.createEffect(
-  async (state): Promise<Option<Profile>> => {
-    const response = await database()
-      .doc(state.user.uid)
-      .get();
-    const profile = Option((response.data() as unknown) as Profile);
-    profile.map(setProfile);
-    return profile;
-  }
+  async (state): Promise<Result<IErr, Profile>> =>
+    state.user.fold(
+      () => Err("UNAUTHENTICATED"),
+      async user => {
+        const response = await database()
+          .doc(user.uid)
+          .get();
+        const data = (response.data() as any) as Profile;
+        const profile = Option(data);
+        setProfile(profile);
+        return profile.toResult(() => "NOT_FOUND" as const);
+      }
+    )
 );
 
 export const useAuthStore = useStately(store);

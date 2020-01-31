@@ -8,6 +8,7 @@ import { useFonts } from "./hooks/fonts";
 import * as reactotron from "./reactotron";
 import * as auth from "./features/auth/store";
 import "./firebase";
+import { ActivityIndicator } from "react-native";
 
 reactotron.configure();
 
@@ -25,7 +26,15 @@ export default () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppWrapper>{!loading && <AppContainer />}</AppWrapper>
+      <AppWrapper>
+        {loading ? (
+          <LoadingContainer>
+            <ActivityIndicator size="large" />
+          </LoadingContainer>
+        ) : (
+          <AppContainer />
+        )}
+      </AppWrapper>
     </ThemeProvider>
   );
 };
@@ -33,4 +42,10 @@ export default () => {
 const AppWrapper = styled.View`
   flex: 1;
   background-color: ${props => props.theme.colors.offBlack};
+`;
+
+const LoadingContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 `;

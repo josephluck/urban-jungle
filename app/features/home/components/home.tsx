@@ -13,11 +13,27 @@ import {
   createLoginRoute,
   createSignUpRoute
 } from "../../auth/navigation/routes";
+import { Option } from "space-lift";
 
 export const Home = () => {
+  const user_ = useAuthStore(selectUser);
+  const profile_ = useAuthStore(selectProfile);
+
+  return Option.all([user_, profile_]).fold(
+    () => <SplashScreen />,
+    ([user, profile]) => (
+      <ScreenLayout>
+        <Heading>Hello</Heading>
+        <SubHeading>{user.email}</SubHeading>
+        <SubHeading>{profile.name}</SubHeading>
+        <Button title="Sign out" onPress={signOut} />
+      </ScreenLayout>
+    )
+  );
+};
+
+const SplashScreen = () => {
   const { navigate } = useContext(NavigationContext);
-  const user = useAuthStore(selectUser);
-  const profile = useAuthStore(selectProfile);
 
   const handleSignUp = useCallback(() => {
     navigate(createSignUpRoute());
@@ -26,21 +42,6 @@ export const Home = () => {
   const handleSignIn = useCallback(() => {
     navigate(createLoginRoute());
   }, []);
-
-  const handleSignOut = useCallback(() => {
-    signOut();
-  }, []);
-
-  if (user) {
-    return (
-      <ScreenLayout>
-        <Heading>Hello</Heading>
-        {user ? <SubHeading>{user.email}</SubHeading> : null}
-        {profile ? <SubHeading>{profile.name}</SubHeading> : null}
-        <Button title="Sign out" onPress={handleSignOut} />
-      </ScreenLayout>
-    );
-  }
 
   return (
     <ScreenLayout>
