@@ -33,6 +33,9 @@ export const setHouseholds = store.createMutator(
     (s.households = { ...s.households, ...normalizeArrayById(households) })
 );
 
+// TODO: use subscriptions for list of households for current profile.
+// https://firebase.google.com/docs/firestore/query-data/listen#view_changes_between_snapshots
+
 /**
  * Fetches the list of the households that the user belongs to.
  */

@@ -3,36 +3,54 @@ import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import { Profile } from "../../types";
 import { createHousehold } from "../households/store";
-import { Option, Result, Err, Ok, None } from "space-lift";
+import * as O from "fp-ts/lib/Option";
+import * as E from "fp-ts/lib/Either";
 import { IErr } from "../../utils/err";
+import { pipe } from "fp-ts/lib/pipeable";
 
 const database = () => firebase.firestore().collection("profiles");
 
 interface AuthState {
   initializing: boolean;
-  user: Option<firebase.User>;
-  profile: Option<Profile>;
+  user: O.Option<firebase.User>;
+  profile: O.Option<Profile>;
 }
 
 const store = stately<AuthState>({
   initializing: true,
-  user: None,
-  profile: None
+  user: O.none,
+  profile: O.none
 });
+
+const every = <A extends O.Option<unknown>[]>(options: A) =>
+  options.every(O.isSome);
 
 export const selectInitializing = store.createSelector(s => s.initializing);
 export const selectUser = store.createSelector(s => s.user);
+export const selectUserEmail = store.createSelector(s =>
+  pipe(
+    s.user,
+    O.map(u => O.fromNullable(u.email)),
+    O.flatten
+  )
+);
+export const selectUserName = store.createSelector(s =>
+  pipe(
+    s.profile,
+    O.map(p => p.name)
+  )
+);
 export const selectProfile = store.createSelector(s => s.profile);
 export const selectHasAuthenticated = store.createSelector(s =>
-  Option.all([s.user, s.profile]).isDefined()
+  every([s.user, s.profile])
 );
 
 const setUser = store.createMutator(
-  (state, user: Option<firebase.User>) => (state.user = user)
+  (state, user: O.Option<firebase.User>) => (state.user = user)
 );
 
 const setProfile = store.createMutator(
-  (state, profile: Option<Profile>) => (state.profile = profile)
+  (state, profile: O.Option<Profile>) => (state.profile = profile)
 );
 
 const setInitializing = store.createMutator(
@@ -41,7 +59,7 @@ const setInitializing = store.createMutator(
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
-    setUser(Option(user)); // NB: this deals with sign out as well
+    setUser(O.fromNullable(user)); // NB: this deals with sign out as well
     if (user) {
       await fetchOrCreateProfile();
     }
@@ -72,20 +90,20 @@ export const signOut = store.createEffect(async () => {
 });
 
 export const fetchOrCreateProfile = store.createEffect(
-  async (state): Promise<Result<IErr, Profile>> =>
-    state.user.fold(
-      () => Err("UNAUTHENTICATED"),
+  async (state): Promise<E.Either<IErr, Profile>> =>
+    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
+      async () => E.left("UNAUTHENTICATED"),
       async () => {
         const profile = await fetchProfile();
-        return profile.isOk() ? profile : await createProfile();
+        return E.isRight(profile) ? profile : await createProfile();
       }
-    )
+    )(state.user)
 );
 
 export const createProfile = store.createEffect(
-  async (state): Promise<Result<IErr, Profile>> =>
-    state.user.fold(
-      () => Err("UNAUTHENTICATED"),
+  async (state): Promise<E.Either<IErr, Profile>> =>
+    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
+      async () => E.left("UNAUTHENTICATED"),
       async user => {
         const profile: Profile = {
           id: user.uid,
@@ -97,31 +115,31 @@ export const createProfile = store.createEffect(
           .doc(user.uid)
           .set(profile);
         await Promise.all([createHousehold(user.uid), fetchProfile()]);
-        return Ok(profile);
+        return E.right(profile);
       }
-    )
+    )(state.user)
 );
 
 export const fetchProfile = store.createEffect(
-  async (state): Promise<Result<IErr, Profile>> =>
-    state.user.fold(
-      () => Err("UNAUTHENTICATED"),
+  async (state): Promise<E.Either<IErr, Profile>> =>
+    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
+      async () => E.left("UNAUTHENTICATED"),
       async user => {
         const response = await database()
           .doc(user.uid)
           .get();
-        const data = (response.data() as any) as Profile;
-        const profile = Option(data);
+        const data = response.data() as any;
+        const profile = O.fromNullable<Profile>(data);
         setProfile(profile);
-        return profile.toResult(() => "NOT_FOUND" as const);
+        return E.fromOption<IErr>(() => "NOT_FOUND")(profile);
       }
-    )
+    )(state.user)
 );
 
 export const addHouseholdToProfile = store.createEffect(
-  async (state, householdId: string): Promise<Result<IErr, Profile>> =>
-    state.user.fold(
-      () => Err("UNAUTHENTICATED"),
+  async (state, householdId: string): Promise<E.Either<IErr, Profile>> =>
+    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
+      async () => E.left("UNAUTHENTICATED"),
       async user => {
         await database()
           .doc(user.uid)
@@ -132,7 +150,7 @@ export const addHouseholdToProfile = store.createEffect(
           });
         return fetchProfile();
       }
-    )
+    )(state.user)
 );
 
 export const useAuthStore = useStately(store);

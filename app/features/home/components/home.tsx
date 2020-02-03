@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect } from "react";
+import { pipe } from "fp-ts/lib/pipeable";
 import { Heading, SubHeading } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
 import {
   useAuthStore,
-  selectUser,
   signOut,
-  selectProfile,
-  selectHasAuthenticated
+  selectHasAuthenticated,
+  selectUserEmail
 } from "../../auth/store";
 import { Button } from "react-native";
 import { NavigationContext } from "react-navigation";
@@ -14,13 +14,13 @@ import {
   createLoginRoute,
   createSignUpRoute
 } from "../../auth/navigation/routes";
-import { Option } from "space-lift";
 import { useFetcher } from "../../../hooks/fetcher";
 import {
   fetchHouseholds,
   useHouseholdsStore,
   selectHouseholds
 } from "../../households/store";
+import * as O from "fp-ts/lib/Option";
 
 export const Home = () => {
   const hasAuthenticated = useAuthStore(selectHasAuthenticated);
@@ -33,8 +33,8 @@ export const Home = () => {
 };
 
 const Households = () => {
-  const user_ = useAuthStore(selectUser);
-  const profile_ = useAuthStore(selectProfile);
+  const name = useAuthStore(selectUserEmail);
+  const email = useAuthStore(selectUserEmail);
   const households = useHouseholdsStore(selectHouseholds);
 
   const fetcher = useFetcher(fetchHouseholds);
@@ -43,21 +43,26 @@ const Households = () => {
     fetcher.fetch();
   }, []);
 
-  console.log({ households });
-
-  return Option.all([user_, profile_]).fold(
-    () => null,
-    ([user, profile]) => (
-      <ScreenLayout>
-        <Heading>Hello</Heading>
-        <SubHeading>{user.email}</SubHeading>
-        <SubHeading>{profile.name}</SubHeading>
-        {households.map(household => (
-          <Heading key={household.id}>{household.name}</Heading>
-        ))}
-        <Button title="Sign out" onPress={signOut} />
-      </ScreenLayout>
-    )
+  return (
+    <ScreenLayout>
+      <Heading>Hello</Heading>
+      <SubHeading>
+        {pipe(
+          name,
+          O.getOrElse(() => "")
+        )}
+      </SubHeading>
+      <SubHeading>
+        {pipe(
+          email,
+          O.getOrElse(() => "")
+        )}
+      </SubHeading>
+      {households.map(household => (
+        <Heading key={household.id}>{household.name}</Heading>
+      ))}
+      <Button title="Sign out" onPress={signOut} />
+    </ScreenLayout>
   );
 };
 
