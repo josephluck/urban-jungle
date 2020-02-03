@@ -12,29 +12,57 @@ const database = () => firebase.firestore().collection("households");
 
 interface HouseholdsState {
   households: Record<string, Household>;
+  removeHouseholdsSubscription: () => void;
 }
 
 const store = stately<HouseholdsState>({
-  households: {}
+  households: {},
+  removeHouseholdsSubscription: () => null
 });
-
-export const defaultHousehold: Omit<Household, "id"> = {
-  name: "Joseph's Home",
-  plants: {},
-  profileIds: []
-};
 
 export const selectHouseholds = store.createSelector(s =>
   Object.values(s.households)
 );
 
-export const setHouseholds = store.createMutator(
-  (s, households: Household[]) =>
-    (s.households = { ...s.households, ...normalizeArrayById(households) })
+export const setRemoveHouseholdsSubscription = store.createMutator(
+  (s, subscription) => {
+    s.removeHouseholdsSubscription = subscription;
+  }
 );
 
-// TODO: use subscriptions for list of households for current profile.
-// https://firebase.google.com/docs/firestore/query-data/listen#view_changes_between_snapshots
+export const setHouseholds = store.createMutator(
+  (s, households: Household[]) => {
+    s.households = { ...s.households, ...normalizeArrayById(households) };
+  }
+);
+
+export const upsertHousehold = store.createMutator(
+  (s, household: Household) => {
+    s.households[household.id] = household;
+  }
+);
+
+export const removeHousehold = store.createMutator((s, householdId: string) => {
+  delete s.households[householdId];
+});
+
+export const subscribeToHouseholds = store.createEffect(
+  async (state, profileId: string) => {
+    state.removeHouseholdsSubscription();
+    const subscription = database()
+      .where("profileIds", "array-contains", profileId)
+      .onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === "added" || change.type === "modified") {
+            upsertHousehold((change.doc.data() as unknown) as Household);
+          } else if (change.type === "removed") {
+            removeHousehold(change.doc.id);
+          }
+        });
+      });
+    setRemoveHouseholdsSubscription(subscription);
+  }
+);
 
 /**
  * Fetches the list of the households that the user belongs to.
@@ -57,7 +85,7 @@ export const createHousehold = store.createEffect(
     _,
     profileId: string,
     household: Omit<Household, "id"> = defaultHousehold
-  ): Promise<Result<IErr, Household>> => {
+  ): Promise<void> => {
     const id = uuid();
     await database()
       .doc(id)
@@ -66,7 +94,7 @@ export const createHousehold = store.createEffect(
         ...household,
         id
       });
-    return createHouseholdProfileRelation(profileId, id);
+    await createHouseholdProfileRelation(profileId, id);
   }
 );
 
@@ -75,16 +103,11 @@ export const createHousehold = store.createEffect(
  * created.
  */
 export const createHouseholdProfileRelation = store.createEffect(
-  async (
-    _,
-    profileId: string,
-    householdId: string
-  ): Promise<Result<IErr, Household>> => {
-    const [household] = await Promise.all([
+  async (_, profileId: string, householdId: string): Promise<void> => {
+    await Promise.all([
       addProfileToHousehold(profileId, householdId),
       addHouseholdToProfile(householdId)
     ]);
-    return household;
   }
 );
 
@@ -105,18 +128,19 @@ export const fetchHousehold = store.createEffect(
  * Adds the given profileId to the household and returns the household.
  */
 export const addProfileToHousehold = store.createEffect(
-  async (
-    _,
-    profileId: string,
-    householdId: string
-  ): Promise<Result<IErr, Household>> => {
+  async (_, profileId: string, householdId: string): Promise<void> => {
     await database()
       .doc(householdId)
       .update({
         profileIds: firebase.firestore.FieldValue.arrayUnion([profileId])
       });
-    return fetchHousehold(householdId);
   }
 );
+
+export const defaultHousehold: Omit<Household, "id"> = {
+  name: "Joseph's Home",
+  plants: {},
+  profileIds: []
+};
 
 export const useHouseholdsStore = makeUseStately(store);
