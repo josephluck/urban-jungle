@@ -6,6 +6,7 @@ import { IErr } from "../../utils/err";
 import { normalizeArrayById } from "../../utils/normalize";
 import { Result, Option } from "space-lift";
 import makeUseStately from "@josephluck/stately/lib/hooks";
+import { addHouseholdToProfile } from "../auth/store";
 
 const database = () => firebase.firestore().collection("households");
 
@@ -60,10 +61,13 @@ export const createHousehold = store.createEffect(
       .set({
         ...defaultHousehold,
         ...household,
-        id,
-        profileIds: [profileId]
+        id
       });
-    return addProfileToHousehold(profileId, id);
+    const [h] = await Promise.all([
+      addProfileToHousehold(profileId, id),
+      addHouseholdToProfile(id)
+    ]);
+    return h;
   }
 );
 

@@ -118,4 +118,21 @@ export const fetchProfile = store.createEffect(
     )
 );
 
+export const addHouseholdToProfile = store.createEffect(
+  async (state, householdId: string): Promise<Result<IErr, Profile>> =>
+    state.user.fold(
+      () => Err("UNAUTHENTICATED"),
+      async user => {
+        await database()
+          .doc(user.uid)
+          .update({
+            householdIds: firebase.firestore.FieldValue.arrayUnion([
+              householdId
+            ])
+          });
+        return fetchProfile();
+      }
+    )
+);
+
 export const useAuthStore = useStately(store);
