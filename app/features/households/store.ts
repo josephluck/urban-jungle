@@ -47,7 +47,7 @@ export const fetchHouseholds = store.createEffect(
 );
 
 /**
- * Creates a new household. Adds the current user to it.
+ * Creates a new household. Subsequently adds the current user relation to it.
  */
 export const createHousehold = store.createEffect(
   async (
@@ -63,11 +63,25 @@ export const createHousehold = store.createEffect(
         ...household,
         id
       });
-    const [h] = await Promise.all([
-      addProfileToHousehold(profileId, id),
-      addHouseholdToProfile(id)
+    return createHouseholdProfileRelation(profileId, id);
+  }
+);
+
+/**
+ * Creates the relationship between the current user and a household they have
+ * created.
+ */
+export const createHouseholdProfileRelation = store.createEffect(
+  async (
+    _,
+    profileId: string,
+    householdId: string
+  ): Promise<Result<IErr, Household>> => {
+    const [household] = await Promise.all([
+      addProfileToHousehold(profileId, householdId),
+      addHouseholdToProfile(householdId)
     ]);
-    return h;
+    return household;
   }
 );
 
