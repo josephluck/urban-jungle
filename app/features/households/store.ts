@@ -7,7 +7,7 @@ import * as E from "fp-ts/lib/Either";
 import { normalizeArrayById } from "../../utils/normalize";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 import {
-  addHouseholdToProfile,
+  addHouseholdToCurrentProfile,
   removeHouseholdFromProfile
 } from "../auth/store";
 
@@ -102,7 +102,7 @@ export const createHouseholdProfileRelation = store.createEffect(
   async (_, profileId: string, householdId: string): Promise<void> => {
     await Promise.all([
       addProfileToHousehold(profileId, householdId),
-      addHouseholdToProfile(householdId)
+      addHouseholdToCurrentProfile(householdId)
     ]);
   }
 );

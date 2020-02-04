@@ -12,27 +12,29 @@ const database = () => firebase.firestore().collection("profiles");
 
 interface AuthState {
   initializing: boolean;
-  user: O.Option<firebase.User>;
-  profile: O.Option<Profile>;
+  authUser: O.Option<firebase.User>;
+  profiles: Record<string, Profile>;
 }
 
 const store = stately<AuthState>({
   initializing: true,
-  user: O.none,
-  profile: O.none
+  authUser: O.none,
+  profiles: {}
 });
 
-const extractProfileId = (profile: Profile) => profile.id;
+/**
+ * SUBSCRIPTIONS
+ */
 
 store.subscribe((prev, next) => {
   const prevId = pipe(
-    prev.profile,
-    O.map(extractProfileId),
+    prev.authUser,
+    O.map(u => u.uid),
     O.getOrElse(() => "")
   );
   const nextId = pipe(
-    next.profile,
-    O.map(extractProfileId),
+    next.authUser,
+    O.map(u => u.uid),
     O.getOrElse(() => "")
   );
   if (prevId !== nextId && !!nextId) {
@@ -40,46 +42,80 @@ store.subscribe((prev, next) => {
   }
 });
 
-const every = <A extends O.Option<unknown>[]>(options: A) =>
+/**
+ * SELECTORS
+ */
+
+const every = <A extends O.Option<unknown>[]>(options: A): boolean =>
   options.every(O.isSome);
 
-export const selectInitializing = store.createSelector(s => s.initializing);
-export const selectUser = store.createSelector(s => s.user);
-export const selectUserEmail = store.createSelector(s =>
+export const selectInitializing = store.createSelector(
+  (s): boolean => s.initializing
+);
+
+export const selectAuthUser = store.createSelector(
+  (s): O.Option<firebase.User> => s.authUser
+);
+
+export const selectCurrentProfileId = (): O.Option<string> =>
   pipe(
-    s.user,
-    O.map(u => O.fromNullable(u.email)),
+    selectAuthUser(),
+    O.map(u => u.uid)
+  );
+
+export const selectCurrentProfileEmail = (): O.Option<string> =>
+  pipe(
+    selectCurrentProfile(),
+    O.map(p => p.email)
+  );
+
+const selectProfileById = (id: O.Option<string>) => (
+  profiles: Record<string, Profile>
+): O.Option<Profile> =>
+  pipe(
+    id,
+    O.map(i => O.fromNullable(profiles[i])),
     O.flatten
-  )
+  );
+
+export const selectCurrentProfile = store.createSelector(
+  (s): O.Option<Profile> =>
+    pipe(s.profiles, selectProfileById(selectCurrentProfileId()))
 );
-export const selectUserName = store.createSelector(s =>
+
+export const selectCurrentProfileName = (): O.Option<string> =>
   pipe(
-    s.profile,
+    selectCurrentProfile(),
     O.map(p => p.name)
-  )
-);
-export const selectProfile = store.createSelector(s => s.profile);
-export const selectProfileId = store.createSelector(s =>
+  );
+
+export const selectHasAuthenticated = (): boolean =>
+  every([selectAuthUser(), selectCurrentProfile()]);
+
+/**
+ * MUTATORS
+ */
+
+const setUser = store.createMutator((s, authUser: O.Option<firebase.User>) => {
+  s.authUser = authUser;
+});
+
+const setProfile = store.createMutator((s, profile: O.Option<Profile>) => {
   pipe(
-    s.profile,
-    O.map(p => p.id)
-  )
-);
-export const selectHasAuthenticated = store.createSelector(s =>
-  every([s.user, s.profile])
-);
+    profile,
+    O.map(p => {
+      s.profiles[p.id] = p;
+    })
+  );
+});
 
-const setUser = store.createMutator(
-  (state, user: O.Option<firebase.User>) => (state.user = user)
-);
+const setInitializing = store.createMutator((s, initializing: boolean) => {
+  s.initializing = initializing;
+});
 
-const setProfile = store.createMutator(
-  (state, profile: O.Option<Profile>) => (state.profile = profile)
-);
-
-const setInitializing = store.createMutator(
-  (state, initializing: boolean) => (state.initializing = initializing)
-);
+/**
+ * EFFECTS
+ */
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
@@ -118,10 +154,10 @@ export const fetchOrCreateProfile = store.createEffect(
     O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
       async () => E.left("UNAUTHENTICATED"),
       async () => {
-        const profile = await fetchProfile();
+        const profile = await fetchCurrentProfile();
         return E.isRight(profile) ? profile : await createProfile();
       }
-    )(state.user)
+    )(state.authUser)
 );
 
 export const createProfile = store.createEffect(
@@ -138,13 +174,13 @@ export const createProfile = store.createEffect(
         await database()
           .doc(user.uid)
           .set(profile);
-        await Promise.all([createHousehold(user.uid), fetchProfile()]);
+        await Promise.all([createHousehold(user.uid), fetchCurrentProfile()]);
         return E.right(profile);
       }
-    )(state.user)
+    )(state.authUser)
 );
 
-export const fetchProfile = store.createEffect(
+export const fetchCurrentProfile = store.createEffect(
   async (state): Promise<E.Either<IErr, Profile>> =>
     O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
       async () => E.left("UNAUTHENTICATED"),
@@ -157,10 +193,10 @@ export const fetchProfile = store.createEffect(
         setProfile(profile);
         return E.fromOption<IErr>(() => "NOT_FOUND")(profile);
       }
-    )(state.user)
+    )(state.authUser)
 );
 
-export const addHouseholdToProfile = store.createEffect(
+export const addHouseholdToCurrentProfile = store.createEffect(
   async (state, householdId: string): Promise<E.Either<IErr, Profile>> =>
     O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
       async () => E.left("UNAUTHENTICATED"),
@@ -170,9 +206,9 @@ export const addHouseholdToProfile = store.createEffect(
           .update({
             householdIds: firebase.firestore.FieldValue.arrayUnion(householdId)
           });
-        return fetchProfile();
+        return fetchCurrentProfile();
       }
-    )(state.user)
+    )(state.authUser)
 );
 
 /**
@@ -195,9 +231,9 @@ export const removeHouseholdFromProfile = store.createEffect(
           .update({
             householdIds: firebase.firestore.FieldValue.arrayRemove(householdId)
           });
-        return fetchProfile();
+        return fetchCurrentProfile();
       }
-    )(state.user)
+    )(state.authUser)
 );
 
 export const useAuthStore = useStately(store);

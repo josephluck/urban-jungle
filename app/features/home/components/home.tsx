@@ -6,9 +6,9 @@ import {
   useAuthStore,
   signOut,
   selectHasAuthenticated,
-  selectUserEmail,
-  selectProfileId,
-  selectUserName
+  selectCurrentProfileEmail,
+  selectCurrentProfileId,
+  selectCurrentProfileName
 } from "../../auth/store";
 import { Button, View } from "react-native";
 import { NavigationContext } from "react-navigation";
@@ -16,9 +16,7 @@ import {
   createLoginRoute,
   createSignUpRoute
 } from "../../auth/navigation/routes";
-// import { useFetcher } from "../../../hooks/fetcher";
 import {
-  // fetchHouseholds,
   useHouseholdsStore,
   selectHouseholds,
   createHousehold,
@@ -37,9 +35,9 @@ export const Home = () => {
 };
 
 const Households = () => {
-  const name = useAuthStore(selectUserName);
-  const email = useAuthStore(selectUserEmail);
-  const profileId = useAuthStore(selectProfileId);
+  const name = useAuthStore(selectCurrentProfileName);
+  const email = useAuthStore(selectCurrentProfileEmail);
+  const profileId = useAuthStore(selectCurrentProfileId);
   const households = useHouseholdsStore(selectHouseholds);
 
   // const fetcher = useFetcher(fetchHouseholds);
@@ -81,7 +79,10 @@ const Households = () => {
         )}
       </SubHeading>
       {households.map(household => (
-        <View key={household.id} style={{ flexDirection: "row" }}>
+        <View
+          key={household.id}
+          style={{ flexDirection: "row", marginVertical: 10 }}
+        >
           <Heading style={{ flex: 1 }}>{household.name}</Heading>
           <Button
             title="X"
