@@ -3,8 +3,8 @@ import firebase from "firebase";
 import stately from "@josephluck/stately";
 import { Household } from "../../types";
 import { IErr } from "../../utils/err";
+import * as E from "fp-ts/lib/Either";
 import { normalizeArrayById } from "../../utils/normalize";
-import { Result, Option, Err, Ok } from "space-lift";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 import {
   addHouseholdToProfile,
@@ -59,25 +59,17 @@ export const subscribeToHouseholds = store.createEffect(
           if (change.type === "added" || change.type === "modified") {
             upsertHousehold((change.doc.data() as unknown) as Household);
           } else if (change.type === "removed") {
+            /**
+             * TODO: should probably only delete the household if the profile
+             * is the only profile associated with the household, to prevent
+             * the deletion of a household affecting other members.
+             */
             deleteHousehold(change.doc.id);
             removeHouseholdFromProfile(change.doc.id);
           }
         });
       });
     setRemoveHouseholdsSubscription(subscription);
-  }
-);
-
-/**
- * Fetches the list of the households that the user belongs to.
- */
-export const fetchHouseholds = store.createEffect(
-  async (): Promise<Result<IErr, Household[]>> => {
-    const response = await database().get();
-    const data = response.docs.map(doc => doc.data()) as any;
-    const households_ = Option<Household[]>(data);
-    households_.map(setHouseholds);
-    return households_.toResult(() => "NOT_FOUND");
   }
 );
 
@@ -128,30 +120,17 @@ export const addProfileToHousehold = store.createEffect(
 );
 
 /**
- * Fetches a household.
- */
-export const fetchHousehold = store.createEffect(
-  async (_, id: string): Promise<Result<IErr, Household>> => {
-    const response = await database()
-      .doc(id)
-      .get();
-    const data = (response.data() as any) as Household;
-    return Option(data).toResult(() => "NOT_FOUND");
-  }
-);
-
-/**
  * Removes a household.
  */
 export const removeHousehold = store.createEffect(
-  async (_, id: string): Promise<Result<IErr, void>> => {
+  async (_, id: string): Promise<E.Either<IErr, void>> => {
     try {
       await database()
         .doc(id)
         .delete();
-      return Ok(void null);
+      return E.right(void null);
     } catch (err) {
-      return Err("NOT_FOUND");
+      return E.left("NOT_FOUND");
     }
   }
 );

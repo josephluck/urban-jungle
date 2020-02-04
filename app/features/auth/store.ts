@@ -175,6 +175,16 @@ export const addHouseholdToProfile = store.createEffect(
     )(state.user)
 );
 
+/**
+ * Removes a household from the profile.
+ *
+ * TODO: when a household is deleted, it will not remove the household ids from
+ * all profiles the household. If there are multiple profiles associated with
+ * a household, the household should probably not be deleted and only the
+ * association between the current user and the household should be removed.
+ * At the moment, the household is deleted, but there can still be stray
+ * profiles associated to it.
+ */
 export const removeHouseholdFromProfile = store.createEffect(
   async (state, householdId: string): Promise<E.Either<IErr, Profile>> =>
     O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(

@@ -16,9 +16,9 @@ import {
   createLoginRoute,
   createSignUpRoute
 } from "../../auth/navigation/routes";
-import { useFetcher } from "../../../hooks/fetcher";
+// import { useFetcher } from "../../../hooks/fetcher";
 import {
-  fetchHouseholds,
+  // fetchHouseholds,
   useHouseholdsStore,
   selectHouseholds,
   createHousehold,
@@ -42,11 +42,11 @@ const Households = () => {
   const profileId = useAuthStore(selectProfileId);
   const households = useHouseholdsStore(selectHouseholds);
 
-  const fetcher = useFetcher(fetchHouseholds);
+  // const fetcher = useFetcher(fetchHouseholds);
 
   useEffect(() => {
-    fetcher.fetch();
-  }, []);
+    // pipe(profileId, O.map(fetcher.fetch));
+  }, [profileId]);
 
   const handleCreateHousehold = useCallback(() => {
     pipe(
