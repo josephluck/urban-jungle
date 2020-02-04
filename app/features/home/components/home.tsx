@@ -6,9 +6,11 @@ import {
   useAuthStore,
   signOut,
   selectHasAuthenticated,
-  selectUserEmail
+  selectUserEmail,
+  selectProfileId,
+  selectUserName
 } from "../../auth/store";
-import { Button } from "react-native";
+import { Button, View } from "react-native";
 import { NavigationContext } from "react-navigation";
 import {
   createLoginRoute,
@@ -18,7 +20,9 @@ import { useFetcher } from "../../../hooks/fetcher";
 import {
   fetchHouseholds,
   useHouseholdsStore,
-  selectHouseholds
+  selectHouseholds,
+  createHousehold,
+  removeHousehold
 } from "../../households/store";
 import * as O from "fp-ts/lib/Option";
 
@@ -33,8 +37,9 @@ export const Home = () => {
 };
 
 const Households = () => {
-  const name = useAuthStore(selectUserEmail);
+  const name = useAuthStore(selectUserName);
   const email = useAuthStore(selectUserEmail);
+  const profileId = useAuthStore(selectProfileId);
   const households = useHouseholdsStore(selectHouseholds);
 
   const fetcher = useFetcher(fetchHouseholds);
@@ -43,15 +48,32 @@ const Households = () => {
     fetcher.fetch();
   }, []);
 
+  const handleCreateHousehold = useCallback(() => {
+    pipe(
+      profileId,
+      O.map(id =>
+        createHousehold(id, {
+          name: new Date().toString(),
+          profileIds: [id],
+          plants: {}
+        })
+      )
+    );
+  }, [profileId]);
+
+  const handleRemoveHousehold = useCallback((id: string) => {
+    removeHousehold(id);
+  }, []);
+
   return (
     <ScreenLayout>
-      <Heading>Hello</Heading>
-      <SubHeading>
+      <Heading>
+        Hello{" "}
         {pipe(
           name,
           O.getOrElse(() => "")
         )}
-      </SubHeading>
+      </Heading>
       <SubHeading>
         {pipe(
           email,
@@ -59,8 +81,15 @@ const Households = () => {
         )}
       </SubHeading>
       {households.map(household => (
-        <Heading key={household.id}>{household.name}</Heading>
+        <View key={household.id} style={{ flexDirection: "row" }}>
+          <Heading style={{ flex: 1 }}>{household.name}</Heading>
+          <Button
+            title="X"
+            onPress={() => handleRemoveHousehold(household.id)}
+          />
+        </View>
       ))}
+      <Button title="Create household" onPress={handleCreateHousehold} />
       <Button title="Sign out" onPress={signOut} />
     </ScreenLayout>
   );

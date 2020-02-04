@@ -2,7 +2,7 @@ import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import { Profile } from "../../types";
-import { createHousehold } from "../households/store";
+import { createHousehold, subscribeToHouseholds } from "../households/store";
 import * as O from "fp-ts/lib/Option";
 import * as E from "fp-ts/lib/Either";
 import { IErr } from "../../utils/err";
@@ -20,6 +20,24 @@ const store = stately<AuthState>({
   initializing: true,
   user: O.none,
   profile: O.none
+});
+
+const extractProfileId = (profile: Profile) => profile.id;
+
+store.subscribe((prev, next) => {
+  const prevId = pipe(
+    prev.profile,
+    O.map(extractProfileId),
+    O.getOrElse(() => "")
+  );
+  const nextId = pipe(
+    next.profile,
+    O.map(extractProfileId),
+    O.getOrElse(() => "")
+  );
+  if (prevId !== nextId && !!nextId) {
+    subscribeToHouseholds(nextId);
+  }
 });
 
 const every = <A extends O.Option<unknown>[]>(options: A) =>
@@ -41,6 +59,12 @@ export const selectUserName = store.createSelector(s =>
   )
 );
 export const selectProfile = store.createSelector(s => s.profile);
+export const selectProfileId = store.createSelector(s =>
+  pipe(
+    s.profile,
+    O.map(p => p.id)
+  )
+);
 export const selectHasAuthenticated = store.createSelector(s =>
   every([s.user, s.profile])
 );
@@ -144,9 +168,22 @@ export const addHouseholdToProfile = store.createEffect(
         await database()
           .doc(user.uid)
           .update({
-            householdIds: firebase.firestore.FieldValue.arrayUnion([
-              householdId
-            ])
+            householdIds: firebase.firestore.FieldValue.arrayUnion(householdId)
+          });
+        return fetchProfile();
+      }
+    )(state.user)
+);
+
+export const removeHouseholdFromProfile = store.createEffect(
+  async (state, householdId: string): Promise<E.Either<IErr, Profile>> =>
+    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
+      async () => E.left("UNAUTHENTICATED"),
+      async user => {
+        await database()
+          .doc(user.uid)
+          .update({
+            householdIds: firebase.firestore.FieldValue.arrayRemove(householdId)
           });
         return fetchProfile();
       }

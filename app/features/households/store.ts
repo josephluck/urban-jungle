@@ -4,9 +4,12 @@ import stately from "@josephluck/stately";
 import { Household } from "../../types";
 import { IErr } from "../../utils/err";
 import { normalizeArrayById } from "../../utils/normalize";
-import { Result, Option } from "space-lift";
+import { Result, Option, Err, Ok } from "space-lift";
 import makeUseStately from "@josephluck/stately/lib/hooks";
-import { addHouseholdToProfile } from "../auth/store";
+import {
+  addHouseholdToProfile,
+  removeHouseholdFromProfile
+} from "../auth/store";
 
 const database = () => firebase.firestore().collection("households");
 
@@ -42,7 +45,7 @@ export const upsertHousehold = store.createMutator(
   }
 );
 
-export const removeHousehold = store.createMutator((s, householdId: string) => {
+export const deleteHousehold = store.createMutator((s, householdId: string) => {
   delete s.households[householdId];
 });
 
@@ -56,7 +59,8 @@ export const subscribeToHouseholds = store.createEffect(
           if (change.type === "added" || change.type === "modified") {
             upsertHousehold((change.doc.data() as unknown) as Household);
           } else if (change.type === "removed") {
-            removeHousehold(change.doc.id);
+            deleteHousehold(change.doc.id);
+            removeHouseholdFromProfile(change.doc.id);
           }
         });
       });
@@ -112,6 +116,18 @@ export const createHouseholdProfileRelation = store.createEffect(
 );
 
 /**
+ * Adds the given profileId to the household and returns the household.
+ */
+export const addProfileToHousehold = store.createEffect(
+  async (_, profileId: string, householdId: string): Promise<void> =>
+    await database()
+      .doc(householdId)
+      .update({
+        profileIds: firebase.firestore.FieldValue.arrayUnion(profileId)
+      })
+);
+
+/**
  * Fetches a household.
  */
 export const fetchHousehold = store.createEffect(
@@ -125,15 +141,18 @@ export const fetchHousehold = store.createEffect(
 );
 
 /**
- * Adds the given profileId to the household and returns the household.
+ * Removes a household.
  */
-export const addProfileToHousehold = store.createEffect(
-  async (_, profileId: string, householdId: string): Promise<void> => {
-    await database()
-      .doc(householdId)
-      .update({
-        profileIds: firebase.firestore.FieldValue.arrayUnion([profileId])
-      });
+export const removeHousehold = store.createEffect(
+  async (_, id: string): Promise<Result<IErr, void>> => {
+    try {
+      await database()
+        .doc(id)
+        .delete();
+      return Ok(void null);
+    } catch (err) {
+      return Err("NOT_FOUND");
+    }
   }
 );
 
