@@ -4,7 +4,7 @@ import firebase from "firebase";
 import { Profile } from "../../types";
 import { createHousehold, subscribeToHouseholds } from "../households/store";
 import * as O from "fp-ts/lib/Option";
-import * as E from "fp-ts/lib/Either";
+import * as TE from "fp-ts/lib/TaskEither";
 import { IErr } from "../../utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 
@@ -14,18 +14,23 @@ interface AuthState {
   initializing: boolean;
   authUser: O.Option<firebase.User>;
   profiles: Record<string, Profile>;
+  removeProfilesSubscription: () => void;
 }
 
 const store = stately<AuthState>({
   initializing: true,
   authUser: O.none,
-  profiles: {}
+  profiles: {},
+  removeProfilesSubscription: () => void null
 });
 
 /**
  * SUBSCRIPTIONS
  */
 
+/**
+ * Subscribe to households for the current user
+ */
 store.subscribe((prev, next) => {
   const prevId = pipe(
     prev.authUser,
@@ -39,6 +44,20 @@ store.subscribe((prev, next) => {
   );
   if (prevId !== nextId && !!nextId) {
     subscribeToHouseholds(nextId);
+  }
+});
+
+/**
+ * Subscribe to profile updates for all profiles currently fetched
+ */
+store.subscribe((prev, next) => {
+  const previousProfileIds = Object.keys(prev.profiles);
+  const nextProfileIds = Object.keys(next.profiles);
+  const difference = previousProfileIds
+    .filter(x => !nextProfileIds.includes(x))
+    .concat(nextProfileIds.filter(x => !previousProfileIds.includes(x)));
+  if (difference.length) {
+    subscribeToProfiles(nextProfileIds);
   }
 });
 
@@ -69,7 +88,7 @@ export const selectCurrentProfileEmail = (): O.Option<string> =>
     O.map(p => p.email)
   );
 
-const selectProfileById = (id: O.Option<string>) => (
+const selectProfileById2 = (id: O.Option<string>) => (
   profiles: Record<string, Profile>
 ): O.Option<Profile> =>
   pipe(
@@ -78,9 +97,13 @@ const selectProfileById = (id: O.Option<string>) => (
     O.flatten
   );
 
+const selectProfileById = store.createSelector((s, id: string) =>
+  O.fromNullable(s.profiles[id])
+);
+
 export const selectCurrentProfile = store.createSelector(
   (s): O.Option<Profile> =>
-    pipe(s.profiles, selectProfileById(selectCurrentProfileId()))
+    pipe(s.profiles, selectProfileById2(selectCurrentProfileId()))
 );
 
 export const selectCurrentProfileName = (): O.Option<string> =>
@@ -100,7 +123,7 @@ const setUser = store.createMutator((s, authUser: O.Option<firebase.User>) => {
   s.authUser = authUser;
 });
 
-const setProfile = store.createMutator((s, profile: O.Option<Profile>) => {
+const upsertProfile = store.createMutator((s, profile: O.Option<Profile>) => {
   pipe(
     profile,
     O.map(p => {
@@ -109,9 +132,19 @@ const setProfile = store.createMutator((s, profile: O.Option<Profile>) => {
   );
 });
 
+const deleteProfile = store.createMutator((s, profileId: string) => {
+  delete s.profiles[profileId];
+});
+
 const setInitializing = store.createMutator((s, initializing: boolean) => {
   s.initializing = initializing;
 });
+
+const setRemoveProfilesSubscription = store.createMutator(
+  (s, removeProfilesSubscription: () => void) => {
+    s.removeProfilesSubscription = removeProfilesSubscription;
+  }
+);
 
 /**
  * EFFECTS
@@ -121,7 +154,7 @@ export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
     setUser(O.fromNullable(user)); // NB: this deals with sign out as well
     if (user) {
-      await fetchOrCreateProfile();
+      await fetchOrCreateProfile()();
     }
     setInitializing(false);
   });
@@ -149,67 +182,95 @@ export const signOut = store.createEffect(async () => {
   await firebase.auth().signOut();
 });
 
-export const fetchOrCreateProfile = store.createEffect(
-  async (state): Promise<E.Either<IErr, Profile>> =>
-    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
-      async () => E.left("UNAUTHENTICATED"),
-      async () => {
-        const profile = await fetchCurrentProfile();
-        return E.isRight(profile) ? profile : await createProfile();
-      }
-    )(state.authUser)
-);
+export const fetchOrCreateProfile = (): TE.TaskEither<IErr, Profile> =>
+  pipe(fetchCurrentProfile(), TE.orElse(createProfile));
 
-export const createProfile = store.createEffect(
-  async (state): Promise<E.Either<IErr, Profile>> =>
-    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
-      async () => E.left("UNAUTHENTICATED"),
-      async user => {
-        const profile: Profile = {
-          id: user.uid,
-          name: "Joseph Luck",
-          householdIds: [],
-          email: user.email!
-        };
-        await database()
-          .doc(user.uid)
-          .set(profile);
-        await Promise.all([createHousehold(user.uid), fetchCurrentProfile()]);
-        return E.right(profile);
-      }
-    )(state.authUser)
-);
+const createProfile = (): TE.TaskEither<IErr, Profile> =>
+  pipe(
+    selectAuthUser(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain(user =>
+      TE.tryCatch(
+        async () => {
+          const profile: Profile = {
+            id: user.uid,
+            name: "Joseph Luck",
+            householdIds: [],
+            email: user.email!
+          };
+          await database()
+            .doc(user.uid)
+            .set(profile);
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    ),
+    TE.chain(fetchCurrentProfile),
+    TE.chain(profile =>
+      TE.tryCatch(
+        async () => {
+          await createHousehold(profile.id);
+          return profile;
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    )
+  );
 
-export const fetchCurrentProfile = store.createEffect(
-  async (state): Promise<E.Either<IErr, Profile>> =>
-    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
-      async () => E.left("UNAUTHENTICATED"),
-      async user => {
-        const response = await database()
-          .doc(user.uid)
-          .get();
-        const data = response.data() as any;
-        const profile = O.fromNullable<Profile>(data);
-        setProfile(profile);
-        return E.fromOption<IErr>(() => "NOT_FOUND")(profile);
-      }
-    )(state.authUser)
-);
+export const fetchCurrentProfile = (): TE.TaskEither<IErr, Profile> =>
+  pipe(
+    selectCurrentProfileId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain(fetchProfileIfNotFetched)
+  );
 
-export const addHouseholdToCurrentProfile = store.createEffect(
-  async (state, householdId: string): Promise<E.Either<IErr, Profile>> =>
-    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
-      async () => E.left("UNAUTHENTICATED"),
-      async user => {
-        await database()
-          .doc(user.uid)
-          .update({
-            householdIds: firebase.firestore.FieldValue.arrayUnion(householdId)
-          });
-        return fetchCurrentProfile();
+export const fetchProfileIfNotFetched = (
+  id: string
+): TE.TaskEither<IErr, Profile> =>
+  pipe(
+    selectProfileById(id),
+    TE.fromOption(() => id),
+    TE.orElse(fetchProfile)
+  );
+
+export const fetchProfile = (id: string): TE.TaskEither<IErr, Profile> =>
+  TE.tryCatch(
+    async () => {
+      const response = await database()
+        .doc(id)
+        .get();
+      if (!response.exists) {
+        throw new Error();
       }
-    )(state.authUser)
-);
+      const profile = response.data() as Profile;
+      upsertProfile(O.fromNullable(profile));
+      return profile;
+    },
+    () => "BAD_REQUEST" as IErr
+  );
+
+export const addHouseholdToCurrentProfile = (
+  householdId: string
+): TE.TaskEither<IErr, Profile> =>
+  pipe(
+    selectCurrentProfileId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain(id =>
+      TE.tryCatch(
+        async () => {
+          await database()
+            .doc(id)
+            .update({
+              householdIds: firebase.firestore.FieldValue.arrayUnion(
+                householdId
+              )
+            });
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    ),
+    TE.chain(fetchCurrentProfile)
+  );
 
 /**
  * Removes a household from the profile.
@@ -221,19 +282,82 @@ export const addHouseholdToCurrentProfile = store.createEffect(
  * At the moment, the household is deleted, but there can still be stray
  * profiles associated to it.
  */
-export const removeHouseholdFromProfile = store.createEffect(
-  async (state, householdId: string): Promise<E.Either<IErr, Profile>> =>
-    O.fold<firebase.User, Promise<E.Either<IErr, Profile>>>(
-      async () => E.left("UNAUTHENTICATED"),
-      async user => {
-        await database()
-          .doc(user.uid)
-          .update({
-            householdIds: firebase.firestore.FieldValue.arrayRemove(householdId)
-          });
-        return fetchCurrentProfile();
-      }
-    )(state.authUser)
+export const removeHouseholdFromProfile = (
+  householdId: string
+): TE.TaskEither<IErr, Profile> =>
+  pipe(
+    selectCurrentProfileId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain(id =>
+      TE.tryCatch(
+        async () => {
+          await database()
+            .doc(id)
+            .update({
+              householdIds: firebase.firestore.FieldValue.arrayRemove(
+                householdId
+              )
+            });
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    ),
+    TE.chain(fetchCurrentProfile)
+  );
+
+export const subscribeToProfiles = store.createEffect(
+  async (state, profileIds: string[]) => {
+    state.removeProfilesSubscription();
+    const subscription = database()
+      .where("id", "in", profileIds)
+      .onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === "added" || change.type === "modified") {
+            const profile = (change.doc.data() as unknown) as Profile;
+            upsertProfile(O.fromNullable(profile));
+          } else if (change.type === "removed") {
+            deleteProfile(change.doc.id);
+          }
+        });
+      });
+    setRemoveProfilesSubscription(subscription);
+  }
 );
 
 export const useAuthStore = useStately(store);
+
+// const sleepR = async (duration = 5000) =>
+//   new Promise(r => setTimeout(r, duration));
+// const sleepL = async (duration = 5000) =>
+//   new Promise((_, r) => setTimeout(r, duration));
+
+// const fails = (value: string): TE.TaskEither<IErr, string> =>
+//   TE.tryCatch(
+//     async () => {
+//       console.log("Running fails", value);
+//       await sleepL();
+//       return "Failed";
+//     },
+//     () => "BAD_REQUEST" as IErr
+//   );
+
+// const initial = (): TE.TaskEither<IErr, string> => TE.right("all good");
+
+// const succeeds = (value: string): TE.TaskEither<IErr, string> =>
+//   TE.tryCatch(
+//     async () => {
+//       console.log("Running succeeds", value);
+//       await sleepR();
+//       return "Succeeded";
+//     },
+//     () => "BAD_REQUEST" as IErr
+//   );
+
+// const test = (): TE.TaskEither<IErr, string> =>
+//   pipe(initial(), TE.chain(succeeds), TE.chain(fails), TE.orElse(succeeds));
+
+// (async () => {
+//   await sleepR();
+//   console.log("Starting TE: ");
+//   test()();
+// })();

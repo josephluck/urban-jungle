@@ -65,7 +65,7 @@ export const subscribeToHouseholds = store.createEffect(
              * the deletion of a household affecting other members.
              */
             deleteHousehold(change.doc.id);
-            removeHouseholdFromProfile(change.doc.id);
+            removeHouseholdFromProfile(change.doc.id)();
           }
         });
       });
@@ -102,7 +102,7 @@ export const createHouseholdProfileRelation = store.createEffect(
   async (_, profileId: string, householdId: string): Promise<void> => {
     await Promise.all([
       addProfileToHousehold(profileId, householdId),
-      addHouseholdToCurrentProfile(householdId)
+      addHouseholdToCurrentProfile(householdId)()
     ]);
   }
 );
