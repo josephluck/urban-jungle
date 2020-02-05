@@ -361,3 +361,11 @@ export const useAuthStore = useStately(store);
 //   console.log("Starting TE: ");
 //   test()();
 // })();
+
+// https://paulgray.net/the-state-monad/
+// import * as A from "fp-ts/lib/Apply";
+// const sequenceOption = A.sequenceT(O.option)
+// const foo = sequenceOption(selectCurrentProfileId(), selectCurrentProfileEmail())
+// const bar = pipe(foo, O.fold(() => null, ([id, email]) => {
+//   console.log({id, email})
+// }))
