@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext } from "react";
 import { pipe } from "fp-ts/lib/pipeable";
 import { Heading, SubHeading } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
@@ -19,8 +19,8 @@ import {
 import {
   useHouseholdsStore,
   selectHouseholds,
-  createHousehold,
-  removeHousehold
+  removeHousehold,
+  createHouseholdForCurrentProfile
 } from "../../households/store";
 import * as O from "fp-ts/lib/Option";
 
@@ -40,23 +40,8 @@ const Households = () => {
   const profileId = useAuthStore(selectCurrentProfileId);
   const households = useHouseholdsStore(selectHouseholds);
 
-  // const fetcher = useFetcher(fetchHouseholds);
-
-  useEffect(() => {
-    // pipe(profileId, O.map(fetcher.fetch));
-  }, [profileId]);
-
   const handleCreateHousehold = useCallback(() => {
-    pipe(
-      profileId,
-      O.map(id =>
-        createHousehold(id, {
-          name: new Date().toString(),
-          profileIds: [id],
-          plants: {}
-        })
-      )
-    );
+    createHouseholdForCurrentProfile({ name: new Date().toString() })();
   }, [profileId]);
 
   const handleRemoveHousehold = useCallback((id: string) => {

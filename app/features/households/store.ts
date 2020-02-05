@@ -8,7 +8,9 @@ import { normalizeArrayById } from "../../utils/normalize";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 import {
   addHouseholdToCurrentProfile,
-  removeHouseholdFromProfile
+  removeHouseholdFromProfile,
+  fetchProfiles,
+  selectCurrentProfileId
 } from "../auth/store";
 import { pipe } from "fp-ts/lib/pipeable";
 
@@ -50,25 +52,36 @@ export const deleteHousehold = store.createMutator((s, householdId: string) => {
   delete s.households[householdId];
 });
 
+/**
+ * Subscribes to households and recursively fetches associated profiles.
+ * NB: the profiles are fetched and stored in the auth store, and the auth store
+ * is responsible for subscribing to the profiles in it's own store.
+ * It might be better to extract these subscriptions to a custom React hook that
+ * can deal with cleaning up the subscriptions correctly.
+ */
 export const subscribeToHouseholds = store.createEffect(
   async (state, profileId: string) => {
     state.removeHouseholdsSubscription();
     const subscription = database()
       .where("profileIds", "array-contains", profileId)
-      .onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
-          if (change.type === "added" || change.type === "modified") {
-            upsertHousehold((change.doc.data() as unknown) as Household);
-          } else if (change.type === "removed") {
-            /**
-             * TODO: should probably only delete the household if the profile
-             * is the only profile associated with the household, to prevent
-             * the deletion of a household affecting other members.
-             */
-            deleteHousehold(change.doc.id);
-            removeHouseholdFromProfile(change.doc.id)();
-          }
+      .onSnapshot(async snapshot => {
+        const addedOrModified: Household[] = snapshot
+          .docChanges()
+          .filter(change => ["added", "modified"].includes(change.type))
+          .map(change => (change.doc.data() as unknown) as Household);
+        const removed: Household[] = snapshot
+          .docChanges()
+          .filter(change => change.type === "removed")
+          .map(change => (change.doc.data() as unknown) as Household);
+        const profileIds = addedOrModified
+          .map(household => household.profileIds)
+          .reduce((prev, arr) => [...prev, ...arr], []);
+        const profileFetches = fetchProfiles(profileIds);
+        const householdRemovals = removed.map(household => {
+          deleteHousehold(household.id);
+          return removeHouseholdFromProfile(household.id)();
         });
+        await Promise.all([profileFetches, householdRemovals]);
       });
     setRemoveHouseholdsSubscription(subscription);
   }
@@ -78,9 +91,8 @@ export const subscribeToHouseholds = store.createEffect(
  * Creates a new household. Subsequently adds the current user relation to it.
  */
 export const createHousehold = (
-  profileId: string,
-  household: Omit<Household, "id"> = defaultHousehold
-): TE.TaskEither<IErr, Household> =>
+  household: Partial<Omit<Household, "id">> = defaultHousehold
+) => (profileId: string): TE.TaskEither<IErr, Household> =>
   pipe(
     TE.tryCatch(
       async () => {
@@ -98,6 +110,15 @@ export const createHousehold = (
     ),
     TE.chain(createProfileHouseholdRelation(profileId)),
     TE.chain(fetchHousehold)
+  );
+
+export const createHouseholdForCurrentProfile = (
+  household: Partial<Omit<Household, "id">> = defaultHousehold
+): TE.TaskEither<IErr, Household> =>
+  pipe(
+    selectCurrentProfileId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain(createHousehold(household))
   );
 
 export const fetchHousehold = (id: string): TE.TaskEither<IErr, Household> =>

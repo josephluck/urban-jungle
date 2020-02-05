@@ -57,7 +57,7 @@ store.subscribe((prev, next) => {
     .filter(x => !nextProfileIds.includes(x))
     .concat(nextProfileIds.filter(x => !previousProfileIds.includes(x)));
   if (difference.length) {
-    subscribeToProfiles(nextProfileIds);
+    subscribeToProfiles();
   }
 });
 
@@ -123,17 +123,16 @@ const setUser = store.createMutator((s, authUser: O.Option<firebase.User>) => {
   s.authUser = authUser;
 });
 
-const upsertProfile = store.createMutator((s, profile: O.Option<Profile>) => {
-  pipe(
-    profile,
-    O.map(p => {
-      s.profiles[p.id] = p;
-    })
-  );
+const upsertProfile = store.createMutator((s, profile: Profile) => {
+  s.profiles[profile.id] = profile;
 });
 
-const deleteProfile = store.createMutator((s, profileId: string) => {
-  delete s.profiles[profileId];
+const upsertProfiles = store.createMutator((s, profiles: Profile[]) => {
+  profiles.forEach(profile => (s.profiles[profile.id] = profile));
+});
+
+const deleteProfiles = store.createMutator((s, profileIds: string[]) => {
+  profileIds.forEach(id => delete s.profiles[id]);
 });
 
 const setInitializing = store.createMutator((s, initializing: boolean) => {
@@ -189,25 +188,26 @@ const createProfile = (): TE.TaskEither<IErr, Profile> =>
   pipe(
     selectAuthUser(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(user =>
-      TE.tryCatch(
-        async () => {
-          const profile: Profile = {
-            id: user.uid,
-            name: "Joseph Luck",
-            householdIds: [],
-            email: user.email!
-          };
-          await database()
-            .doc(user.uid)
-            .set(profile);
-          return user.uid;
-        },
-        () => "BAD_REQUEST" as IErr
-      )
-    ),
-    TE.chain(createHousehold),
+    TE.chain(createUserProfile),
+    TE.chain(createHousehold()),
     TE.chain(fetchCurrentProfileIfNotFetched)
+  );
+
+const createUserProfile = (user: firebase.User): TE.TaskEither<IErr, string> =>
+  TE.tryCatch(
+    async () => {
+      const profile: Profile = {
+        id: user.uid,
+        name: "Joseph Luck",
+        householdIds: [],
+        email: user.email!
+      };
+      await database()
+        .doc(user.uid)
+        .set(profile);
+      return user.uid;
+    },
+    () => "BAD_REQUEST" as IErr
   );
 
 export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
@@ -229,6 +229,22 @@ export const fetchProfileIfNotFetched = (
     TE.orElse(fetchProfile)
   );
 
+export const fetchProfiles = (ids: string[]): TE.TaskEither<IErr, Profile[]> =>
+  TE.tryCatch(
+    async () => {
+      const response = await database()
+        .where("id", "in", ids)
+        .get();
+      if (response.empty) {
+        throw new Error();
+      }
+      const profiles = response.docs.map(doc => doc.data()) as Profile[];
+      upsertProfiles(profiles);
+      return profiles;
+    },
+    () => "NOT_FOUND" as IErr
+  );
+
 export const fetchProfile = (id: string): TE.TaskEither<IErr, Profile> =>
   TE.tryCatch(
     async () => {
@@ -239,10 +255,10 @@ export const fetchProfile = (id: string): TE.TaskEither<IErr, Profile> =>
         throw new Error();
       }
       const profile = response.data() as Profile;
-      upsertProfile(O.fromNullable(profile));
+      upsertProfile(profile);
       return profile;
     },
-    () => "BAD_REQUEST" as IErr
+    () => "NOT_FOUND" as IErr
   );
 
 export const addHouseholdToCurrentProfile = (
@@ -301,24 +317,28 @@ export const removeHouseholdFromProfile = (
     TE.chain(fetchCurrentProfileIfNotFetched)
   );
 
-export const subscribeToProfiles = store.createEffect(
-  async (state, profileIds: string[]) => {
-    state.removeProfilesSubscription();
-    const subscription = database()
-      .where("id", "in", profileIds)
-      .onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
-          if (change.type === "added" || change.type === "modified") {
-            const profile = (change.doc.data() as unknown) as Profile;
-            upsertProfile(O.fromNullable(profile));
-          } else if (change.type === "removed") {
-            deleteProfile(change.doc.id);
-          }
-        });
-      });
-    setRemoveProfilesSubscription(subscription);
-  }
-);
+/**
+ * Subscribes to profiles and updates the local store state when they change.
+ */
+export const subscribeToProfiles = store.createEffect(async state => {
+  state.removeProfilesSubscription();
+  const profileIds = Object.keys(state.profiles);
+  const subscription = database()
+    .where("id", "in", profileIds)
+    .onSnapshot(snapshot => {
+      const addedOrModified: Profile[] = snapshot
+        .docChanges()
+        .filter(change => ["added", "modified"].includes(change.type))
+        .map(change => change.doc.data() as Profile);
+      const removed: Profile[] = snapshot
+        .docChanges()
+        .filter(change => change.type === "removed")
+        .map(change => change.doc.data() as Profile);
+      upsertProfiles(addedOrModified);
+      deleteProfiles(removed.map(profile => profile.id));
+    });
+  setRemoveProfilesSubscription(subscription);
+});
 
 export const useAuthStore = useStately(store);
 
