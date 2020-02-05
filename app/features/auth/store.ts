@@ -183,7 +183,7 @@ export const signOut = store.createEffect(async () => {
 });
 
 export const fetchOrCreateProfile = (): TE.TaskEither<IErr, Profile> =>
-  pipe(fetchCurrentProfile(), TE.orElse(createProfile));
+  pipe(fetchCurrentProfileIfNotFetched(), TE.orElse(createProfile));
 
 const createProfile = (): TE.TaskEither<IErr, Profile> =>
   pipe(
@@ -201,23 +201,19 @@ const createProfile = (): TE.TaskEither<IErr, Profile> =>
           await database()
             .doc(user.uid)
             .set(profile);
+          return user.uid;
         },
         () => "BAD_REQUEST" as IErr
       )
     ),
-    TE.chain(fetchCurrentProfile),
-    TE.chain(profile =>
-      TE.tryCatch(
-        async () => {
-          await createHousehold(profile.id);
-          return profile;
-        },
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+    TE.chain(createHousehold),
+    TE.chain(fetchCurrentProfileIfNotFetched)
   );
 
-export const fetchCurrentProfile = (): TE.TaskEither<IErr, Profile> =>
+export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
+  IErr,
+  Profile
+> =>
   pipe(
     selectCurrentProfileId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
@@ -269,7 +265,7 @@ export const addHouseholdToCurrentProfile = (
         () => "BAD_REQUEST" as IErr
       )
     ),
-    TE.chain(fetchCurrentProfile)
+    TE.chain(fetchCurrentProfileIfNotFetched)
   );
 
 /**
@@ -302,7 +298,7 @@ export const removeHouseholdFromProfile = (
         () => "BAD_REQUEST" as IErr
       )
     ),
-    TE.chain(fetchCurrentProfile)
+    TE.chain(fetchCurrentProfileIfNotFetched)
   );
 
 export const subscribeToProfiles = store.createEffect(

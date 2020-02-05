@@ -3,13 +3,14 @@ import firebase from "firebase";
 import stately from "@josephluck/stately";
 import { Household } from "../../types";
 import { IErr } from "../../utils/err";
-import * as E from "fp-ts/lib/Either";
+import * as TE from "fp-ts/lib/TaskEither";
 import { normalizeArrayById } from "../../utils/normalize";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 import {
   addHouseholdToCurrentProfile,
   removeHouseholdFromProfile
 } from "../auth/store";
+import { pipe } from "fp-ts/lib/pipeable";
 
 const database = () => firebase.firestore().collection("households");
 
@@ -76,64 +77,84 @@ export const subscribeToHouseholds = store.createEffect(
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
  */
-export const createHousehold = store.createEffect(
-  async (
-    _,
-    profileId: string,
-    household: Omit<Household, "id"> = defaultHousehold
-  ): Promise<void> => {
-    const id = uuid();
-    await database()
-      .doc(id)
-      .set({
-        ...defaultHousehold,
-        ...household,
-        id
-      });
-    await createHouseholdProfileRelation(profileId, id);
-  }
-);
+export const createHousehold = (
+  profileId: string,
+  household: Omit<Household, "id"> = defaultHousehold
+): TE.TaskEither<IErr, Household> =>
+  pipe(
+    TE.tryCatch(
+      async () => {
+        const id = uuid();
+        await database()
+          .doc(id)
+          .set({
+            ...defaultHousehold,
+            ...household,
+            id
+          });
+        return id;
+      },
+      () => "BAD_REQUEST" as IErr
+    ),
+    TE.chain(createProfileHouseholdRelation(profileId)),
+    TE.chain(fetchHousehold)
+  );
+
+export const fetchHousehold = (id: string): TE.TaskEither<IErr, Household> =>
+  TE.tryCatch(
+    async () => {
+      const response = await database()
+        .doc(id)
+        .get();
+      if (!response.exists) {
+        throw new Error();
+      }
+      return (response.data() as unknown) as Household;
+    },
+    () => "NOT_FOUND" as IErr
+  );
+
+const createProfileHouseholdRelation = (profileId: string) => (
+  householdId: string
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    TE.right(householdId),
+    TE.chain(addProfileToHousehold(profileId)),
+    TE.chain(addHouseholdToCurrentProfile),
+    TE.map(() => householdId)
+  );
 
 /**
  * Creates the relationship between the current user and a household they have
  * created.
+ * Returns the householdId.
  */
-export const createHouseholdProfileRelation = store.createEffect(
-  async (_, profileId: string, householdId: string): Promise<void> => {
-    await Promise.all([
-      addProfileToHousehold(profileId, householdId),
-      addHouseholdToCurrentProfile(householdId)()
-    ]);
-  }
-);
-
-/**
- * Adds the given profileId to the household and returns the household.
- */
-export const addProfileToHousehold = store.createEffect(
-  async (_, profileId: string, householdId: string): Promise<void> =>
-    await database()
-      .doc(householdId)
-      .update({
-        profileIds: firebase.firestore.FieldValue.arrayUnion(profileId)
-      })
-);
+const addProfileToHousehold = (profileId: string) => (
+  householdId: string
+): TE.TaskEither<IErr, string> =>
+  TE.tryCatch(
+    async () => {
+      await database()
+        .doc(householdId)
+        .update({
+          profileIds: firebase.firestore.FieldValue.arrayUnion(profileId)
+        });
+      return householdId;
+    },
+    () => "BAD_REQUEST" as IErr
+  );
 
 /**
  * Removes a household.
  */
-export const removeHousehold = store.createEffect(
-  async (_, id: string): Promise<E.Either<IErr, void>> => {
-    try {
+export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
+  TE.tryCatch(
+    async () =>
       await database()
         .doc(id)
-        .delete();
-      return E.right(void null);
-    } catch (err) {
-      return E.left("NOT_FOUND");
-    }
-  }
-);
+        .delete(),
+    () => "BAD_REQUEST" as IErr
+  );
 
 export const defaultHousehold: Omit<Household, "id"> = {
   name: "Joseph's Home",
