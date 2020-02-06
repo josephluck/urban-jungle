@@ -7,7 +7,8 @@ import {
   selectHasAuthenticated,
   selectCurrentProfileEmail,
   selectCurrentProfileId,
-  selectCurrentProfileName
+  selectCurrentProfileName,
+  selectProfiles
 } from "../../auth/store/state";
 import { signOut } from "../../auth/store/effects";
 import { Button, View } from "react-native";
@@ -41,13 +42,14 @@ const Households = () => {
   const email = useAuthStore(selectCurrentProfileEmail);
   const profileId = useAuthStore(selectCurrentProfileId);
   const households = useHouseholdsStore(selectHouseholds);
+  const profiles = Object.values(useAuthStore(selectProfiles));
 
   const handleCreateHousehold = useCallback(() => {
     createHouseholdForCurrentProfile({ name: new Date().toString() })();
   }, [profileId]);
 
   const handleRemoveHousehold = useCallback((id: string) => {
-    removeHousehold(id);
+    removeHousehold(id)();
   }, []);
 
   return (
@@ -65,12 +67,13 @@ const Households = () => {
           O.getOrElse(() => "")
         )}
       </SubHeading>
+      <Heading style={{ marginTop: 50 }}>Households:</Heading>
       {households.map(household => (
         <View
           key={household.id}
           style={{ flexDirection: "row", marginVertical: 10 }}
         >
-          <Heading style={{ flex: 1 }}>{household.name}</Heading>
+          <SubHeading style={{ flex: 1 }}>{household.name}</SubHeading>
           <Button
             title="X"
             onPress={() => handleRemoveHousehold(household.id)}
@@ -78,6 +81,16 @@ const Households = () => {
         </View>
       ))}
       <Button title="Create household" onPress={handleCreateHousehold} />
+      <Heading style={{ marginTop: 50 }}>Profiles:</Heading>
+      {profiles.map(profile => (
+        <View
+          key={profile.id}
+          style={{ flexDirection: "row", marginVertical: 10 }}
+        >
+          <SubHeading style={{ flex: 1 }}>{profile.name}</SubHeading>
+        </View>
+      ))}
+      <Heading style={{ marginTop: 50 }}>Auth actions</Heading>
       <Button title="Sign out" onPress={signOut} />
     </ScreenLayout>
   );

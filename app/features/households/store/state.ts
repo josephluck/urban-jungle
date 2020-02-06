@@ -22,7 +22,7 @@ export const selectProfileIdsForHouseholds = (): string[] => {
   const profileIds = selectHouseholds()
     .map(household => household.profileIds)
     .reduce((acc, arr) => [...acc, ...arr], []);
-  return [...new Set(...profileIds)];
+  return [...new Set(profileIds)];
 };
 
 export const setHouseholds = store.createMutator(

@@ -1,3 +1,4 @@
+import React from "react";
 import { database } from "../store/database";
 import {
   selectCurrentProfileId,
@@ -8,25 +9,30 @@ import {
 import { useEffect } from "react";
 import { Profile } from "../../../types";
 import { selectProfileIdsForHouseholds } from "../../households/store/state";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as O from "fp-ts/lib/Option";
 
 /**
  * Subscribes to current profile and any profiles associated with fetched
  * households.
  */
 export const ProfilesSubscription = () => {
-  const currentProfileId = useAuthStore(selectCurrentProfileId);
+  const currentProfileId_ = useAuthStore(selectCurrentProfileId);
+  const currentProfileId = pipe(
+    currentProfileId_,
+    O.getOrElse(() => "")
+  );
   const householdProfileIds = useAuthStore(selectProfileIdsForHouseholds);
-  const profileIds = [currentProfileId, ...householdProfileIds];
+  const profileIds = [currentProfileId, ...householdProfileIds].filter(Boolean);
   const profileIdsHash = profileIds.join("");
 
   useEffect(() => {
-    console.log("Setting up profiles subscription for profiles: ", {
-      profileIds
-    });
-    const unsubscribe = database()
-      .where("id", "in", profileIds)
-      .onSnapshot(handleProfileSnapshot);
-    return unsubscribe;
+    if (profileIds.length) {
+      const unsubscribe = database()
+        .where("id", "in", profileIds)
+        .onSnapshot(handleProfileSnapshot);
+      return unsubscribe;
+    }
   }, [profileIdsHash]);
 
   return <></>;

@@ -12,7 +12,6 @@ import {
   store,
   setUser,
   setInitializing,
-  upsertProfiles,
   upsertProfile
 } from "./state";
 import { createHouseholdForProfile } from "../../households/store/effects";
@@ -92,22 +91,6 @@ export const fetchProfileIfNotFetched = (
     selectProfileById(O.fromNullable(id)),
     TE.fromOption(() => id),
     TE.orElse(fetchProfile)
-  );
-
-export const fetchProfiles = (ids: string[]): TE.TaskEither<IErr, Profile[]> =>
-  TE.tryCatch(
-    async () => {
-      const response = await database()
-        .where("id", "in", ids)
-        .get();
-      if (response.empty) {
-        throw new Error();
-      }
-      const profiles = response.docs.map(doc => doc.data()) as Profile[];
-      upsertProfiles(profiles);
-      return profiles;
-    },
-    () => "NOT_FOUND" as IErr
   );
 
 export const fetchProfile = (id: string): TE.TaskEither<IErr, Profile> =>

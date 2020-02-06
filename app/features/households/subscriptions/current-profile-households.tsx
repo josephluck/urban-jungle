@@ -1,24 +1,29 @@
 import { database } from "../store/database";
 import { selectCurrentProfileId, useAuthStore } from "../../auth/store/state";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import * as O from "fp-ts/lib/Option";
 import { Household } from "../../../types";
 import { removeHouseholdFromProfile } from "../../auth/store/effects";
 import { deleteHousehold, upsertHousehold } from "../store/state";
+import { pipe } from "fp-ts/lib/pipeable";
 
 /**
  * Subscribes to any households for the current profile ID.
  */
 export const CurrentProfileHouseholdsSubscription = () => {
-  const profileId = useAuthStore(selectCurrentProfileId);
+  const profileId_ = useAuthStore(selectCurrentProfileId);
+  const profileId = pipe(
+    profileId_,
+    O.getOrElse(() => "")
+  );
 
   useEffect(() => {
-    console.log("Setting up households subscription for profile: ", {
-      profileId
-    });
-    const unsubscribe = database()
-      .where("profileIds", "array-contains", profileId)
-      .onSnapshot(handleHouseholdSnapshot);
-    return unsubscribe;
+    if (profileId) {
+      const unsubscribe = database()
+        .where("profileIds", "array-contains", profileId)
+        .onSnapshot(handleHouseholdSnapshot);
+      return unsubscribe;
+    }
   }, [profileId]);
 
   return <></>;
