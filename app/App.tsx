@@ -6,9 +6,10 @@ import { theme } from "./theme";
 import styled from "styled-components/native";
 import { useFonts } from "./hooks/fonts";
 import * as reactotron from "./reactotron";
-import * as auth from "./features/auth/store";
+import { initialize } from "./features/auth/store/effects";
 import "./firebase";
 import { ActivityIndicator } from "react-native";
+import { useAuthStore, selectInitializing } from "./features/auth/store/state";
 
 reactotron.configure();
 
@@ -16,10 +17,10 @@ const AppContainer = createAppContainer(AppNavigation);
 
 export default () => {
   const fontsLoading = useFonts();
-  const authInitializing = auth.useAuthStore(auth.selectInitializing);
+  const authInitializing = useAuthStore(selectInitializing);
 
   useEffect(() => {
-    auth.initialize();
+    initialize();
   }, []);
 
   const loading = fontsLoading || authInitializing;
