@@ -86,11 +86,15 @@ export const upsertProfile = store.createMutator((s, profile: Profile) => {
 });
 
 export const upsertProfiles = store.createMutator((s, profiles: Profile[]) => {
-  profiles.forEach(profile => (s.profiles[profile.id] = profile));
+  profiles.forEach(profile => {
+    s.profiles[profile.id] = profile;
+  });
 });
 
 export const deleteProfiles = store.createMutator((s, profileIds: string[]) => {
-  profileIds.forEach(id => delete s.profiles[id]);
+  profileIds.forEach(id => {
+    delete s.profiles[id];
+  });
 });
 
 export const setInitializing = store.createMutator(

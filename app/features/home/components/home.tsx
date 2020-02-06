@@ -11,7 +11,7 @@ import {
   selectProfiles
 } from "../../auth/store/state";
 import { signOut } from "../../auth/store/effects";
-import { Button, View } from "react-native";
+import { Button, View, ScrollView } from "react-native";
 import { NavigationContext } from "react-navigation";
 import {
   createLoginRoute,
@@ -54,44 +54,46 @@ const Households = () => {
 
   return (
     <ScreenLayout>
-      <Heading>
-        Hello{" "}
-        {pipe(
-          name,
-          O.getOrElse(() => "")
-        )}
-      </Heading>
-      <SubHeading>
-        {pipe(
-          email,
-          O.getOrElse(() => "")
-        )}
-      </SubHeading>
-      <Heading style={{ marginTop: 50 }}>Households:</Heading>
-      {households.map(household => (
-        <View
-          key={household.id}
-          style={{ flexDirection: "row", marginVertical: 10 }}
-        >
-          <SubHeading style={{ flex: 1 }}>{household.name}</SubHeading>
-          <Button
-            title="X"
-            onPress={() => handleRemoveHousehold(household.id)}
-          />
-        </View>
-      ))}
-      <Button title="Create household" onPress={handleCreateHousehold} />
-      <Heading style={{ marginTop: 50 }}>Profiles:</Heading>
-      {profiles.map(profile => (
-        <View
-          key={profile.id}
-          style={{ flexDirection: "row", marginVertical: 10 }}
-        >
-          <SubHeading style={{ flex: 1 }}>{profile.name}</SubHeading>
-        </View>
-      ))}
-      <Heading style={{ marginTop: 50 }}>Auth actions</Heading>
-      <Button title="Sign out" onPress={signOut} />
+      <ScrollView>
+        <Heading>
+          Hello{" "}
+          {pipe(
+            name,
+            O.getOrElse(() => "")
+          )}
+        </Heading>
+        <SubHeading>
+          {pipe(
+            email,
+            O.getOrElse(() => "")
+          )}
+        </SubHeading>
+        <Heading style={{ marginTop: 50 }}>Households:</Heading>
+        {households.map(household => (
+          <View
+            key={household.id}
+            style={{ flexDirection: "row", marginVertical: 10 }}
+          >
+            <SubHeading style={{ flex: 1 }}>{household.name}</SubHeading>
+            <Button
+              title="X"
+              onPress={() => handleRemoveHousehold(household.id)}
+            />
+          </View>
+        ))}
+        <Button title="Create household" onPress={handleCreateHousehold} />
+        <Heading style={{ marginTop: 50 }}>Profiles:</Heading>
+        {profiles.map(profile => (
+          <View
+            key={profile.id}
+            style={{ flexDirection: "row", marginVertical: 10 }}
+          >
+            <SubHeading style={{ flex: 1 }}>{profile.name}</SubHeading>
+          </View>
+        ))}
+        <Heading style={{ marginTop: 50 }}>Auth actions</Heading>
+        <Button title="Sign out" onPress={signOut} />
+      </ScrollView>
     </ScreenLayout>
   );
 };

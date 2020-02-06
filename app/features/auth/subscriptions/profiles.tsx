@@ -8,13 +8,22 @@ import {
 } from "../../auth/store/state";
 import { useEffect } from "react";
 import { Profile } from "../../../types";
-import { selectProfileIdsForHouseholds } from "../../households/store/state";
+import {
+  selectProfileIdsForHouseholds,
+  useHouseholdsStore
+} from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 
 /**
  * Subscribes to current profile and any profiles associated with fetched
  * households.
+ *
+ * NB: this subscription does not remove profiles that have been removed
+ * from a household. This is because this list of profileIds updates which
+ * creates a brand new query, thus a "removed" event for the previous
+ * query does not run. We could solve this by removing all orphaned
+ * from the state once the subscription has finished running.
  */
 export const ProfilesSubscription = () => {
   const currentProfileId_ = useAuthStore(selectCurrentProfileId);
@@ -22,8 +31,10 @@ export const ProfilesSubscription = () => {
     currentProfileId_,
     O.getOrElse(() => "")
   );
-  const householdProfileIds = useAuthStore(selectProfileIdsForHouseholds);
-  const profileIds = [currentProfileId, ...householdProfileIds].filter(Boolean);
+  const householdProfileIds = useHouseholdsStore(selectProfileIdsForHouseholds);
+  const profileIds = [
+    ...new Set([currentProfileId, ...householdProfileIds])
+  ].filter(Boolean);
   const profileIdsHash = profileIds.join("");
 
   useEffect(() => {
