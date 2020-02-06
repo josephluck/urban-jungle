@@ -10,6 +10,7 @@ import { initialize } from "./features/auth/store/effects";
 import "./firebase";
 import { ActivityIndicator } from "react-native";
 import { useAuthStore, selectInitializing } from "./features/auth/store/state";
+import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
 
 reactotron.configure();
 
@@ -36,6 +37,7 @@ export default () => {
           <AppContainer />
         )}
       </AppWrapper>
+      <CurrentProfileHouseholdsSubscription />
     </ThemeProvider>
   );
 };
