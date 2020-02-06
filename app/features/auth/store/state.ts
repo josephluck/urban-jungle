@@ -2,11 +2,9 @@ import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import { Profile } from "../../../types";
-import { subscribeToHouseholds } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import { every } from "../../../fp/option";
 import * as O from "fp-ts/lib/Option";
-import { subscribeToProfiles } from "./effects";
 
 interface AuthState {
   initializing: boolean;
@@ -106,39 +104,6 @@ export const setRemoveProfilesSubscription = store.createMutator(
     s.removeProfilesSubscription = removeProfilesSubscription;
   }
 );
-
-/**
- * Subscribe to households for the current user
- */
-store.subscribe((prev, next) => {
-  const prevId = pipe(
-    prev.authUser,
-    O.map(u => u.uid),
-    O.getOrElse(() => "")
-  );
-  const nextId = pipe(
-    next.authUser,
-    O.map(u => u.uid),
-    O.getOrElse(() => "")
-  );
-  if (prevId !== nextId && !!nextId) {
-    subscribeToHouseholds(nextId);
-  }
-});
-
-/**
- * Subscribe to profile updates for all profiles currently fetched
- */
-store.subscribe((prev, next) => {
-  const previousProfileIds = Object.keys(prev.profiles);
-  const nextProfileIds = Object.keys(next.profiles);
-  const difference = previousProfileIds
-    .filter(x => !nextProfileIds.includes(x))
-    .concat(nextProfileIds.filter(x => !previousProfileIds.includes(x)));
-  if (difference.length) {
-    subscribeToProfiles();
-  }
-});
 
 export const useAuthStore = useStately(store);
 

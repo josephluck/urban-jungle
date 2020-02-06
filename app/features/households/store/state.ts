@@ -15,6 +15,16 @@ export const selectHouseholds = store.createSelector(s =>
   Object.values(s.households)
 );
 
+/**
+ * Returns a list of unique profileIds for all households in the state.
+ */
+export const selectProfileIdsForHouseholds = (): string[] => {
+  const profileIds = selectHouseholds()
+    .map(household => household.profileIds)
+    .reduce((acc, arr) => [...acc, ...arr], []);
+  return [...new Set(...profileIds)];
+};
+
 export const setHouseholds = store.createMutator(
   (s, households: Household[]) => {
     s.households = { ...s.households, ...normalizeArrayById(households) };

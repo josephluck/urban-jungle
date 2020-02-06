@@ -2,11 +2,8 @@ import { database } from "../store/database";
 import { selectCurrentProfileId, useAuthStore } from "../../auth/store/state";
 import { useEffect } from "react";
 import { Household } from "../../../types";
-import {
-  fetchProfiles,
-  removeHouseholdFromProfile
-} from "../../auth/store/effects";
-import { deleteHousehold } from "../store/state";
+import { removeHouseholdFromProfile } from "../../auth/store/effects";
+import { deleteHousehold, upsertHousehold } from "../store/state";
 
 /**
  * Subscribes to any households for the current profile ID.
@@ -21,9 +18,7 @@ export const CurrentProfileHouseholdsSubscription = () => {
     const unsubscribe = database()
       .where("profileIds", "array-contains", profileId)
       .onSnapshot(handleHouseholdSnapshot);
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [profileId]);
 
   return <></>;
@@ -38,15 +33,14 @@ const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
     .docChanges()
     .filter(change => change.type === "removed")
     .map(change => (change.doc.data() as unknown) as Household);
-  const profileIds = addedOrModified
-    .map(household => household.profileIds)
-    .reduce((prev, arr) => [...prev, ...arr], []);
-  const profileFetches = fetchProfiles(profileIds);
-  const householdRemovals = removed.map(household => {
-    deleteHousehold(household.id);
-    return removeHouseholdFromProfile(household.id)();
-  });
-  await Promise.all([profileFetches, householdRemovals]);
+  addedOrModified.map(upsertHousehold);
+  await Promise.all(
+    removed.map(household => {
+      deleteHousehold(household.id);
+      // NB: this works because we do not fetch 3rd degree users' households.
+      return removeHouseholdFromProfile(household.id)();
+    })
+  );
 };
 
 type Snapshot = firebase.firestore.QuerySnapshot<

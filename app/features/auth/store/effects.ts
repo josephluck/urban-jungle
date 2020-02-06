@@ -13,9 +13,7 @@ import {
   setUser,
   setInitializing,
   upsertProfiles,
-  upsertProfile,
-  deleteProfiles,
-  setRemoveProfilesSubscription
+  upsertProfile
 } from "./state";
 import { createHouseholdForProfile } from "../../households/store/effects";
 import { database } from "./database";
@@ -127,29 +125,6 @@ export const fetchProfile = (id: string): TE.TaskEither<IErr, Profile> =>
     },
     () => "NOT_FOUND" as IErr
   );
-
-/**
- * Subscribes to profiles and updates the local store state when they change.
- */
-export const subscribeToProfiles = store.createEffect(async state => {
-  state.removeProfilesSubscription();
-  const profileIds = Object.keys(state.profiles);
-  const subscription = database()
-    .where("id", "in", profileIds)
-    .onSnapshot(snapshot => {
-      const addedOrModified: Profile[] = snapshot
-        .docChanges()
-        .filter(change => ["added", "modified"].includes(change.type))
-        .map(change => change.doc.data() as Profile);
-      const removed: Profile[] = snapshot
-        .docChanges()
-        .filter(change => change.type === "removed")
-        .map(change => change.doc.data() as Profile);
-      upsertProfiles(addedOrModified);
-      deleteProfiles(removed.map(profile => profile.id));
-    });
-  setRemoveProfilesSubscription(subscription);
-});
 
 export const createAndSeedProfile = (): TE.TaskEither<IErr, Profile> =>
   pipe(
