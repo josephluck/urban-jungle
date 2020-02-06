@@ -1,53 +1,22 @@
-import React from "react";
-import { createBottomTabNavigator } from "react-navigation-tabs";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faHome,
-  faCircle,
-  IconDefinition
-} from "@fortawesome/pro-regular-svg-icons";
-import { HOME_STACK, HomeNavigator } from "../features/home/navigation/stack";
-import { theme } from "../theme";
 import { createSwitchNavigator } from "react-navigation";
 import { AUTH_STACK, AuthNavigator } from "../features/auth/navigation/stack";
+import { Home } from "../features/home/components/home";
+import { createStackNavigator } from "react-navigation-stack";
 
-type TabNames = typeof HOME_STACK;
+const HOME_STACK = "HOME_STACK";
 
-const PrivateStack = createBottomTabNavigator(
+const PrivateStack = createStackNavigator(
   {
     [HOME_STACK]: {
-      screen: HomeNavigator,
-      navigationOptions: {
-        tabBarLabel: "Home"
-      }
+      screen: Home
     }
   },
   {
     initialRouteName: HOME_STACK,
-    resetOnBlur: true,
-    tabBarOptions: {
-      activeTintColor: theme.colors.nearWhite,
-      inactiveTintColor: theme.colors.lightOffGray,
-      style: {
-        borderTopWidth: 0,
-        borderTopColor: "transparent",
-        borderTopRightRadius: theme.borderRadius.large,
-        borderTopLeftRadius: theme.borderRadius.large,
-        backgroundColor: theme.colors.deepGray
-      }
-    },
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ tintColor }) => {
-        const { routeName } = navigation.state;
-        return (
-          <FontAwesomeIcon
-            icon={getTabIcon(routeName as TabNames)}
-            style={{ color: tintColor }}
-            size={theme.size.iconBottomTabBar}
-          />
-        );
-      }
-    })
+    headerMode: "none",
+    navigationOptions: {
+      headerShown: false
+    }
   }
 );
 
@@ -66,12 +35,3 @@ export const AppNavigation = createSwitchNavigator(
     initialRouteName: PRIVATE_STACK
   }
 );
-
-const getTabIcon = (route: TabNames): IconDefinition => {
-  switch (route) {
-    case HOME_STACK:
-      return faHome;
-    default:
-      return faCircle;
-  }
-};
