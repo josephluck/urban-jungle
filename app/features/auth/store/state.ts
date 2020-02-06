@@ -53,6 +53,13 @@ export const selectCurrentProfileEmail = (): O.Option<string> =>
     O.map(p => p.email)
   );
 
+export const selectCurrentProfileAvatar = (): O.Option<string> =>
+  pipe(
+    selectCurrentProfile(),
+    O.map(p => O.fromNullable(p.avatar)),
+    O.flatten
+  );
+
 export const selectProfileById = (id: O.Option<string>) => (
   profiles: Record<string, Profile>
 ): O.Option<Profile> =>

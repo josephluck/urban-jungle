@@ -54,7 +54,8 @@ const size = {
   filterActiveCheck: 18,
   modalCloseCross: 18,
   closeBarHeight: 4,
-  closeBarWidth: 26
+  closeBarWidth: 26,
+  welcomeAvatarImage: 80
 };
 
 const spacing = {
