@@ -2,10 +2,13 @@ import { database } from "../store/database";
 import { selectCurrentProfileId, useAuthStore } from "../../auth/store/state";
 import React, { useEffect } from "react";
 import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
 import { HouseholdModel } from "../../../types";
 import { removeHouseholdFromProfile } from "../../auth/store/effects";
 import { deleteHousehold, upsertHousehold } from "../store/state";
 import { pipe } from "fp-ts/lib/pipeable";
+import { storeSelectedHouseholdIdToStorageIfNotPresent } from "../store/effects";
+import { IErr } from "../../../utils/err";
 
 /**
  * Subscribes to any households for the current profile ID.
@@ -39,6 +42,18 @@ const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
     .filter(change => change.type === "removed")
     .map(change => (change.doc.data() as unknown) as HouseholdModel);
   addedOrModified.map(upsertHousehold);
+
+  // NB: if there isn't a selected householdId in AsyncStorage yet and there are
+  // households associated with the user, store the first household's ID as the
+  // user's selected household.
+  const storeSelectedHouseholdIdIfNeeded = pipe(
+    O.fromNullable(addedOrModified[0]),
+    TE.fromOption(() => "NOT_FOUND" as IErr),
+    TE.map(household => household.id),
+    TE.chain(storeSelectedHouseholdIdToStorageIfNotPresent)
+  );
+  await storeSelectedHouseholdIdIfNeeded();
+
   await Promise.all(
     removed.map(household => {
       deleteHousehold(household.id);

@@ -7,18 +7,15 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { HouseholdModel } from "../../../types";
 import { database } from "./database";
 import { addHouseholdToCurrentProfile } from "../../auth/store/effects";
-
-export const defaultHousehold: Omit<HouseholdModel, "id" | "dateCreated"> = {
-  name: "My Home",
-  plants: [],
-  profileIds: []
-};
+import { AsyncStorage } from "react-native";
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
  */
 export const createHouseholdForProfile = (
-  household: Partial<Omit<HouseholdModel, "id">> = defaultHousehold
+  household: Partial<
+    Omit<HouseholdModel, "id" | "dateCreated">
+  > = defaultHousehold
 ) => (profileId: string): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
     TE.tryCatch(
@@ -41,12 +38,15 @@ export const createHouseholdForProfile = (
   );
 
 export const createHouseholdForCurrentProfile = (
-  household: Partial<Omit<HouseholdModel, "id">> = defaultHousehold
+  household: Partial<
+    Omit<HouseholdModel, "id" | "dateCreated">
+  > = defaultHousehold
 ): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
     selectCurrentProfileId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(createHouseholdForProfile(household))
+    TE.chain(createHouseholdForProfile(household)),
+    TE.chainFirst(household => storeSelectedHouseholdIdToStorage(household.id))
   );
 
 export const fetchHousehold = (
@@ -106,3 +106,62 @@ export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
         .delete(),
     () => "BAD_REQUEST" as IErr
   );
+
+/**
+ * Stores and returns the provided household id to AsyncStorage, only if there
+ * isn't one already stored.
+ * Returns the value stored in AsyncStorage once completed.
+ */
+export const storeSelectedHouseholdIdToStorageIfNotPresent = (
+  id: string
+): TE.TaskEither<IErr, string> => {
+  return pipe(
+    retrieveSelectedHouseholdIdFromStorage(),
+    TE.orElse(() => storeSelectedHouseholdIdToStorage(id))
+  );
+};
+
+/**
+ * Stores the given household as a preference in async storage, used to select
+ * a default household from the list should the user belong to more than one.
+ */
+export const storeSelectedHouseholdIdToStorage = (
+  id: string
+): TE.TaskEither<IErr, string> =>
+  TE.tryCatch(
+    async () => {
+      await AsyncStorage.setItem(SELECTED_HOUSEHOLD_ID_KEY, id);
+      return id;
+    },
+    () => "BAD_REQUEST" as IErr
+  );
+
+/**
+ * Retrieves the selected household preference from async storage
+ */
+export const retrieveSelectedHouseholdIdFromStorage = (): TE.TaskEither<
+  IErr,
+  string
+> =>
+  TE.tryCatch(
+    async () => {
+      const id = await AsyncStorage.getItem(SELECTED_HOUSEHOLD_ID_KEY);
+      if (!id) {
+        throw new Error();
+      }
+      return id;
+    },
+    () => "BAD_REQUEST" as IErr
+  );
+
+/**
+ * Used as a key inside AsyncStorage to persist the user's selected household
+ * between logins.
+ */
+export const SELECTED_HOUSEHOLD_ID_KEY = "SELECTED_HOUSEHOLD_ID";
+
+export const defaultHousehold: Omit<HouseholdModel, "id" | "dateCreated"> = {
+  name: "My Home",
+  plants: [],
+  profileIds: []
+};
