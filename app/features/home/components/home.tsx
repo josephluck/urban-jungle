@@ -105,6 +105,7 @@ const SelectedHousehold = () => {
       household => (
         <View>
           <Heading style={{ marginTop: 50 }}>{household.name}</Heading>
+          {/* TODO: this fails */}
           <PlantsList householdId={household.id} />
         </View>
       )
