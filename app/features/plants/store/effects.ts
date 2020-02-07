@@ -1,34 +1,32 @@
+import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
-import { Plant, Household } from "../../../types";
+import { PlantModel } from "../../../types";
 import { IErr } from "../../../utils/err";
-import { database } from "../../households/store/database";
 import uuid from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
+import { database } from "./database";
 
 export const createPlantForHousehold = (
-  plant: Partial<Omit<Plant, "id">> = defaultPlant
-) => (householdId: string): TE.TaskEither<IErr, Plant> =>
+  plant: Partial<Omit<PlantModel, "id">> = defaultPlant
+) => (householdId: string): TE.TaskEither<IErr, PlantModel> =>
   pipe(
     selectHouseholdById(householdId),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.chain(household =>
+    TE.chain(() =>
       TE.tryCatch(
         async () => {
           const id = uuid();
-          const plantToSave: Plant = {
+          const plantToSave: PlantModel = {
             ...defaultPlant,
             ...plant,
             householdId,
-            id
+            id,
+            dateCreated: firebase.firestore.Timestamp.fromDate(new Date())
           };
-          const householdToSave: Household = {
-            ...household,
-            plants: { ...household.plants, [id]: plantToSave }
-          };
-          await database()
-            .doc(householdId)
-            .set(householdToSave);
+          await database(householdId)
+            .doc(id)
+            .set(plantToSave);
           return plantToSave;
         },
         () => "BAD_REQUEST" as IErr
@@ -36,8 +34,9 @@ export const createPlantForHousehold = (
     )
   );
 
-const defaultPlant: Omit<Plant, "id" | "householdId"> = {
-  name: "A cactus, I think...",
+const defaultPlant: Omit<PlantModel, "id" | "dateCreated" | "householdId"> = {
+  name: "Cactus",
   location: "default",
-  careRecurrenceDays: 7
+  careRecurrenceDays: 7,
+  cares: []
 };

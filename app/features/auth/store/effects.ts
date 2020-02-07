@@ -2,7 +2,7 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
 import { IErr } from "../../../utils/err";
-import { Profile } from "../../../types";
+import { ProfileModel } from "../../../types";
 import { pipe } from "fp-ts/lib/pipeable";
 import {
   selectAuthUser,
@@ -51,16 +51,17 @@ export const signOut = store.createEffect(async () => {
   await firebase.auth().signOut();
 });
 
-export const fetchOrCreateProfile = (): TE.TaskEither<IErr, Profile> =>
+export const fetchOrCreateProfile = (): TE.TaskEither<IErr, ProfileModel> =>
   pipe(fetchCurrentProfileIfNotFetched(), TE.orElse(createAndSeedProfile));
 
 export const createProfileForUser = (
   user: firebase.User
-): TE.TaskEither<IErr, Profile> =>
+): TE.TaskEither<IErr, ProfileModel> =>
   TE.tryCatch(
     async () => {
-      const profile: Profile = {
+      const profile: ProfileModel = {
         id: user.uid,
+        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         name: "Joseph Luck",
         householdIds: [],
         email: user.email!
@@ -75,7 +76,7 @@ export const createProfileForUser = (
 
 export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
   IErr,
-  Profile
+  ProfileModel
 > =>
   pipe(
     selectCurrentProfileId(),
@@ -85,7 +86,7 @@ export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
 
 export const fetchProfileIfNotFetched = (
   id: string
-): TE.TaskEither<IErr, Profile> =>
+): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectProfiles(),
     selectProfileById(O.fromNullable(id)),
@@ -93,7 +94,7 @@ export const fetchProfileIfNotFetched = (
     TE.orElse(fetchProfile)
   );
 
-export const fetchProfile = (id: string): TE.TaskEither<IErr, Profile> =>
+export const fetchProfile = (id: string): TE.TaskEither<IErr, ProfileModel> =>
   TE.tryCatch(
     async () => {
       const response = await database()
@@ -102,14 +103,14 @@ export const fetchProfile = (id: string): TE.TaskEither<IErr, Profile> =>
       if (!response.exists) {
         throw new Error();
       }
-      const profile = response.data() as Profile;
+      const profile = response.data() as ProfileModel;
       upsertProfile(profile);
       return profile;
     },
     () => "NOT_FOUND" as IErr
   );
 
-export const createAndSeedProfile = (): TE.TaskEither<IErr, Profile> =>
+export const createAndSeedProfile = (): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectAuthUser(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
@@ -121,7 +122,7 @@ export const createAndSeedProfile = (): TE.TaskEither<IErr, Profile> =>
 
 export const addHouseholdToCurrentProfile = (
   householdId: string
-): TE.TaskEither<IErr, Profile> =>
+): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectCurrentProfileId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
@@ -154,7 +155,7 @@ export const addHouseholdToCurrentProfile = (
  */
 export const removeHouseholdFromProfile = (
   householdId: string
-): TE.TaskEither<IErr, Profile> =>
+): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectCurrentProfileId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),

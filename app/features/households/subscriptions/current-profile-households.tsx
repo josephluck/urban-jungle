@@ -2,7 +2,7 @@ import { database } from "../store/database";
 import { selectCurrentProfileId, useAuthStore } from "../../auth/store/state";
 import React, { useEffect } from "react";
 import * as O from "fp-ts/lib/Option";
-import { Household } from "../../../types";
+import { HouseholdModel } from "../../../types";
 import { removeHouseholdFromProfile } from "../../auth/store/effects";
 import { deleteHousehold, upsertHousehold } from "../store/state";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -30,14 +30,14 @@ export const CurrentProfileHouseholdsSubscription = () => {
 };
 
 const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
-  const addedOrModified: Household[] = snapshot
+  const addedOrModified: HouseholdModel[] = snapshot
     .docChanges()
     .filter(change => ["added", "modified"].includes(change.type))
-    .map(change => (change.doc.data() as unknown) as Household);
-  const removed: Household[] = snapshot
+    .map(change => (change.doc.data() as unknown) as HouseholdModel);
+  const removed: HouseholdModel[] = snapshot
     .docChanges()
     .filter(change => change.type === "removed")
-    .map(change => (change.doc.data() as unknown) as Household);
+    .map(change => (change.doc.data() as unknown) as HouseholdModel);
   addedOrModified.map(upsertHousehold);
   await Promise.all(
     removed.map(household => {

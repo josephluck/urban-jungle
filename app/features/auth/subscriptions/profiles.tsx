@@ -7,7 +7,7 @@ import {
   deleteProfiles
 } from "../../auth/store/state";
 import { useEffect } from "react";
-import { Profile } from "../../../types";
+import { ProfileModel } from "../../../types";
 import {
   selectProfileIdsForHouseholds,
   useHouseholdsStore
@@ -50,14 +50,14 @@ export const ProfilesSubscription = () => {
 };
 
 const handleProfileSnapshot = async (snapshot: Snapshot) => {
-  const addedOrModified: Profile[] = snapshot
+  const addedOrModified: ProfileModel[] = snapshot
     .docChanges()
     .filter(change => ["added", "modified"].includes(change.type))
-    .map(change => change.doc.data() as Profile);
-  const removed: Profile[] = snapshot
+    .map(change => change.doc.data() as ProfileModel);
+  const removed: ProfileModel[] = snapshot
     .docChanges()
     .filter(change => change.type === "removed")
-    .map(change => change.doc.data() as Profile);
+    .map(change => change.doc.data() as ProfileModel);
   upsertProfiles(addedOrModified);
   deleteProfiles(removed.map(profile => profile.id));
 };

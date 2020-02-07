@@ -1,8 +1,18 @@
-export interface Profile {
+import firebase from "firebase";
+
+export interface BaseModel {
   /**
    * Primary key.
    */
   id: string;
+  /**
+   * When the entity was created.
+   * NB: uses firebase.firestore.Timestamp.fromDate(new Date())
+   */
+  dateCreated: firebase.firestore.Timestamp;
+}
+
+export interface ProfileModel extends BaseModel {
   /**
    * profile's name.
    */
@@ -21,11 +31,7 @@ export interface Profile {
   avatar?: string;
 }
 
-export interface Household {
-  /**
-   * Primary key.
-   */
-  id: string;
+export interface HouseholdModel extends BaseModel {
   /**
    * The Household's name.
    */
@@ -37,15 +43,12 @@ export interface Household {
   /**
    * A Firestore sub-collection of Plants belonging to the Household.
    * https://firebase.google.com/docs/firestore/manage-data/structure-data#subcollections
+   * TODO: check that this is returned on a household...
    */
-  plants: Record<string, Plant>;
+  plants: PlantModel[];
 }
 
-export interface Plant {
-  /**
-   * Primary key.
-   */
-  id: string;
+export interface PlantModel extends BaseModel {
   /**
    * Which Household the Plant belongs to.
    */
@@ -66,10 +69,30 @@ export interface Plant {
    * An optional name for the plant. Takes precedence over name when provided.
    */
   nickname?: string;
+  /**
+   * A Firestore sub-collection of Care entries done for the Plant.
+   * https://firebase.google.com/docs/firestore/manage-data/structure-data#subcollections
+   * TODO: check that this is returned on a plant...
+   */
+  cares: CareModel[];
 }
 
-export interface Firestore {
-  profiles: Record<string, Profile>;
-  households: Record<string, Household>;
-  plants: Record<string, Plant>;
+export interface CareModel extends BaseModel {
+  /**
+   * The profile ID of the user that did this care.
+   */
+  profileId: string;
+  /**
+   * The Plant that this care was done for.
+   */
+  plantId: string;
+  /**
+   * The Household that this care was done for.
+   */
+  householdId: string;
+}
+
+export interface DatabaseModel {
+  profiles: Record<string, ProfileModel>;
+  households: Record<string, HouseholdModel>;
 }

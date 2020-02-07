@@ -1,7 +1,7 @@
 import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
-import { Profile } from "../../../types";
+import { ProfileModel } from "../../../types";
 import { pipe } from "fp-ts/lib/pipeable";
 import { every } from "../../../fp/option";
 import * as O from "fp-ts/lib/Option";
@@ -9,7 +9,7 @@ import * as O from "fp-ts/lib/Option";
 interface AuthState {
   initializing: boolean;
   authUser: O.Option<firebase.User>;
-  profiles: Record<string, Profile>;
+  profiles: Record<string, ProfileModel>;
   removeProfilesSubscription: () => void;
 }
 
@@ -33,11 +33,11 @@ export const selectAuthUser = store.createSelector(
 );
 
 export const selectProfiles = store.createSelector(
-  (s): Record<string, Profile> => s.profiles
+  (s): Record<string, ProfileModel> => s.profiles
 );
 
 export const selectCurrentProfile = store.createSelector(
-  (s): O.Option<Profile> =>
+  (s): O.Option<ProfileModel> =>
     pipe(s.profiles, selectProfileById(selectCurrentProfileId()))
 );
 
@@ -61,8 +61,8 @@ export const selectCurrentProfileAvatar = (): O.Option<string> =>
   );
 
 export const selectProfileById = (id: O.Option<string>) => (
-  profiles: Record<string, Profile>
-): O.Option<Profile> =>
+  profiles: Record<string, ProfileModel>
+): O.Option<ProfileModel> =>
   pipe(
     id,
     O.map(i => O.fromNullable(profiles[i])),
@@ -88,15 +88,17 @@ export const setUser = store.createMutator(
   }
 );
 
-export const upsertProfile = store.createMutator((s, profile: Profile) => {
+export const upsertProfile = store.createMutator((s, profile: ProfileModel) => {
   s.profiles[profile.id] = profile;
 });
 
-export const upsertProfiles = store.createMutator((s, profiles: Profile[]) => {
-  profiles.forEach(profile => {
-    s.profiles[profile.id] = profile;
-  });
-});
+export const upsertProfiles = store.createMutator(
+  (s, profiles: ProfileModel[]) => {
+    profiles.forEach(profile => {
+      s.profiles[profile.id] = profile;
+    });
+  }
+);
 
 export const deleteProfiles = store.createMutator((s, profileIds: string[]) => {
   profileIds.forEach(id => {

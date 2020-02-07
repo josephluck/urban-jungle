@@ -4,13 +4,13 @@ import { selectCurrentProfileId } from "../../auth/store/state";
 import { IErr } from "../../../utils/err";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
-import { Household } from "../../../types";
+import { HouseholdModel } from "../../../types";
 import { database } from "./database";
 import { addHouseholdToCurrentProfile } from "../../auth/store/effects";
 
-export const defaultHousehold: Omit<Household, "id"> = {
-  name: "Joseph's Home",
-  plants: {},
+export const defaultHousehold: Omit<HouseholdModel, "id" | "dateCreated"> = {
+  name: "My Home",
+  plants: [],
   profileIds: []
 };
 
@@ -18,8 +18,8 @@ export const defaultHousehold: Omit<Household, "id"> = {
  * Creates a new household. Subsequently adds the current user relation to it.
  */
 export const createHouseholdForProfile = (
-  household: Partial<Omit<Household, "id">> = defaultHousehold
-) => (profileId: string): TE.TaskEither<IErr, Household> =>
+  household: Partial<Omit<HouseholdModel, "id">> = defaultHousehold
+) => (profileId: string): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
     TE.tryCatch(
       async () => {
@@ -29,7 +29,8 @@ export const createHouseholdForProfile = (
           .set({
             ...defaultHousehold,
             ...household,
-            id
+            id,
+            dateCreated: firebase.firestore.Timestamp.fromDate(new Date())
           });
         return id;
       },
@@ -40,15 +41,17 @@ export const createHouseholdForProfile = (
   );
 
 export const createHouseholdForCurrentProfile = (
-  household: Partial<Omit<Household, "id">> = defaultHousehold
-): TE.TaskEither<IErr, Household> =>
+  household: Partial<Omit<HouseholdModel, "id">> = defaultHousehold
+): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
     selectCurrentProfileId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain(createHouseholdForProfile(household))
   );
 
-export const fetchHousehold = (id: string): TE.TaskEither<IErr, Household> =>
+export const fetchHousehold = (
+  id: string
+): TE.TaskEither<IErr, HouseholdModel> =>
   TE.tryCatch(
     async () => {
       const response = await database()
@@ -57,7 +60,7 @@ export const fetchHousehold = (id: string): TE.TaskEither<IErr, Household> =>
       if (!response.exists) {
         throw new Error();
       }
-      return (response.data() as unknown) as Household;
+      return (response.data() as unknown) as HouseholdModel;
     },
     () => "NOT_FOUND" as IErr
   );

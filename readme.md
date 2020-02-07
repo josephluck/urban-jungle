@@ -65,13 +65,13 @@ A Household stores a list of User IDs that belong to the Household, as well as P
 
 If the User only belongs to a single Household, then the User doesn't see a list of the Households they belong to and see the individual Household instead.
 
-Households can be deleted (with double authentication) which removes all of the Household's associated Plants.
+Households can be deleted (with double confirmation) whose action depends on whether the user is the only member of the Household. If the user is the only member of the Household, then it is permanently deleted. Otherwise, the user is simply removed from the Household as to keep the household associated to other users' accounts.
 
 ## Inviting a User to a Household
 
-A User can be invited to join a Household. This can happen one of two ways depending on whether a User has signed up or not.
+A User can be invited to join a Household via tapping a shared deep-link. If a user opens the app for the first time up with an invitation deep link, they get a personalized message based on the person who invited them. If the user already has an account, they are taken to an invitation screen where the user can choose whether to accept the invite or ignore it.
 
-If the User has already signed up, when they are invited to join a Household they receive both a push notification and an e-mail with an Invitation to join the Household. The User can choose to Accept or Ignore the Invitation. If the User Accepts the invitation, then they can see the Household in their list of Households.
+The User can choose to Accept or Ignore the Invitation. If the User Accepts the invitation, then they can see the Household in their list of Households.
 
 ## Plants
 

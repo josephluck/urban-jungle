@@ -1,11 +1,11 @@
 import stately from "@josephluck/stately";
-import { Household, Plant } from "../../../types";
+import { HouseholdModel, PlantModel } from "../../../types";
 import { normalizeArrayById } from "../../../utils/normalize";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 import * as O from "fp-ts/lib/Option";
 
 interface HouseholdsState {
-  households: Record<string, Household>;
+  households: Record<string, HouseholdModel>;
 }
 
 const store = stately<HouseholdsState>({
@@ -16,8 +16,8 @@ export const selectHouseholds = store.createSelector(s =>
   Object.values(s.households)
 );
 
-interface HouseholdAndPlants extends Omit<Household, "plants"> {
-  plants: Plant[];
+interface HouseholdAndPlants extends Omit<HouseholdModel, "plants"> {
+  plants: PlantModel[];
 }
 
 export const selectHouseholdsAndPlants = (): HouseholdAndPlants[] =>
@@ -26,7 +26,7 @@ export const selectHouseholdsAndPlants = (): HouseholdAndPlants[] =>
     plants: Object.values(household.plants)
   }));
 
-export const selectHouseholdById = (id: string): O.Option<Household> =>
+export const selectHouseholdById = (id: string): O.Option<HouseholdModel> =>
   O.fromNullable(selectHouseholds().find(household => household.id === id));
 
 /**
@@ -40,13 +40,13 @@ export const selectProfileIdsForHouseholds = (): string[] => {
 };
 
 export const setHouseholds = store.createMutator(
-  (s, households: Household[]) => {
+  (s, households: HouseholdModel[]) => {
     s.households = { ...s.households, ...normalizeArrayById(households) };
   }
 );
 
 export const upsertHousehold = store.createMutator(
-  (s, household: Household) => {
+  (s, household: HouseholdModel) => {
     s.households[household.id] = household;
   }
 );
