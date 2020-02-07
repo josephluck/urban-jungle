@@ -8,25 +8,32 @@ import {
   selectProfiles
 } from "../../auth/store/state";
 import { signOut } from "../../auth/store/effects";
-import { Button, View, ScrollView } from "react-native";
-import { NavigationContext } from "react-navigation";
+import { Button, View, ScrollView, Text, TouchableOpacity } from "react-native";
+import { NavigationContext, FlatList } from "react-navigation";
 import {
   createLoginRoute,
   createSignUpRoute
 } from "../../auth/navigation/routes";
 import {
   useHouseholdsStore,
-  selectSelectedHousehold
+  selectSelectedHousehold,
+  selectHouseholds
 } from "../../households/store/state";
-import { createHouseholdForCurrentProfile } from "../../households/store/effects";
+import {
+  createHouseholdForCurrentProfile,
+  storeSelectedHouseholdIdToStorage
+} from "../../households/store/effects";
 import { WelcomeMessage } from "../../profile/components/welcome-message";
 import styled from "styled-components/native";
 import { createPlantForHousehold } from "../../plants/store/effects";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { PlantModel } from "../../../types";
-import { IErr } from "../../../utils/err";
+import { HouseholdPlantsSubscription } from "../../plants/subscriptions/household-plants";
+import {
+  usePlantsStore,
+  selectPlantsByHouseholdId
+} from "../../plants/store/state";
+import { CurrentProfileHouseholdsSubscription } from "../../households/subscriptions/current-profile-households";
 
 export const Home = () => {
   const hasAuthenticated = useAuthStore(selectHasAuthenticated);
@@ -57,14 +64,33 @@ const HomeScreen = () => {
 
 const HouseholdsList = () => {
   const profileId = useAuthStore(selectCurrentProfileId);
+  const households = useHouseholdsStore(selectHouseholds);
 
   const handleCreateHousehold = useCallback(() => {
     createHouseholdForCurrentProfile({ name: new Date().toString() })();
   }, [profileId]);
 
+  const handleSelectHousehold = useCallback(async (householdId: string) => {
+    await storeSelectedHouseholdIdToStorage(householdId)();
+  }, []);
+
   return (
     <>
-      <Button title="Create household" onPress={handleCreateHousehold} />
+      <CurrentProfileHouseholdsSubscription />
+      <Heading style={{ marginTop: 50 }}>Households:</Heading>
+      <FlatList
+        style={{ height: 200 }}
+        data={households}
+        keyExtractor={household => household.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleSelectHousehold(item.id)}>
+            <Text>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+        ListFooterComponent={
+          <Button title="Add household" onPress={handleCreateHousehold} />
+        }
+      />
     </>
   );
 };
@@ -72,27 +98,44 @@ const HouseholdsList = () => {
 const SelectedHousehold = () => {
   const selectedHousehold = useHouseholdsStore(selectSelectedHousehold);
 
-  const handleCreatePlant = useCallback(async () => {
-    const create: TE.TaskEither<IErr, PlantModel> = pipe(
-      selectedHousehold,
-      O.map(household => household.id),
-      TE.fromOption(() => "NOT_FOUND" as IErr),
-      TE.chain(createPlantForHousehold())
-    );
-    await create();
-  }, []);
-
   return pipe(
     selectedHousehold,
     O.fold(
       () => null,
       household => (
         <View>
-          {household.name}
-          <Button title="Add plant" onPress={handleCreatePlant} />
+          <Heading style={{ marginTop: 50 }}>{household.name}</Heading>
+          <PlantsList householdId={household.id} />
         </View>
       )
     )
+  );
+};
+
+const PlantsList = ({ householdId }: { householdId: string }) => {
+  const plants = usePlantsStore(() => selectPlantsByHouseholdId(householdId));
+
+  const handleCreatePlant = useCallback(async () => {
+    await createPlantForHousehold()(householdId)();
+  }, [householdId]);
+
+  return (
+    <>
+      <HouseholdPlantsSubscription householdId={householdId} />
+      <FlatList
+        style={{ height: 200 }}
+        data={plants}
+        keyExtractor={plant => plant.id}
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item.name}</Text>
+          </View>
+        )}
+        ListFooterComponent={
+          <Button title="Add plant" onPress={handleCreatePlant} />
+        }
+      />
+    </>
   );
 };
 

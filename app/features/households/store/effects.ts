@@ -8,6 +8,7 @@ import { HouseholdModel } from "../../../types";
 import { database } from "./database";
 import { addHouseholdToCurrentProfile } from "../../auth/store/effects";
 import { AsyncStorage } from "react-native";
+import { setSelectedHouseholdId } from "./state";
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
@@ -33,6 +34,7 @@ export const createHouseholdForProfile = (
       },
       () => "BAD_REQUEST" as IErr
     ),
+    TE.chainFirst(id => storeSelectedHouseholdIdToStorage(id)),
     TE.chain(createProfileHouseholdRelation(profileId)),
     TE.chain(fetchHousehold)
   );
@@ -45,8 +47,7 @@ export const createHouseholdForCurrentProfile = (
   pipe(
     selectCurrentProfileId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(createHouseholdForProfile(household)),
-    TE.chainFirst(household => storeSelectedHouseholdIdToStorage(household.id))
+    TE.chain(createHouseholdForProfile(household))
   );
 
 export const fetchHousehold = (
@@ -131,6 +132,7 @@ export const storeSelectedHouseholdIdToStorage = (
   TE.tryCatch(
     async () => {
       await AsyncStorage.setItem(SELECTED_HOUSEHOLD_ID_KEY, id);
+      setSelectedHouseholdId(id);
       return id;
     },
     () => "BAD_REQUEST" as IErr

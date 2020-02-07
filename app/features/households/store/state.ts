@@ -4,7 +4,6 @@ import { normalizeArrayById } from "../../../utils/normalize";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { storeSelectedHouseholdIdToStorage } from "./effects";
 
 interface HouseholdsState {
   selectedHouseholdId: O.Option<string>;
@@ -38,10 +37,16 @@ export const selectHouseholdById = (id: string): O.Option<HouseholdModel> =>
   O.fromNullable(selectHouseholds().find(household => household.id === id));
 
 /**
- * Gets the user's selected preferred household
+ * Gets the user's selected preferred household, or the most recent one if there
+ * isn't a preference.
  */
 export const selectSelectedHousehold = (): O.Option<HouseholdModel> =>
-  pipe(selectSelectedHouseholdId(), O.map(selectHouseholdById), O.flatten);
+  pipe(
+    selectSelectedHouseholdId(),
+    O.map(selectHouseholdById),
+    O.flatten,
+    O.fold(selectMostRecentlyAddedHousehold, O.fromNullable)
+  );
 
 /**
  * Returns the most recently added household from the list of households.
@@ -75,33 +80,6 @@ export const selectProfileIdsForHouseholds = (): string[] => {
     .reduce((acc, arr) => [...acc, ...arr], []);
   return [...new Set(profileIds)];
 };
-
-/**
- * Returns the user's selected household. If there isn't one set yet, return the
- * most recently created household (if there are some households in the state).
- * NOTE: this has the side-effect of storing the most recent householdId to
- * AsyncStorage if there isn't one in the state already.
- */
-export const getOrSetSelectedHousehold = (): O.Option<HouseholdModel> =>
-  pipe(
-    selectSelectedHousehold(),
-    O.fold(
-      () => {
-        const household_ = selectMostRecentlyAddedHousehold();
-        pipe(
-          household_,
-          O.map(household => household.id),
-          O.map(id => {
-            setSelectedHouseholdId(id);
-            // NB: This is a dangerous side-effect!
-            storeSelectedHouseholdIdToStorage(id);
-          })
-        );
-        return household_;
-      },
-      household => O.fromNullable(household)
-    )
-  );
 
 export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {
