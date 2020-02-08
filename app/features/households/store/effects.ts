@@ -1,12 +1,12 @@
 import uuid from "uuid";
 import firebase from "firebase";
-import { selectCurrentProfileId } from "../../auth/store/state";
+import { selectCurrentUserId } from "../../auth/store/state";
 import { IErr } from "../../../utils/err";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
 import { HouseholdModel } from "../../../types";
 import { database } from "./database";
-import { addHouseholdToCurrentProfile } from "../../auth/store/effects";
+import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
 import { AsyncStorage } from "react-native";
 import { setSelectedHouseholdId } from "./state";
 
@@ -45,7 +45,7 @@ export const createHouseholdForCurrentProfile = (
   > = defaultHousehold
 ): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
-    selectCurrentProfileId(),
+    selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain(createHouseholdForProfile(household))
   );

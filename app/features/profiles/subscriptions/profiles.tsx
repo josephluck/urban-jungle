@@ -7,7 +7,7 @@ import { selectProfileIdsForHouseholds } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { useStore } from "../../../store/state";
-import { upsertProfiles, deleteProfiles } from "../../profiles/store/state";
+import { upsertProfiles, deleteProfiles } from "../store/state";
 
 /**
  * Subscribes to current profile and any profiles associated with fetched

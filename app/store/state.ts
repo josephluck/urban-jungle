@@ -7,8 +7,10 @@ import { ProfileModel, HouseholdModel, PlantModel } from "../types";
 interface AuthState {
   initializing: boolean;
   authUser: O.Option<firebase.User>;
+}
+
+interface ProfilesState {
   profiles: Record<string, ProfileModel>;
-  removeProfilesSubscription: () => void;
 }
 
 interface HouseholdsState {
@@ -22,6 +24,7 @@ interface PlantsState {
 
 interface State {
   auth: AuthState;
+  profiles: ProfilesState;
   households: HouseholdsState;
   plants: PlantsState;
 }
@@ -29,9 +32,10 @@ interface State {
 const defaultState: State = {
   auth: {
     initializing: true,
-    authUser: O.none,
-    profiles: {},
-    removeProfilesSubscription: () => void null
+    authUser: O.none
+  },
+  profiles: {
+    profiles: {}
   },
   households: {
     selectedHouseholdId: O.none,

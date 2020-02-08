@@ -2,7 +2,7 @@ import * as O from "fp-ts/lib/Option";
 import {
   selectCurrentProfileAvatar,
   selectCurrentProfileName
-} from "../../auth/store/state";
+} from "../../profiles/store/state";
 import { Heading } from "../../../components/typography";
 import styled from "styled-components/native";
 import { pipe } from "fp-ts/lib/pipeable";

@@ -22,6 +22,12 @@ const colors = {
   solidBlue: "rgba(34, 165, 222, 1)"
 };
 
+const componentColors = {
+  avatarBorder: colors.midOffGray,
+  avatarBackground: colors.deepGray,
+  avatarPlaceholderLetter: colors.nearWhite
+};
+
 const font = {
   _12: {
     size: 12,
@@ -55,7 +61,8 @@ const size = {
   modalCloseCross: 18,
   closeBarHeight: 4,
   closeBarWidth: 26,
-  welcomeAvatarImage: 80
+  welcomeAvatarImage: 80,
+  avatarImage: 50
 };
 
 const spacing = {
@@ -76,7 +83,8 @@ export const theme = {
   font,
   fontWeight,
   size,
-  spacing
+  spacing,
+  componentColors
 };
 
 export type Theme = typeof theme;

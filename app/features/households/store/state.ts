@@ -2,8 +2,12 @@ import { HouseholdModel } from "../../../types";
 import { normalizeArrayById } from "../../../utils/normalize";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { selectProfileAvatarById } from "../../auth/store/state";
+import {
+  selectProfileAvatarById,
+  selectProfileNameById
+} from "../../profiles/store/state";
 import { store } from "../../../store/state";
+import { getFirstLetterFromOptionString } from "../../../fp/option";
 
 export const selectHouseholds = store.createSelector(s =>
   Object.values(s.households.households)
@@ -78,6 +82,34 @@ export const selectProfileAvatarsForHousehold = (
       val => val
     )
   );
+
+export const selectProfileNamesForHousehold = (
+  id: string
+): O.Option<string>[] =>
+  pipe(
+    selectProfileIdsForHousehold(id),
+    O.map(profileIds => profileIds.map(selectProfileNameById)),
+    O.fold(
+      () => [],
+      val => val
+    )
+  );
+
+interface ProfileLetterAndAvatar {
+  letter: O.Option<string>;
+  avatar: O.Option<string>;
+}
+
+export const selectProfilesLetterAndAvatarForHousehold = (
+  id: string
+): ProfileLetterAndAvatar[] => {
+  const avatars = selectProfileAvatarsForHousehold(id);
+  const names = selectProfileNamesForHousehold(id);
+  return avatars.map((avatar, i) => ({
+    avatar,
+    letter: getFirstLetterFromOptionString(names[i])
+  }));
+};
 
 export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {

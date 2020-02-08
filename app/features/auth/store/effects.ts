@@ -6,16 +6,16 @@ import { ProfileModel } from "../../../types";
 import { pipe } from "fp-ts/lib/pipeable";
 import {
   selectAuthUser,
-  selectCurrentProfileId,
-  selectProfileById,
-  selectProfiles,
+  selectCurrentUserId,
   setUser,
-  setInitializing,
-  upsertProfile
+  setInitializing
 } from "./state";
 import { createHouseholdForProfile } from "../../households/store/effects";
-import { database } from "./database";
 import { store } from "../../../store/state";
+import {
+  createProfileForUser,
+  fetchProfileIfNotFetched
+} from "../../profiles/store/effects";
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
@@ -54,60 +54,14 @@ export const signOut = store.createEffect(async () => {
 export const fetchOrCreateProfile = (): TE.TaskEither<IErr, ProfileModel> =>
   pipe(fetchCurrentProfileIfNotFetched(), TE.orElse(createAndSeedProfile));
 
-export const createProfileForUser = (
-  user: firebase.User
-): TE.TaskEither<IErr, ProfileModel> =>
-  TE.tryCatch(
-    async () => {
-      const profile: ProfileModel = {
-        id: user.uid,
-        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-        name: "Joseph Luck",
-        householdIds: [],
-        email: user.email!
-      };
-      await database()
-        .doc(user.uid)
-        .set(profile);
-      return profile;
-    },
-    () => "BAD_REQUEST" as IErr
-  );
-
 export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
   IErr,
   ProfileModel
 > =>
   pipe(
-    selectCurrentProfileId(),
+    selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain(fetchProfileIfNotFetched)
-  );
-
-export const fetchProfileIfNotFetched = (
-  id: string
-): TE.TaskEither<IErr, ProfileModel> =>
-  pipe(
-    selectProfiles(),
-    selectProfileById(O.fromNullable(id)),
-    TE.fromOption(() => id),
-    TE.orElse(fetchProfile)
-  );
-
-export const fetchProfile = (id: string): TE.TaskEither<IErr, ProfileModel> =>
-  TE.tryCatch(
-    async () => {
-      const response = await database()
-        .doc(id)
-        .get();
-      if (!response.exists) {
-        throw new Error();
-      }
-      const profile = response.data() as ProfileModel;
-      upsertProfile(profile);
-      return profile;
-    },
-    () => "NOT_FOUND" as IErr
   );
 
 export const createAndSeedProfile = (): TE.TaskEither<IErr, ProfileModel> =>
@@ -117,61 +71,5 @@ export const createAndSeedProfile = (): TE.TaskEither<IErr, ProfileModel> =>
     TE.chain(createProfileForUser),
     TE.map(profile => profile.id),
     TE.chain(createHouseholdForProfile()),
-    TE.chain(fetchCurrentProfileIfNotFetched)
-  );
-
-export const addHouseholdToCurrentProfile = (
-  householdId: string
-): TE.TaskEither<IErr, ProfileModel> =>
-  pipe(
-    selectCurrentProfileId(),
-    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(id =>
-      TE.tryCatch(
-        async () => {
-          await database()
-            .doc(id)
-            .update({
-              householdIds: firebase.firestore.FieldValue.arrayUnion(
-                householdId
-              )
-            });
-        },
-        () => "BAD_REQUEST" as IErr
-      )
-    ),
-    TE.chain(fetchCurrentProfileIfNotFetched)
-  );
-
-/**
- * Removes a household from the profile.
- *
- * TODO: when a household is deleted, it will not remove the household ids from
- * all profiles the household. If there are multiple profiles associated with
- * a household, the household should probably not be deleted and only the
- * association between the current user and the household should be removed.
- * At the moment, the household is deleted, but there can still be stray
- * profiles associated to it.
- */
-export const removeHouseholdFromProfile = (
-  householdId: string
-): TE.TaskEither<IErr, ProfileModel> =>
-  pipe(
-    selectCurrentProfileId(),
-    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(id =>
-      TE.tryCatch(
-        async () => {
-          await database()
-            .doc(id)
-            .update({
-              householdIds: firebase.firestore.FieldValue.arrayRemove(
-                householdId
-              )
-            });
-        },
-        () => "BAD_REQUEST" as IErr
-      )
-    ),
     TE.chain(fetchCurrentProfileIfNotFetched)
   );

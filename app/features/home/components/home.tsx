@@ -3,8 +3,7 @@ import { Heading, SubHeading } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
 import {
   selectHasAuthenticated,
-  selectCurrentProfileId,
-  selectProfiles
+  selectCurrentUserId
 } from "../../auth/store/state";
 import { signOut } from "../../auth/store/effects";
 import { Button, View, ScrollView, Text, TouchableOpacity } from "react-native";
@@ -21,7 +20,7 @@ import {
   createHouseholdForCurrentProfile,
   storeSelectedHouseholdIdToStorage
 } from "../../households/store/effects";
-import { WelcomeMessage } from "../../profile/components/welcome-message";
+import { WelcomeMessage } from "../../profiles/components/welcome-message";
 import styled from "styled-components/native";
 import { createPlantForHousehold } from "../../plants/store/effects";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -30,6 +29,8 @@ import { HouseholdPlantsSubscription } from "../../plants/subscriptions/househol
 import { selectPlantsByHouseholdId } from "../../plants/store/state";
 import { CurrentProfileHouseholdsSubscription } from "../../households/subscriptions/current-profile-households";
 import { useStore } from "../../../store/state";
+import { HouseholdProfilesList } from "../../households/components/household-profiles-list";
+import { selectProfiles } from "../../profiles/store/state";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -59,7 +60,7 @@ const HomeScreen = () => {
 };
 
 const HouseholdsList = () => {
-  const profileId = useStore(selectCurrentProfileId);
+  const profileId = useStore(selectCurrentUserId);
   const households = useStore(selectHouseholds);
 
   const handleCreateHousehold = useCallback(() => {
@@ -101,6 +102,7 @@ const SelectedHousehold = () => {
       household => (
         <View>
           <Heading style={{ marginTop: 50 }}>{household.name}</Heading>
+          <HouseholdProfilesList householdId={household.id} />
           {/* TODO: this fails */}
           <PlantsList householdId={household.id} />
         </View>

@@ -1,10 +1,10 @@
 import { database } from "../store/database";
-import { selectCurrentProfileId } from "../../auth/store/state";
+import { selectCurrentUserId } from "../../auth/store/state";
 import React, { useEffect } from "react";
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
 import { HouseholdModel } from "../../../types";
-import { removeHouseholdFromProfile } from "../../auth/store/effects";
+import { removeHouseholdFromProfile } from "../../profiles/store/effects";
 import { deleteHousehold, upsertHousehold } from "../store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import { storeSelectedHouseholdIdToStorageIfNotPresent } from "../store/effects";
@@ -15,7 +15,7 @@ import { useStore } from "../../../store/state";
  * Subscribes to any households for the current profile ID.
  */
 export const CurrentProfileHouseholdsSubscription = () => {
-  const profileId_ = useStore(selectCurrentProfileId);
+  const profileId_ = useStore(selectCurrentUserId);
   const profileId = pipe(
     profileId_,
     O.getOrElse(() => "")
