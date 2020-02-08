@@ -2,18 +2,15 @@ import React from "react";
 import { database } from "../store/database";
 import {
   selectCurrentProfileId,
-  useAuthStore,
   upsertProfiles,
   deleteProfiles
 } from "../../auth/store/state";
 import { useEffect } from "react";
 import { ProfileModel } from "../../../types";
-import {
-  selectProfileIdsForHouseholds,
-  useHouseholdsStore
-} from "../../households/store/state";
+import { selectProfileIdsForHouseholds } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
+import { useStore } from "../../../store/state";
 
 /**
  * Subscribes to current profile and any profiles associated with fetched
@@ -26,12 +23,12 @@ import * as O from "fp-ts/lib/Option";
  * from the state once the subscription has finished running.
  */
 export const ProfilesSubscription = () => {
-  const currentProfileId_ = useAuthStore(selectCurrentProfileId);
+  const currentProfileId_ = useStore(selectCurrentProfileId);
   const currentProfileId = pipe(
     currentProfileId_,
     O.getOrElse(() => "")
   );
-  const householdProfileIds = useHouseholdsStore(selectProfileIdsForHouseholds);
+  const householdProfileIds = useStore(selectProfileIdsForHouseholds);
   const profileIds = [
     ...new Set([currentProfileId, ...householdProfileIds])
   ].filter(Boolean);

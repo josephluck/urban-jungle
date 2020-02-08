@@ -1,6 +1,5 @@
 import * as O from "fp-ts/lib/Option";
 import {
-  useAuthStore,
   selectCurrentProfileAvatar,
   selectCurrentProfileName
 } from "../../auth/store/state";
@@ -8,14 +7,15 @@ import { Heading } from "../../../components/typography";
 import styled from "styled-components/native";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useMemo } from "react";
+import { useStore } from "../../../store/state";
 
 export const WelcomeMessage = () => {
-  const profileAvatar_ = useAuthStore(selectCurrentProfileAvatar);
+  const profileAvatar_ = useStore(selectCurrentProfileAvatar);
   const profileAvatar = O.getOrElse(
     () =>
       "https://medgoldresources.com/wp-content/uploads/2018/02/avatar-placeholder.gif"
   )(profileAvatar_);
-  const profileName_ = useAuthStore(selectCurrentProfileName);
+  const profileName_ = useStore(selectCurrentProfileName);
   const avatarSource = useMemo(() => ({ uri: profileAvatar }), [profileAvatar]);
 
   return (

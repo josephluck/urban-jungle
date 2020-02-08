@@ -9,13 +9,13 @@ import {
   selectCurrentProfileId,
   selectProfileById,
   selectProfiles,
-  store,
   setUser,
   setInitializing,
   upsertProfile
 } from "./state";
 import { createHouseholdForProfile } from "../../households/store/effects";
 import { database } from "./database";
+import { store } from "../../../store/state";
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {

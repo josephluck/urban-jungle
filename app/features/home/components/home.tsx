@@ -2,7 +2,6 @@ import React, { useCallback, useContext } from "react";
 import { Heading, SubHeading } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
 import {
-  useAuthStore,
   selectHasAuthenticated,
   selectCurrentProfileId,
   selectProfiles
@@ -15,7 +14,6 @@ import {
   createSignUpRoute
 } from "../../auth/navigation/routes";
 import {
-  useHouseholdsStore,
   selectSelectedHousehold,
   selectHouseholds
 } from "../../households/store/state";
@@ -29,14 +27,12 @@ import { createPlantForHousehold } from "../../plants/store/effects";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { HouseholdPlantsSubscription } from "../../plants/subscriptions/household-plants";
-import {
-  usePlantsStore,
-  selectPlantsByHouseholdId
-} from "../../plants/store/state";
+import { selectPlantsByHouseholdId } from "../../plants/store/state";
 import { CurrentProfileHouseholdsSubscription } from "../../households/subscriptions/current-profile-households";
+import { useStore } from "../../../store/state";
 
 export const Home = () => {
-  const hasAuthenticated = useAuthStore(selectHasAuthenticated);
+  const hasAuthenticated = useStore(selectHasAuthenticated);
 
   if (hasAuthenticated) {
     return <HomeScreen />;
@@ -63,8 +59,8 @@ const HomeScreen = () => {
 };
 
 const HouseholdsList = () => {
-  const profileId = useAuthStore(selectCurrentProfileId);
-  const households = useHouseholdsStore(selectHouseholds);
+  const profileId = useStore(selectCurrentProfileId);
+  const households = useStore(selectHouseholds);
 
   const handleCreateHousehold = useCallback(() => {
     createHouseholdForCurrentProfile({ name: new Date().toString() })();
@@ -96,7 +92,7 @@ const HouseholdsList = () => {
 };
 
 const SelectedHousehold = () => {
-  const selectedHousehold = useHouseholdsStore(selectSelectedHousehold);
+  const selectedHousehold = useStore(selectSelectedHousehold);
 
   return pipe(
     selectedHousehold,
@@ -114,7 +110,7 @@ const SelectedHousehold = () => {
 };
 
 const PlantsList = ({ householdId }: { householdId: string }) => {
-  const plants = usePlantsStore(() => selectPlantsByHouseholdId(householdId));
+  const plants = useStore(() => selectPlantsByHouseholdId(householdId));
 
   const handleCreatePlant = useCallback(async () => {
     await createPlantForHousehold()(householdId)();
@@ -141,7 +137,7 @@ const PlantsList = ({ householdId }: { householdId: string }) => {
 };
 
 const ProfilesList = () => {
-  const profiles = Object.values(useAuthStore(selectProfiles));
+  const profiles = Object.values(useStore(selectProfiles));
   return (
     <>
       <Heading style={{ marginTop: 50 }}>Profiles:</Heading>

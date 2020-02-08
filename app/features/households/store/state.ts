@@ -1,27 +1,16 @@
-import stately from "@josephluck/stately";
 import { HouseholdModel } from "../../../types";
 import { normalizeArrayById } from "../../../utils/normalize";
-import makeUseStately from "@josephluck/stately/lib/hooks";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectProfileAvatarById } from "../../auth/store/state";
-
-interface HouseholdsState {
-  selectedHouseholdId: O.Option<string>;
-  households: Record<string, HouseholdModel>;
-}
-
-const store = stately<HouseholdsState>({
-  selectedHouseholdId: O.none,
-  households: {}
-});
+import { store } from "../../../store/state";
 
 export const selectHouseholds = store.createSelector(s =>
-  Object.values(s.households)
+  Object.values(s.households.households)
 );
 
 export const selectSelectedHouseholdId = store.createSelector(
-  s => s.selectedHouseholdId
+  s => s.households.selectedHouseholdId
 );
 
 export const selectHouseholdById = (id: string): O.Option<HouseholdModel> =>
@@ -92,22 +81,23 @@ export const selectProfileAvatarsForHousehold = (
 
 export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {
-    s.households = { ...s.households, ...normalizeArrayById(households) };
+    s.households.households = {
+      ...s.households.households,
+      ...normalizeArrayById(households)
+    };
   }
 );
 
 export const setSelectedHouseholdId = store.createMutator((s, id: string) => {
-  s.selectedHouseholdId = O.fromNullable(id);
+  s.households.selectedHouseholdId = O.fromNullable(id);
 });
 
 export const upsertHousehold = store.createMutator(
   (s, household: HouseholdModel) => {
-    s.households[household.id] = household;
+    s.households.households[household.id] = household;
   }
 );
 
 export const deleteHousehold = store.createMutator((s, householdId: string) => {
-  delete s.households[householdId];
+  delete s.households.households[householdId];
 });
-
-export const useHouseholdsStore = makeUseStately(store);

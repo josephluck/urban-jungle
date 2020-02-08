@@ -1,44 +1,30 @@
-import stately from "@josephluck/stately";
-import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import { ProfileModel } from "../../../types";
 import { pipe } from "fp-ts/lib/pipeable";
 import { every } from "../../../fp/option";
 import * as O from "fp-ts/lib/Option";
+import { store } from "../../../store/state";
 
-interface AuthState {
-  initializing: boolean;
-  authUser: O.Option<firebase.User>;
-  profiles: Record<string, ProfileModel>;
-  removeProfilesSubscription: () => void;
-}
-
-export const store = stately<AuthState>({
-  initializing: true,
-  authUser: O.none,
-  profiles: {},
-  removeProfilesSubscription: () => void null
-});
 
 /**
  * SELECTORS
  */
 
 export const selectInitializing = store.createSelector(
-  (s): boolean => s.initializing
+  (s): boolean => s.auth.initializing
 );
 
 export const selectAuthUser = store.createSelector(
-  (s): O.Option<firebase.User> => s.authUser
+  (s): O.Option<firebase.User> => s.auth.authUser
 );
 
 export const selectProfiles = store.createSelector(
-  (s): Record<string, ProfileModel> => s.profiles
+  (s): Record<string, ProfileModel> => s.auth.profiles
 );
 
 export const selectCurrentProfile = store.createSelector(
   (s): O.Option<ProfileModel> =>
-    pipe(s.profiles, selectProfileById(selectCurrentProfileId()))
+    pipe(s.auth.profiles, selectProfileById(selectCurrentProfileId()))
 );
 
 export const selectCurrentProfileId = (): O.Option<string> =>
@@ -93,41 +79,39 @@ export const selectHasAuthenticated = (): boolean =>
 
 export const setUser = store.createMutator(
   (s, authUser: O.Option<firebase.User>) => {
-    s.authUser = authUser;
+    s.auth.authUser = authUser;
   }
 );
 
 export const upsertProfile = store.createMutator((s, profile: ProfileModel) => {
-  s.profiles[profile.id] = profile;
+  s.auth.profiles[profile.id] = profile;
 });
 
 export const upsertProfiles = store.createMutator(
   (s, profiles: ProfileModel[]) => {
     profiles.forEach(profile => {
-      s.profiles[profile.id] = profile;
+      s.auth.profiles[profile.id] = profile;
     });
   }
 );
 
 export const deleteProfiles = store.createMutator((s, profileIds: string[]) => {
   profileIds.forEach(id => {
-    delete s.profiles[id];
+    delete s.auth.profiles[id];
   });
 });
 
 export const setInitializing = store.createMutator(
   (s, initializing: boolean) => {
-    s.initializing = initializing;
+    s.auth.initializing = initializing;
   }
 );
 
 export const setRemoveProfilesSubscription = store.createMutator(
   (s, removeProfilesSubscription: () => void) => {
-    s.removeProfilesSubscription = removeProfilesSubscription;
+    s.auth.removeProfilesSubscription = removeProfilesSubscription;
   }
 );
-
-export const useAuthStore = useStately(store);
 
 // const sleepR = async (duration = 5000) =>
 //   new Promise(r => setTimeout(r, duration));
