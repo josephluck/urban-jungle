@@ -60,6 +60,12 @@ export const selectCurrentProfileAvatar = (): O.Option<string> =>
     O.flatten
   );
 
+export const selectCurrentProfileName = (): O.Option<string> =>
+  pipe(
+    selectCurrentProfile(),
+    O.map(p => p.name)
+  );
+
 export const selectProfileById = (id: O.Option<string>) => (
   profiles: Record<string, ProfileModel>
 ): O.Option<ProfileModel> =>
@@ -69,10 +75,13 @@ export const selectProfileById = (id: O.Option<string>) => (
     O.flatten
   );
 
-export const selectCurrentProfileName = (): O.Option<string> =>
+export const selectProfileById2 = (id: string): O.Option<ProfileModel> =>
+  O.fromNullable(selectProfiles()[id]);
+
+export const selectProfileAvatarById = (id: string): O.Option<string> =>
   pipe(
-    selectCurrentProfile(),
-    O.map(p => p.name)
+    selectProfileById2(id),
+    O.chain(profile => O.fromNullable(profile.avatar))
   );
 
 export const selectHasAuthenticated = (): boolean =>

@@ -1,9 +1,10 @@
 import stately from "@josephluck/stately";
-import { HouseholdModel, PlantModel } from "../../../types";
+import { HouseholdModel } from "../../../types";
 import { normalizeArrayById } from "../../../utils/normalize";
 import makeUseStately from "@josephluck/stately/lib/hooks";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import { selectProfileAvatarById } from "../../auth/store/state";
 
 interface HouseholdsState {
   selectedHouseholdId: O.Option<string>;
@@ -22,16 +23,6 @@ export const selectHouseholds = store.createSelector(s =>
 export const selectSelectedHouseholdId = store.createSelector(
   s => s.selectedHouseholdId
 );
-
-interface HouseholdAndPlants extends Omit<HouseholdModel, "plants"> {
-  plants: PlantModel[];
-}
-
-export const selectHouseholdsAndPlants = (): HouseholdAndPlants[] =>
-  selectHouseholds().map(household => ({
-    ...household,
-    plants: Object.values(household.plants)
-  }));
 
 export const selectHouseholdById = (id: string): O.Option<HouseholdModel> =>
   O.fromNullable(selectHouseholds().find(household => household.id === id));
@@ -80,6 +71,24 @@ export const selectProfileIdsForHouseholds = (): string[] => {
     .reduce((acc, arr) => [...acc, ...arr], []);
   return [...new Set(profileIds)];
 };
+
+export const selectProfileIdsForHousehold = (id: string): O.Option<string[]> =>
+  pipe(
+    selectHouseholdById(id),
+    O.map(household => household.profileIds)
+  );
+
+export const selectProfileAvatarsForHousehold = (
+  id: string
+): O.Option<string>[] =>
+  pipe(
+    selectProfileIdsForHousehold(id),
+    O.map(profileIds => profileIds.map(selectProfileAvatarById)),
+    O.fold(
+      () => [],
+      val => val
+    )
+  );
 
 export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {
