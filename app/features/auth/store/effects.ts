@@ -10,12 +10,16 @@ import {
   setUser,
   setInitializing
 } from "./state";
-import { createHouseholdForProfile } from "../../households/store/effects";
+import {
+  createHouseholdForProfile,
+  createProfileHouseholdRelation
+} from "../../households/store/effects";
 import { store } from "../../../store/state";
 import {
   createProfileForUser,
   fetchProfileIfNotFetched
 } from "../../profiles/store/effects";
+import { getAndParseInitialHouseholdInvitationLink } from "../navigation/routes";
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
@@ -38,14 +42,56 @@ export const signIn = store.createEffect(
   }
 );
 
-export const signUp = store.createEffect(
-  async (_, email: string, password: string) => {
-    const response = await firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password);
-    return response;
-  }
-);
+/**
+ * Signs up the user.
+ * Optionally handles household invitation deep links.
+ *
+ * Returns the created profileId
+ */
+export const signUp = (
+  email: string,
+  password: string
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    TE.tryCatch(
+      async () => {
+        const response = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password);
+        return response;
+      },
+      () => "BAD_REQUEST" as IErr
+    ),
+    TE.chain(validateSignUp),
+    TE.chainFirst(handleInitialHouseholdInvitationLink)
+  );
+
+/**
+ * Validates a user was correctly created
+ */
+export const validateSignUp = (
+  credentials: firebase.auth.UserCredential
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    O.fromNullable(credentials.user),
+    O.map(user => user.uid),
+    TE.fromOption(() => "BAD_REQUEST" as IErr)
+  );
+
+/**
+ * Handles creating the relationship between the given profile id and the
+ * household if there's a household invitation in the user's initial deep link.
+ *
+ * Returns the householdId
+ */
+export const handleInitialHouseholdInvitationLink = (
+  profileId: string
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    getAndParseInitialHouseholdInvitationLink(),
+    TE.map(params => params.householdId),
+    TE.chainFirst(createProfileHouseholdRelation(profileId))
+  );
 
 export const signOut = store.createEffect(async () => {
   await firebase.auth().signOut();

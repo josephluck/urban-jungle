@@ -10,6 +10,7 @@ import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
 import { AsyncStorage, Share } from "react-native";
 import { setSelectedHouseholdId } from "./state";
 import { selectCurrentProfileName } from "../../profiles/store/state";
+import { makeHouseholdInvitationLink } from "../../auth/navigation/routes";
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
@@ -67,7 +68,10 @@ export const fetchHousehold = (
     () => "NOT_FOUND" as IErr
   );
 
-const createProfileHouseholdRelation = (profileId: string) => (
+/**
+ * Creates the relationship between a profile and a household.
+ */
+export const createProfileHouseholdRelation = (profileId: string) => (
   householdId: string
 ): TE.TaskEither<IErr, string> =>
   pipe(
@@ -78,8 +82,7 @@ const createProfileHouseholdRelation = (profileId: string) => (
   );
 
 /**
- * Creates the relationship between the current user and a household they have
- * created.
+ * Adds the provided profileId to the provided household (by householdId).
  * Returns the householdId.
  */
 const addProfileToHousehold = (profileId: string) => (
@@ -110,19 +113,19 @@ export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
   );
 
 export const shareHouseholdInvitation = (
-  id: string
+  householdId: string
 ): TE.TaskEither<IErr, void> =>
   pipe(
     selectCurrentProfileName(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(name =>
+    TE.chain(profileName =>
       TE.tryCatch(
         async () => {
-          console.log("Handle Add New Household");
+          const link = makeHouseholdInvitationLink(householdId);
           try {
             const result = await Share.share({
-              title: `${name} has invited you to help care for their plants.`,
-              message: `Join PlantPal now to help ${name} care for their plants. ${id}`
+              title: `${profileName} has invited you to help care for their plants.`,
+              message: `${profileName} has invited you to help care for their plants. Sign up via this link ${link} to give them a hand!`
             });
 
             if (result.action === Share.sharedAction) {
