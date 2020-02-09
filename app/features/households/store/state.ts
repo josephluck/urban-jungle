@@ -102,10 +102,9 @@ interface HouseholdProfile {
   avatar: O.Option<string>;
 }
 
-export const selectProfilesForHousehold = (id: string): HouseholdProfile[] => {
-  const ids = selectProfileIdsForHousehold(id);
-  return pipe(
-    ids,
+export const selectProfilesForHousehold = (id: string): HouseholdProfile[] =>
+  pipe(
+    selectProfileIdsForHousehold(id),
     O.getOrElse(() => [] as string[])
   ).map(id => {
     const name = selectProfileNameById(id);
@@ -116,7 +115,6 @@ export const selectProfilesForHousehold = (id: string): HouseholdProfile[] => {
       avatar: selectProfileAvatarById(id)
     };
   });
-};
 
 export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {

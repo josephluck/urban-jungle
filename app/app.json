@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "plantpal",
+    "name": "Plant Pal",
     "slug": "plantpal",
+    "scheme": "plantpal",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": ["ios", "android", "web"],

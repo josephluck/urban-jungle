@@ -11,6 +11,8 @@ import {
 import { TouchableOpacity, Animated, Easing, Alert } from "react-native";
 import { theme } from "../../../theme";
 import { ButtonLink } from "../../../components/button-link";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as O from "fp-ts/lib/Option";
 
 export const ManageHouseholdMembers = ({
   householdId
@@ -46,27 +48,28 @@ export const ManageHouseholdMembers = ({
 
   const confirmRemoveProfileFromHousehold = useCallback(
     (id: string) =>
-      new Promise((resolve, reject) => {
-        const profile = profiles.find(p => p.id === id);
-        if (profile) {
-          console.log({ profile });
-          Alert.alert(
-            "Are you sure?",
-            `Please confirm you wish to remove ${profile.name}.`,
-            [
-              {
-                text: "Cancel",
-                onPress: reject
-              },
-              {
-                text: `I'm sure`,
-                onPress: resolve
-              }
-            ]
-          );
-        }
-        reject();
-      }),
+      new Promise((resolve, reject) =>
+        pipe(
+          O.fromNullable(profiles.find(p => p.id === id)),
+          O.chain(profile => profile.name),
+          O.fold(reject, name => {
+            Alert.alert(
+              "Remove member",
+              `Are you sure you want to remove ${name} from this household?`,
+              [
+                {
+                  text: "Cancel",
+                  onPress: reject
+                },
+                {
+                  text: `I'm sure`,
+                  onPress: resolve
+                }
+              ]
+            );
+          })
+        )
+      ),
     [profiles]
   );
 
@@ -88,22 +91,22 @@ export const ManageHouseholdMembers = ({
 
   return (
     <Wrapper>
-      <TouchableOpacity onLongPress={enterEditMode}>
-        <AvatarsWrapper
-          style={{
-            transform: [
-              {
-                translateX: animatedValue.current.interpolate({
-                  inputRange: [0, 100],
-                  outputRange: [
-                    HALF_BUTTON_SIZE + HALF_TOTAL_AVATARS_SPREAD,
-                    -HALF_TOTAL_AVATARS_SPREAD - HALF_BUTTON_SPREAD
-                  ]
-                })
-              }
-            ]
-          }}
-        >
+      <AvatarsWrapper
+        style={{
+          transform: [
+            {
+              translateX: animatedValue.current.interpolate({
+                inputRange: [0, 100],
+                outputRange: [
+                  HALF_BUTTON_SIZE + HALF_TOTAL_AVATARS_SPREAD,
+                  -HALF_TOTAL_AVATARS_SPREAD - HALF_BUTTON_SPREAD
+                ]
+              })
+            }
+          ]
+        }}
+      >
+        <LongPressButton onLongPress={enterEditMode}>
           {profiles.map(({ avatar, letter, id }, i) => (
             <AvatarWrapper
               key={id}
@@ -128,29 +131,29 @@ export const ManageHouseholdMembers = ({
               </TouchableOpacity>
             </AvatarWrapper>
           ))}
-          <AvatarButtonAnimation
-            style={{
-              transform: [
-                {
-                  translateX: animatedValue.current.interpolate({
-                    inputRange: [0, 100],
-                    outputRange: [
-                      -theme.size.avatarImage - AVATAR_SPREAD,
-                      NUMBER_OF_AVATARS * AVATAR_SPREAD + AVATAR_SPREAD
-                    ]
-                  })
-                }
-              ],
-              opacity: animatedValue.current.interpolate({
-                inputRange: [0, 100],
-                outputRange: [0, 1]
-              })
-            }}
-          >
-            <AvatarButton onPress={handleAddNewHouseholdMember} />
-          </AvatarButtonAnimation>
-        </AvatarsWrapper>
-      </TouchableOpacity>
+        </LongPressButton>
+        <AvatarButtonAnimation
+          style={{
+            transform: [
+              {
+                translateX: animatedValue.current.interpolate({
+                  inputRange: [0, 100],
+                  outputRange: [
+                    -theme.size.avatarImage - AVATAR_SPREAD,
+                    NUMBER_OF_AVATARS * AVATAR_SPREAD + AVATAR_SPREAD
+                  ]
+                })
+              }
+            ],
+            opacity: animatedValue.current.interpolate({
+              inputRange: [0, 100],
+              outputRange: [0, 1]
+            })
+          }}
+        >
+          <AvatarButton onPress={handleAddNewHouseholdMember} />
+        </AvatarButtonAnimation>
+      </AvatarsWrapper>
       <CancelButtonWrapper
         style={{
           height: animatedValue.current.interpolate({
@@ -188,6 +191,12 @@ const Wrapper = styled.View`
 `;
 
 const AvatarsWrapper = styled(Animated.View)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+const LongPressButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: center;

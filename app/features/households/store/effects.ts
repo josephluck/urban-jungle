@@ -9,7 +9,6 @@ import { database } from "./database";
 import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
 import { AsyncStorage, Share } from "react-native";
 import { setSelectedHouseholdId } from "./state";
-import { selectCurrentProfileName } from "../../profiles/store/state";
 import { makeHouseholdInvitationLink } from "../../auth/navigation/routes";
 
 /**
@@ -129,35 +128,29 @@ export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
 export const shareHouseholdInvitation = (
   householdId: string
 ): TE.TaskEither<IErr, void> =>
-  pipe(
-    selectCurrentProfileName(),
-    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(profileName =>
-      TE.tryCatch(
-        async () => {
-          const link = makeHouseholdInvitationLink(householdId);
-          try {
-            const result = await Share.share({
-              title: `${profileName} has invited you to help care for their plants.`,
-              message: `${profileName} has invited you to help care for their plants. Sign up via this link ${link} to give them a hand!`
-            });
+  TE.tryCatch(
+    async () => {
+      const link = makeHouseholdInvitationLink(householdId);
+      try {
+        const result = await Share.share({
+          title: `Can you help me care for my plants?`,
+          message: `Hey, I need some help caring for my plants! It's easy to sign up, just tap this link to get started: ${link} `
+        });
 
-            if (result.action === Share.sharedAction) {
-              if (result.activityType) {
-                // shared with activity type of result.activityType
-              } else {
-                // shared
-              }
-            } else if (result.action === Share.dismissedAction) {
-              // dismissed
-            }
-          } catch (error) {
-            alert(error.message);
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
           }
-        },
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    },
+    () => "BAD_REQUEST" as IErr
   );
 
 /**
