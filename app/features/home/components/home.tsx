@@ -29,7 +29,7 @@ import { HouseholdPlantsSubscription } from "../../plants/subscriptions/househol
 import { selectPlantsByHouseholdId } from "../../plants/store/state";
 import { CurrentProfileHouseholdsSubscription } from "../../households/subscriptions/current-profile-households";
 import { useStore } from "../../../store/state";
-import { HouseholdProfilesList } from "../../households/components/household-profiles-list";
+import { ManageHouseholdMembers } from "../../households/components/manage-household-members";
 import { selectProfiles } from "../../profiles/store/state";
 
 export const Home = () => {
@@ -102,7 +102,7 @@ const SelectedHousehold = () => {
       household => (
         <View>
           <Heading style={{ marginTop: 50 }}>{household.name}</Heading>
-          <HouseholdProfilesList householdId={household.id} />
+          <ManageHouseholdMembers householdId={household.id} />
           {/* TODO: this fails */}
           <PlantsList householdId={household.id} />
         </View>

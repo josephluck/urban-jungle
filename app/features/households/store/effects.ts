@@ -7,8 +7,9 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { HouseholdModel } from "../../../types";
 import { database } from "./database";
 import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
-import { AsyncStorage } from "react-native";
+import { AsyncStorage, Share } from "react-native";
 import { setSelectedHouseholdId } from "./state";
+import { selectCurrentProfileName } from "../../profiles/store/state";
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
@@ -106,6 +107,40 @@ export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
         .doc(id)
         .delete(),
     () => "BAD_REQUEST" as IErr
+  );
+
+export const shareHouseholdInvitation = (
+  id: string
+): TE.TaskEither<IErr, void> =>
+  pipe(
+    selectCurrentProfileName(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain(name =>
+      TE.tryCatch(
+        async () => {
+          console.log("Handle Add New Household");
+          try {
+            const result = await Share.share({
+              title: `${name} has invited you to help care for their plants.`,
+              message: `Join PlantPal now to help ${name} care for their plants. ${id}`
+            });
+
+            if (result.action === Share.sharedAction) {
+              if (result.activityType) {
+                // shared with activity type of result.activityType
+              } else {
+                // shared
+              }
+            } else if (result.action === Share.dismissedAction) {
+              // dismissed
+            }
+          } catch (error) {
+            alert(error.message);
+          }
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    )
   );
 
 /**
