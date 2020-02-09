@@ -1,3 +1,4 @@
+import React from "react";
 import * as O from "fp-ts/lib/Option";
 import styled from "styled-components/native";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -41,12 +42,8 @@ const AvatarImage = styled.Image`
   border-radius: ${props => props.theme.size.avatarImage / 2}px;
 `;
 
-const PlaceholderLetter = styled.View`
-  width: ${props => props.theme.size.avatarImage}px;
-  height: ${props => props.theme.size.avatarImage}px;
+const PlaceholderLetter = styled.Text`
   border-radius: ${props => props.theme.size.avatarImage / 2}px;
-  justify-content: center;
-  align-items: center;
-  font-size: ${props => props.theme.font._24.size};
+  font-size: ${props => props.theme.font._24.size}px;
   color: ${props => props.theme.componentColors.avatarPlaceholderLetter};
 `;

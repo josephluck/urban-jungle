@@ -22,7 +22,7 @@ export const SignUp = () => {
   }, [hasAuthenticated]);
 
   const handleSignUp = useCallback(async () => {
-    await signUp(email, password);
+    await signUp(email, password)();
   }, [email, password]);
 
   return (

@@ -1,5 +1,12 @@
 import styled from "styled-components/native";
-import { SOURCE_SANS_SEMIBOLD } from "../hooks/fonts";
+import { SOURCE_SANS_SEMIBOLD, SOURCE_SANS_REGULAR } from "../hooks/fonts";
+
+export const BodyText = styled.Text`
+  color: ${props => props.theme.colors.pureWhite};
+  font-size: ${props => props.theme.font._16.size}px;
+  line-height: ${props => props.theme.font._16.lineHeight}px;
+  font-family: ${SOURCE_SANS_REGULAR};
+`;
 
 export const Heading = styled.Text`
   color: ${props => props.theme.colors.pureWhite};

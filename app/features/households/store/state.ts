@@ -95,26 +95,27 @@ export const selectProfileNamesForHousehold = (
     )
   );
 
-interface ProfileLetterAndAvatar {
+interface HouseholdProfile {
   id: string;
+  name: O.Option<string>;
   letter: O.Option<string>;
   avatar: O.Option<string>;
 }
 
-export const selectProfilesLetterAndAvatarForHousehold = (
-  id: string
-): ProfileLetterAndAvatar[] => {
+export const selectProfilesForHousehold = (id: string): HouseholdProfile[] => {
   const ids = selectProfileIdsForHousehold(id);
-  const avatars = selectProfileAvatarsForHousehold(id);
-  const names = selectProfileNamesForHousehold(id);
   return pipe(
     ids,
     O.getOrElse(() => [] as string[])
-  ).map((id, i) => ({
-    id,
-    avatar: avatars[i],
-    letter: getFirstLetterFromOptionString(names[i])
-  }));
+  ).map(id => {
+    const name = selectProfileNameById(id);
+    return {
+      id,
+      name,
+      letter: pipe(name, O.map(getFirstLetterFromOptionString), O.flatten),
+      avatar: selectProfileAvatarById(id)
+    };
+  });
 };
 
 export const setHouseholds = store.createMutator(
