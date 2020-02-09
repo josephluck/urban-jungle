@@ -96,6 +96,7 @@ export const selectProfileNamesForHousehold = (
   );
 
 interface ProfileLetterAndAvatar {
+  id: string;
   letter: O.Option<string>;
   avatar: O.Option<string>;
 }
@@ -103,10 +104,15 @@ interface ProfileLetterAndAvatar {
 export const selectProfilesLetterAndAvatarForHousehold = (
   id: string
 ): ProfileLetterAndAvatar[] => {
+  const ids = selectProfileIdsForHousehold(id);
   const avatars = selectProfileAvatarsForHousehold(id);
   const names = selectProfileNamesForHousehold(id);
-  return avatars.map((avatar, i) => ({
-    avatar,
+  return pipe(
+    ids,
+    O.getOrElse(() => [] as string[])
+  ).map((id, i) => ({
+    id,
+    avatar: avatars[i],
     letter: getFirstLetterFromOptionString(names[i])
   }));
 };

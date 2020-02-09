@@ -4,8 +4,11 @@ import styled from "styled-components/native";
 import { Avatar } from "../../../components/avatar";
 import { AvatarButton } from "../../../components/avatar-button";
 import { useCallback, useState } from "react";
-import { shareHouseholdInvitation } from "../store/effects";
-import { Button } from "react-native";
+import {
+  shareHouseholdInvitation,
+  removeProfileFromHousehold
+} from "../store/effects";
+import { Button, TouchableOpacity } from "react-native";
 
 export const ManageHouseholdMembers = ({
   householdId
@@ -30,12 +33,25 @@ export const ManageHouseholdMembers = ({
     setEditMode(true);
   }, []);
 
+  const handleRemoveProfileFromHousehold = useCallback(
+    (id: string) => {
+      removeProfileFromHousehold(id)(householdId)();
+    },
+    [householdId]
+  );
+
   return (
     <Wrapper>
       <ListWrapper onLongPress={enterEditMode}>
-        {avatarsNames.map(({ avatar, letter }, i) => {
-          <Avatar key={i} letter={letter} src={avatar} />;
-        })}
+        {avatarsNames.map(({ avatar, letter, id }) => (
+          <TouchableOpacity
+            key={id}
+            disabled={!editMode}
+            onPress={() => handleRemoveProfileFromHousehold(id)}
+          >
+            <Avatar letter={letter} src={avatar} />
+          </TouchableOpacity>
+        ))}
         <AvatarButton onPress={handleAddNewHouseholdMember} />
       </ListWrapper>
       {editMode && <Button title="Cancel" onPress={exitEditMode} />}

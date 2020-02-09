@@ -100,6 +100,20 @@ const addProfileToHousehold = (profileId: string) => (
     () => "BAD_REQUEST" as IErr
   );
 
+export const removeProfileFromHousehold = (profileId: string) => (
+  householdId: string
+): TE.TaskEither<IErr, void> =>
+  TE.tryCatch(
+    async () => {
+      await database()
+        .doc(householdId)
+        .update({
+          profileIds: firebase.firestore.FieldValue.arrayRemove(profileId)
+        });
+    },
+    () => "BAD_REQUEST" as IErr
+  );
+
 /**
  * Removes a household.
  */
