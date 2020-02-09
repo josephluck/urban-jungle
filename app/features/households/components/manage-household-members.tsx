@@ -3,14 +3,16 @@ import { selectProfilesLetterAndAvatarForHousehold } from "../store/state";
 import styled from "styled-components/native";
 import { Avatar } from "../../../components/avatar";
 import { AvatarButton } from "../../../components/avatar-button";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { shareHouseholdInvitation } from "../store/effects";
+import { Button } from "react-native";
 
 export const ManageHouseholdMembers = ({
   householdId
 }: {
   householdId: string;
 }) => {
+  const [editMode, setEditMode] = useState(false);
   const avatarsNames = useStore(() =>
     selectProfilesLetterAndAvatarForHousehold(householdId)
   );
@@ -20,16 +22,34 @@ export const ManageHouseholdMembers = ({
     [householdId]
   );
 
+  const enterEditMode = useCallback(() => {
+    setEditMode(true);
+  }, []);
+
+  const exitEditMode = useCallback(() => {
+    setEditMode(true);
+  }, []);
+
   return (
     <Wrapper>
-      {avatarsNames.map(({ avatar, letter }) => {
-        <Avatar letter={letter} src={avatar} />;
-      })}
-      <AvatarButton onPress={handleAddNewHouseholdMember} />
+      <ListWrapper onLongPress={enterEditMode}>
+        {avatarsNames.map(({ avatar, letter }, i) => {
+          <Avatar key={i} letter={letter} src={avatar} />;
+        })}
+        <AvatarButton onPress={handleAddNewHouseholdMember} />
+      </ListWrapper>
+      {editMode && <Button title="Cancel" onPress={exitEditMode} />}
     </Wrapper>
   );
 };
 
 const Wrapper = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
+const ListWrapper = styled.TouchableOpacity`
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
