@@ -35,17 +35,6 @@ export const ManageHouseholdMembers = ({
     setEditMode(false);
   }, []);
 
-  const handleRemoveProfileFromHousehold = useCallback(
-    async (id: string) => {
-      try {
-        await confirmRemoveProfileFromHousehold(id);
-        console.log("Confirmed", { id });
-        removeProfileFromHousehold(id)(householdId)();
-      } catch (err) {}
-    },
-    [householdId]
-  );
-
   const confirmRemoveProfileFromHousehold = useCallback(
     (id: string) =>
       new Promise((resolve, reject) =>
@@ -73,17 +62,27 @@ export const ManageHouseholdMembers = ({
     [profiles]
   );
 
+  const handleRemoveProfileFromHousehold = useCallback(
+    async (id: string) => {
+      try {
+        await confirmRemoveProfileFromHousehold(id);
+        removeProfileFromHousehold(id)(householdId)();
+      } catch (err) {}
+    },
+    [householdId, confirmRemoveProfileFromHousehold]
+  );
+
   const animatedValue = useRef(new Animated.Value(0));
 
   useEffect(() => {
     Animated.timing(animatedValue.current, {
       toValue: editMode ? 100 : 0,
-      duration: 200,
-      easing: Easing.inOut(Easing.ease)
+      duration: 180,
+      easing: Easing.inOut(Easing.cubic)
     }).start();
   }, [editMode]);
 
-  /** 0-indexed number of avatars */
+  /** 0-indexed number of avatars used for calculating offset margins */
   const NUMBER_OF_AVATARS = profiles.length - 1;
 
   /** The cumulative distance that avatars are spread by */
@@ -151,7 +150,10 @@ export const ManageHouseholdMembers = ({
             })
           }}
         >
-          <AvatarButton onPress={handleAddNewHouseholdMember} />
+          <AvatarButton
+            disabled={!editMode}
+            onPress={handleAddNewHouseholdMember}
+          />
         </AvatarButtonAnimation>
       </AvatarsWrapper>
       <CancelButtonWrapper
@@ -197,6 +199,7 @@ const AvatarsWrapper = styled(Animated.View)`
 `;
 
 const LongPressButton = styled.TouchableOpacity`
+  z-index: 5; /* NB: to take it above the add new member button */
   flex-direction: row;
   align-items: center;
   justify-content: center;

@@ -5,8 +5,14 @@ import styled from "styled-components/native";
 import { AvatarCircle } from "./avatar-circle";
 import { theme } from "../theme";
 
-export const AvatarButton = ({ onPress }: { onPress: () => void }) => (
-  <ButtonWrapper onPress={onPress}>
+export const AvatarButton = ({
+  onPress,
+  disabled
+}: {
+  onPress: () => void;
+  disabled?: boolean;
+}) => (
+  <ButtonWrapper onPress={onPress} disabled={disabled}>
     <AvatarCircle>
       <FontAwesomeIcon
         icon={faPlus}
