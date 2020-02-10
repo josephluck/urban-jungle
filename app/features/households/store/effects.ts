@@ -69,6 +69,8 @@ export const fetchHousehold = (
 
 /**
  * Creates the relationship between a profile and a household.
+ *
+ * Returns the household ID
  */
 export const createProfileHouseholdRelation = (profileId: string) => (
   householdId: string
@@ -170,6 +172,8 @@ export const storeSelectedHouseholdIdToStorageIfNotPresent = (
 /**
  * Stores the given household as a preference in async storage, used to select
  * a default household from the list should the user belong to more than one.
+ *
+ * Returns the household Id
  */
 export const storeSelectedHouseholdIdToStorage = (
   id: string

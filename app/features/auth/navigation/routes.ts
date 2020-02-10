@@ -49,7 +49,7 @@ export const parseHouseholdInvitationLink = (
   const { path, queryParams } = Linking.parse(link);
   return pipe(
     path,
-    O.fromPredicate(p => p === HOUSEHOLD_INVITATION_LINK),
+    O.fromPredicate(p => !!p && p.includes(HOUSEHOLD_INVITATION_LINK)), // NB: includes necessary since the link is prefixed with `--/`
     O.chain(() => O.fromNullable(queryParams as HouseholdInvitationQueryParams))
   );
 };
