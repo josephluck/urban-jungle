@@ -180,8 +180,8 @@ export const storeSelectedHouseholdIdToStorage = (
 ): TE.TaskEither<IErr, string> =>
   TE.tryCatch(
     async () => {
-      await AsyncStorage.setItem(SELECTED_HOUSEHOLD_ID_KEY, id);
       setSelectedHouseholdId(id);
+      await AsyncStorage.setItem(SELECTED_HOUSEHOLD_ID_KEY, id);
       return id;
     },
     () => "BAD_REQUEST" as IErr

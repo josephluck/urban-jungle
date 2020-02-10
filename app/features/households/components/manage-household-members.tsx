@@ -20,7 +20,9 @@ export const ManageHouseholdMembers = ({
   householdId: string;
 }) => {
   const [editMode, setEditMode] = useState(false);
-  const profiles = useStore(() => selectProfilesForHousehold(householdId));
+  const profiles = useStore(() => selectProfilesForHousehold(householdId), [
+    householdId
+  ]);
 
   const handleAddNewHouseholdMember = useCallback(
     () => shareHouseholdInvitation(householdId)(),

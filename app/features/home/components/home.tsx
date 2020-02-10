@@ -1,12 +1,12 @@
 import React, { useCallback, useContext } from "react";
-import { Heading, SubHeading } from "../../../components/typography";
+import { Heading, SubHeading, BodyText } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
 import {
   selectHasAuthenticated,
   selectCurrentUserId
 } from "../../auth/store/state";
 import { signOut } from "../../auth/store/effects";
-import { Button, View, ScrollView, Text, TouchableOpacity } from "react-native";
+import { Button, View, ScrollView, TouchableOpacity } from "react-native";
 import { NavigationContext, FlatList } from "react-navigation";
 import {
   createLoginRoute,
@@ -81,7 +81,7 @@ const HouseholdsList = () => {
         keyExtractor={household => household.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleSelectHousehold(item.id)}>
-            <Text>{item.name}</Text>
+            <BodyText>{item.name}</BodyText>
           </TouchableOpacity>
         )}
         ListFooterComponent={
@@ -111,7 +111,9 @@ const SelectedHousehold = () => {
 };
 
 const PlantsList = ({ householdId }: { householdId: string }) => {
-  const plants = useStore(() => selectPlantsByHouseholdId(householdId));
+  const plants = useStore(() => selectPlantsByHouseholdId(householdId), [
+    householdId
+  ]);
 
   const handleCreatePlant = useCallback(async () => {
     await createPlantForHousehold()(householdId)();
@@ -126,7 +128,7 @@ const PlantsList = ({ householdId }: { householdId: string }) => {
         keyExtractor={plant => plant.id}
         renderItem={({ item }) => (
           <View>
-            <Text>{item.name}</Text>
+            <BodyText>{item.name}</BodyText>
           </View>
         )}
         ListFooterComponent={
