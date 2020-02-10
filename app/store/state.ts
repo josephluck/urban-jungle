@@ -48,4 +48,8 @@ const defaultState: State = {
 
 export const store = stately<State>(defaultState);
 
+export const resetGlobalState = store.createMutator(s => {
+  s = defaultState;
+});
+
 export const useStore = useStately(store);

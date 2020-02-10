@@ -2,17 +2,16 @@ import { createSwitchNavigator } from "react-navigation";
 import { AUTH_STACK, AuthNavigator } from "../features/auth/navigation/stack";
 import { Home } from "../features/home/components/home";
 import { createStackNavigator } from "react-navigation-stack";
-
-const HOME_STACK = "HOME_STACK";
+import { HOME_SCREEN } from "../features/home/navigation/routes";
 
 const PrivateStack = createStackNavigator(
   {
-    [HOME_STACK]: {
+    [HOME_SCREEN]: {
       screen: Home
     }
   },
   {
-    initialRouteName: HOME_STACK,
+    initialRouteName: HOME_SCREEN,
     headerMode: "none",
     navigationOptions: {
       headerShown: false

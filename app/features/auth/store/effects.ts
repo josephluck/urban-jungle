@@ -12,9 +12,10 @@ import {
 } from "./state";
 import {
   createHouseholdForProfile,
-  createProfileHouseholdRelation
+  createProfileHouseholdRelation,
+  storeSelectedHouseholdIdToStorage
 } from "../../households/store/effects";
-import { store } from "../../../store/state";
+import { store, resetGlobalState } from "../../../store/state";
 import {
   createProfileForUser,
   fetchProfileIfNotFetched
@@ -27,7 +28,7 @@ export const initialize = store.createEffect(() => {
     if (user) {
       await fetchOrCreateProfile()();
     } else {
-      // TODO: clean up all state...
+      resetGlobalState();
     }
     setInitializing(false);
   });
@@ -90,7 +91,8 @@ export const handleInitialHouseholdInvitationLink = (
   pipe(
     getAndParseInitialHouseholdInvitationLink(),
     TE.map(params => params.householdId),
-    TE.chainFirst(createProfileHouseholdRelation(profileId))
+    TE.chainFirst(createProfileHouseholdRelation(profileId)),
+    TE.chain(storeSelectedHouseholdIdToStorage) // TODO: the redirection happens before this is fired
   );
 
 export const signOut = store.createEffect(async () => {
@@ -116,6 +118,7 @@ export const createAndSeedProfile = (): TE.TaskEither<IErr, ProfileModel> =>
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain(createProfileForUser),
     TE.map(profile => profile.id),
+    // TODO: check initial deep link, and skip creating a household if there's a householdId in the deep link?
     TE.chain(createHouseholdForProfile()),
     TE.chain(fetchCurrentProfileIfNotFetched)
   );
