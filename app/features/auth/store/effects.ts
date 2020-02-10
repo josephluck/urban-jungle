@@ -20,7 +20,7 @@ import {
   createProfileForUser,
   fetchProfileIfNotFetched
 } from "../../profiles/store/effects";
-import { getAndParseInitialHouseholdInvitationLink } from "../navigation/routes";
+import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async user => {
@@ -89,7 +89,7 @@ export const handleInitialHouseholdInvitationLink = (
   profileId: string
 ): TE.TaskEither<IErr, string> =>
   pipe(
-    getAndParseInitialHouseholdInvitationLink(),
+    getAndParseInitialHouseholdInvitationDeepLink(),
     TE.map(params => params.householdId),
     TE.chainFirst(createProfileHouseholdRelation(profileId)),
     TE.chain(storeSelectedHouseholdIdToStorage) // TODO: the redirection happens before this is fired

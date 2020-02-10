@@ -1281,10 +1281,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@josephluck/stately@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@josephluck/stately/-/stately-1.1.5.tgz#093302208923738e63bae33288065f4f5335dda5"
-  integrity sha512-RJD7XEqUqqB9ElbDNjhpE5UHXEaKLqBrMLhO/ZpOsoT7fCuvJmJJXZ8zxbni6dVDpISi+R4J4J0xNzcZx02EBQ==
+"@josephluck/stately@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@josephluck/stately/-/stately-1.1.7.tgz#9991b55716b63c1513db05a0f550d10796c9d4b6"
+  integrity sha512-y8LPfIyV0cc+eOQygcLS58nGUKLSLsem9R48nV9QnYnN6dTLmWAKgl2Co2w7uYntLevKIslUH1AKK1u6KWwsfQ==
   dependencies:
     immer "^5.0.0"
 

@@ -9,7 +9,7 @@ import { database } from "./database";
 import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
 import { AsyncStorage, Share } from "react-native";
 import { setSelectedHouseholdId } from "./state";
-import { makeHouseholdInvitationLink } from "../../auth/navigation/routes";
+import { makeHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
@@ -132,7 +132,7 @@ export const shareHouseholdInvitation = (
 ): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     async () => {
-      const link = makeHouseholdInvitationLink(householdId);
+      const link = makeHouseholdInvitationDeepLink(householdId);
       try {
         const result = await Share.share({
           title: `Can you help me care for my plants?`,
