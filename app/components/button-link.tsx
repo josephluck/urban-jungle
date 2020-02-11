@@ -19,7 +19,7 @@ export const ButtonLink = ({
 
 const Wrapper = styled.TouchableOpacity`
   border-bottom-color: ${props => props.theme.colors.pureWhite};
-  border-bottom-width: 1px;
+  border-bottom-width: 1;
 `;
 
 const Link = styled(BodyText)``;

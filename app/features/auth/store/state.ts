@@ -22,6 +22,7 @@ export const selectCurrentUserId = (): O.Option<string> =>
     selectAuthUser(),
     O.map(u => u.uid)
   );
+
 export const selectHasAuthenticated = (): boolean =>
   every([selectAuthUser(), selectCurrentProfile()]);
 

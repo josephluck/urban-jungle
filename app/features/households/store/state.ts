@@ -4,7 +4,9 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import {
   selectProfileAvatarById,
-  selectProfileNameById
+  selectProfileNameById,
+  selectMiniProfileById,
+  MiniProfile
 } from "../../profiles/store/state";
 import { store } from "../../../store/state";
 import { getFirstLetterFromOptionString } from "../../../fp/option";
@@ -95,26 +97,11 @@ export const selectProfileNamesForHousehold = (
     )
   );
 
-interface HouseholdProfile {
-  id: string;
-  name: O.Option<string>;
-  letter: O.Option<string>;
-  avatar: O.Option<string>;
-}
-
-export const selectProfilesForHousehold = (id: string): HouseholdProfile[] =>
+export const selectProfilesForHousehold = (id: string): MiniProfile[] =>
   pipe(
     selectProfileIdsForHousehold(id),
     O.getOrElse(() => [] as string[])
-  ).map(id => {
-    const name = selectProfileNameById(id);
-    return {
-      id,
-      name,
-      letter: pipe(name, O.map(getFirstLetterFromOptionString), O.flatten),
-      avatar: selectProfileAvatarById(id)
-    };
-  });
+  ).map(selectMiniProfileById);
 
 export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {

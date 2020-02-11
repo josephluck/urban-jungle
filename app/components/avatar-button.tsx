@@ -13,7 +13,7 @@ export const AvatarButton = ({
   disabled?: boolean;
 }) => (
   <ButtonWrapper onPress={onPress} disabled={disabled}>
-    <AvatarCircle>
+    <AvatarCircle size="default">
       <FontAwesomeIcon
         icon={faUserPlus}
         size={theme.font._20.size}

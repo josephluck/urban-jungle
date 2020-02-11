@@ -61,8 +61,17 @@ const size = {
   modalCloseCross: 18,
   closeBarHeight: 4,
   closeBarWidth: 26,
-  welcomeAvatarImage: 80,
-  avatarImage: 50
+  avatarSmall: 30,
+  avatarDefault: 50,
+  avatarLarge: 80
+};
+
+export type AvatarSize = "small" | "default" | "large";
+
+export const sizeToDimension: Record<AvatarSize, number> = {
+  small: size.avatarSmall,
+  default: size.avatarDefault,
+  large: size.avatarLarge
 };
 
 const spacing = {
@@ -74,7 +83,8 @@ const spacing = {
   _12: 12,
   _14: 14,
   _16: 16,
-  _18: 18
+  _18: 18,
+  _22: 22
 };
 
 export const theme = {

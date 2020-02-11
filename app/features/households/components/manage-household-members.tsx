@@ -135,7 +135,7 @@ export const ManageHouseholdMembers = ({
                 translateX: animatedValue.current.interpolate({
                   inputRange: [0, 100],
                   outputRange: [
-                    -theme.size.avatarImage - AVATAR_SPREAD,
+                    -theme.size.avatarDefault - AVATAR_SPREAD,
                     NUMBER_OF_AVATARS * AVATAR_SPREAD + AVATAR_SPREAD
                   ]
                 })
@@ -175,7 +175,7 @@ export const ManageHouseholdMembers = ({
 const AVATAR_SPREAD = 12;
 
 /** Half the size of the add new member button */
-const HALF_BUTTON_SIZE = theme.size.avatarImage / 2;
+const HALF_BUTTON_SIZE = theme.size.avatarDefault / 2;
 
 /** Half the spread of the new member button (used to offset the margin to make the unexpanded avatars centered) */
 const HALF_BUTTON_SPREAD = AVATAR_SPREAD / 2;
@@ -184,7 +184,8 @@ const HALF_BUTTON_SPREAD = AVATAR_SPREAD / 2;
 const CANCEL_BUTTON_WRAPPER_HEIGHT =
   theme.font._16.lineHeight + theme.spacing._16 * 2;
 
-export const MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT = theme.size.avatarImage;
+export const MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT =
+  theme.size.avatarDefault;
 export const MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT =
   MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT + CANCEL_BUTTON_WRAPPER_HEIGHT;
 
@@ -208,8 +209,8 @@ const AvatarsInnerWrapper = styled.View`
 `;
 
 const AvatarWrapper = styled(Animated.View)`
-  width: ${props => props.theme.size.avatarImage}px;
-  height: ${props => props.theme.size.avatarImage}px;
+  width: 50;
+  height: 50;
 `;
 
 const AvatarButtonAnimation = styled(Animated.View)``;

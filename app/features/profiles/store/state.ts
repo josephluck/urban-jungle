@@ -3,6 +3,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { store } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
+import { getFirstLetterFromOptionString } from "../../../fp/option";
 
 /**
  * SELECTORS
@@ -58,6 +59,38 @@ export const selectProfileNameById = (id: string): O.Option<string> =>
   pipe(
     selectProfileById2(id),
     O.map(profile => profile.name)
+  );
+
+export interface MiniProfile {
+  id: string;
+  name: O.Option<string>;
+  letter: O.Option<string>;
+  avatar: O.Option<string>;
+}
+
+export const selectMiniProfileById = (id: string): MiniProfile => {
+  const name = selectProfileNameById(id);
+  return {
+    id,
+    name,
+    letter: pipe(name, O.map(getFirstLetterFromOptionString), O.flatten),
+    avatar: selectProfileAvatarById(id)
+  };
+};
+
+export const selectCurrentMiniProfile = (): MiniProfile =>
+  pipe(
+    selectCurrentUserId(),
+    O.map(selectMiniProfileById),
+    O.getOrElse(
+      () =>
+        ({
+          id: "",
+          avatar: O.none,
+          letter: O.none,
+          name: O.none
+        } as MiniProfile)
+    )
   );
 
 /**

@@ -3,19 +3,23 @@ import * as O from "fp-ts/lib/Option";
 import styled from "styled-components/native";
 import { pipe } from "fp-ts/lib/pipeable";
 import { AvatarCircle } from "./avatar-circle";
+import { AvatarSize, sizeToDimension } from "../theme";
 
 export const Avatar = ({
   src,
-  letter
+  letter,
+  size = "default"
 }: {
   src: O.Option<string>;
   letter: O.Option<string>;
+  size?: AvatarSize;
 }) =>
   pipe(
     src,
     O.fold(
       () => (
         <AvatarPlaceholder
+          size={size}
           letter={pipe(
             letter,
             O.getOrElse(() => "👋")
@@ -23,27 +27,32 @@ export const Avatar = ({
         />
       ),
       uri => (
-        <AvatarCircle>
-          <AvatarImage source={{ uri }} />
+        <AvatarCircle size={size}>
+          <AvatarImage size={size} source={{ uri }} />
         </AvatarCircle>
       )
     )
   );
 
-export const AvatarPlaceholder = ({ letter }: { letter: string }) => (
-  <AvatarCircle>
-    <PlaceholderLetter>{letter}</PlaceholderLetter>
+export const AvatarPlaceholder = ({
+  letter,
+  size
+}: {
+  letter: string;
+  size: AvatarSize;
+}) => (
+  <AvatarCircle size={size}>
+    <PlaceholderLetter size={size}>{letter}</PlaceholderLetter>
   </AvatarCircle>
 );
 
-const AvatarImage = styled.Image`
-  width: ${props => props.theme.size.avatarImage}px;
-  height: ${props => props.theme.size.avatarImage}px;
-  border-radius: ${props => props.theme.size.avatarImage / 2}px;
+const AvatarImage = styled.Image<{ size: AvatarSize }>`
+  width: ${props => sizeToDimension[props.size]};
+  height: ${props => sizeToDimension[props.size]};
+  border-radius: ${props => sizeToDimension[props.size] / 2};
 `;
 
-const PlaceholderLetter = styled.Text`
-  border-radius: ${props => props.theme.size.avatarImage / 2}px;
+const PlaceholderLetter = styled.Text<{ size: AvatarSize }>`
   font-size: ${props => props.theme.font._24.size}px;
   color: ${props => props.theme.componentColors.avatarPlaceholderLetter};
 `;

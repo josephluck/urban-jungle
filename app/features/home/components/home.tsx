@@ -17,6 +17,11 @@ import { HouseholdPlantsSubscription } from "../../plants/subscriptions/househol
 import { selectPlantsByHouseholdId } from "../../plants/store/state";
 import { useStore } from "../../../store/state";
 import { HouseholdsSelection } from "../../households/components/households-selection";
+import styled from "styled-components/native";
+import { Avatar } from "../../../components/avatar";
+import { selectCurrentMiniProfile } from "../../profiles/store/state";
+import { faPlus } from "@fortawesome/pro-light-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -31,7 +36,8 @@ export const Home = () => {
 const HomeScreen = () => {
   return (
     <ScreenLayout>
-      <ScrollView>
+      <AppHeading />
+      <ScrollView style={{ paddingTop: 50 }}>
         <HouseholdsSelection />
         <SelectedHousehold />
         <Button title="Sign out" onPress={signOut} />
@@ -39,6 +45,54 @@ const HomeScreen = () => {
     </ScreenLayout>
   );
 };
+
+const AppHeading = () => {
+  return (
+    <HeadingWrapper>
+      <CurrentProfileAvatar onPress={console.log} />
+      <AddButton onPress={console.log} />
+    </HeadingWrapper>
+  );
+};
+
+const HeadingWrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const CurrentProfileAvatar = ({ onPress }: { onPress: () => void }) => {
+  const miniProfile = useStore(selectCurrentMiniProfile);
+  return (
+    <CurrentProfileButton onPress={onPress}>
+      <Avatar
+        src={miniProfile.avatar}
+        letter={miniProfile.letter}
+        size="small"
+      />
+    </CurrentProfileButton>
+  );
+};
+
+const CurrentProfileButton = styled.TouchableOpacity`
+  padding-vertical: ${props => props.theme.spacing._16};
+  padding-horizontal: ${props => props.theme.spacing._16};
+`;
+
+const AddButton = ({ onPress }: { onPress: () => void }) => (
+  <AddButtonButton onPress={onPress}>
+    <FontAwesomeIcon color="white" icon={faPlus} size={20} />
+  </AddButtonButton>
+);
+
+const AddButtonButton = styled.TouchableOpacity`
+  width: ${props => props.theme.size.avatarSmall};
+  height: ${props => props.theme.size.avatarSmall};
+  padding-vertical: ${props => props.theme.spacing._16};
+  padding-horizontal: ${props => props.theme.spacing._22};
+  justify-content: center;
+  align-items: center;
+`;
 
 const SelectedHousehold = () => {
   const selectedHousehold = useStore(selectSelectedHousehold);
