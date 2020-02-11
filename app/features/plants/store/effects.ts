@@ -34,9 +34,20 @@ export const createPlantForHousehold = (
     )
   );
 
+export const deletePlantByHouseholdId = (householdId: string) => (
+  plantId: string
+): TE.TaskEither<IErr, void> =>
+  TE.tryCatch(
+    async () => {
+      await database(householdId)
+        .doc(plantId)
+        .delete();
+    },
+    () => "BAD_REQUEST" as IErr
+  );
+
 const defaultPlant: Omit<PlantModel, "id" | "dateCreated" | "householdId"> = {
   name: "Cactus",
   location: "default",
-  careRecurrenceDays: 7,
-  cares: []
+  careRecurrenceDays: 7
 };

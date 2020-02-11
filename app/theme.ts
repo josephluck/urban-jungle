@@ -7,6 +7,7 @@ const borderRadius = {
 
 const colors = {
   offBlack: "rgba(14, 19, 27, 1)",
+  nearBlack: "rgba(37, 42, 51, 1)",
   deepGray: "rgba(54, 61, 74, 1)",
   midOffGray: "rgba(113, 121, 134, 1)",
   lightOffGray: "rgba(146, 155, 168, 1)",
@@ -65,7 +66,7 @@ const size = {
   modalCloseCross: 18,
   closeBarHeight: 4,
   closeBarWidth: 26,
-  avatarSmall: 30,
+  avatarSmall: 40,
   avatarDefault: 50,
   avatarLarge: 80
 };

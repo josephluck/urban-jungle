@@ -2,7 +2,16 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
-import { ProfileModel, HouseholdModel, PlantModel } from "../types";
+import {
+  ProfileModel,
+  HouseholdModel,
+  PlantModel,
+  CareModel,
+  UserId,
+  HouseholdId,
+  PlantId,
+  CareId
+} from "../types";
 
 interface AuthState {
   initializing: boolean;
@@ -10,16 +19,20 @@ interface AuthState {
 }
 
 interface ProfilesState {
-  profiles: Record<string, ProfileModel>;
+  profiles: Record<UserId, ProfileModel>;
 }
 
 interface HouseholdsState {
-  selectedHouseholdId: O.Option<string>;
-  households: Record<string, HouseholdModel>;
+  selectedHouseholdId: O.Option<HouseholdId>;
+  households: Record<HouseholdId, HouseholdModel>;
 }
 
 interface PlantsState {
-  plantsByHouseholdId: Record<string, Record<string, PlantModel>>;
+  plantsByHouseholdId: Record<HouseholdId, Record<PlantId, PlantModel>>;
+}
+
+interface CaresState {
+  caresByHouseholdId: Record<HouseholdId, Record<CareId, CareModel>>;
 }
 
 interface State {
@@ -27,6 +40,7 @@ interface State {
   profiles: ProfilesState;
   households: HouseholdsState;
   plants: PlantsState;
+  cares: CaresState;
 }
 
 const defaultState: State = {
@@ -43,6 +57,9 @@ const defaultState: State = {
   },
   plants: {
     plantsByHouseholdId: {}
+  },
+  cares: {
+    caresByHouseholdId: {}
   }
 };
 
@@ -51,5 +68,7 @@ export const store = stately<State>(defaultState);
 export const resetGlobalState = store.createMutator(s => {
   s = defaultState;
 });
+
+store.subscribe((_, next) => console.log(new Date().toString(), next));
 
 export const useStore = useStately(store);

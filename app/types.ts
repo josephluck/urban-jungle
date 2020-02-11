@@ -1,5 +1,10 @@
 import firebase from "firebase";
 
+export type UserId = string;
+export type HouseholdId = string;
+export type PlantId = string;
+export type CareId = string;
+
 export interface BaseModel {
   /**
    * Primary key.
@@ -40,12 +45,6 @@ export interface HouseholdModel extends BaseModel {
    * List of profile ids that can manage the Household.
    */
   profileIds: string[];
-  /**
-   * A Firestore sub-collection of Plants belonging to the Household.
-   * https://firebase.google.com/docs/firestore/manage-data/structure-data#subcollections
-   * TODO: check that this is returned on a household...
-   */
-  plants: PlantModel[];
 }
 
 export interface PlantModel extends BaseModel {
@@ -69,12 +68,6 @@ export interface PlantModel extends BaseModel {
    * An optional name for the plant. Takes precedence over name when provided.
    */
   nickname?: string;
-  /**
-   * A Firestore sub-collection of Care entries done for the Plant.
-   * https://firebase.google.com/docs/firestore/manage-data/structure-data#subcollections
-   * TODO: check that this is returned on a plant...
-   */
-  cares: CareModel[];
 }
 
 export interface CareModel extends BaseModel {

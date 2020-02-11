@@ -1,10 +1,14 @@
 import React, { useCallback, useContext, useRef, useMemo } from "react";
-import { Heading, BodyText, SubHeading } from "../../../components/typography";
+import {
+  Heading,
+  TertiaryButtonText,
+  SubHeading
+} from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
 import { selectHasAuthenticated } from "../../auth/store/state";
 import { signOut } from "../../auth/store/effects";
-import { Button, View, Animated } from "react-native";
-import { NavigationContext, FlatList } from "react-navigation";
+import { Button, Animated, Alert } from "react-native";
+import { NavigationContext, SectionList } from "react-navigation";
 import {
   createLoginRoute,
   createSignUpRoute
@@ -13,12 +17,19 @@ import {
   selectedSelectedOrMostRecentHouseholdId,
   selectSelectedHouseholdName
 } from "../../households/store/state";
-import { createPlantForHousehold } from "../../plants/store/effects";
+import {
+  createPlantForHousehold,
+  deletePlantByHouseholdId
+} from "../../plants/store/effects";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
 import { HouseholdPlantsSubscription } from "../../plants/subscriptions/household-plants";
-import { selectPlantsByHouseholdId } from "../../plants/store/state";
+import {
+  selectPlantsTimelineByHouseholdIdGroupedByCareDueDate,
+  TimelineSection,
+  PlantTimelineItem
+} from "../../plants/store/state";
 import { useStore } from "../../../store/state";
 import {
   HouseholdsSelection,
@@ -28,9 +39,9 @@ import styled from "styled-components/native";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { CurrentProfileAvatar } from "../../profiles/components/current-profile-button";
-import { PlantModel } from "../../../types";
 import { IErr } from "../../../utils/err";
-import { ButtonLink } from "../../../components/button-link";
+import { createCareForPlantByCurrentProfileId } from "../../care/store/effects";
+import { HouseholdCaresSubscription } from "../../care/subscriptions/household-cares";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -51,12 +62,12 @@ const HomeScreen = () => {
     O.getOrElse(() => "")
   );
 
-  const plants = useStore(
+  const sections = useStore(
     () =>
       pipe(
         selectedHouseholdId_,
-        O.map(selectPlantsByHouseholdId),
-        O.getOrElse(() => [] as PlantModel[])
+        O.map(selectPlantsTimelineByHouseholdIdGroupedByCareDueDate),
+        O.getOrElse(() => [] as TimelineSection[])
       ),
     [selectedHouseholdId_]
   );
@@ -65,10 +76,40 @@ const HomeScreen = () => {
     const task = pipe(
       selectedHouseholdId_,
       TE.fromOption(() => "NOT_FOUND" as IErr),
-      TE.chain(createPlantForHousehold())
+      TE.chain(
+        createPlantForHousehold({
+          careRecurrenceDays: (Math.random() * (14 - 0 + 1)) << 0
+        })
+      )
     );
     task();
   }, [selectedHouseholdId_]);
+
+  const handleDeletePlant = useCallback(async (plant: PlantTimelineItem) => {
+    try {
+      await new Promise((resolve, reject) =>
+        Alert.alert(
+          "Remove plant",
+          `Are you sure you want to remove ${plant.name}?`,
+          [
+            {
+              text: "Cancel",
+              onPress: reject
+            },
+            {
+              text: `I'm sure`,
+              onPress: resolve
+            }
+          ]
+        )
+      );
+      await deletePlantByHouseholdId(plant.householdId)(plant.id)();
+    } catch (err) {}
+  }, []);
+
+  const handleCareForPlant = useCallback(async (plant: PlantTimelineItem) => {
+    createCareForPlantByCurrentProfileId(plant.id)(plant.householdId)();
+  }, []);
 
   const scrollAnimatedValue = useRef(new Animated.Value(0));
 
@@ -76,9 +117,12 @@ const HomeScreen = () => {
     <ScreenLayout>
       <AppHeading scrollAnimatedValue={scrollAnimatedValue.current} />
       {selectedHouseholdId ? (
-        <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
+        <>
+          <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
+          <HouseholdCaresSubscription householdId={selectedHouseholdId} />
+        </>
       ) : null}
-      <FlatList
+      <SectionList
         ListHeaderComponent={
           <HouseholdsSelection
             scrollAnimatedValue={scrollAnimatedValue.current}
@@ -87,21 +131,44 @@ const HomeScreen = () => {
         onScroll={Animated.event([
           { nativeEvent: { contentOffset: { y: scrollAnimatedValue.current } } }
         ])}
-        data={plants}
+        sections={sections}
         keyExtractor={plant => plant.id}
+        renderSectionHeader={item => (
+          <TimelineSectionHeader>
+            <TertiaryButtonText>{item.section.title}</TertiaryButtonText>
+          </TimelineSectionHeader>
+        )}
         renderItem={({ item }) => (
-          <View>
-            <BodyText>{item.name}</BodyText>
-          </View>
+          <TimelinePlantItem
+            onLongPress={() => handleDeletePlant(item)}
+            onPress={() => handleCareForPlant(item)}
+          >
+            <Heading>{item.name}</Heading>
+          </TimelinePlantItem>
         )}
         ListFooterComponent={
           <Button title="Add plant" onPress={handleCreatePlant} />
         }
       />
-      <ButtonLink onPress={signOut}>Sign out</ButtonLink>
     </ScreenLayout>
   );
 };
+
+const TimelineSectionHeader = styled.View`
+  background-color: ${props => props.theme.colors.offBlack};
+  padding-top: ${props => props.theme.spacing._16};
+  padding-bottom: ${props => props.theme.spacing._8};
+  margin-horizontal: ${props => props.theme.spacing._18};
+`;
+
+const TimelinePlantItem = styled.TouchableOpacity`
+  background-color: ${props => props.theme.colors.nearBlack};
+  padding-vertical: ${props => props.theme.spacing._12};
+  padding-horizontal: ${props => props.theme.spacing._16};
+  border-radius: 6;
+  margin-bottom: ${props => props.theme.spacing._8};
+  margin-horizontal: ${props => props.theme.spacing._18};
+`;
 
 const AppHeading = ({
   scrollAnimatedValue
@@ -126,7 +193,7 @@ const AppHeading = ({
 
   return (
     <HeadingWrapper>
-      <CurrentProfileAvatar onPress={console.log} />
+      <CurrentProfileAvatar onPress={signOut} />
       <HouseholdNameTitle style={{ opacity }}>
         <SubHeading>{selectedHouseholdName}</SubHeading>
       </HouseholdNameTitle>

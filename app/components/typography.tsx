@@ -53,3 +53,11 @@ export const TagLabel = styled.Text`
   color: ${props => props.theme.colors.lightOffGray};
   font-family: ${SOURCE_SANS_SEMIBOLD};
 `;
+
+export const TertiaryButtonText = styled(BodyText)`
+  text-transform: uppercase;
+  font-family: ${SOURCE_SANS_SEMIBOLD};
+  color: ${props => props.theme.colors.lightOffGray};
+  font-size: ${props => props.theme.font._14.size}px;
+  letter-spacing: 0.5px;
+`;
