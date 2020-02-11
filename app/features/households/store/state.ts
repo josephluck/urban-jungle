@@ -9,7 +9,6 @@ import {
   MiniProfile
 } from "../../profiles/store/state";
 import { store } from "../../../store/state";
-import { getFirstLetterFromOptionString } from "../../../fp/option";
 
 export const selectHouseholds = store.createSelector(s =>
   Object.values(s.households.households)
@@ -22,16 +21,23 @@ export const selectSelectedHouseholdId = store.createSelector(
 export const selectHouseholdById = (id: string): O.Option<HouseholdModel> =>
   O.fromNullable(selectHouseholds().find(household => household.id === id));
 
+export const selectedSelectedOrMostRecentHouseholdId = (): O.Option<string> =>
+  pipe(
+    selectSelectedHouseholdId(),
+    O.fold(selectMostRecentlyAddedHouseholdId, O.some)
+  );
+
 /**
  * Gets the user's selected preferred household, or the most recent one if there
  * isn't a preference.
  */
 export const selectSelectedHousehold = (): O.Option<HouseholdModel> =>
+  pipe(selectedSelectedOrMostRecentHouseholdId(), O.chain(selectHouseholdById));
+
+export const selectSelectedHouseholdName = (): O.Option<string> =>
   pipe(
-    selectSelectedHouseholdId(),
-    O.map(selectHouseholdById),
-    O.flatten,
-    O.fold(selectMostRecentlyAddedHousehold, O.fromNullable)
+    selectSelectedHousehold(),
+    O.map(household => household.name)
   );
 
 /**

@@ -2,7 +2,13 @@ import { Dimensions, Animated, Easing } from "react-native";
 import SideSwipe from "react-native-sideswipe";
 import { useStore } from "../../../store/state";
 import { selectHouseholds } from "../store/state";
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo
+} from "react";
 import styled from "styled-components/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronDown, faChevronUp } from "@fortawesome/pro-light-svg-icons";
@@ -23,7 +29,7 @@ import { IErr } from "../../../utils/err";
 const { width } = Dimensions.get("window");
 
 /** Represents the height of the title bar */
-const COLLAPSED_MIN_HEIGHT = theme.font._24.lineHeight;
+export const COLLAPSED_MIN_HEIGHT = theme.font._24.lineHeight;
 
 const SPACE_BETWEEN_TITLE_AND_AVATARS = theme.spacing._16;
 
@@ -39,7 +45,11 @@ const COLLAPSED_MAX_HEIGHT_EDIT_MODE =
   SPACE_BETWEEN_TITLE_AND_AVATARS +
   MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT;
 
-export const HouseholdsSelection = () => {
+export const HouseholdsSelection = ({
+  scrollAnimatedValue
+}: {
+  scrollAnimatedValue: Animated.Value;
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
@@ -102,10 +112,20 @@ export const HouseholdsSelection = () => {
     }).start();
   }, [isExpanded, editMode]);
 
+  const opacity = useMemo(
+    () =>
+      scrollAnimatedValue.interpolate({
+        inputRange: [0, COLLAPSED_MIN_HEIGHT],
+        outputRange: [1, 0],
+        extrapolate: "clamp"
+      }),
+    [scrollAnimatedValue]
+  );
+
   return (
     <>
       <CurrentProfileHouseholdsSubscription />
-      <Wrapper>
+      <Wrapper style={{ opacity }}>
         <CollapsableView
           style={{
             height: collapseHeightAnimation.current
@@ -155,7 +175,7 @@ export const HouseholdsSelection = () => {
   );
 };
 
-const Wrapper = styled.View`
+const Wrapper = styled(Animated.View)`
   align-items: center;
   justify-content: center;
 `;
