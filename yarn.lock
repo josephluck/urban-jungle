@@ -1281,10 +1281,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@josephluck/stately@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@josephluck/stately/-/stately-1.1.7.tgz#9991b55716b63c1513db05a0f550d10796c9d4b6"
-  integrity sha512-y8LPfIyV0cc+eOQygcLS58nGUKLSLsem9R48nV9QnYnN6dTLmWAKgl2Co2w7uYntLevKIslUH1AKK1u6KWwsfQ==
+"@josephluck/stately@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@josephluck/stately/-/stately-1.1.8.tgz#7961e5fe62fe63fb48d5129d803bab2ceb683b26"
+  integrity sha512-QrQUi1JgEQu8NkpQ77J8vlhqeTB2GtK6ugnNPuCoV4IHyZeM2Vx0DC6AnsEx0BZxLHj5tlIU9NALU858R9I7uQ==
   dependencies:
     immer "^5.0.0"
 
@@ -1540,6 +1540,13 @@
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.0.tgz#2a5fa918786d07d3725726f7f650527e1cfeaffd"
   integrity sha512-c4zji5CjWv1tJxIZkz1oUtGcdOlsH3aza28Nqmm+uNDWBRHoMsjooBEN4czZp1V3iXPihE/VRUOBqg+4Xq0W4g==
+
+"@types/react-native-collapsible@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@types/react-native-collapsible/-/react-native-collapsible-0.11.0.tgz#2f8c42843d1602709ad8c9cd6180bc690dbd0879"
+  integrity sha512-UL4MgDKjevhbGL13t4G7WAxFzlPPzbB5LuHyinEwrXuROt3EujoEc8M6RD244nNEREYDqGVhvCVicx86wCRW/w==
+  dependencies:
+    react-native-collapsible "*"
 
 "@types/react-native@*", "@types/react-native@^0.61.7":
   version "0.61.7"
@@ -5164,6 +5171,13 @@ react-native-animatable@1.3.3:
   dependencies:
     prop-types "^15.7.2"
 
+react-native-collapsible@*:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-collapsible/-/react-native-collapsible-1.5.1.tgz#da2937b509921b28bf1b0f9eb8e50ad61c3ffb5d"
+  integrity sha512-uQQ2s6l+7+L/pzJroisWsDsyVYVF5bQ+jGbLATNioRh/03SpEL8pcQEVKqVWswcNNR0B9GENixHaLzmuZIwpQg==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-gesture-handler@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.5.3.tgz#191b44701fab7ba54c27a2438cb5eaa252666e66"
@@ -5210,6 +5224,11 @@ react-native-screens@2.0.0-alpha.12:
   integrity sha512-x9M7FEdcm97bVDp3pi//nhduJHLFMrmDQs0fq299yx3kHdgHbrmhsa8jgW4HvDQhjyPE0FWADY/GrXFuPRj80w==
   dependencies:
     debounce "^1.2.0"
+
+react-native-sideswipe@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-sideswipe/-/react-native-sideswipe-1.5.0.tgz#f67014633456c7d1a44112b6126ee877f7202f50"
+  integrity sha512-1qI9qQrc+UwM24qtQN5Tk9cucvTRTpp3wnGxG3JjeATwaBxcIMQPtxbuosMFi+gXBH2p/ofmtD4jZc7w2bmGeg==
 
 react-native-svg@9.13.3:
   version "9.13.3"

@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faUserPlus } from "@fortawesome/pro-light-svg-icons";
+import { faUserPlus } from "@fortawesome/pro-solid-svg-icons";
 import styled from "styled-components/native";
 import { AvatarCircle } from "./avatar-circle";
 import { theme } from "../theme";
@@ -16,7 +16,7 @@ export const AvatarButton = ({
     <AvatarCircle>
       <FontAwesomeIcon
         icon={faUserPlus}
-        size={theme.font._24.size}
+        size={theme.font._20.size}
         color={theme.componentColors.avatarPlaceholderLetter}
       ></FontAwesomeIcon>
     </AvatarCircle>

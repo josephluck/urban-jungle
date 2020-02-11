@@ -8,7 +8,7 @@ import { useFonts } from "./hooks/fonts";
 import * as reactotron from "./reactotron";
 import { initialize } from "./features/auth/store/effects";
 import "./firebase";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, StatusBar } from "react-native";
 import { selectInitializing } from "./features/auth/store/state";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { useStore } from "./store/state";
@@ -29,6 +29,7 @@ export default () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <StatusBar barStyle="light-content" />
       <AppWrapper>
         {loading ? (
           <LoadingContainer>

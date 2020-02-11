@@ -3,7 +3,7 @@ import { selectProfilesForHousehold } from "../store/state";
 import styled from "styled-components/native";
 import { Avatar } from "../../../components/avatar";
 import { AvatarButton } from "../../../components/avatar-button";
-import React, { useCallback, useState, useRef, useEffect } from "react";
+import React, { useCallback, useRef, useEffect } from "react";
 import {
   shareHouseholdInvitation,
   removeProfileFromHousehold
@@ -15,11 +15,14 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 
 export const ManageHouseholdMembers = ({
-  householdId
+  householdId,
+  editMode,
+  onCancelPress
 }: {
   householdId: string;
+  editMode: boolean;
+  onCancelPress: () => void;
 }) => {
-  const [editMode, setEditMode] = useState(false);
   const profiles = useStore(() => selectProfilesForHousehold(householdId), [
     householdId
   ]);
@@ -28,14 +31,6 @@ export const ManageHouseholdMembers = ({
     () => shareHouseholdInvitation(householdId)(),
     [householdId]
   );
-
-  const enterEditMode = useCallback(() => {
-    setEditMode(true);
-  }, []);
-
-  const exitEditMode = useCallback(() => {
-    setEditMode(false);
-  }, []);
 
   const confirmRemoveProfileFromHousehold = useCallback(
     (id: string) =>
@@ -107,7 +102,7 @@ export const ManageHouseholdMembers = ({
           ]
         }}
       >
-        <LongPressButton onLongPress={enterEditMode}>
+        <AvatarsInnerWrapper>
           {profiles.map(({ avatar, letter, id }, i) => (
             <AvatarWrapper
               key={id}
@@ -132,7 +127,7 @@ export const ManageHouseholdMembers = ({
               </TouchableOpacity>
             </AvatarWrapper>
           ))}
-        </LongPressButton>
+        </AvatarsInnerWrapper>
         <AvatarButtonAnimation
           style={{
             transform: [
@@ -170,7 +165,7 @@ export const ManageHouseholdMembers = ({
           })
         }}
       >
-        <ButtonLink onPress={exitEditMode}>Cancel</ButtonLink>
+        <ButtonLink onPress={onCancelPress}>Cancel</ButtonLink>
       </CancelButtonWrapper>
     </Wrapper>
   );
@@ -189,9 +184,13 @@ const HALF_BUTTON_SPREAD = AVATAR_SPREAD / 2;
 const CANCEL_BUTTON_WRAPPER_HEIGHT =
   theme.font._16.lineHeight + theme.spacing._16 * 2;
 
+export const MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT = theme.size.avatarImage;
+export const MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT =
+  MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT + CANCEL_BUTTON_WRAPPER_HEIGHT;
+
 const Wrapper = styled.View`
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 `;
 
 const AvatarsWrapper = styled(Animated.View)`
@@ -200,7 +199,8 @@ const AvatarsWrapper = styled(Animated.View)`
   justify-content: center;
 `;
 
-const LongPressButton = styled.TouchableOpacity`
+// TODO: might not be needed (can be combined with above)
+const AvatarsInnerWrapper = styled.View`
   z-index: 5; /* NB: to take it above the add new member button */
   flex-direction: row;
   align-items: center;

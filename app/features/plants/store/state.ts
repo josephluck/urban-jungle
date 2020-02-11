@@ -27,6 +27,9 @@ export const setPlants = store.createMutator(
 
 export const upsertPlant = store.createMutator(
   (s, householdId: string, plant: PlantModel) => {
+    if (!s.plants.plantsByHouseholdId[householdId]) {
+      s.plants.plantsByHouseholdId[householdId] = {};
+    }
     s.plants.plantsByHouseholdId[householdId][plant.id] = plant;
   }
 );
