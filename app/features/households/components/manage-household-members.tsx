@@ -1,5 +1,8 @@
 import { useStore } from "../../../store/state";
-import { selectProfilesForHousehold } from "../store/state";
+import {
+  selectProfilesForHousehold,
+  selectHouseholdById
+} from "../store/state";
 import styled from "styled-components/native";
 import { Avatar } from "../../../components/avatar";
 import { AvatarButton } from "../../../components/avatar-button";
@@ -33,15 +36,20 @@ export const ManageHouseholdMembers = ({
   );
 
   const confirmRemoveProfileFromHousehold = useCallback(
-    (id: string) =>
+    (profileId: string) =>
       new Promise((resolve, reject) =>
         pipe(
-          O.fromNullable(profiles.find(p => p.id === id)),
+          O.fromNullable(profiles.find(p => p.id === profileId)),
           O.chain(profile => profile.name),
           O.fold(reject, name => {
+            const householdName = pipe(
+              selectHouseholdById(householdId),
+              O.map(household => household.name),
+              O.getOrElse(() => "this household")
+            );
             Alert.alert(
               "Remove member",
-              `Are you sure you want to remove ${name} from this household?`,
+              `Are you sure you want to remove ${name} from ${householdName}?`,
               [
                 {
                   text: "Cancel",
