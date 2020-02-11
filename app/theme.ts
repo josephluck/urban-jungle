@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { ThemeContext } from "styled-components/native";
+
 const borderRadius = {
   tiny: 4,
   small: 6,
@@ -21,12 +24,6 @@ const colors = {
   paleGreen: "rgba(5, 194, 125, 0.05)",
   darkGreen: "rgba(5, 194, 125, 1)",
   solidBlue: "rgba(34, 165, 222, 1)"
-};
-
-const componentColors = {
-  avatarBorder: colors.midOffGray,
-  avatarBackground: colors.deepGray,
-  avatarPlaceholderLetter: colors.nearWhite
 };
 
 const font = {
@@ -79,7 +76,7 @@ export const avatarSizeToValue: Record<AvatarSize, number> = {
   large: size.avatarLarge
 };
 
-export const avatarSizeToBordeWidth: Record<AvatarSize, number> = {
+export const avatarSizeToBorderWidth: Record<AvatarSize, number> = {
   small: 1,
   default: 2,
   large: 3
@@ -98,14 +95,28 @@ const spacing = {
   _22: 22
 };
 
-export const theme = {
+export const symbols = {
   borderRadius,
-  colors,
   font,
   fontWeight,
   size,
-  spacing,
-  componentColors
+  spacing
+};
+
+export const theme = {
+  appBackground: colors.offBlack,
+  avatarBorder: colors.midOffGray,
+  avatarBackground: colors.deepGray,
+  avatarPlaceholderLetter: colors.nearWhite,
+  defaultTextColor: colors.pureWhite,
+  secondaryTextColor: colors.lightOffGray,
+  timelinePlantItemBackground: colors.nearBlack,
+  householdSelectionChevron: colors.midOffGray
+};
+
+export const useTheme = () => {
+  const t = useContext(ThemeContext);
+  return t;
 };
 
 export type Theme = typeof theme;

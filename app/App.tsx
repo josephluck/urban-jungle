@@ -46,7 +46,7 @@ export default () => {
 
 const AppWrapper = styled.View`
   flex: 1;
-  background-color: ${props => props.theme.colors.offBlack};
+  background-color: ${props => props.theme.appBackground};
 `;
 
 const LoadingContainer = styled.View`

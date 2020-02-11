@@ -42,6 +42,7 @@ import { CurrentProfileAvatar } from "../../profiles/components/current-profile-
 import { IErr } from "../../../utils/err";
 import { createCareForPlantByCurrentProfileId } from "../../care/store/effects";
 import { HouseholdCaresSubscription } from "../../care/subscriptions/household-cares";
+import { symbols } from "../../../theme";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -155,19 +156,19 @@ const HomeScreen = () => {
 };
 
 const TimelineSectionHeader = styled.View`
-  background-color: ${props => props.theme.colors.offBlack};
-  padding-top: ${props => props.theme.spacing._16};
-  padding-bottom: ${props => props.theme.spacing._8};
-  margin-horizontal: ${props => props.theme.spacing._18};
+  background-color: ${props => props.theme.appBackground};
+  padding-top: ${symbols.spacing._16};
+  padding-bottom: ${symbols.spacing._8};
+  margin-horizontal: ${symbols.spacing._18};
 `;
 
 const TimelinePlantItem = styled.TouchableOpacity`
-  background-color: ${props => props.theme.colors.nearBlack};
-  padding-vertical: ${props => props.theme.spacing._12};
-  padding-horizontal: ${props => props.theme.spacing._16};
+  background-color: ${props => props.theme.timelinePlantItemBackground};
+  padding-vertical: ${symbols.spacing._12};
+  padding-horizontal: ${symbols.spacing._16};
   border-radius: 6;
-  margin-bottom: ${props => props.theme.spacing._8};
-  margin-horizontal: ${props => props.theme.spacing._18};
+  margin-bottom: ${symbols.spacing._8};
+  margin-horizontal: ${symbols.spacing._18};
 `;
 
 const AppHeading = ({
@@ -219,15 +220,15 @@ const AddButton = ({ onPress }: { onPress: () => void }) => (
 );
 
 const AddButtonButton = styled.TouchableOpacity`
-  padding-vertical: ${props => props.theme.spacing._16};
-  padding-horizontal: ${props => props.theme.spacing._16};
+  padding-vertical: ${symbols.spacing._16};
+  padding-horizontal: ${symbols.spacing._16};
   justify-content: center;
   align-items: center;
 `;
 
 const AddIconWrapper = styled.View`
-  width: ${props => props.theme.size.avatarSmall};
-  height: ${props => props.theme.size.avatarSmall};
+  width: ${symbols.size.avatarSmall};
+  height: ${symbols.size.avatarSmall};
   justify-content: center;
   align-items: center;
 `;

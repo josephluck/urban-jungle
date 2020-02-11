@@ -12,7 +12,7 @@ import {
   removeProfileFromHousehold
 } from "../store/effects";
 import { TouchableOpacity, Animated, Easing, Alert } from "react-native";
-import { theme } from "../../../theme";
+import { symbols } from "../../../theme";
 import { ButtonLink } from "../../../components/button-link";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
@@ -143,7 +143,7 @@ export const ManageHouseholdMembers = ({
                 translateX: animatedValue.current.interpolate({
                   inputRange: [0, 100],
                   outputRange: [
-                    -theme.size.avatarDefault - AVATAR_SPREAD,
+                    -symbols.size.avatarDefault - AVATAR_SPREAD,
                     NUMBER_OF_AVATARS * AVATAR_SPREAD + AVATAR_SPREAD
                   ]
                 })
@@ -183,17 +183,17 @@ export const ManageHouseholdMembers = ({
 const AVATAR_SPREAD = 12;
 
 /** Half the size of the add new member button */
-const HALF_BUTTON_SIZE = theme.size.avatarDefault / 2;
+const HALF_BUTTON_SIZE = symbols.size.avatarDefault / 2;
 
 /** Half the spread of the new member button (used to offset the margin to make the unexpanded avatars centered) */
 const HALF_BUTTON_SPREAD = AVATAR_SPREAD / 2;
 
 /** The computed height of the cancel button (as it's animated in to view) */
 const CANCEL_BUTTON_WRAPPER_HEIGHT =
-  theme.font._16.lineHeight + theme.spacing._16 * 2;
+  symbols.font._16.lineHeight + symbols.spacing._16 * 2;
 
 export const MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT =
-  theme.size.avatarDefault;
+  symbols.size.avatarDefault;
 export const MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT =
   MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT + CANCEL_BUTTON_WRAPPER_HEIGHT;
 

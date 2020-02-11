@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUserPlus } from "@fortawesome/pro-solid-svg-icons";
 import styled from "styled-components/native";
 import { AvatarCircle } from "./avatar-circle";
-import { theme } from "../theme";
+import { symbols, useTheme } from "../theme";
 
 export const AvatarButton = ({
   onPress,
@@ -11,16 +11,19 @@ export const AvatarButton = ({
 }: {
   onPress: () => void;
   disabled?: boolean;
-}) => (
-  <ButtonWrapper onPress={onPress} disabled={disabled}>
-    <AvatarCircle size="default">
-      <FontAwesomeIcon
-        icon={faUserPlus}
-        size={theme.font._20.size}
-        color={theme.componentColors.avatarPlaceholderLetter}
-      ></FontAwesomeIcon>
-    </AvatarCircle>
-  </ButtonWrapper>
-);
+}) => {
+  const theme = useTheme();
+  return (
+    <ButtonWrapper onPress={onPress} disabled={disabled}>
+      <AvatarCircle size="default">
+        <FontAwesomeIcon
+          icon={faUserPlus}
+          size={symbols.font._20.size}
+          color={theme.avatarPlaceholderLetter}
+        ></FontAwesomeIcon>
+      </AvatarCircle>
+    </ButtonWrapper>
+  );
+};
 
 const ButtonWrapper = styled.TouchableOpacity``;

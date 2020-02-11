@@ -17,5 +17,5 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => (
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${props => props.theme.colors.offBlack};
+  background-color: ${props => props.theme.appBackground};
 `;

@@ -17,7 +17,7 @@ import {
   MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT,
   MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT
 } from "./manage-household-members";
-import { theme } from "../../../theme";
+import { symbols, useTheme } from "../../../theme";
 import { Heading } from "../../../components/typography";
 import { CurrentProfileHouseholdsSubscription } from "../subscriptions/current-profile-households";
 import * as O from "fp-ts/lib/Option";
@@ -29,9 +29,9 @@ import { IErr } from "../../../utils/err";
 const { width } = Dimensions.get("window");
 
 /** Represents the height of the title bar */
-export const COLLAPSED_MIN_HEIGHT = theme.font._24.lineHeight;
+export const COLLAPSED_MIN_HEIGHT = symbols.font._24.lineHeight;
 
-const SPACE_BETWEEN_TITLE_AND_AVATARS = theme.spacing._16;
+const SPACE_BETWEEN_TITLE_AND_AVATARS = symbols.spacing._16;
 
 /** Represents the height of the title bar + the avatars in view-mode */
 const COLLAPSED_MAX_HEIGHT =
@@ -50,6 +50,7 @@ export const HouseholdsSelection = ({
 }: {
   scrollAnimatedValue: Animated.Value;
 }) => {
+  const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
@@ -166,7 +167,7 @@ export const HouseholdsSelection = ({
           onPress={isExpanded ? exitExpandedMode : enterExpandedMode}
         >
           <FontAwesomeIcon
-            color={theme.colors.pureWhite}
+            color={theme.householdSelectionChevron}
             icon={isExpanded ? faChevronUp : faChevronDown}
           />
         </ExpandButton>
@@ -189,7 +190,7 @@ const CollapsedInner = styled(Animated.View)`
 const ExpandButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
-  padding-vertical: ${props => props.theme.spacing._12}px;
+  padding-vertical: ${symbols.spacing._12}px;
   width: 100%;
 `;
 
