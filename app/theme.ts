@@ -33,6 +33,10 @@ const font = {
     size: 12,
     lineHeight: 14
   },
+  _14: {
+    size: 14,
+    lineHeight: 16
+  },
   _16: {
     size: 16,
     lineHeight: 20
@@ -68,10 +72,16 @@ const size = {
 
 export type AvatarSize = "small" | "default" | "large";
 
-export const sizeToDimension: Record<AvatarSize, number> = {
+export const avatarSizeToValue: Record<AvatarSize, number> = {
   small: size.avatarSmall,
   default: size.avatarDefault,
   large: size.avatarLarge
+};
+
+export const avatarSizeToBordeWidth: Record<AvatarSize, number> = {
+  small: 1,
+  default: 2,
+  large: 3
 };
 
 const spacing = {

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { StyleProp, ViewStyle } from "react-native";
 import { BodyText } from "./typography";
+import { SOURCE_SANS_SEMIBOLD } from "../hooks/fonts";
 
 export const ButtonLink = ({
   children,
@@ -17,9 +18,12 @@ export const ButtonLink = ({
   </Wrapper>
 );
 
-const Wrapper = styled.TouchableOpacity`
-  border-bottom-color: ${props => props.theme.colors.pureWhite};
-  border-bottom-width: 1;
-`;
+const Wrapper = styled.TouchableOpacity``;
 
-const Link = styled(BodyText)``;
+const Link = styled(BodyText)`
+  text-transform: uppercase;
+  font-family: ${SOURCE_SANS_SEMIBOLD};
+  color: ${props => props.theme.colors.lightOffGray};
+  font-size: ${props => props.theme.font._14.size}px;
+  letter-spacing: 0.5px;
+`;

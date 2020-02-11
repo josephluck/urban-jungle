@@ -37,7 +37,7 @@ const HomeScreen = () => {
   return (
     <ScreenLayout>
       <AppHeading />
-      <ScrollView style={{ paddingTop: 50 }}>
+      <ScrollView style={{ paddingTop: 20 }}>
         <HouseholdsSelection />
         <SelectedHousehold />
         <Button title="Sign out" onPress={signOut} />

@@ -119,7 +119,10 @@ export const HouseholdsSelection = () => {
             onIndexChange={handleSlideIndexChange}
             extractKey={item => item.id}
             renderItem={slide => (
-              <HouseholdItemWrapper onLongPress={enterEditMode}>
+              <HouseholdItemWrapper
+                onLongPress={enterEditMode}
+                onPress={enterExpandedMode}
+              >
                 <Heading>{slide.item.name}</Heading>
                 <CollapsedInner
                   style={{

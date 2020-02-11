@@ -3,7 +3,7 @@ import * as O from "fp-ts/lib/Option";
 import styled from "styled-components/native";
 import { pipe } from "fp-ts/lib/pipeable";
 import { AvatarCircle } from "./avatar-circle";
-import { AvatarSize, sizeToDimension } from "../theme";
+import { AvatarSize, avatarSizeToValue } from "../theme";
 
 export const Avatar = ({
   src,
@@ -47,9 +47,9 @@ export const AvatarPlaceholder = ({
 );
 
 const AvatarImage = styled.Image<{ size: AvatarSize }>`
-  width: ${props => sizeToDimension[props.size]};
-  height: ${props => sizeToDimension[props.size]};
-  border-radius: ${props => sizeToDimension[props.size] / 2};
+  width: ${props => avatarSizeToValue[props.size]};
+  height: ${props => avatarSizeToValue[props.size]};
+  border-radius: ${props => avatarSizeToValue[props.size] / 2};
 `;
 
 const PlaceholderLetter = styled.Text<{ size: AvatarSize }>`
