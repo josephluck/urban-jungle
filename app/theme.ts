@@ -8,24 +8,6 @@ const borderRadius = {
   large: 18
 };
 
-const colors = {
-  offBlack: "rgba(14, 19, 27, 1)",
-  nearBlack: "rgba(37, 42, 51, 1)",
-  deepGray: "rgba(54, 61, 74, 1)",
-  midOffGray: "rgba(113, 121, 134, 1)",
-  lightOffGray: "rgba(146, 155, 168, 1)",
-  nearWhite: "rgba(225, 226, 230, 1)",
-  blackTint08: "rgba(0, 0, 0, 0.8)",
-  blackTint04: "rgba(0, 0, 0, 0.4)",
-  whiteTint01: "rgba(247, 247, 248, 0.1)",
-  pureWhite: "rgba(255, 255, 255, 1)",
-  paleRed: "rgba(255, 243, 245, 1)",
-  darkRed: "rgba(255, 17, 68, 1)",
-  paleGreen: "rgba(5, 194, 125, 0.05)",
-  darkGreen: "rgba(5, 194, 125, 1)",
-  solidBlue: "rgba(34, 165, 222, 1)"
-};
-
 const font = {
   _12: {
     size: 12,
@@ -103,7 +85,27 @@ export const symbols = {
   spacing
 };
 
-export const theme = {
+const colors = {
+  offBlack: "rgba(14, 19, 27, 1)",
+  nearBlack: "rgba(37, 42, 51, 1)",
+  deepGray: "rgba(54, 61, 74, 1)",
+  midOffGray: "rgba(113, 121, 134, 1)",
+  lightOffGray: "rgba(146, 155, 168, 1)",
+  offWhite: "rgba(205, 206, 210, 1)",
+  nearWhite: "rgba(225, 226, 230, 1)",
+  blackTint08: "rgba(0, 0, 0, 0.8)",
+  blackTint04: "rgba(0, 0, 0, 0.4)",
+  whiteTint01: "rgba(247, 247, 248, 0.1)",
+  pureWhite: "rgba(255, 255, 255, 1)",
+  paleRed: "rgba(255, 243, 245, 1)",
+  darkRed: "rgba(255, 17, 68, 1)",
+  paleGreen: "rgba(5, 194, 125, 0.05)",
+  darkGreen: "rgba(5, 194, 125, 1)",
+  solidBlue: "rgba(34, 165, 222, 1)"
+};
+
+export const darkTheme = {
+  type: "light-content",
   appBackground: colors.offBlack,
   avatarBorder: colors.midOffGray,
   avatarBackground: colors.deepGray,
@@ -111,7 +113,21 @@ export const theme = {
   defaultTextColor: colors.pureWhite,
   secondaryTextColor: colors.lightOffGray,
   timelinePlantItemBackground: colors.nearBlack,
-  householdSelectionChevron: colors.midOffGray
+  householdSelectionChevron: colors.midOffGray,
+  addNewIcon: colors.pureWhite
+};
+
+export const lightTheme = {
+  type: "dark-content",
+  appBackground: colors.pureWhite,
+  avatarBorder: colors.lightOffGray,
+  avatarBackground: colors.nearWhite,
+  avatarPlaceholderLetter: colors.nearBlack,
+  defaultTextColor: colors.offBlack,
+  secondaryTextColor: colors.midOffGray,
+  timelinePlantItemBackground: colors.nearWhite,
+  householdSelectionChevron: colors.midOffGray,
+  addNewIcon: colors.offBlack
 };
 
 export const useTheme = () => {
@@ -119,4 +135,4 @@ export const useTheme = () => {
   return t;
 };
 
-export type Theme = typeof theme;
+export type Theme = typeof darkTheme;

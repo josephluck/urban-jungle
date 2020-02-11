@@ -42,7 +42,7 @@ import { CurrentProfileAvatar } from "../../profiles/components/current-profile-
 import { IErr } from "../../../utils/err";
 import { createCareForPlantByCurrentProfileId } from "../../care/store/effects";
 import { HouseholdCaresSubscription } from "../../care/subscriptions/household-cares";
-import { symbols } from "../../../theme";
+import { symbols, useTheme } from "../../../theme";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -211,13 +211,16 @@ const HeadingWrapper = styled.View`
   justify-content: space-between;
 `;
 
-const AddButton = ({ onPress }: { onPress: () => void }) => (
-  <AddButtonButton onPress={onPress}>
-    <AddIconWrapper>
-      <FontAwesomeIcon color="white" icon={faPlus} size={20} />
-    </AddIconWrapper>
-  </AddButtonButton>
-);
+const AddButton = ({ onPress }: { onPress: () => void }) => {
+  const theme = useTheme();
+  return (
+    <AddButtonButton onPress={onPress}>
+      <AddIconWrapper>
+        <FontAwesomeIcon color={theme.addNewIcon} icon={faPlus} size={20} />
+      </AddIconWrapper>
+    </AddButtonButton>
+  );
+};
 
 const AddButtonButton = styled.TouchableOpacity`
   padding-vertical: ${symbols.spacing._16};

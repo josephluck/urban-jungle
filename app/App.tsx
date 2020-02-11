@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { AppNavigation } from "./navigation/navigation";
 import { createAppContainer } from "react-navigation";
 import { ThemeProvider } from "styled-components";
-import { theme } from "./theme";
+import { lightTheme } from "./theme";
 import styled from "styled-components/native";
 import { useFonts } from "./hooks/fonts";
 import * as reactotron from "./reactotron";
@@ -28,8 +28,8 @@ export default () => {
   const loading = fontsLoading || authInitializing;
 
   return (
-    <ThemeProvider theme={theme}>
-      <StatusBar barStyle="light-content" />
+    <ThemeProvider theme={lightTheme}>
+      <StatusBar barStyle={lightTheme.type} />
       <AppWrapper>
         {loading ? (
           <LoadingContainer>
