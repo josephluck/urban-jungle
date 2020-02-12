@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "styled-components/native";
-import { SafeAreaView, Platform, StatusBar } from "react-native";
+import { View, Platform, StatusBar } from "react-native";
 
 export const ScreenLayout = ({ children }: { children: React.ReactNode }) => (
   <Container>
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
       }}
     >
       {children}
-    </SafeAreaView>
+    </View>
   </Container>
 );
 

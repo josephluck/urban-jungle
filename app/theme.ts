@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { ThemeContext } from "styled-components/native";
+import { StatusBarStyle } from "react-native";
 
 const borderRadius = {
   tiny: 4,
@@ -47,7 +48,9 @@ const size = {
   closeBarWidth: 26,
   avatarSmall: 40,
   avatarDefault: 50,
-  avatarLarge: 80
+  avatarLarge: 80,
+  bottomSheetHandleHeight: 4,
+  bottomSheetHandleWidth: 30
 };
 
 export type AvatarSize = "small" | "default" | "large";
@@ -105,7 +108,7 @@ const colors = {
 };
 
 export const darkTheme = {
-  type: "light-content",
+  type: "light-content" as StatusBarStyle,
   appBackground: colors.offBlack,
   avatarBorder: colors.midOffGray,
   avatarBackground: colors.deepGray,
@@ -114,11 +117,15 @@ export const darkTheme = {
   secondaryTextColor: colors.lightOffGray,
   timelinePlantItemBackground: colors.nearBlack,
   householdSelectionChevron: colors.midOffGray,
-  addNewIcon: colors.pureWhite
+  addNewIcon: colors.pureWhite,
+  bottomSheetCloseButton: colors.offBlack,
+  bottomSheetBackground: colors.pureWhite,
+  bottomSheetExpander: colors.lightOffGray,
+  bottomSheetBackdrop: colors.offBlack
 };
 
-export const lightTheme = {
-  type: "dark-content",
+export const lightTheme: Theme = {
+  type: "dark-content" as StatusBarStyle,
   appBackground: colors.pureWhite,
   avatarBorder: colors.lightOffGray,
   avatarBackground: colors.nearWhite,
@@ -127,7 +134,11 @@ export const lightTheme = {
   secondaryTextColor: colors.midOffGray,
   timelinePlantItemBackground: colors.nearWhite,
   householdSelectionChevron: colors.midOffGray,
-  addNewIcon: colors.offBlack
+  addNewIcon: colors.offBlack,
+  bottomSheetCloseButton: colors.offBlack,
+  bottomSheetBackground: "red",
+  bottomSheetExpander: colors.lightOffGray,
+  bottomSheetBackdrop: colors.offBlack
 };
 
 export const useTheme = () => {

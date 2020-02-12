@@ -5398,6 +5398,11 @@ readable-stream@^2.0.1, readable-stream@^2.0.6, readable-stream@^2.2.2, readable
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
+reanimated-bottom-sheet@^1.0.0-alpha.18:
+  version "1.0.0-alpha.18"
+  resolved "https://registry.yarnpkg.com/reanimated-bottom-sheet/-/reanimated-bottom-sheet-1.0.0-alpha.18.tgz#f1f3ddbcee67473000647173b33bf41b1c069739"
+  integrity sha512-fBISS7XzSz1F/k0rQDWTKO1tWu3FgibRSoV59pcPTxWmxFzO6SJs/ZqEugMRWncLhdCejJ3wRWLwWYelEv1gRA==
+
 regenerate-unicode-properties@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.1.0.tgz#ef51e0f0ea4ad424b77bf7cb41f3e015c70a3f0e"

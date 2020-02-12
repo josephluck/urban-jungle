@@ -43,6 +43,7 @@ import { IErr } from "../../../utils/err";
 import { createCareForPlantByCurrentProfileId } from "../../care/store/effects";
 import { HouseholdCaresSubscription } from "../../care/subscriptions/household-cares";
 import { symbols, useTheme } from "../../../theme";
+import { BottomSheet, BottomSheetRef } from "../../../components/bottom-sheet";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -192,14 +193,32 @@ const AppHeading = ({
     [scrollAnimatedValue]
   );
 
+  const bottomSheetRef = useRef<BottomSheetRef>(null);
+
+  const handleShowBottomSheet = useCallback(() => {
+    if (bottomSheetRef.current) {
+      bottomSheetRef.current.expand(1);
+    }
+  }, [bottomSheetRef.current]);
+
   return (
-    <HeadingWrapper>
-      <CurrentProfileAvatar onPress={signOut} />
-      <HouseholdNameTitle style={{ opacity }}>
-        <SubHeading>{selectedHouseholdName}</SubHeading>
-      </HouseholdNameTitle>
-      <AddButton onPress={console.log} />
-    </HeadingWrapper>
+    <>
+      <HeadingWrapper>
+        <CurrentProfileAvatar onPress={signOut} />
+        <HouseholdNameTitle style={{ opacity }}>
+          <SubHeading>{selectedHouseholdName}</SubHeading>
+        </HouseholdNameTitle>
+        <AddButton onPress={handleShowBottomSheet} />
+      </HeadingWrapper>
+      <BottomSheet
+        intermediateSnapPointHeight={200}
+        header={<Heading style={{ color: "black" }}>Add new</Heading>}
+        ref={bottomSheetRef}
+      >
+        <Button title="Household" onPress={console.log} />
+        <Button title="Plant" onPress={console.log} />
+      </BottomSheet>
+    </>
   );
 };
 
