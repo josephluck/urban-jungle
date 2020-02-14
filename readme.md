@@ -1,4 +1,4 @@
-# Plantpal
+# Urban Jungle
 
 Collect and care for your plants with friends.
 
