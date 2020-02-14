@@ -1,12 +1,12 @@
 import styled from "styled-components/native";
-import { RUBIK_SEMIBOLD, RUBIK_REGULAR, RUBIK_BOLD } from "../hooks/fonts";
+import { SOURCE_SANS_SEMIBOLD, SOURCE_SANS_REGULAR } from "../hooks/fonts";
 import { symbols } from "../theme";
 
 export const BodyText = styled.Text`
   color: ${props => props.theme.defaultTextColor};
   font-size: ${symbols.font._16.size}px;
   line-height: ${symbols.font._16.lineHeight}px;
-  font-family: ${RUBIK_REGULAR};
+  font-family: ${SOURCE_SANS_REGULAR};
 `;
 
 export const Heading = styled.Text`
@@ -14,7 +14,7 @@ export const Heading = styled.Text`
   font-weight: ${symbols.fontWeight.medium};
   font-size: ${symbols.font._24.size}px;
   line-height: ${symbols.font._24.lineHeight}px;
-  font-family: ${RUBIK_BOLD};
+  font-family: ${SOURCE_SANS_SEMIBOLD};
 `;
 
 export const PageHeading = styled(Heading)`
@@ -27,7 +27,7 @@ export const SubHeading = styled.Text`
   font-weight: ${symbols.fontWeight.medium};
   font-size: ${symbols.font._20.size}px;
   line-height: ${symbols.font._20.lineHeight}px;
-  font-family: ${RUBIK_SEMIBOLD};
+  font-family: ${SOURCE_SANS_SEMIBOLD};
 `;
 
 export const ListItemTitle = styled.Text`
@@ -35,7 +35,7 @@ export const ListItemTitle = styled.Text`
   font-weight: ${symbols.fontWeight.medium};
   font-size: ${symbols.font._16.size}px;
   line-height: ${symbols.font._16.lineHeight}px;
-  font-family: ${RUBIK_SEMIBOLD};
+  font-family: ${SOURCE_SANS_SEMIBOLD};
 `;
 
 export const SubDetailText = styled.Text`
@@ -44,7 +44,7 @@ export const SubDetailText = styled.Text`
   font-size: ${symbols.font._12.size}px;
   line-height: ${symbols.font._12.lineHeight}px;
   color: ${props => props.theme.secondaryTextColor};
-  font-family: ${RUBIK_SEMIBOLD};
+  font-family: ${SOURCE_SANS_SEMIBOLD};
 `;
 
 export const TagLabel = styled.Text`
@@ -52,12 +52,12 @@ export const TagLabel = styled.Text`
   font-size: ${symbols.font._16.size}px;
   line-height: ${symbols.font._16.lineHeight}px;
   color: ${props => props.theme.secondaryTextColor};
-  font-family: ${RUBIK_SEMIBOLD};
+  font-family: ${SOURCE_SANS_SEMIBOLD};
 `;
 
 export const OverlineText = styled(BodyText)`
   text-transform: uppercase;
-  font-family: ${RUBIK_SEMIBOLD};
+  font-family: ${SOURCE_SANS_SEMIBOLD};
   color: ${props => props.theme.secondaryTextColor};
   font-size: ${symbols.font._14.size}px;
   letter-spacing: 0.5px;

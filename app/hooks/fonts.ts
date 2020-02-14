@@ -39,8 +39,8 @@ export const useFonts = () => {
         [RUBIK_BLACK_ITALIC]: require("../assets/fonts/rubik/Rubik-BlackItalic.ttf"),
         [RUBIK_BOLD]: require("../assets/fonts/rubik/Rubik-Bold.ttf"),
         [RUBIK_BOLD_ITALIC]: require("../assets/fonts/rubik/Rubik-BoldItalic.ttf"),
-        [RUBIK_SEMIBOLD]: require("../assets/fonts/rubik/Rubik-SemiBold.ttf"),
-        [RUBIK_SEMIBOLD_ITALIC]: require("../assets/fonts/rubik/Rubik-SemiBoldItalic.ttf"),
+        [RUBIK_SEMIBOLD]: require("../assets/fonts/rubik/Rubik-Medium.ttf"),
+        [RUBIK_SEMIBOLD_ITALIC]: require("../assets/fonts/rubik/Rubik-MediumItalic.ttf"),
         [RUBIK_REGULAR]: require("../assets/fonts/rubik/Rubik-Regular.ttf"),
         [RUBIK_REGULAR_ITALIC]: require("../assets/fonts/rubik/Rubik-Italic.ttf")
       });
