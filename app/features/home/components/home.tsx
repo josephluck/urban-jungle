@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef, useMemo } from "react";
 import {
   Heading,
-  TertiaryButtonText,
+  OverlineText,
   SubHeading
 } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
@@ -137,7 +137,7 @@ const HomeScreen = () => {
         keyExtractor={plant => plant.id}
         renderSectionHeader={item => (
           <TimelineSectionHeader>
-            <TertiaryButtonText>{item.section.title}</TertiaryButtonText>
+            <OverlineText>{item.section.title}</OverlineText>
           </TimelineSectionHeader>
         )}
         renderItem={({ item }) => (

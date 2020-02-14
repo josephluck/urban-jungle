@@ -55,7 +55,7 @@ export const TagLabel = styled.Text`
   font-family: ${SOURCE_SANS_SEMIBOLD};
 `;
 
-export const TertiaryButtonText = styled(BodyText)`
+export const OverlineText = styled(BodyText)`
   text-transform: uppercase;
   font-family: ${SOURCE_SANS_SEMIBOLD};
   color: ${props => props.theme.secondaryTextColor};

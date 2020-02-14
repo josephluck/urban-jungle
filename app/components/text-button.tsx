@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components/native";
 import { StyleProp, ViewStyle } from "react-native";
-import { TertiaryButtonText } from "./typography";
+import { OverlineText } from "./typography";
 
-export const ButtonLink = ({
+export const TextButton = ({
   children,
   style,
   onPress
@@ -13,7 +13,7 @@ export const ButtonLink = ({
   onPress: () => void;
 }) => (
   <Wrapper style={style} onPress={onPress}>
-    <TertiaryButtonText style={style}>{children}</TertiaryButtonText>
+    <OverlineText style={style}>{children}</OverlineText>
   </Wrapper>
 );
 

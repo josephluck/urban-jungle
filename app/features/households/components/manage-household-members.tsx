@@ -13,7 +13,7 @@ import {
 } from "../store/effects";
 import { TouchableOpacity, Animated, Easing, Alert } from "react-native";
 import { symbols } from "../../../theme";
-import { ButtonLink } from "../../../components/button-link";
+import { TextButton } from "../../../components/text-button";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 
@@ -173,7 +173,7 @@ export const ManageHouseholdMembers = ({
           })
         }}
       >
-        <ButtonLink onPress={onCancelPress}>Cancel</ButtonLink>
+        <TextButton onPress={onCancelPress}>Cancel</TextButton>
       </CancelButtonWrapper>
     </Wrapper>
   );
