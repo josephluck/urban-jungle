@@ -268,7 +268,7 @@ const SplashScreen = () => {
 
   return (
     <ScreenLayout>
-      <Heading>Plantpal</Heading>
+      <Heading>Urban Jungle</Heading>
       <Button title="Create account" onPress={handleSignUp} />
       <Button title="Sign in" onPress={handleSignIn} />
     </ScreenLayout>

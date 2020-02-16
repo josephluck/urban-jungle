@@ -8,7 +8,7 @@ Collect and care for your plants with friends.
 
 ## Dependencies
 
-Plantpal is set up as a Yarn Monorepo. Install dependencies at the root:
+Urban Jungle is set up as a Yarn Monorepo. Install dependencies at the root:
 
 ```
 yarn
@@ -49,11 +49,11 @@ Add others to your Household to manage caring together. No double watering!
 
 # Architecture
 
-This section outlines the core architecture to support Plantpal's features.
+This section outlines the core architecture to support Urban Jungle's features.
 
 ## Users & Authentication
 
-Users are required to sign up to Plantpal before they are able to use the application. Firebase Auth is used for this, using the JavaScript SDK. Initially the application uses Username & Password based authentication, but later will use 3rd party sign in such as Google and Facebook. The ultimate goal is to use passwordless authentication via SMS or Email, however Expo does not currently support it.
+Users are required to sign up to Urban Jungle before they are able to use the application. Firebase Auth is used for this, using the JavaScript SDK. Initially the application uses Username & Password based authentication, but later will use 3rd party sign in such as Google and Facebook. The ultimate goal is to use passwordless authentication via SMS or Email, however Expo does not currently support it.
 
 ## Household
 
@@ -79,7 +79,7 @@ Each Household has a list of Plants that belong to the Household. Plants can be 
 
 ## Care notifications
 
-The crux of Plantpal's notification system revolves around a combination of Firebase Firestore, Firebase Cloud Functions and Expo Push Notifications.
+The crux of Urban Jungle's notification system revolves around a combination of Firebase Firestore, Firebase Cloud Functions and Expo Push Notifications.
 
 Each day, a Cloud Function is triggered which grabs each Household from the database. For each User attached to the Household, a push notification is triggered to remind the User of any Care that needs to be done. A push notification is only triggered if there are plants to Care for that day, and will be skipped otherwise.
 

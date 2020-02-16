@@ -1,5 +1,5 @@
 {
-  "name": "@plantpal/app",
+  "name": "@urban-jungle/app",
   "version": "1.0.0",
   "main": "__generated__/AppEntry.js",
   "scripts": {

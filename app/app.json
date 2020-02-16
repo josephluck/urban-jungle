@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Plant Pal",
-    "slug": "plantpal",
-    "scheme": "plantpal",
+    "slug": "urban-jungle",
+    "scheme": "urban-jungle",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": ["ios", "android", "web"],
