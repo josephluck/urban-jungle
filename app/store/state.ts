@@ -12,6 +12,7 @@ import {
   PlantId,
   CareId
 } from "../types";
+import { Animated } from "react-native";
 
 interface AuthState {
   initializing: boolean;
@@ -35,12 +36,17 @@ interface CaresState {
   caresByHouseholdId: Record<HouseholdId, Record<CareId, CareModel>>;
 }
 
+interface UiState {
+  homeScroll: Animated.Value;
+}
+
 interface State {
   auth: AuthState;
   profiles: ProfilesState;
   households: HouseholdsState;
   plants: PlantsState;
   cares: CaresState;
+  ui: UiState;
 }
 
 const defaultState: State = {
@@ -60,6 +66,9 @@ const defaultState: State = {
   },
   cares: {
     caresByHouseholdId: {}
+  },
+  ui: {
+    homeScroll: new Animated.Value(0)
   }
 };
 

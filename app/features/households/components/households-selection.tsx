@@ -25,6 +25,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
 import { storeSelectedHouseholdIdToStorage } from "../store/effects";
 import { IErr } from "../../../utils/err";
+import { selectHomeScroll } from "../../../store/ui";
 
 const { width } = Dimensions.get("window");
 
@@ -45,15 +46,12 @@ const COLLAPSED_MAX_HEIGHT_EDIT_MODE =
   SPACE_BETWEEN_TITLE_AND_AVATARS +
   MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT;
 
-export const HouseholdsSelection = ({
-  scrollAnimatedValue
-}: {
-  scrollAnimatedValue: Animated.Value;
-}) => {
+export const HouseholdsSelection = () => {
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
+  const scrollAnimatedValue = useStore(selectHomeScroll);
   const households = useStore(selectHouseholds);
 
   const enterExpandedMode = useCallback(() => {

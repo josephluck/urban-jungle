@@ -44,6 +44,7 @@ import { createCareForPlantByCurrentProfileId } from "../../care/store/effects";
 import { HouseholdCaresSubscription } from "../../care/subscriptions/household-cares";
 import { symbols, useTheme } from "../../../theme";
 import { BottomSheet, BottomSheetRef } from "../../../components/bottom-sheet";
+import { selectHomeScroll } from "../../../store/ui";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -113,11 +114,11 @@ const HomeScreen = () => {
     createCareForPlantByCurrentProfileId(plant.id)(plant.householdId)();
   }, []);
 
-  const scrollAnimatedValue = useRef(new Animated.Value(0));
+  const scrollAnimatedValue = useStore(selectHomeScroll);
 
   return (
     <ScreenLayout>
-      <AppHeading scrollAnimatedValue={scrollAnimatedValue.current} />
+      <AppHeading />
       {selectedHouseholdId ? (
         <>
           <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
@@ -125,13 +126,9 @@ const HomeScreen = () => {
         </>
       ) : null}
       <SectionList
-        ListHeaderComponent={
-          <HouseholdsSelection
-            scrollAnimatedValue={scrollAnimatedValue.current}
-          />
-        }
+        ListHeaderComponent={<HouseholdsSelection />}
         onScroll={Animated.event([
-          { nativeEvent: { contentOffset: { y: scrollAnimatedValue.current } } }
+          { nativeEvent: { contentOffset: { y: scrollAnimatedValue } } }
         ])}
         sections={sections}
         keyExtractor={plant => plant.id}
@@ -172,11 +169,8 @@ const TimelinePlantItem = styled.TouchableOpacity`
   margin-horizontal: ${symbols.spacing._18};
 `;
 
-const AppHeading = ({
-  scrollAnimatedValue
-}: {
-  scrollAnimatedValue: Animated.Value;
-}) => {
+const AppHeading = () => {
+  const scrollAnimatedValue = useStore(selectHomeScroll);
   const selectedHouseholdName_ = useStore(selectSelectedHouseholdName);
   const selectedHouseholdName = pipe(
     selectedHouseholdName_,
