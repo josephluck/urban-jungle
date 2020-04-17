@@ -1,10 +1,9 @@
 {
   "expo": {
-    "name": "Plant Pal",
+    "name": "Urban Jungle",
     "slug": "urban-jungle",
     "scheme": "urban-jungle",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
     "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
