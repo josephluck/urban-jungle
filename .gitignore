@@ -17,9 +17,4 @@ __generated__/
 web-build/
 web-report/
 
-# CDK
-
-# Transpiled service code (from JS to TS) for deployment e.g. lambdas
-.build/
-# Used internally by CDK CLI
-cdk.out/
+env.*.json
