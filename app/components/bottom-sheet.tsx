@@ -4,12 +4,12 @@ import React, {
   useEffect,
   useImperativeHandle,
   useMemo,
-  useRef
+  useRef,
 } from "react";
 import {
   BackHandler,
   StatusBar as RNStatusBar,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import Reanimated from "react-native-reanimated";
 import Sheet from "reanimated-bottom-sheet";
@@ -54,7 +54,7 @@ export const BottomSheet = forwardRef<BottomSheetRef, Props>(
       onCloseStarted,
       collapsedHeight = 0,
       intermediateSnapPointHeight,
-      enabledContentGestureInteraction = false
+      enabledContentGestureInteraction = false,
     },
     ref
   ) => {
@@ -116,7 +116,7 @@ export const BottomSheet = forwardRef<BottomSheetRef, Props>(
      */
     useImperativeHandle(ref, () => ({
       expand,
-      close
+      close,
     }));
 
     /**
@@ -206,7 +206,7 @@ export const BottomSheet = forwardRef<BottomSheetRef, Props>(
  */
 const Overlay = ({
   expansionProportion,
-  intermediateSnapPointHeight = 0
+  intermediateSnapPointHeight = 0,
 }: {
   expansionProportion: Reanimated.Value<number>;
   intermediateSnapPointHeight?: number;
@@ -221,7 +221,7 @@ const Overlay = ({
   return (
     <BackdropOverlay
       style={{
-        opacity: opacity.current
+        opacity: opacity.current,
       }}
       pointerEvents="none"
     />
@@ -237,7 +237,7 @@ const Overlay = ({
  */
 const HeaderTopBar = ({
   expansionProportion,
-  intermediateSnapPointHeight = 0
+  intermediateSnapPointHeight = 0,
 }: {
   expansionProportion: Reanimated.Value<number>;
   intermediateSnapPointHeight?: number;
@@ -284,7 +284,7 @@ const HeaderTopBar = ({
         borderTopLeftRadius: borderRadius.current,
         borderTopRightRadius: borderRadius.current,
         shadowOpacity: shadowOpacity.current,
-        height: height.current
+        height: height.current,
       }}
     >
       <ExpandHandle />
@@ -300,7 +300,7 @@ const HeaderTopBar = ({
 const CloseButton = ({
   expansionProportion,
   onPress,
-  intermediateSnapPointHeight = 0
+  intermediateSnapPointHeight = 0,
 }: {
   expansionProportion: Reanimated.Value<number>;
   onPress: () => void;
@@ -363,7 +363,7 @@ const useExpansionInterpolation = (
   return Reanimated.interpolate(invertedExpansionProportion.current, {
     inputRange: [intermediateSnapPointHeightProportion, 1],
     outputRange,
-    extrapolate: Reanimated.Extrapolate.CLAMP
+    extrapolate: Reanimated.Extrapolate.CLAMP,
   });
 };
 
@@ -386,7 +386,7 @@ export const BOTTOM_SHEET_ANDROID_SHADOW_OFFSET = 20;
 export const HeaderContainer = styled.SafeAreaView`
   border-top-left-radius: ${symbols.borderRadius.large};
   border-top-right-radius: ${symbols.borderRadius.large};
-  background-color: ${props => props.theme.bottomSheetBackground};
+  background-color: ${(props) => props.theme.bottomSheetBackground};
 `;
 
 /**
@@ -400,14 +400,14 @@ export const HeaderRadius = styled(Reanimated.View as any)`
   justify-content: flex-end;
   border-top-left-radius: ${symbols.borderRadius.large};
   border-top-right-radius: ${symbols.borderRadius.large};
-  background-color: ${props => props.theme.bottomSheetBackground};
+  background-color: ${(props) => props.theme.bottomSheetBackground};
 `;
 
 export const HeaderInnerContainer = styled.View`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: ${props => props.theme.bottomSheetBackground};
+  background-color: ${(props) => props.theme.bottomSheetBackground};
 `;
 
 export const ExpandHandle = styled.View`
@@ -415,7 +415,7 @@ export const ExpandHandle = styled.View`
   width: ${symbols.size.bottomSheetHandleWidth};
   height: ${symbols.size.bottomSheetHandleHeight};
   border-radius: ${symbols.size.bottomSheetHandleHeight / 2};
-  background-color: ${props => props.theme.bottomSheetExpander};
+  background-color: ${(props) => props.theme.bottomSheetExpander};
   margin-vertical: ${symbols.spacing._8};
 `;
 
@@ -426,7 +426,7 @@ export const HeaderCloseIconContainer = styled.View`
 `;
 
 export const ContentContainer = styled(Reanimated.View as any)`
-  background-color: ${props => props.theme.bottomSheetBackground};
+  background-color: ${(props) => props.theme.bottomSheetBackground};
   height: 100%;
 `;
 
@@ -435,7 +435,7 @@ export const ContentInner = styled.SafeAreaView`
 `;
 
 export const BackdropOverlay = styled(Reanimated.View as any)`
-  background-color: ${props => props.theme.bottomSheetBackdrop};
+  background-color: ${(props) => props.theme.bottomSheetBackdrop};
   position: absolute;
   top: 0;
   left: 0;

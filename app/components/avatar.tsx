@@ -8,7 +8,7 @@ import { AvatarSize, avatarSizeToValue, symbols } from "../theme";
 export const Avatar = ({
   src,
   letter,
-  size = "default"
+  size = "default",
 }: {
   src: O.Option<string>;
   letter: O.Option<string>;
@@ -26,7 +26,7 @@ export const Avatar = ({
           )}
         />
       ),
-      uri => (
+      (uri) => (
         <AvatarCircle size={size}>
           <AvatarImage size={size} source={{ uri }} />
         </AvatarCircle>
@@ -36,7 +36,7 @@ export const Avatar = ({
 
 export const AvatarPlaceholder = ({
   letter,
-  size
+  size,
 }: {
   letter: string;
   size: AvatarSize;
@@ -47,12 +47,12 @@ export const AvatarPlaceholder = ({
 );
 
 const AvatarImage = styled.Image<{ size: AvatarSize }>`
-  width: ${props => avatarSizeToValue[props.size]};
-  height: ${props => avatarSizeToValue[props.size]};
-  border-radius: ${props => avatarSizeToValue[props.size] / 2};
+  width: ${(props) => avatarSizeToValue[props.size]};
+  height: ${(props) => avatarSizeToValue[props.size]};
+  border-radius: ${(props) => avatarSizeToValue[props.size] / 2};
 `;
 
 const PlaceholderLetter = styled.Text<{ size: AvatarSize }>`
   font-size: ${symbols.font._24.size}px;
-  color: ${props => props.theme.avatarPlaceholderLetter};
+  color: ${(props) => props.theme.avatarPlaceholderLetter};
 `;

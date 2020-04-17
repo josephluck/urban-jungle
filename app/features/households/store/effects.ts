@@ -29,13 +29,13 @@ export const createHouseholdForProfile = (
             ...defaultHousehold,
             ...household,
             id,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date())
+            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
           });
         return id;
       },
       () => "BAD_REQUEST" as IErr
     ),
-    TE.chainFirst(id => storeSelectedHouseholdIdToStorage(id)),
+    TE.chainFirst((id) => storeSelectedHouseholdIdToStorage(id)),
     TE.chain(createProfileHouseholdRelation(profileId)),
     TE.chain(fetchHousehold)
   );
@@ -56,9 +56,7 @@ export const fetchHousehold = (
 ): TE.TaskEither<IErr, HouseholdModel> =>
   TE.tryCatch(
     async () => {
-      const response = await database()
-        .doc(id)
-        .get();
+      const response = await database().doc(id).get();
       if (!response.exists) {
         throw new Error();
       }
@@ -94,7 +92,7 @@ const addProfileToHousehold = (profileId: string) => (
       await database()
         .doc(householdId)
         .update({
-          profileIds: firebase.firestore.FieldValue.arrayUnion(profileId)
+          profileIds: firebase.firestore.FieldValue.arrayUnion(profileId),
         });
       return householdId;
     },
@@ -109,7 +107,7 @@ export const removeProfileFromHousehold = (profileId: string) => (
       await database()
         .doc(householdId)
         .update({
-          profileIds: firebase.firestore.FieldValue.arrayRemove(profileId)
+          profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
         });
     },
     () => "BAD_REQUEST" as IErr
@@ -120,10 +118,7 @@ export const removeProfileFromHousehold = (profileId: string) => (
  */
 export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
-    async () =>
-      await database()
-        .doc(id)
-        .delete(),
+    async () => await database().doc(id).delete(),
     () => "BAD_REQUEST" as IErr
   );
 
@@ -136,7 +131,7 @@ export const shareHouseholdInvitation = (
       try {
         const result = await Share.share({
           title: `Can you help me care for my plants?`,
-          message: `Hey, I need some help caring for my plants! It's easy to sign up, just tap this link to get started: ${link} `
+          message: `Hey, I need some help caring for my plants! It's easy to sign up, just tap this link to get started: ${link} `,
         });
 
         if (result.action === Share.sharedAction) {
@@ -213,5 +208,5 @@ export const SELECTED_HOUSEHOLD_ID_KEY = "SELECTED_HOUSEHOLD_ID";
 
 export const defaultHousehold: Omit<HouseholdModel, "id" | "dateCreated"> = {
   name: "My Home",
-  profileIds: []
+  profileIds: [],
 };

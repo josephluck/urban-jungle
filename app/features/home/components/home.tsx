@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useRef, useMemo } from "react";
 import {
   Heading,
   OverlineText,
-  SubHeading
+  SubHeading,
 } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/screen-layout";
 import { selectHasAuthenticated } from "../../auth/store/state";
@@ -11,15 +11,15 @@ import { Button, Animated, Alert } from "react-native";
 import { NavigationContext, SectionList } from "react-navigation";
 import {
   createLoginRoute,
-  createSignUpRoute
+  createSignUpRoute,
 } from "../../auth/navigation/routes";
 import {
   selectedSelectedOrMostRecentHouseholdId,
-  selectSelectedHouseholdName
+  selectSelectedHouseholdName,
 } from "../../households/store/state";
 import {
   createPlantForHousehold,
-  deletePlantByHouseholdId
+  deletePlantByHouseholdId,
 } from "../../plants/store/effects";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
@@ -28,12 +28,12 @@ import { HouseholdPlantsSubscription } from "../../plants/subscriptions/househol
 import {
   selectPlantsTimelineByHouseholdIdGroupedByCareDueDate,
   TimelineSection,
-  PlantTimelineItem
+  PlantTimelineItem,
 } from "../../plants/store/state";
 import { useStore } from "../../../store/state";
 import {
   HouseholdsSelection,
-  COLLAPSED_MIN_HEIGHT
+  COLLAPSED_MIN_HEIGHT,
 } from "../../households/components/households-selection";
 import styled from "styled-components/native";
 import { faPlus } from "@fortawesome/pro-light-svg-icons";
@@ -81,7 +81,7 @@ const HomeScreen = () => {
       TE.fromOption(() => "NOT_FOUND" as IErr),
       TE.chain(
         createPlantForHousehold({
-          careRecurrenceDays: (Math.random() * (14 - 0 + 1)) << 0
+          careRecurrenceDays: (Math.random() * (14 - 0 + 1)) << 0,
         })
       )
     );
@@ -97,12 +97,12 @@ const HomeScreen = () => {
           [
             {
               text: "Cancel",
-              onPress: reject
+              onPress: reject,
             },
             {
               text: `I'm sure`,
-              onPress: resolve
-            }
+              onPress: resolve,
+            },
           ]
         )
       );
@@ -128,11 +128,11 @@ const HomeScreen = () => {
       <SectionList
         ListHeaderComponent={<HouseholdsSelection />}
         onScroll={Animated.event([
-          { nativeEvent: { contentOffset: { y: scrollAnimatedValue } } }
+          { nativeEvent: { contentOffset: { y: scrollAnimatedValue } } },
         ])}
         sections={sections}
-        keyExtractor={plant => plant.id}
-        renderSectionHeader={item => (
+        keyExtractor={(plant) => plant.id}
+        renderSectionHeader={(item) => (
           <TimelineSectionHeader>
             <OverlineText>{item.section.title}</OverlineText>
           </TimelineSectionHeader>
@@ -154,14 +154,14 @@ const HomeScreen = () => {
 };
 
 const TimelineSectionHeader = styled.View`
-  background-color: ${props => props.theme.appBackground};
+  background-color: ${(props) => props.theme.appBackground};
   padding-top: ${symbols.spacing._16};
   padding-bottom: ${symbols.spacing._8};
   margin-horizontal: ${symbols.spacing._18};
 `;
 
 const TimelinePlantItem = styled.TouchableOpacity`
-  background-color: ${props => props.theme.timelinePlantItemBackground};
+  background-color: ${(props) => props.theme.timelinePlantItemBackground};
   padding-vertical: ${symbols.spacing._12};
   padding-horizontal: ${symbols.spacing._16};
   border-radius: 6;
@@ -182,7 +182,7 @@ const AppHeading = () => {
       scrollAnimatedValue.interpolate({
         inputRange: [0, COLLAPSED_MIN_HEIGHT],
         outputRange: [0, 1],
-        extrapolate: "clamp"
+        extrapolate: "clamp",
       }),
     [scrollAnimatedValue]
   );

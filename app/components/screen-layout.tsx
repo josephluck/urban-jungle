@@ -7,7 +7,7 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => (
     <View
       style={{
         flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}
     >
       {children}
@@ -17,5 +17,5 @@ export const ScreenLayout = ({ children }: { children: React.ReactNode }) => (
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${props => props.theme.appBackground};
+  background-color: ${(props) => props.theme.appBackground};
 `;

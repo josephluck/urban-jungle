@@ -42,7 +42,7 @@ export const useFonts = () => {
         [RUBIK_SEMIBOLD]: require("../assets/fonts/rubik/Rubik-Medium.ttf"),
         [RUBIK_SEMIBOLD_ITALIC]: require("../assets/fonts/rubik/Rubik-MediumItalic.ttf"),
         [RUBIK_REGULAR]: require("../assets/fonts/rubik/Rubik-Regular.ttf"),
-        [RUBIK_REGULAR_ITALIC]: require("../assets/fonts/rubik/Rubik-Italic.ttf")
+        [RUBIK_REGULAR_ITALIC]: require("../assets/fonts/rubik/Rubik-Italic.ttf"),
       });
       setLoading(false);
     };

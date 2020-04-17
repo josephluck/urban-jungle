@@ -7,15 +7,15 @@ import { HOME_SCREEN } from "../features/home/navigation/routes";
 const PrivateStack = createStackNavigator(
   {
     [HOME_SCREEN]: {
-      screen: Home
-    }
+      screen: Home,
+    },
   },
   {
     initialRouteName: HOME_SCREEN,
     headerMode: "none",
     navigationOptions: {
-      headerShown: false
-    }
+      headerShown: false,
+    },
   }
 );
 
@@ -24,13 +24,13 @@ const PRIVATE_STACK = "PRIVATE_STACK";
 export const AppNavigation = createSwitchNavigator(
   {
     [AUTH_STACK]: {
-      screen: AuthNavigator
+      screen: AuthNavigator,
     },
     [PRIVATE_STACK]: {
-      screen: PrivateStack
-    }
+      screen: PrivateStack,
+    },
   },
   {
-    initialRouteName: PRIVATE_STACK
+    initialRouteName: PRIVATE_STACK,
   }
 );

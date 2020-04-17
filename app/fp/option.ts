@@ -7,6 +7,6 @@ export const every = <A extends O.Option<unknown>[]>(options: A): boolean =>
 export const getFirstLetterFromOptionString = (str: string): O.Option<string> =>
   pipe(
     str,
-    O.fromPredicate(val => val.length > 0),
-    O.chain(s => O.fromNullable(s.split("")[0]))
+    O.fromPredicate((val) => val.length > 0),
+    O.chain((s) => O.fromNullable(s.split("")[0]))
   );

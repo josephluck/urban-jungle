@@ -19,9 +19,9 @@ export const useFiltersState = (groups: FilterGroup[] = []) => {
   const setFilterActive = useCallback(
     (id: string) => {
       if (activeFilters.includes(id)) {
-        setActiveFilters(af => af.filter(i => i !== id));
+        setActiveFilters((af) => af.filter((i) => i !== id));
       } else {
-        setActiveFilters(af => [...af, id]);
+        setActiveFilters((af) => [...af, id]);
       }
     },
     [activeFilters.length]
@@ -39,6 +39,6 @@ export const useFiltersState = (groups: FilterGroup[] = []) => {
     setFilterActive,
     activeFilters,
     activeFiltersHash,
-    clearAllFilters
+    clearAllFilters,
   };
 };

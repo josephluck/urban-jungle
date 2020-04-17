@@ -56,7 +56,7 @@ export const useFetcher = <F extends (...args: any[]) => Promise<any>>(
     /** Refreshes data, additionally sets refreshing state but does not reset the loaded state */
     refresh,
     loaded,
-    errored
+    errored,
   };
 };
 
@@ -87,7 +87,7 @@ export const usePaginatedFetcher = <Fn extends Fetcher>(
       const from = initial ? 0 : ids.length;
       try {
         const response = await fetch(from, size)(...args);
-        const newIds = response.results.map(result => result[idKeyName]);
+        const newIds = response.results.map((result) => result[idKeyName]);
         setIds(initial || newIds.length === 0 ? newIds : [...ids, ...newIds]);
         setCount(response.count);
         setLoaded(true);
@@ -152,6 +152,6 @@ export const usePaginatedFetcher = <Fn extends Fetcher>(
     endReached,
     fetchInitial,
     fetchNextPage,
-    refresh
+    refresh,
   };
 };

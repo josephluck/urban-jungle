@@ -11,7 +11,7 @@ type HouseholdInvitationQueryParams = { householdId: string };
 
 export const makeHouseholdInvitationDeepLink = (householdId: string) =>
   Linking.makeUrl(HOUSEHOLD_INVITATION_LINK, {
-    householdId
+    householdId,
   } as HouseholdInvitationQueryParams);
 
 export const getAndParseInitialHouseholdInvitationDeepLink = (): TE.TaskEither<
@@ -20,7 +20,7 @@ export const getAndParseInitialHouseholdInvitationDeepLink = (): TE.TaskEither<
 > =>
   pipe(
     getInitialDeepLink(),
-    TE.map(link =>
+    TE.map((link) =>
       pipe(
         parseHouseholdInvitationDeepLink(link),
         TE.fromOption(() => "NOT_FOUND" as IErr)
@@ -35,7 +35,7 @@ export const parseHouseholdInvitationDeepLink = (
   const { path, queryParams } = Linking.parse(link);
   return pipe(
     path,
-    O.fromPredicate(p => !!p && p.includes(HOUSEHOLD_INVITATION_LINK)), // NB: includes necessary since the link is prefixed with `--/`
+    O.fromPredicate((p) => !!p && p.includes(HOUSEHOLD_INVITATION_LINK)), // NB: includes necessary since the link is prefixed with `--/`
     O.chain(() => O.fromNullable(queryParams as HouseholdInvitationQueryParams))
   );
 };

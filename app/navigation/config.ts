@@ -1,12 +1,12 @@
 import {
   NavigationStackConfig,
   NavigationStackOptions,
-  NavigationStackProp
+  NavigationStackProp,
 } from "react-navigation-stack";
 import {
   CreateNavigatorConfig,
   NavigationStackRouterConfig,
-  NavigationRoute
+  NavigationRoute,
 } from "react-navigation";
 
 export const defaultStackConfig: CreateNavigatorConfig<
@@ -19,7 +19,7 @@ export const defaultStackConfig: CreateNavigatorConfig<
   defaultNavigationOptions: {
     headerTintColor: "transparent",
     cardStyle: {
-      backgroundColor: "transparent"
+      backgroundColor: "transparent",
     },
     headerStyle: {
       borderBottomWidth: 0,
@@ -27,7 +27,7 @@ export const defaultStackConfig: CreateNavigatorConfig<
       borderWidth: 0,
       shadowOpacity: 0,
       shadowRadius: 0,
-      shadowColor: "transparent"
-    }
-  }
+      shadowColor: "transparent",
+    },
+  },
 };

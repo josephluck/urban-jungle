@@ -7,7 +7,7 @@ import { symbols, useTheme } from "../theme";
 
 export const AvatarButton = ({
   onPress,
-  disabled
+  disabled,
 }: {
   onPress: () => void;
   disabled?: boolean;

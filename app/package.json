@@ -9,7 +9,8 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "postinstall": "expo-yarn-workspaces postinstall",
-    "tsc": "tsc --noEmit"
+    "tsc": "tsc --noEmit",
+    "format": "prettier --write **/*.ts **/*.tsx"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
@@ -28,6 +29,7 @@
     "expo": "^36.0.0",
     "firebase": "^7.7.0",
     "fp-ts": "^2.4.3",
+    "prettier": "^2.0.4",
     "react": "16.12.0",
     "react-dom": "16.12.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",

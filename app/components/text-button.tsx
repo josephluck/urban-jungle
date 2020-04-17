@@ -6,7 +6,7 @@ import { OverlineText } from "./typography";
 export const TextButton = ({
   children,
   style,
-  onPress
+  onPress,
 }: {
   style?: StyleProp<ViewStyle>;
   children: React.ReactNode;

@@ -10,7 +10,7 @@ import {
   UserId,
   HouseholdId,
   PlantId,
-  CareId
+  CareId,
 } from "../types";
 import { Animated } from "react-native";
 
@@ -52,29 +52,29 @@ interface State {
 const defaultState: State = {
   auth: {
     initializing: true,
-    authUser: O.none
+    authUser: O.none,
   },
   profiles: {
-    profiles: {}
+    profiles: {},
   },
   households: {
     selectedHouseholdId: O.none,
-    households: {}
+    households: {},
   },
   plants: {
-    plantsByHouseholdId: {}
+    plantsByHouseholdId: {},
   },
   cares: {
-    caresByHouseholdId: {}
+    caresByHouseholdId: {},
   },
   ui: {
-    homeScroll: new Animated.Value(0)
-  }
+    homeScroll: new Animated.Value(0),
+  },
 };
 
 export const store = stately<State>(defaultState);
 
-export const resetGlobalState = store.createMutator(s => {
+export const resetGlobalState = store.createMutator((s) => {
   s = defaultState;
 });
 
