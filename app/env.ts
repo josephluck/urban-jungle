@@ -13,6 +13,6 @@ export interface Env {
 }
 
 export const env: Env =
-  Constants.manifest.releaseChannel === "production"
+  !__DEV__ && Constants.manifest.releaseChannel === "production"
     ? require("./env.prod.json")
     : require("./env.dev.json");

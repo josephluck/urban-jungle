@@ -5,7 +5,7 @@ import { ThemeProvider } from "styled-components";
 import { darkTheme } from "./theme";
 import styled from "styled-components/native";
 import { useFonts } from "./hooks/fonts";
-import * as reactotron from "./reactotron";
+// import * as reactotron from "./reactotron";
 import { initialize } from "./features/auth/store/effects";
 import "./firebase";
 import { ActivityIndicator, StatusBar } from "react-native";
@@ -13,7 +13,7 @@ import { selectInitializing } from "./features/auth/store/state";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { useStore } from "./store/state";
 
-reactotron.configure();
+// reactotron.configure();
 
 const AppContainer = createAppContainer(AppNavigation);
 
