@@ -78,7 +78,7 @@ export const Calendar = (_props: { householdId: string }) => {
   const carouselRef = useRef<CarouselStatic<any>>(null);
   const numberOfDays = 15; // NB: 1 week either side of today
   const todaysIndex = Math.floor(numberOfDays / 2);
-  const today = useMemo(() => moment("2020-04-03"), []);
+  const today = useMemo(() => moment(), []);
   const earliestDate = useMemo(
     () => today.clone().subtract(todaysIndex, "days"),
     [today, numberOfDays]
@@ -87,9 +87,8 @@ export const Calendar = (_props: { householdId: string }) => {
     () =>
       Array.from({ length: numberOfDays }).map((_, index) => ({
         index,
-        isPast: index < todaysIndex,
+        isPast: index === 0 || index < todaysIndex,
         isToday: index === todaysIndex,
-        isFuture: index > todaysIndex,
         date: earliestDate.clone().add(index, "days"),
         todos: todos(earliestDate.clone().add(index, "days").date()),
       })),
@@ -155,14 +154,17 @@ export const Calendar = (_props: { householdId: string }) => {
           backgroundColor: symbols.colors.appBackground,
         }}
         ref={scrollViewRef}
+        removeClippedSubviews
       >
         {days.map((day) => (
           <Day
             key={day.date.toISOString()}
             onPress={() => handleDayPress(day.index, day.date)}
             isPast={day.isPast}
+            isToday={day.isToday}
+            activeOpacity={0.8}
           >
-            <DayText>{day.date.date()}</DayText>
+            <DayText isToday={day.isToday}>{day.date.date()}</DayText>
           </Day>
         ))}
       </DaysContainer>
@@ -211,10 +213,11 @@ const daySize = 50;
 const dayGap = symbols.spacing._8;
 const dayOverallSize = daySize + dayGap;
 
-const Day = styled.TouchableOpacity<{ isPast: boolean }>`
+const Day = styled.TouchableOpacity<{ isPast: boolean; isToday: boolean }>`
   width: ${daySize};
   height: ${daySize};
-  background-color: ${symbols.colors.nearWhite};
+  background-color: ${(props) =>
+    props.isToday ? symbols.colors.solidBlue : symbols.colors.nearWhite};
   opacity: ${(props) => (props.isPast ? 0.5 : 1)};
   justify-content: center;
   align-items: center;
@@ -222,7 +225,10 @@ const Day = styled.TouchableOpacity<{ isPast: boolean }>`
   border-radius: ${symbols.borderRadius.tiny};
 `;
 
-const DayText = styled(BodyText)``;
+const DayText = styled(BodyText)<{ isToday: boolean }>`
+  color: ${(props) =>
+    props.isToday ? symbols.colors.pureWhite : symbols.colors.offBlack};
+`;
 
 const TodosList = styled.ScrollView`
   flex: 1;
