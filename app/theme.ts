@@ -2,33 +2,24 @@ import { useContext } from "react";
 import { ThemeContext } from "styled-components/native";
 import { StatusBarStyle } from "react-native";
 
+const baseSize = 6;
+const baseFontSize = 20;
+
 const borderRadius = {
-  tiny: 4,
-  small: 6,
-  medium: 12,
-  large: 18,
+  tiny: baseSize / 2,
+  small: baseSize,
+  medium: baseSize * 2,
+  large: baseSize * 3,
 };
 
 const font = {
-  _12: {
-    size: 12,
-    lineHeight: 14,
-  },
-  _14: {
-    size: 14,
-    lineHeight: 16,
-  },
   _16: {
-    size: 16,
-    lineHeight: 20,
-  },
-  _20: {
-    size: 20,
-    lineHeight: 24,
+    size: baseFontSize,
+    lineHeight: baseFontSize * 1.2,
   },
   _24: {
-    size: 24,
-    lineHeight: 30,
+    size: baseFontSize * 1.4,
+    lineHeight: baseFontSize * 1.4 * 1.2,
   },
 };
 
@@ -68,19 +59,16 @@ export const avatarSizeToBorderWidth: Record<AvatarSize, number> = {
 };
 
 const spacing = {
-  _2: 2,
-  _4: 4,
-  _6: 6,
-  _8: 8,
-  _10: 10,
-  _12: 12,
-  _14: 14,
-  _16: 16,
-  _18: 18,
-  _22: 22,
-  _30: 30,
-  appHorizontal: 22,
-  appVertical: 30,
+  _2: baseSize / 2,
+  _4: baseSize,
+  _6: baseSize * 1.5,
+  _8: baseSize * 2,
+  _12: baseSize * 3,
+  _16: baseSize * 4,
+  _20: baseSize * 5,
+  _32: baseSize * 8,
+  appHorizontal: baseSize * 5,
+  appVertical: baseSize * 8,
 };
 
 const colors = {
