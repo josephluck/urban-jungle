@@ -29,7 +29,7 @@ export const selectPlantByHouseholdAndId = (householdId: string) => (
 ): O.Option<PlantModel> =>
   pipe(
     selectNormalizedPlantsByHouseholdId(householdId),
-    O.chain(plants => O.fromNullable(plants[plantId]))
+    O.chain((plants) => O.fromNullable(plants[plantId]))
   );
 
 export interface PlantTimelineItem {
@@ -44,14 +44,14 @@ export const selectPlantTimelineItem = (householdId: string) => (
 ): O.Option<PlantTimelineItem> =>
   pipe(
     selectPlantByHouseholdAndId(householdId)(plantId),
-    O.map(plant => {
+    O.map((plant) => {
       return {
         id: plant.id,
         householdId,
         name: plant.name,
         nextCareDueInDays: selectNumberOfDaysUntilNextCareByHouseholdIdAndPlantId(
           householdId
-        )(plantId)(plant.careRecurrenceDays)
+        )(plantId)(plant.careRecurrenceDays),
       };
     })
   );
@@ -65,7 +65,7 @@ export const selectPlantsTimelineByHouseholdId = (
     .map(
       O.fold(
         () => (void null as unknown) as PlantTimelineItem,
-        val => val
+        (val) => val
       )
     );
 
@@ -73,7 +73,7 @@ const careGroupingsByNextCareDueDate = [
   { min: 0, max: 1, title: "Due today" },
   { min: 1, max: 2, title: "Due tomorrow" },
   { min: 2, max: 8, title: "Due soon" },
-  { min: 8, max: 9999, title: "Due later" }
+  { min: 8, max: 9999, title: "Due later" },
 ];
 
 export interface TimelineSection {
@@ -87,22 +87,22 @@ export const selectPlantsTimelineByHouseholdIdGroupedByCareDueDate = (
 ): TimelineSection[] => {
   const plants = selectPlantsTimelineByHouseholdId(householdId);
   return careGroupingsByNextCareDueDate
-    .map(group => ({
+    .map((group) => ({
       title: group.title,
       data: plants.filter(
-        plant =>
+        (plant) =>
           plant.nextCareDueInDays >= group.min &&
           plant.nextCareDueInDays < group.max
-      )
+      ),
     }))
-    .filter(group => group.data.length > 0);
+    .filter((group) => group.data.length > 0);
 };
 
 export const setPlants = store.createMutator(
   (s, householdId: string, plants: PlantModel[]) => {
     s.plants.plantsByHouseholdId[householdId] = {
       ...s.plants.plantsByHouseholdId[householdId],
-      ...normalizeArrayById(plants)
+      ...normalizeArrayById(plants),
     };
   }
 );

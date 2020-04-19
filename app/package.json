@@ -10,7 +10,7 @@
     "eject": "expo eject",
     "postinstall": "expo-yarn-workspaces postinstall",
     "tsc": "tsc --noEmit",
-    "format": "prettier --write **/*.ts **/*.tsx **/*.json"
+    "format": "prettier --write \"./**/*.*\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",

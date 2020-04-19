@@ -2,7 +2,7 @@ import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
 import { CareModel } from "../../../types";
 import { IErr } from "../../../utils/err";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
@@ -23,11 +23,9 @@ export const createCareForPlant = (profileId: string) => (plantId: string) => (
             plantId,
             householdId,
             id,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date())
+            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
           };
-          await database(householdId)
-            .doc(id)
-            .set(careToSave);
+          await database(householdId).doc(id).set(careToSave);
           return careToSave;
         },
         () => "BAD_REQUEST" as IErr
@@ -41,5 +39,5 @@ export const createCareForPlantByCurrentProfileId = (plantId: string) => (
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(profileId => createCareForPlant(profileId)(plantId)(householdId))
+    TE.chain((profileId) => createCareForPlant(profileId)(plantId)(householdId))
   );

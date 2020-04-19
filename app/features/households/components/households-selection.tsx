@@ -7,7 +7,7 @@ import React, {
   useCallback,
   useEffect,
   useRef,
-  useMemo
+  useMemo,
 } from "react";
 import styled from "styled-components/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -15,7 +15,7 @@ import { faChevronDown, faChevronUp } from "@fortawesome/pro-light-svg-icons";
 import {
   ManageHouseholdMembers,
   MANAGE_HOUSEHOLD_MEMBERS_COLLAPSED_HEIGHT,
-  MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT
+  MANAGE_HOUSEHOLD_MEMBERS_EXPANDED_HEIGHT,
 } from "./manage-household-members";
 import { symbols, useTheme } from "../../../theme";
 import { Heading } from "../../../components/typography";
@@ -77,7 +77,7 @@ export const HouseholdsSelection = () => {
       setSlideIndex(index);
       const task = pipe(
         O.fromNullable(households[index]),
-        O.map(household => household.id),
+        O.map((household) => household.id),
         TE.fromOption(() => "NOT_FOUND" as IErr),
         TE.chain(storeSelectedHouseholdIdToStorage)
       );
@@ -91,7 +91,7 @@ export const HouseholdsSelection = () => {
     Animated.timing(isExpandedAnimation.current, {
       toValue: isExpanded ? 100 : 0,
       duration: 180,
-      easing: Easing.inOut(Easing.cubic)
+      easing: Easing.inOut(Easing.cubic),
     }).start();
   }, [isExpanded]);
 
@@ -107,7 +107,7 @@ export const HouseholdsSelection = () => {
           ? COLLAPSED_MAX_HEIGHT
           : COLLAPSED_MIN_HEIGHT,
       duration: 180,
-      easing: Easing.inOut(Easing.cubic)
+      easing: Easing.inOut(Easing.cubic),
     }).start();
   }, [isExpanded, editMode]);
 
@@ -116,7 +116,7 @@ export const HouseholdsSelection = () => {
       scrollAnimatedValue.interpolate({
         inputRange: [0, COLLAPSED_MIN_HEIGHT],
         outputRange: [1, 0],
-        extrapolate: "clamp"
+        extrapolate: "clamp",
       }),
     [scrollAnimatedValue]
   );
@@ -127,7 +127,7 @@ export const HouseholdsSelection = () => {
       <Wrapper style={{ opacity }}>
         <CollapsableView
           style={{
-            height: collapseHeightAnimation.current
+            height: collapseHeightAnimation.current,
           }}
         >
           <SideSwipe
@@ -136,8 +136,8 @@ export const HouseholdsSelection = () => {
             style={{ width }}
             data={households}
             onIndexChange={handleSlideIndexChange}
-            extractKey={item => item.id}
-            renderItem={slide => (
+            extractKey={(item) => item.id}
+            renderItem={(slide) => (
               <HouseholdItemWrapper
                 onLongPress={enterEditMode}
                 onPress={enterExpandedMode}
@@ -147,8 +147,8 @@ export const HouseholdsSelection = () => {
                   style={{
                     opacity: isExpandedAnimation.current.interpolate({
                       inputRange: [0, 100],
-                      outputRange: [0, 1]
-                    })
+                      outputRange: [0, 1],
+                    }),
                   }}
                 >
                   <ManageHouseholdMembers

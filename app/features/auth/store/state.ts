@@ -20,7 +20,7 @@ export const selectAuthUser = store.createSelector(
 export const selectCurrentUserId = (): O.Option<string> =>
   pipe(
     selectAuthUser(),
-    O.map(u => u.uid)
+    O.map((u) => u.uid)
   );
 
 export const selectHasAuthenticated = (): boolean =>

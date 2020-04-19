@@ -1,7 +1,7 @@
 import { useStore } from "../../../store/state";
 import {
   selectProfilesForHousehold,
-  selectHouseholdById
+  selectHouseholdById,
 } from "../store/state";
 import styled from "styled-components/native";
 import { Avatar } from "../../../components/avatar";
@@ -9,7 +9,7 @@ import { AvatarButton } from "../../../components/avatar-button";
 import React, { useCallback, useRef, useEffect } from "react";
 import {
   shareHouseholdInvitation,
-  removeProfileFromHousehold
+  removeProfileFromHousehold,
 } from "../store/effects";
 import { TouchableOpacity, Animated, Easing, Alert } from "react-native";
 import { symbols } from "../../../theme";
@@ -20,14 +20,14 @@ import * as O from "fp-ts/lib/Option";
 export const ManageHouseholdMembers = ({
   householdId,
   editMode,
-  onCancelPress
+  onCancelPress,
 }: {
   householdId: string;
   editMode: boolean;
   onCancelPress: () => void;
 }) => {
   const profiles = useStore(() => selectProfilesForHousehold(householdId), [
-    householdId
+    householdId,
   ]);
 
   const handleAddNewHouseholdMember = useCallback(
@@ -39,12 +39,12 @@ export const ManageHouseholdMembers = ({
     (profileId: string) =>
       new Promise((resolve, reject) =>
         pipe(
-          O.fromNullable(profiles.find(p => p.id === profileId)),
-          O.chain(profile => profile.name),
-          O.fold(reject, name => {
+          O.fromNullable(profiles.find((p) => p.id === profileId)),
+          O.chain((profile) => profile.name),
+          O.fold(reject, (name) => {
             const householdName = pipe(
               selectHouseholdById(householdId),
-              O.map(household => household.name),
+              O.map((household) => household.name),
               O.getOrElse(() => "this household")
             );
             Alert.alert(
@@ -53,12 +53,12 @@ export const ManageHouseholdMembers = ({
               [
                 {
                   text: "Cancel",
-                  onPress: reject
+                  onPress: reject,
                 },
                 {
                   text: `I'm sure`,
-                  onPress: resolve
-                }
+                  onPress: resolve,
+                },
               ]
             );
           })
@@ -83,7 +83,7 @@ export const ManageHouseholdMembers = ({
     Animated.timing(animatedValue.current, {
       toValue: editMode ? 100 : 0,
       duration: 180,
-      easing: Easing.inOut(Easing.cubic)
+      easing: Easing.inOut(Easing.cubic),
     }).start();
   }, [editMode]);
 
@@ -103,11 +103,11 @@ export const ManageHouseholdMembers = ({
                 inputRange: [0, 100],
                 outputRange: [
                   HALF_BUTTON_SIZE + HALF_TOTAL_AVATARS_SPREAD,
-                  -HALF_TOTAL_AVATARS_SPREAD - HALF_BUTTON_SPREAD
-                ]
-              })
-            }
-          ]
+                  -HALF_TOTAL_AVATARS_SPREAD - HALF_BUTTON_SPREAD,
+                ],
+              }),
+            },
+          ],
         }}
       >
         <AvatarsInnerWrapper>
@@ -119,11 +119,11 @@ export const ManageHouseholdMembers = ({
                   {
                     translateX: animatedValue.current.interpolate({
                       inputRange: [0, 100],
-                      outputRange: [-i * AVATAR_SPREAD, i * AVATAR_SPREAD]
-                    })
-                  }
+                      outputRange: [-i * AVATAR_SPREAD, i * AVATAR_SPREAD],
+                    }),
+                  },
                 ],
-                zIndex: profiles.length - i
+                zIndex: profiles.length - i,
               }}
             >
               <TouchableOpacity
@@ -144,15 +144,15 @@ export const ManageHouseholdMembers = ({
                   inputRange: [0, 100],
                   outputRange: [
                     -symbols.size.avatarDefault - AVATAR_SPREAD,
-                    NUMBER_OF_AVATARS * AVATAR_SPREAD + AVATAR_SPREAD
-                  ]
-                })
-              }
+                    NUMBER_OF_AVATARS * AVATAR_SPREAD + AVATAR_SPREAD,
+                  ],
+                }),
+              },
             ],
             opacity: animatedValue.current.interpolate({
               inputRange: [0, 100],
-              outputRange: [0, 1]
-            })
+              outputRange: [0, 1],
+            }),
           }}
         >
           <AvatarButton
@@ -165,12 +165,12 @@ export const ManageHouseholdMembers = ({
         style={{
           height: animatedValue.current.interpolate({
             inputRange: [0, 100],
-            outputRange: [0, CANCEL_BUTTON_WRAPPER_HEIGHT]
+            outputRange: [0, CANCEL_BUTTON_WRAPPER_HEIGHT],
           }),
           opacity: animatedValue.current.interpolate({
             inputRange: [0, 100],
-            outputRange: [0, 1]
-          })
+            outputRange: [0, 1],
+          }),
         }}
       >
         <TextButton onPress={onCancelPress}>Cancel</TextButton>

@@ -2,7 +2,7 @@ import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
 import { PlantModel } from "../../../types";
 import { IErr } from "../../../utils/err";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
@@ -22,11 +22,9 @@ export const createPlantForHousehold = (
             ...plant,
             householdId,
             id,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date())
+            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
           };
-          await database(householdId)
-            .doc(id)
-            .set(plantToSave);
+          await database(householdId).doc(id).set(plantToSave);
           return plantToSave;
         },
         () => "BAD_REQUEST" as IErr
@@ -39,9 +37,7 @@ export const deletePlantByHouseholdId = (householdId: string) => (
 ): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     async () => {
-      await database(householdId)
-        .doc(plantId)
-        .delete();
+      await database(householdId).doc(plantId).delete();
     },
     () => "BAD_REQUEST" as IErr
   );
@@ -49,5 +45,5 @@ export const deletePlantByHouseholdId = (householdId: string) => (
 const defaultPlant: Omit<PlantModel, "id" | "dateCreated" | "householdId"> = {
   name: "Cactus",
   location: "default",
-  careRecurrenceDays: 7
+  careRecurrenceDays: 7,
 };

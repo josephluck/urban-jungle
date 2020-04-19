@@ -8,22 +8,22 @@ import {
   selectAuthUser,
   selectCurrentUserId,
   setUser,
-  setInitializing
+  setInitializing,
 } from "./state";
 import {
   createHouseholdForProfile,
   createProfileHouseholdRelation,
-  storeSelectedHouseholdIdToStorage
+  storeSelectedHouseholdIdToStorage,
 } from "../../households/store/effects";
 import { store, resetGlobalState } from "../../../store/state";
 import {
   createProfileForUser,
-  fetchProfileIfNotFetched
+  fetchProfileIfNotFetched,
 } from "../../profiles/store/effects";
 import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 
 export const initialize = store.createEffect(() => {
-  firebase.auth().onAuthStateChanged(async user => {
+  firebase.auth().onAuthStateChanged(async (user) => {
     setUser(O.fromNullable(user)); // NB: this deals with sign out as well
     if (user) {
       await fetchOrCreateProfile()();
@@ -75,7 +75,7 @@ export const validateSignUp = (
 ): TE.TaskEither<IErr, string> =>
   pipe(
     O.fromNullable(credentials.user),
-    O.map(user => user.uid),
+    O.map((user) => user.uid),
     TE.fromOption(() => "BAD_REQUEST" as IErr)
   );
 
@@ -90,7 +90,7 @@ export const handleInitialHouseholdInvitationLink = (
 ): TE.TaskEither<IErr, string> =>
   pipe(
     getAndParseInitialHouseholdInvitationDeepLink(),
-    TE.map(params => params.householdId),
+    TE.map((params) => params.householdId),
     TE.chainFirst(createProfileHouseholdRelation(profileId)),
     TE.chain(storeSelectedHouseholdIdToStorage) // TODO: the redirection happens before this is fired
   );
@@ -117,7 +117,7 @@ export const createAndSeedProfile = (): TE.TaskEither<IErr, ProfileModel> =>
     selectAuthUser(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain(createProfileForUser),
-    TE.map(profile => profile.id),
+    TE.map((profile) => profile.id),
     // TODO: check initial deep link, and skip creating a household if there's a householdId in the deep link?
     TE.chain(createHouseholdForProfile()),
     TE.chain(fetchCurrentProfileIfNotFetched)

@@ -6,35 +6,35 @@ const borderRadius = {
   tiny: 4,
   small: 6,
   medium: 12,
-  large: 18
+  large: 18,
 };
 
 const font = {
   _12: {
     size: 12,
-    lineHeight: 14
+    lineHeight: 14,
   },
   _14: {
     size: 14,
-    lineHeight: 16
+    lineHeight: 16,
   },
   _16: {
     size: 16,
-    lineHeight: 20
+    lineHeight: 20,
   },
   _20: {
     size: 20,
-    lineHeight: 24
+    lineHeight: 24,
   },
   _24: {
     size: 24,
-    lineHeight: 30
-  }
+    lineHeight: 30,
+  },
 };
 
 const fontWeight = {
   medium: 500,
-  bold: 700
+  bold: 700,
 };
 
 const size = {
@@ -50,7 +50,7 @@ const size = {
   avatarDefault: 50,
   avatarLarge: 80,
   bottomSheetHandleHeight: 4,
-  bottomSheetHandleWidth: 30
+  bottomSheetHandleWidth: 30,
 };
 
 export type AvatarSize = "small" | "default" | "large";
@@ -58,13 +58,13 @@ export type AvatarSize = "small" | "default" | "large";
 export const avatarSizeToValue: Record<AvatarSize, number> = {
   small: size.avatarSmall,
   default: size.avatarDefault,
-  large: size.avatarLarge
+  large: size.avatarLarge,
 };
 
 export const avatarSizeToBorderWidth: Record<AvatarSize, number> = {
   small: 1,
   default: 2,
-  large: 3
+  large: 3,
 };
 
 const spacing = {
@@ -77,7 +77,7 @@ const spacing = {
   _14: 14,
   _16: 16,
   _18: 18,
-  _22: 22
+  _22: 22,
 };
 
 export const symbols = {
@@ -85,7 +85,7 @@ export const symbols = {
   font,
   fontWeight,
   size,
-  spacing
+  spacing,
 };
 
 const colors = {
@@ -104,7 +104,7 @@ const colors = {
   darkRed: "rgba(255, 17, 68, 1)",
   paleGreen: "rgba(5, 194, 125, 0.05)",
   darkGreen: "rgba(5, 194, 125, 1)",
-  solidBlue: "rgba(34, 165, 222, 1)"
+  solidBlue: "rgba(34, 165, 222, 1)",
 };
 
 export const darkTheme = {
@@ -121,7 +121,7 @@ export const darkTheme = {
   bottomSheetCloseButton: colors.offBlack,
   bottomSheetBackground: colors.pureWhite,
   bottomSheetExpander: colors.lightOffGray,
-  bottomSheetBackdrop: colors.offBlack
+  bottomSheetBackdrop: colors.offBlack,
 };
 
 export const lightTheme: Theme = {
@@ -138,7 +138,7 @@ export const lightTheme: Theme = {
   bottomSheetCloseButton: colors.offBlack,
   bottomSheetBackground: "red",
   bottomSheetExpander: colors.lightOffGray,
-  bottomSheetBackdrop: colors.offBlack
+  bottomSheetBackdrop: colors.offBlack,
 };
 
 export const useTheme = () => {

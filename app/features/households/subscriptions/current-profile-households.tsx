@@ -36,12 +36,12 @@ export const CurrentProfileHouseholdsSubscription = () => {
 const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
   const addedOrModified: HouseholdModel[] = snapshot
     .docChanges()
-    .filter(change => ["added", "modified"].includes(change.type))
-    .map(change => (change.doc.data() as unknown) as HouseholdModel);
+    .filter((change) => ["added", "modified"].includes(change.type))
+    .map((change) => (change.doc.data() as unknown) as HouseholdModel);
   const removed: HouseholdModel[] = snapshot
     .docChanges()
-    .filter(change => change.type === "removed")
-    .map(change => (change.doc.data() as unknown) as HouseholdModel);
+    .filter((change) => change.type === "removed")
+    .map((change) => (change.doc.data() as unknown) as HouseholdModel);
   addedOrModified.map(upsertHousehold);
 
   // NB: if there isn't a selected householdId in AsyncStorage yet and there are
@@ -50,13 +50,13 @@ const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
   const storeSelectedHouseholdIdIfNeeded = pipe(
     O.fromNullable(addedOrModified[0]),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.map(household => household.id),
+    TE.map((household) => household.id),
     TE.chain(storeSelectedHouseholdIdToStorageIfNotPresent)
   );
   await storeSelectedHouseholdIdIfNeeded();
 
   await Promise.all(
-    removed.map(household => {
+    removed.map((household) => {
       deleteHousehold(household.id);
       // NB: this works because we do not fetch 3rd degree users' households.
       return removeHouseholdFromProfile(household.id)();

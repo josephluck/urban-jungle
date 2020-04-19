@@ -19,11 +19,9 @@ export const createProfileForUser = (
         dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
         name: "Joseph Luck",
         householdIds: [],
-        email: user.email!
+        email: user.email!,
       };
-      await database()
-        .doc(user.uid)
-        .set(profile);
+      await database().doc(user.uid).set(profile);
       return profile;
     },
     () => "BAD_REQUEST" as IErr
@@ -42,9 +40,7 @@ export const fetchProfileIfNotFetched = (
 export const fetchProfile = (id: string): TE.TaskEither<IErr, ProfileModel> =>
   TE.tryCatch(
     async () => {
-      const response = await database()
-        .doc(id)
-        .get();
+      const response = await database().doc(id).get();
       if (!response.exists) {
         throw new Error();
       }
@@ -61,7 +57,7 @@ export const addHouseholdToCurrentProfile = (
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(id =>
+    TE.chain((id) =>
       TE.tryCatch(
         async () => {
           await database()
@@ -69,7 +65,7 @@ export const addHouseholdToCurrentProfile = (
             .update({
               householdIds: firebase.firestore.FieldValue.arrayUnion(
                 householdId
-              )
+              ),
             });
         },
         () => "BAD_REQUEST" as IErr
@@ -94,7 +90,7 @@ export const removeHouseholdFromProfile = (
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(id =>
+    TE.chain((id) =>
       TE.tryCatch(
         async () => {
           await database()
@@ -102,7 +98,7 @@ export const removeHouseholdFromProfile = (
             .update({
               householdIds: firebase.firestore.FieldValue.arrayRemove(
                 householdId
-              )
+              ),
             });
         },
         () => "BAD_REQUEST" as IErr

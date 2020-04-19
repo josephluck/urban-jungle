@@ -6,20 +6,20 @@ import {
   selectProfileAvatarById,
   selectProfileNameById,
   selectMiniProfileById,
-  MiniProfile
+  MiniProfile,
 } from "../../profiles/store/state";
 import { store } from "../../../store/state";
 
-export const selectHouseholds = store.createSelector(s =>
+export const selectHouseholds = store.createSelector((s) =>
   Object.values(s.households.households)
 );
 
 export const selectSelectedHouseholdId = store.createSelector(
-  s => s.households.selectedHouseholdId
+  (s) => s.households.selectedHouseholdId
 );
 
 export const selectHouseholdById = (id: string): O.Option<HouseholdModel> =>
-  O.fromNullable(selectHouseholds().find(household => household.id === id));
+  O.fromNullable(selectHouseholds().find((household) => household.id === id));
 
 export const selectedSelectedOrMostRecentHouseholdId = (): O.Option<string> =>
   pipe(
@@ -37,7 +37,7 @@ export const selectSelectedHousehold = (): O.Option<HouseholdModel> =>
 export const selectSelectedHouseholdName = (): O.Option<string> =>
   pipe(
     selectSelectedHousehold(),
-    O.map(household => household.name)
+    O.map((household) => household.name)
   );
 
 /**
@@ -46,21 +46,21 @@ export const selectSelectedHouseholdName = (): O.Option<string> =>
 export const selectMostRecentlyAddedHousehold = (): O.Option<HouseholdModel> =>
   pipe(
     selectHouseholds(),
-    O.fromPredicate(households => households.length > 0),
-    O.map(households =>
+    O.fromPredicate((households) => households.length > 0),
+    O.map((households) =>
       households.sort(
         (a, b) =>
           a.dateCreated.toDate().getTime() - b.dateCreated.toDate().getTime()
       )
     ),
-    O.map(households => O.fromNullable(households[0])),
+    O.map((households) => O.fromNullable(households[0])),
     O.flatten
   );
 
 export const selectMostRecentlyAddedHouseholdId = (): O.Option<string> =>
   pipe(
     selectMostRecentlyAddedHousehold(),
-    O.map(household => household.id)
+    O.map((household) => household.id)
   );
 
 /**
@@ -68,7 +68,7 @@ export const selectMostRecentlyAddedHouseholdId = (): O.Option<string> =>
  */
 export const selectProfileIdsForHouseholds = (): string[] => {
   const profileIds = selectHouseholds()
-    .map(household => household.profileIds)
+    .map((household) => household.profileIds)
     .reduce((acc, arr) => [...acc, ...arr], []);
   return [...new Set(profileIds)];
 };
@@ -76,7 +76,7 @@ export const selectProfileIdsForHouseholds = (): string[] => {
 export const selectProfileIdsForHousehold = (id: string): O.Option<string[]> =>
   pipe(
     selectHouseholdById(id),
-    O.map(household => household.profileIds)
+    O.map((household) => household.profileIds)
   );
 
 export const selectProfileAvatarsForHousehold = (
@@ -84,10 +84,10 @@ export const selectProfileAvatarsForHousehold = (
 ): O.Option<string>[] =>
   pipe(
     selectProfileIdsForHousehold(id),
-    O.map(profileIds => profileIds.map(selectProfileAvatarById)),
+    O.map((profileIds) => profileIds.map(selectProfileAvatarById)),
     O.fold(
       () => [],
-      val => val
+      (val) => val
     )
   );
 
@@ -96,10 +96,10 @@ export const selectProfileNamesForHousehold = (
 ): O.Option<string>[] =>
   pipe(
     selectProfileIdsForHousehold(id),
-    O.map(profileIds => profileIds.map(selectProfileNameById)),
+    O.map((profileIds) => profileIds.map(selectProfileNameById)),
     O.fold(
       () => [],
-      val => val
+      (val) => val
     )
   );
 
@@ -113,7 +113,7 @@ export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {
     s.households.households = {
       ...s.households.households,
-      ...normalizeArrayById(households)
+      ...normalizeArrayById(households),
     };
   }
 );

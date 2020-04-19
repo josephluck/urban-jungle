@@ -21,7 +21,7 @@ export const selectCaresByHouseholdIdAndPlantId = (
   plantId: string
 ): CareModel[] =>
   selectCaresByHouseholdId(householdId).filter(
-    care => care.plantId === plantId
+    (care) => care.plantId === plantId
   );
 
 export const sortCaresByMostRecent = (cares: CareModel[]): CareModel[] =>
@@ -60,7 +60,7 @@ export const selectNumberOfDaysUntilNextCareByHouseholdIdAndPlantId = (
 ) => (plantId: string) => (careRecurrenceDays: number): number =>
   pipe(
     selectMostRecentCareByHouseholdIdAndPlantId(householdId, plantId),
-    O.map(care => {
+    O.map((care) => {
       const todaysDate = new Date();
       const careDate = care.dateCreated.toDate();
       const daysSinceLastCare = Math.ceil(
@@ -75,7 +75,7 @@ export const setCares = store.createMutator(
   (s, householdId: string, cares: CareModel[]) => {
     s.cares.caresByHouseholdId[householdId] = {
       ...s.cares.caresByHouseholdId[householdId],
-      ...normalizeArrayById(cares)
+      ...normalizeArrayById(cares),
     };
   }
 );

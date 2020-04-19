@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { AppNavigation } from "./navigation/navigation";
 import { createAppContainer } from "react-navigation";
 import { ThemeProvider } from "styled-components";
-import { darkTheme } from "./theme";
+import { lightTheme } from "./theme";
 import styled from "styled-components/native";
 import { useFonts } from "./hooks/fonts";
 // import * as reactotron from "./reactotron";
@@ -12,6 +12,7 @@ import { ActivityIndicator, StatusBar } from "react-native";
 import { selectInitializing } from "./features/auth/store/state";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { useStore } from "./store/state";
+import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
 
 // reactotron.configure();
 
@@ -28,15 +29,18 @@ export default () => {
   const loading = fontsLoading || authInitializing;
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      <StatusBar barStyle={darkTheme.type} />
+    <ThemeProvider theme={lightTheme}>
+      <StatusBar barStyle={lightTheme.type} />
       <AppWrapper>
         {loading ? (
           <LoadingContainer>
             <ActivityIndicator size="large" />
           </LoadingContainer>
         ) : (
-          <AppContainer />
+          <>
+            <CurrentProfileHouseholdsSubscription />
+            <AppContainer />
+          </>
         )}
       </AppWrapper>
       <ProfilesSubscription />

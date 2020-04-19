@@ -27,7 +27,7 @@ export const ProfilesSubscription = () => {
   );
   const householdProfileIds = useStore(selectProfileIdsForHouseholds);
   const profileIds = [
-    ...new Set([currentProfileId, ...householdProfileIds])
+    ...new Set([currentProfileId, ...householdProfileIds]),
   ].filter(Boolean);
   const profileIdsHash = profileIds.join("");
 
@@ -46,14 +46,14 @@ export const ProfilesSubscription = () => {
 const handleProfileSnapshot = async (snapshot: Snapshot) => {
   const addedOrModified: ProfileModel[] = snapshot
     .docChanges()
-    .filter(change => ["added", "modified"].includes(change.type))
-    .map(change => change.doc.data() as ProfileModel);
+    .filter((change) => ["added", "modified"].includes(change.type))
+    .map((change) => change.doc.data() as ProfileModel);
   const removed: ProfileModel[] = snapshot
     .docChanges()
-    .filter(change => change.type === "removed")
-    .map(change => change.doc.data() as ProfileModel);
+    .filter((change) => change.type === "removed")
+    .map((change) => change.doc.data() as ProfileModel);
   upsertProfiles(addedOrModified);
-  deleteProfiles(removed.map(profile => profile.id));
+  deleteProfiles(removed.map((profile) => profile.id));
 };
 
 type Snapshot = firebase.firestore.QuerySnapshot<

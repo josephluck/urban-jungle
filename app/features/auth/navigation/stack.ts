@@ -10,15 +10,15 @@ export const AuthNavigator = createStackNavigator(
     [SIGN_IN_SCREEN]: {
       screen: SignIn,
       navigationOptions: {
-        title: "Sign in"
-      }
+        title: "Sign in",
+      },
     },
     [SIGN_UP_SCREEN]: {
       screen: SignUp,
       navigationOptions: {
-        title: "Sign up"
-      }
-    }
+        title: "Sign up",
+      },
+    },
   },
   defaultStackConfig
 );
