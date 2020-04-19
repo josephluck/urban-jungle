@@ -1,74 +1,76 @@
 import React, { useMemo } from "react";
 import moment from "moment";
 import styled from "styled-components/native";
+import Carousel from "react-native-snap-carousel";
 import { BodyText } from "../../../components/typography";
 import { symbols } from "../../../theme";
+import { Dimensions } from "react-native";
 
 export const Calendar = (_props: { householdId: string }) => {
   const today = useMemo(() => moment().day(), []);
-  const todos = [
+  const todos = (prefix: number) => [
     {
-      id: 1,
+      id: `${prefix}-1`,
       thing: "Water",
     },
     {
-      id: 2,
+      id: `${prefix}-2`,
       thing: "Water",
     },
     {
-      id: 3,
+      id: `${prefix}-3`,
       thing: "Prune",
     },
     {
-      id: 4,
+      id: `${prefix}-4`,
       thing: "Feed",
     },
     {
-      id: 1,
+      id: `${prefix}-5`,
       thing: "Water",
     },
     {
-      id: 2,
+      id: `${prefix}-6`,
       thing: "Water",
     },
     {
-      id: 3,
+      id: `${prefix}-7`,
       thing: "Prune",
     },
     {
-      id: 4,
+      id: `${prefix}-8`,
       thing: "Feed",
     },
     {
-      id: 1,
+      id: `${prefix}-9`,
       thing: "Water",
     },
     {
-      id: 2,
+      id: `${prefix}-10`,
       thing: "Water",
     },
     {
-      id: 3,
+      id: `${prefix}-11`,
       thing: "Prune",
     },
     {
-      id: 4,
+      id: `${prefix}-12`,
       thing: "Feed",
     },
     {
-      id: 1,
+      id: `${prefix}-13`,
       thing: "Water",
     },
     {
-      id: 2,
+      id: `${prefix}-14`,
       thing: "Water",
     },
     {
-      id: 3,
+      id: `${prefix}-15`,
       thing: "Prune",
     },
     {
-      id: 4,
+      id: `${prefix}-16`,
       thing: "Feed",
     },
   ];
@@ -90,14 +92,24 @@ export const Calendar = (_props: { householdId: string }) => {
           </Day>
         ))}
       </DaysContainer>
-      <TodosContainer>
-        {todos.map((todo) => (
-          <TodoItem key={todo.id}>
-            <Circle />
-            <TodoText>{todo.thing}</TodoText>
-          </TodoItem>
-        ))}
-      </TodosContainer>
+      <Carousel
+        data={[todos(1), todos(2), todos(3), todos(4)]}
+        sliderWidth={Dimensions.get("window").width}
+        itemWidth={Dimensions.get("window").width}
+        nestedScrollEnabled
+        inactiveSlideScale={1}
+        inactiveSlideOpacity={1}
+        renderItem={(slide) => (
+          <TodosList>
+            {slide.item.map((todo) => (
+              <TodoItem key={todo.id}>
+                <Circle />
+                <TodoText>{todo.thing}</TodoText>
+              </TodoItem>
+            ))}
+          </TodosList>
+        )}
+      />
     </Container>
   );
 };
@@ -130,10 +142,9 @@ const Day = styled.View`
 
 const DayText = styled(BodyText)``;
 
-const TodosContainer = styled.ScrollView`
+const TodosList = styled.ScrollView`
   flex: 1;
   padding-horizontal: ${symbols.spacing.appHorizontal};
-  background-color: ${symbols.colors.appBackground};
 `;
 
 const TodoItem = styled.View`

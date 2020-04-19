@@ -1560,6 +1560,14 @@
   dependencies:
     react-native-collapsible "*"
 
+"@types/react-native-snap-carousel@^3.8.1":
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.8.1.tgz#1fabbae6053c2c234f11cec6e5622086677b4da4"
+  integrity sha512-nKpCGtyvi0RB7iyrMf3Zyl9r4fvEVMnhBnHNWZe5FPvTiJ+XPPJw3lo9HOoqZIySVvYoASQdGnFLgWnugiUmHw==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native@*":
   version "0.61.7"
   resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.61.7.tgz#e0315b5f627d61470c7f58d7298e732aab90b2c5"
@@ -5190,6 +5198,14 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-addons-shallow-compare@15.6.2:
+  version "15.6.2"
+  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.2.tgz#198a00b91fc37623db64a28fd17b596ba362702f"
+  integrity sha1-GYoAuR/DdiPbZKKP0XtZa6NicC8=
+  dependencies:
+    fbjs "^0.8.4"
+    object-assign "^4.1.0"
+
 react-devtools-core@^3.6.3:
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-3.6.3.tgz#977d95b684c6ad28205f0c62e1e12c5f16675814"
@@ -5295,6 +5311,14 @@ react-native-sideswipe@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/react-native-sideswipe/-/react-native-sideswipe-1.5.0.tgz#f67014633456c7d1a44112b6126ee877f7202f50"
   integrity sha512-1qI9qQrc+UwM24qtQN5Tk9cucvTRTpp3wnGxG3JjeATwaBxcIMQPtxbuosMFi+gXBH2p/ofmtD4jZc7w2bmGeg==
+
+react-native-snap-carousel@^3.9.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.9.0.tgz#017793ca3f5e901ccd5a3117d79bb18ec08928a3"
+  integrity sha512-XDCUNo0SXfHOCc/v1s96hzrf/N4lDBjXLZMNLLUeSkLsHlH2QryFyQKO48AI08fJmM5JBqGVwcJiF47aMWOmYQ==
+  dependencies:
+    prop-types "^15.6.1"
+    react-addons-shallow-compare "15.6.2"
 
 react-native-svg@11.0.1:
   version "11.0.1"
