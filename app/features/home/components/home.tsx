@@ -21,8 +21,6 @@ import { symbols } from "../../../theme";
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
 
-  console.log({ hasAuthenticated });
-
   if (hasAuthenticated) {
     return <HomeScreen />;
   }

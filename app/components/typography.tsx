@@ -23,7 +23,7 @@ export const SubHeading = styled.Text`
 export const Heading = styled.Text`
   color: ${(props) => props.theme.defaultTextColor};
   font-weight: ${symbols.fontWeight.medium};
-  font-size: ${symbols.font._24.size}px;
-  line-height: ${symbols.font._24.lineHeight}px;
+  font-size: ${symbols.font._28.size}px;
+  line-height: ${symbols.font._28.lineHeight}px;
   font-family: ${SOURCE_SANS_SEMIBOLD};
 `;

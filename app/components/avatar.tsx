@@ -53,6 +53,6 @@ const AvatarImage = styled.Image<{ size: AvatarSize }>`
 `;
 
 const PlaceholderLetter = styled.Text<{ size: AvatarSize }>`
-  font-size: ${symbols.font._24.size}px;
+  font-size: ${symbols.font._28.size}px;
   color: ${(props) => props.theme.avatarPlaceholderLetter};
 `;

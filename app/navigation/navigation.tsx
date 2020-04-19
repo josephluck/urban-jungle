@@ -2,6 +2,7 @@ import React from "react";
 import { createSwitchNavigator } from "react-navigation";
 import { AUTH_STACK, AuthNavigator } from "../features/auth/navigation/stack";
 import { Home } from "../features/home/components/home";
+import { Plants } from "../features/plants/components/plants";
 import { createStackNavigator } from "react-navigation-stack";
 import { HOME_SCREEN } from "../features/home/navigation/routes";
 import { createBottomTabNavigator } from "react-navigation-tabs";
@@ -33,7 +34,7 @@ const PLANTS_SCREEN = "PLANTS_SCREEN";
 const PlantsStack = createStackNavigator(
   {
     [PLANTS_SCREEN]: {
-      screen: () => <></>,
+      screen: Plants,
     },
   },
   {
