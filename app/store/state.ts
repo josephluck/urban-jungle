@@ -78,6 +78,6 @@ export const resetGlobalState = store.createMutator((s) => {
   s = defaultState;
 });
 
-store.subscribe((_, next) => console.log(new Date().toString(), next));
+// store.subscribe((_, next) => console.log(new Date().toString(), next));
 
 export const useStore = useStately(store);

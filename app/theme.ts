@@ -78,14 +78,9 @@ const spacing = {
   _16: 16,
   _18: 18,
   _22: 22,
-};
-
-export const symbols = {
-  borderRadius,
-  font,
-  fontWeight,
-  size,
-  spacing,
+  _30: 30,
+  appHorizontal: 22,
+  appVertical: 30,
 };
 
 const colors = {
@@ -105,6 +100,16 @@ const colors = {
   paleGreen: "rgba(5, 194, 125, 0.05)",
   darkGreen: "rgba(5, 194, 125, 1)",
   solidBlue: "rgba(34, 165, 222, 1)",
+  appBackground: "rgba(255, 255, 255, 1)",
+};
+
+export const symbols = {
+  borderRadius,
+  colors,
+  font,
+  fontWeight,
+  size,
+  spacing,
 };
 
 export const darkTheme = {
@@ -122,6 +127,7 @@ export const darkTheme = {
   bottomSheetBackground: colors.pureWhite,
   bottomSheetExpander: colors.lightOffGray,
   bottomSheetBackdrop: colors.offBlack,
+  calendarDayBackground: colors.offBlack,
 };
 
 export const lightTheme: Theme = {
@@ -139,6 +145,7 @@ export const lightTheme: Theme = {
   bottomSheetBackground: "red",
   bottomSheetExpander: colors.lightOffGray,
   bottomSheetBackdrop: colors.offBlack,
+  calendarDayBackground: colors.nearWhite,
 };
 
 export const useTheme = () => {

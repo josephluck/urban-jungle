@@ -14,6 +14,9 @@ import * as O from "fp-ts/lib/Option";
 import { HouseholdPlantsSubscription } from "../../plants/subscriptions/household-plants";
 import { useStore } from "../../../store/state";
 import { HouseholdCaresSubscription } from "../../care/subscriptions/household-cares";
+import { Calendar } from "./calendar";
+import styled from "styled-components/native";
+import { symbols } from "../../../theme";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -36,20 +39,30 @@ const HomeScreen = () => {
     O.getOrElse(() => "")
   );
 
-  console.log("Rendering home screen", { selectedHouseholdId });
-
   return (
     <ScreenLayout>
       {selectedHouseholdId ? (
-        <>
+        <HomeScreenContainer>
           <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
           <HouseholdCaresSubscription householdId={selectedHouseholdId} />
-          <Heading>👋 You have a couple of plants to care for today.</Heading>
-        </>
+          <WelcomeMessage>👋 You have a few things to do today.</WelcomeMessage>
+          <Calendar householdId={selectedHouseholdId} />
+        </HomeScreenContainer>
       ) : null}
     </ScreenLayout>
   );
 };
+
+const WelcomeMessage = styled(Heading)`
+  padding-horizontal: ${symbols.spacing.appHorizontal};
+  margin-bottom: ${symbols.spacing.appHorizontal * 2};
+`;
+
+const HomeScreenContainer = styled.View`
+  padding-top: ${symbols.spacing.appVertical};
+  flex-grow: 1;
+  background-color: ${symbols.colors.appBackground};
+`;
 
 const SplashScreen = () => {
   const { navigate } = useContext(NavigationContext);
