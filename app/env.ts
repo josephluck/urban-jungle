@@ -1,5 +1,3 @@
-import { Constants } from "expo";
-
 export interface Env {
   firebase: {
     apiKey: string;
@@ -12,7 +10,6 @@ export interface Env {
   };
 }
 
-export const env: Env =
-  !__DEV__ && Constants.manifest.releaseChannel === "production"
-    ? require("./env.prod.json")
-    : require("./env.dev.json");
+export const env: Env = !__DEV__
+  ? require("./env.prod.json")
+  : require("./env.dev.json");

@@ -8,6 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
+    "deploy": "expo publish",
     "postinstall": "expo-yarn-workspaces postinstall",
     "tsc": "tsc --noEmit",
     "format": "prettier --write \"./**/*.*\""
