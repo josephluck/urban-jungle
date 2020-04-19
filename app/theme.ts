@@ -17,6 +17,10 @@ const font = {
     size: baseFontSize,
     lineHeight: baseFontSize * 1.2,
   },
+  _20: {
+    size: baseFontSize * 1.2,
+    lineHeight: baseFontSize * 1.2 * 1.2,
+  },
   _24: {
     size: baseFontSize * 1.4,
     lineHeight: baseFontSize * 1.4 * 1.2,

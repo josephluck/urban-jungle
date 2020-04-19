@@ -76,6 +76,7 @@ const PrivateTabs = createBottomTabNavigator(
       tabBarOptions: {
         showLabel: false,
         style: {
+          backgroundColor: symbols.colors.appBackground,
           borderTopWidth: 0,
           height: tabIconSize + tabBarPadding * 2,
         },
