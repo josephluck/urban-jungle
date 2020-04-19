@@ -217,7 +217,9 @@ const Day = styled.TouchableOpacity<{ isPast: boolean; isToday: boolean }>`
   width: ${daySize};
   height: ${daySize};
   background-color: ${(props) =>
-    props.isToday ? symbols.colors.solidBlue : symbols.colors.nearWhite};
+    props.isToday ? "transparent" : symbols.colors.nearWhite};
+  border-color: ${symbols.colors.solidBlue};
+  border-width: ${(props) => (props.isToday ? 2 : 0)};
   opacity: ${(props) => (props.isPast ? 0.5 : 1)};
   justify-content: center;
   align-items: center;
@@ -227,7 +229,7 @@ const Day = styled.TouchableOpacity<{ isPast: boolean; isToday: boolean }>`
 
 const DayText = styled(BodyText)<{ isToday: boolean }>`
   color: ${(props) =>
-    props.isToday ? symbols.colors.pureWhite : symbols.colors.offBlack};
+    props.isToday ? symbols.colors.solidBlue : symbols.colors.offBlack};
 `;
 
 const TodosList = styled.ScrollView`

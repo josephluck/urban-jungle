@@ -87,7 +87,7 @@ const colors = {
   darkRed: "rgba(255, 17, 68, 1)",
   paleGreen: "rgba(5, 194, 125, 0.05)",
   darkGreen: "rgba(5, 194, 125, 1)",
-  solidBlue: "rgba(34, 165, 222, 1)",
+  solidBlue: "#0909F9",
   appBackground: "rgba(255, 255, 255, 1)",
 };
 
