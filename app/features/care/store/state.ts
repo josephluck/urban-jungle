@@ -37,7 +37,21 @@ export const selectMostRecentCareByHouseholdIdAndPlantId = (
     )[0]
   );
 
-const numberOfMillisInDay = 86400000;
+export const selectCaresForTodo = (householdId: string) => (
+  todoId: string
+): CareModel[] =>
+  selectCaresByHouseholdId(householdId).filter(
+    (care) => care.todoId === todoId
+  );
+
+export const selectMostRecentCareForTodo = (householdId: string) => (
+  todoId: string
+): O.Option<CareModel> =>
+  O.fromNullable(
+    sortCaresByMostRecent(selectCaresForTodo(householdId)(todoId))[0]
+  );
+
+// const numberOfMillisInDay = 86400000;
 
 /**
  * Returns the number of days until the next care for a given plant is due.
@@ -55,21 +69,21 @@ const numberOfMillisInDay = 86400000;
  * and will return 0 (today).
  *
  */
-export const selectNumberOfDaysUntilNextCareByHouseholdIdAndPlantId = (
-  householdId: string
-) => (plantId: string) => (careRecurrenceDays: number): number =>
-  pipe(
-    selectMostRecentCareByHouseholdIdAndPlantId(householdId, plantId),
-    O.map((care) => {
-      const todaysDate = new Date();
-      const careDate = care.dateCreated.toDate();
-      const daysSinceLastCare = Math.ceil(
-        (careDate.valueOf() - todaysDate.valueOf()) / numberOfMillisInDay
-      );
-      return careRecurrenceDays - daysSinceLastCare;
-    }),
-    O.getOrElse(() => 0)
-  );
+// export const selectNumberOfDaysUntilNextCareByHouseholdIdAndPlantId = (
+//   householdId: string
+// ) => (plantId: string) => (careRecurrenceDays: number): number =>
+//   pipe(
+//     selectMostRecentCareByHouseholdIdAndPlantId(householdId, plantId),
+//     O.map((care) => {
+//       const todaysDate = new Date();
+//       const careDate = care.dateCreated.toDate();
+//       const daysSinceLastCare = Math.ceil(
+//         (careDate.valueOf() - todaysDate.valueOf()) / numberOfMillisInDay
+//       );
+//       return careRecurrenceDays - daysSinceLastCare;
+//     }),
+//     O.getOrElse(() => 0)
+//   );
 
 export const setCares = store.createMutator(
   (s, householdId: string, cares: CareModel[]) => {

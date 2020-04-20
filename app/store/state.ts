@@ -11,6 +11,8 @@ import {
   HouseholdId,
   PlantId,
   CareId,
+  TodoId,
+  TodoModel,
 } from "../types";
 import { Animated } from "react-native";
 
@@ -36,6 +38,10 @@ interface CaresState {
   caresByHouseholdId: Record<HouseholdId, Record<CareId, CareModel>>;
 }
 
+interface TodosState {
+  todosByHouseholdId: Record<HouseholdId, Record<TodoId, TodoModel>>;
+}
+
 interface UiState {
   homeScroll: Animated.Value;
 }
@@ -47,6 +53,7 @@ interface State {
   plants: PlantsState;
   cares: CaresState;
   ui: UiState;
+  todos: TodosState;
 }
 
 const defaultState: State = {
@@ -69,6 +76,9 @@ const defaultState: State = {
   },
   ui: {
     homeScroll: new Animated.Value(0),
+  },
+  todos: {
+    todosByHouseholdId: {},
   },
 };
 

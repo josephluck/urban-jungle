@@ -1,4 +1,4 @@
-import { v4 as uuid } from "uuid";
+import uuid from "uuid";
 import firebase from "firebase";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { IErr } from "../../../utils/err";

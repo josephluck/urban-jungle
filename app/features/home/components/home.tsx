@@ -17,6 +17,7 @@ import { HouseholdCaresSubscription } from "../../care/subscriptions/household-c
 import { Calendar } from "./calendar";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
+import { HouseholdTodosSubscription } from "../../todos/subscriptions/household-todos";
 
 export const Home = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -43,6 +44,7 @@ const HomeScreen = () => {
         <HomeScreenContainer>
           <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
           <HouseholdCaresSubscription householdId={selectedHouseholdId} />
+          <HouseholdTodosSubscription householdId={selectedHouseholdId} />
           <WelcomeMessage>👋 You have a few things to do today.</WelcomeMessage>
           <Calendar householdId={selectedHouseholdId} />
         </HomeScreenContainer>

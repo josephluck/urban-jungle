@@ -2,10 +2,11 @@ import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
 import { PlantModel } from "../../../types";
 import { IErr } from "../../../utils/err";
-import { v4 as uuid } from "uuid";
+import uuid from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
+import { createTodoForPlant } from "../../todos/store/effects";
 
 export const createPlantForHousehold = (
   plant: Partial<Omit<PlantModel, "id">> = defaultPlant
@@ -29,9 +30,13 @@ export const createPlantForHousehold = (
         },
         () => "BAD_REQUEST" as IErr
       )
-    )
+    ),
+    TE.chainFirst((plant) => createTodoForPlant(plant.id)(householdId))
   );
 
+/**
+ * TODO: also delete todos associated with this plant
+ */
 export const deletePlantByHouseholdId = (householdId: string) => (
   plantId: string
 ): TE.TaskEither<IErr, void> =>
@@ -45,5 +50,4 @@ export const deletePlantByHouseholdId = (householdId: string) => (
 const defaultPlant: Omit<PlantModel, "id" | "dateCreated" | "householdId"> = {
   name: "Cactus",
   location: "default",
-  careRecurrenceDays: 7,
 };

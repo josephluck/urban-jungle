@@ -24,7 +24,7 @@
     "@react-native-community/masked-view": "0.1.6",
     "@react-native-community/netinfo": "5.5.1",
     "@types/react-native-collapsible": "^0.11.0",
-    "@types/uuid": "^7.0.2",
+    "@types/uuid": "^3.4.7",
     "aws4-react-native": "^0.0.2",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
@@ -53,7 +53,7 @@
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
     "space-lift": "^0.8.7",
     "styled-components": "^5.1.0",
-    "uuid": "^7.0.3"
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.34",

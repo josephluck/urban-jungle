@@ -4,6 +4,7 @@ export type UserId = string;
 export type HouseholdId = string;
 export type PlantId = string;
 export type CareId = string;
+export type TodoId = string;
 
 export interface BaseModel {
   /**
@@ -57,10 +58,6 @@ export interface PlantModel extends BaseModel {
    */
   name: string;
   /**
-   * How many dates between Care sessions. Used to schedule Care notifications.
-   */
-  careRecurrenceDays: number;
-  /**
    * Where this Plant is inside the Household.
    */
   location?: string;
@@ -70,6 +67,9 @@ export interface PlantModel extends BaseModel {
   nickname?: string;
 }
 
+/**
+ * A care is created each time a user actions a todo.
+ */
 export interface CareModel extends BaseModel {
   /**
    * The profile ID of the user that did this care.
@@ -83,6 +83,39 @@ export interface CareModel extends BaseModel {
    * The Household that this care was done for.
    */
   householdId: string;
+  /**
+   * The todo ID that this care was done for
+   */
+  todoId: string;
+}
+
+export interface TodoModel extends BaseModel {
+  /**
+   * The Plant that this todo is for.
+   */
+  plantId: string;
+  /**
+   * The Household that this todo is for.
+   */
+  householdId: string;
+  /**
+   * How often this todo should be done.
+   */
+  recurrenceDays: number;
+  /**
+   * The months of the year that this todo is active for.
+   * Can be used to turn off this todo for months of the year that it's not
+   * relevant.
+   */
+  activeInMonths: number[];
+  /**
+   * The title of the todo.
+   */
+  title: string;
+  /**
+   * Some further information about the todo.
+   */
+  detail: string;
 }
 
 export interface DatabaseModel {
