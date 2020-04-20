@@ -11,6 +11,8 @@ import styled from "styled-components/native";
 import { symbols } from "../../../theme";
 import { ListItem } from "../../../components/list-item";
 import { Heading } from "../../../components/typography";
+import { faPlus } from "@fortawesome/pro-regular-svg-icons";
+import { IconButton } from "../../../components/icon-button";
 
 export const Plants = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -64,7 +66,12 @@ const PlantsScreen = () => {
         <ScreenContainer>
           <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
           <HouseholdCaresSubscription householdId={selectedHouseholdId} />
-          <WelcomeMessage>Your plants</WelcomeMessage>
+          <WelcomeMessageContainer>
+            <Heading>Your plants</Heading>
+            <IconButton icon={faPlus} onPress={console.log}>
+              Add
+            </IconButton>
+          </WelcomeMessageContainer>
           <PlantsList
             contentContainerStyle={{
               paddingHorizontal: symbols.spacing.appHorizontal,
@@ -91,7 +98,10 @@ const PlantsList = styled.ScrollView`
   background-color: ${symbols.colors.appBackground};
 `;
 
-const WelcomeMessage = styled(Heading)`
+const WelcomeMessageContainer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal};
   margin-bottom: ${symbols.spacing.appHorizontal * 2};
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;

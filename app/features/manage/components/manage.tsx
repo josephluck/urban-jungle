@@ -9,6 +9,8 @@ import styled from "styled-components/native";
 import { symbols } from "../../../theme";
 import { ListItem } from "../../../components/list-item";
 import { Heading } from "../../../components/typography";
+import { IconButton } from "../../../components/icon-button";
+import { faShare } from "@fortawesome/pro-regular-svg-icons";
 
 export const Manage = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -48,7 +50,12 @@ const ManageScreen = () => {
     <ScreenLayout>
       {selectedHouseholdId ? (
         <ScreenContainer>
-          <WelcomeMessage>Your network</WelcomeMessage>
+          <WelcomeMessageContainer>
+            <Heading>Your network</Heading>
+            <IconButton icon={faShare} onPress={console.log}>
+              Invite
+            </IconButton>
+          </WelcomeMessageContainer>
           <ManageList
             contentContainerStyle={{
               paddingHorizontal: symbols.spacing.appHorizontal,
@@ -79,7 +86,10 @@ const ManageList = styled.ScrollView`
   background-color: ${symbols.colors.appBackground};
 `;
 
-const WelcomeMessage = styled(Heading)`
+const WelcomeMessageContainer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal};
   margin-bottom: ${symbols.spacing.appHorizontal * 2};
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `;
