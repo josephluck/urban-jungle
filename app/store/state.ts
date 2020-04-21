@@ -2,19 +2,12 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
-import {
-  ProfileModel,
-  HouseholdModel,
-  PlantModel,
-  CareModel,
-  UserId,
-  HouseholdId,
-  PlantId,
-  CareId,
-  TodoId,
-  TodoModel,
-} from "../types";
-import { Animated } from "react-native";
+import { CareModel } from "../models/care";
+import { TodoModel } from "../models/todo";
+import { UserId, HouseholdId, PlantId, CareId, TodoId } from "../models/ids";
+import { ProfileModel } from "../models/profile";
+import { HouseholdModel } from "../models/household";
+import { PlantModel } from "../models/plant";
 
 interface AuthState {
   initializing: boolean;
@@ -42,21 +35,16 @@ interface TodosState {
   todosByHouseholdId: Record<HouseholdId, Record<TodoId, TodoModel>>;
 }
 
-interface UiState {
-  homeScroll: Animated.Value;
-}
-
 interface State {
   auth: AuthState;
   profiles: ProfilesState;
   households: HouseholdsState;
   plants: PlantsState;
   cares: CaresState;
-  ui: UiState;
   todos: TodosState;
 }
 
-const defaultState: State = {
+export const defaultState: State = {
   auth: {
     initializing: true,
     authUser: O.none,
@@ -73,9 +61,6 @@ const defaultState: State = {
   },
   cares: {
     caresByHouseholdId: {},
-  },
-  ui: {
-    homeScroll: new Animated.Value(0),
   },
   todos: {
     todosByHouseholdId: {},

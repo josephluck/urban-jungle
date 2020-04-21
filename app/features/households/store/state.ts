@@ -1,4 +1,4 @@
-import { HouseholdModel } from "../../../types";
+import { HouseholdModel } from "../../../models/household";
 import { normalizeArrayById } from "../../../utils/normalize";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";

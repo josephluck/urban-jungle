@@ -1,6 +1,6 @@
 import { database } from "../store/database";
 import { useEffect } from "react";
-import { CareModel } from "../../../types";
+import { CareModel } from "../../../models/care";
 import {
   upsertCareByHouseholdId,
   deleteCarebyHouseholdId,

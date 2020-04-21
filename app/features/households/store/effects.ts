@@ -4,7 +4,7 @@ import { selectCurrentUserId } from "../../auth/store/state";
 import { IErr } from "../../../utils/err";
 import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
-import { HouseholdModel } from "../../../types";
+import { HouseholdModel } from "../../../models/household";
 import { database } from "./database";
 import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
 import { AsyncStorage, Share } from "react-native";

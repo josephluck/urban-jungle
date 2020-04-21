@@ -1,12 +1,15 @@
 import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
-import { PlantModel } from "../../../types";
+import { PlantModel } from "../../../models/plant";
 import { IErr } from "../../../utils/err";
 import uuid from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
-import { createTodoForPlant } from "../../todos/store/effects";
+import {
+  createTodoForPlant,
+  deleteTodosByPlant,
+} from "../../todos/store/effects";
 
 export const createPlantForHousehold = (
   plant: Partial<Omit<PlantModel, "id">> = defaultPlant
@@ -21,6 +24,7 @@ export const createPlantForHousehold = (
           const plantToSave: PlantModel = {
             ...defaultPlant,
             ...plant,
+            name: plantName(),
             householdId,
             id,
             dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
@@ -31,7 +35,9 @@ export const createPlantForHousehold = (
         () => "BAD_REQUEST" as IErr
       )
     ),
-    TE.chainFirst((plant) => createTodoForPlant(plant.id)(householdId))
+    TE.chainFirst((plant) =>
+      createTodoForPlant(plant.id)(householdId)({ title: plant.name })
+    )
   );
 
 /**
@@ -40,14 +46,21 @@ export const createPlantForHousehold = (
 export const deletePlantByHouseholdId = (householdId: string) => (
   plantId: string
 ): TE.TaskEither<IErr, void> =>
-  TE.tryCatch(
-    async () => {
-      await database(householdId).doc(plantId).delete();
-    },
-    () => "BAD_REQUEST" as IErr
+  pipe(
+    TE.tryCatch(
+      async () => {
+        await database(householdId).doc(plantId).delete();
+      },
+      () => "BAD_REQUEST" as IErr
+    ),
+    TE.chain(() => deleteTodosByPlant(plantId)(householdId))
   );
 
 const defaultPlant: Omit<PlantModel, "id" | "dateCreated" | "householdId"> = {
   name: "Cactus",
   location: "default",
 };
+
+const plantNames = ["Cactus", "Snake plant", "Dragon tree", "Orchid"];
+const plantName = () =>
+  plantNames[Math.floor(Math.random() * plantNames.length)];

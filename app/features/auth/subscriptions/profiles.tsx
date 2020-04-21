@@ -2,7 +2,7 @@ import React from "react";
 import { database } from "../store/database";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { useEffect } from "react";
-import { ProfileModel } from "../../../types";
+import { ProfileModel } from "../../../models/profile";
 import { selectProfileIdsForHouseholds } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";

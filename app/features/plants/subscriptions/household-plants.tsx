@@ -1,6 +1,6 @@
 import { database } from "../store/database";
 import { useEffect } from "react";
-import { PlantModel } from "../../../types";
+import { PlantModel } from "../../../models/plant";
 import {
   upsertPlantByHouseholdId,
   deletePlantbyHouseholdId,

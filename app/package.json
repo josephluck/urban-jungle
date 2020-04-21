@@ -7,11 +7,15 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "test": "jest",
     "eject": "expo eject",
     "deploy": "expo publish",
     "postinstall": "expo-yarn-workspaces postinstall",
     "tsc": "tsc --noEmit",
     "format": "prettier --write \"./**/*.*\""
+  },
+  "jest": {
+    "preset": "jest-expo"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
@@ -23,6 +27,7 @@
     "@josephluck/stately": "^1.1.8",
     "@react-native-community/masked-view": "0.1.6",
     "@react-native-community/netinfo": "5.5.1",
+    "@types/jest": "^25.2.1",
     "@types/react-native-collapsible": "^0.11.0",
     "@types/uuid": "^3.4.7",
     "aws4-react-native": "^0.0.2",
@@ -31,6 +36,7 @@
     "expo": "^37.0.0",
     "firebase": "7.9.0",
     "fp-ts": "^2.5.3",
+    "jest": "^25.4.0",
     "moment": "^2.24.0",
     "prettier": "^2.0.4",
     "react": "16.9.0",
@@ -50,6 +56,7 @@
     "react-navigation-hooks": "^1.1.0",
     "react-navigation-stack": "^2.3.12",
     "react-navigation-tabs": "^2.8.11",
+    "react-test-renderer": "^16.13.1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.19",
     "space-lift": "^0.8.7",
     "styled-components": "^5.1.0",
@@ -62,6 +69,7 @@
     "@types/styled-components": "^5.1.0",
     "babel-preset-expo": "^8.1.0",
     "expo-yarn-workspaces": "^1.2.1",
+    "jest-expo": "^37.0.0",
     "reactotron-react-native": "^5.0.0",
     "typescript": "^3.8.3"
   },

@@ -1,4 +1,4 @@
-import { TodoModel } from "../../../types";
+import { TodoModel } from "../../../models/todo";
 import { normalizeArrayById } from "../../../utils/normalize";
 import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
@@ -27,61 +27,41 @@ export const selectTodosByHouseholdIdAndPlantId = (
   );
 
 /**
- * Finds out whether a todo is overdue
+ * Returns the date that the todo is due for. If it's overdue,
+ * it'll return today. If it's never been done, it'll also return today.
  */
 export const selectTodoNextDue = (householdId: string) => (
   todo: TodoModel
-): moment.Moment => {
-  const _lastCare = selectMostRecentCareForTodo(householdId)(todo.id);
-  const nextDueDate = pipe(
-    _lastCare,
+): moment.Moment =>
+  pipe(
+    selectMostRecentCareForTodo(householdId)(todo.id),
     O.map((lastCare) =>
       moment(lastCare.dateCreated.toDate()).add(todo.recurrenceDays, "days")
     ),
+    O.filter((nextCare) => nextCare.isSameOrAfter(moment())),
     O.getOrElse(() => moment())
   );
-  return nextDueDate;
-};
 
-/**
- * Finds out whether a todo is overdue
- */
-export const isTodoOverdue = (householdId: string) => (
-  todo: TodoModel
-): boolean => {
-  const currentDate = moment();
-  const currentMonth = currentDate.month();
-  if (!todo.activeInMonths.includes(currentMonth)) {
-    return false;
-  }
-  const nextDueDate = selectTodoNextDue(householdId)(todo);
-  return nextDueDate.isBefore(currentDate);
-};
-
-export const buildTodoSchedule = (householdId: string) => (
+export const selectTodosSchedule = (householdId: string) => (
   numberOfDays: number
 ) => {
   const currentDate = moment();
   const todos = selectTodosByHouseholdId(householdId);
   const todosWithDueDates = todos.map((todo) => {
-    const nextDue = isTodoOverdue(householdId)(todo)
-      ? moment()
-      : selectTodoNextDue(householdId)(todo);
+    const nextDue = selectTodoNextDue(householdId)(todo);
     return {
       ...todo,
       dueDates: Array.from({ length: numberOfDays }).map((_, i) =>
-        nextDue.clone().add(todo.recurrenceDays * i, "days")
+        i === 0 ? nextDue : nextDue.clone().add(todo.recurrenceDays * i, "days")
       ),
     };
   });
   return Array.from({ length: numberOfDays }).map((_, i) => {
-    const date = currentDate.clone().add(i, "days");
+    const date = i === 0 ? currentDate : currentDate.clone().add(i, "days");
     return {
       date,
       todos: todosWithDueDates
-        .filter((todo) => {
-          return todo.dueDates.some((dueDate) => dueDate.isSame(date));
-        })
+        .filter((todo) => todo.dueDates.some((dueDate) => dueDate.isSame(date)))
         .map(({ dueDates, ...todo }) => todo),
     };
   });

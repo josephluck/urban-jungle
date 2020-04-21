@@ -6,18 +6,21 @@ import { BodyText } from "../../../components/typography";
 import { symbols } from "../../../theme";
 import { Dimensions, ScrollView } from "react-native";
 import { ListItem } from "../../../components/list-item";
-import { buildTodoSchedule } from "../../todos/store/state";
+import { selectTodosSchedule } from "../../todos/store/state";
 import { useStore } from "../../../store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { createCareForPlant } from "../../care/store/effects";
+import { selectCurrentUserId } from "../../auth/store/state";
 
 export const Calendar = (_props: { householdId: string }) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const carouselRef = useRef<CarouselStatic<any>>(null);
-  const numberOfDays = 15; // NB: 1 week either side of today
-  const todaysIndex = Math.floor(numberOfDays / 2);
-  const today = useMemo(() => moment(), []);
+  // const numberOfDays = 15; // NB: 1 week either side of today
+  // const todaysIndex = Math.floor(numberOfDays / 2);
+  const today = moment();
   // const earliestDate = useMemo(
   //   () => today.clone().subtract(todaysIndex, "days"),
   //   [today, numberOfDays]
@@ -29,7 +32,18 @@ export const Calendar = (_props: { householdId: string }) => {
     selectedHouseholdId_,
     O.getOrElse(() => "")
   );
-  const schedule = buildTodoSchedule(selectedHouseholdId)(7);
+  const _profileId = useStore(selectCurrentUserId);
+  const profileId = pipe(
+    _profileId,
+    O.getOrElse(() => "")
+  );
+  const schedule = useStore(() => selectTodosSchedule(selectedHouseholdId)(7));
+  console.log({
+    schedule: schedule.map((item) => ({
+      date: item.date.date(),
+      todos: item.todos.map((t) => t.title),
+    })),
+  });
   const days = schedule.map((day, index) => ({
     ...day,
     index,
@@ -114,7 +128,7 @@ export const Calendar = (_props: { householdId: string }) => {
       </DaysContainer>
       <Carousel
         data={days}
-        firstItem={todaysIndex}
+        // firstItem={todaysIndex}
         sliderWidth={windowWidth}
         itemWidth={windowWidth}
         nestedScrollEnabled
@@ -124,7 +138,19 @@ export const Calendar = (_props: { householdId: string }) => {
         renderItem={(slide) => (
           <TodosList>
             {slide.item.todos.map((todo) => (
-              <ListItem key={todo.id} title={todo.title} detail={todo.detail} />
+              <TouchableOpacity
+                key={todo.id}
+                onPress={() => {
+                  createCareForPlant(profileId)(todo.id)(todo.plantId)(
+                    todo.householdId
+                  )();
+                }}
+              >
+                <ListItem
+                  title={todo.title}
+                  detail={`${todo.detail} every ${todo.recurrenceDays} days.`}
+                />
+              </TouchableOpacity>
             ))}
           </TodosList>
         )}

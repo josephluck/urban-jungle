@@ -1,4 +1,4 @@
-import { ProfileModel } from "../../../types";
+import { ProfileModel } from "../../../models/profile";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { store } from "../../../store/state";

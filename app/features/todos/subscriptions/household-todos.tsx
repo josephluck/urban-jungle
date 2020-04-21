@@ -1,6 +1,6 @@
 import { database } from "../store/database";
 import { useEffect } from "react";
-import { TodoModel } from "../../../types";
+import { TodoModel } from "../../../models/todo";
 import {
   upsertTodoByHouseholdId,
   deleteTodobyHouseholdId,

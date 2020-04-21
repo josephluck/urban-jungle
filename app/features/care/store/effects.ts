@@ -1,6 +1,6 @@
 import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
-import { CareModel } from "../../../types";
+import { CareModel } from "../../../models/care";
 import { IErr } from "../../../utils/err";
 import uuid from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";

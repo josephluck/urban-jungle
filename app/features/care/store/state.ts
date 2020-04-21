@@ -1,4 +1,4 @@
-import { CareModel } from "../../../types";
+import { CareModel } from "../../../models/care";
 import { normalizeArrayById } from "../../../utils/normalize";
 import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
@@ -25,7 +25,7 @@ export const selectCaresByHouseholdIdAndPlantId = (
   );
 
 export const sortCaresByMostRecent = (cares: CareModel[]): CareModel[] =>
-  cares.sort((a, b) => a.dateCreated.toMillis() - b.dateCreated.toMillis());
+  cares.sort((a, b) => b.dateCreated.toMillis() - a.dateCreated.toMillis());
 
 export const selectMostRecentCareByHouseholdIdAndPlantId = (
   householdId: string,

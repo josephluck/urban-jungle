@@ -2,7 +2,7 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
 import { IErr } from "../../../utils/err";
-import { ProfileModel } from "../../../types";
+import { ProfileModel } from "../../../models/profile";
 import { pipe } from "fp-ts/lib/pipeable";
 import {
   selectAuthUser,
