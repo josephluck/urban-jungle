@@ -96,10 +96,10 @@ export const setCares = store.createMutator(
 
 export const upsertCare = store.createMutator(
   (s, householdId: string, care: CareModel) => {
-    if (!s.cares.caresByHouseholdId[householdId]) {
-      s.cares.caresByHouseholdId[householdId] = {};
-    }
-    s.cares.caresByHouseholdId[householdId][care.id] = care;
+    s.cares.caresByHouseholdId[householdId] = {
+      ...s.cares.caresByHouseholdId[householdId],
+      [care.id]: care,
+    };
   }
 );
 

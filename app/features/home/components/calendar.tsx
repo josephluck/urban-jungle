@@ -37,13 +37,9 @@ export const Calendar = (_props: { householdId: string }) => {
     _profileId,
     O.getOrElse(() => "")
   );
-  const schedule = useStore(() => selectTodosSchedule(selectedHouseholdId)(7));
-  console.log({
-    schedule: schedule.map((item) => ({
-      date: item.date.date(),
-      todos: item.todos.map((t) => t.title),
-    })),
-  });
+  const schedule = useStore(() => selectTodosSchedule(selectedHouseholdId)(7), [
+    selectedHouseholdId,
+  ]);
   const days = schedule.map((day, index) => ({
     ...day,
     index,
@@ -140,11 +136,9 @@ export const Calendar = (_props: { householdId: string }) => {
             {slide.item.todos.map((todo) => (
               <TouchableOpacity
                 key={todo.id}
-                onPress={() => {
-                  createCareForPlant(profileId)(todo.id)(todo.plantId)(
-                    todo.householdId
-                  )();
-                }}
+                onPress={createCareForPlant(profileId)(todo.id)(todo.plantId)(
+                  todo.householdId
+                )}
               >
                 <ListItem
                   title={todo.title}

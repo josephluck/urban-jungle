@@ -1,6 +1,5 @@
-import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
-import { TodoModel } from "../../../models/todo";
+import { TodoModel, makeTodoModel } from "../../../models/todo";
 import { IErr } from "../../../utils/err";
 import uuid from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -10,7 +9,7 @@ import { selectTodosByHouseholdIdAndPlantId } from "./state";
 
 export const createTodoForPlant = (plantId: string) => (
   householdId: string
-) => (todo: Partial<TodoModel> = defaultTodo): TE.TaskEither<IErr, TodoModel> =>
+) => (todo: Partial<TodoModel> = {}): TE.TaskEither<IErr, TodoModel> =>
   pipe(
     selectHouseholdById(householdId),
     TE.fromOption(() => "NOT_FOUND" as IErr),
@@ -18,14 +17,13 @@ export const createTodoForPlant = (plantId: string) => (
       TE.tryCatch(
         async () => {
           const id = uuid();
-          const todoToSave: TodoModel = {
-            ...defaultTodo,
-            ...todo,
+          const todoToSave = makeTodoModel({
             plantId,
             householdId,
-            id,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-          };
+            title: "Water",
+            detail: "Give it a little drink if the topsoil is try",
+            ...todo,
+          });
           await database(householdId).doc(id).set(todoToSave);
           return todoToSave;
         },
@@ -45,13 +43,3 @@ export const deleteTodosByPlant = (plantId: string) => (
     },
     () => "BAD_REQUEST" as IErr
   );
-
-const defaultTodo: Omit<
-  TodoModel,
-  "id" | "householdId" | "plantId" | "dateCreated"
-> = {
-  recurrenceDays: Math.floor(Math.random() * 6) + 1,
-  activeInMonths: Array.from({ length: 11 }).map((_, i) => i), // NB: all months
-  title: "Water",
-  detail: "Give it a little drink if the topsoil is try",
-};

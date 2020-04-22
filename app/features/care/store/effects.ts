@@ -1,6 +1,5 @@
-import firebase from "firebase";
 import * as TE from "fp-ts/lib/TaskEither";
-import { CareModel } from "../../../models/care";
+import { CareModel, makeCareModel } from "../../../models/care";
 import { IErr } from "../../../utils/err";
 import uuid from "uuid";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -18,14 +17,12 @@ export const createCareForPlant = (profileId: string) => (todoId: string) => (
       TE.tryCatch(
         async () => {
           const id = uuid();
-          const careToSave: CareModel = {
+          const careToSave = makeCareModel({
             todoId,
             profileId,
             plantId,
             householdId,
-            id,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-          };
+          });
           await database(householdId).doc(id).set(careToSave);
           return careToSave;
         },

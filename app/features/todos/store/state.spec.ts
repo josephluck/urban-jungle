@@ -4,9 +4,7 @@ import { makeCareModel } from "../../../models/care";
 import moment from "moment";
 import firebase from "firebase";
 import { selectTodosSchedule } from "./state";
-
-const baseDate = new Date("2020/01/01").getTime();
-jest.spyOn(Date, "now").mockReturnValue(baseDate);
+import { defaultDate } from "../../../__mocks__/moment";
 
 const makeFirebaseDate = (
   daysAdjustment: number = 0
@@ -77,7 +75,9 @@ describe("store / todos", () => {
       const schedule = selectTodosSchedule("household1")(1);
 
       expect(schedule).toHaveLength(1);
-      expect(schedule[0].date.toDate().getTime()).toEqual(baseDate);
+      expect(schedule[0].date.toDate().getTime()).toEqual(
+        new Date(defaultDate).getTime()
+      );
       expect(schedule[0].todos).toHaveLength(1);
       expect(schedule[0].todos[0]).toEqual(todo1);
     });
