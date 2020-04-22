@@ -255,6 +255,42 @@ describe("store / todos", () => {
       expect(schedule[4].todos).toEqual([todo1]);
     });
 
+    it("skips a todo if it's been cared for at any time today and includes the next due date", () => {
+      const todo1 = makeTodoModel({
+        id: "todo1",
+        householdId: "household1",
+        recurrenceDays: 2,
+      });
+      const care1 = makeCareModel({
+        id: "care1",
+        householdId: "household1",
+        todoId: "todo1",
+        dateCreated: firebase.firestore.Timestamp.fromDate(
+          moment().add(2, "minutes").toDate()
+        ),
+      });
+
+      init((state) => {
+        state.todos.todosByHouseholdId = {
+          household1: {
+            todo1,
+          },
+        };
+        state.cares.caresByHouseholdId = {
+          household1: {
+            care1,
+          },
+        };
+      })();
+      const schedule = selectTodosSchedule("household1")(5);
+
+      expect(schedule[0].todos).toEqual([]);
+      expect(schedule[1].todos).toEqual([]);
+      expect(schedule[2].todos).toEqual([todo1]);
+      expect(schedule[3].todos).toEqual([]);
+      expect(schedule[4].todos).toEqual([todo1]);
+    });
+
     it("takes in to account a todos next due date based on when it was last done", () => {
       const todo1 = makeTodoModel({
         id: "todo1",

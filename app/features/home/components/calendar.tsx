@@ -40,6 +40,7 @@ export const Calendar = (_props: { householdId: string }) => {
   const schedule = useStore(() => selectTodosSchedule(selectedHouseholdId)(7), [
     selectedHouseholdId,
   ]);
+
   const days = schedule.map((day, index) => ({
     ...day,
     index,
@@ -131,23 +132,28 @@ export const Calendar = (_props: { householdId: string }) => {
         inactiveSlideScale={1}
         inactiveSlideOpacity={1}
         onBeforeSnapToItem={handleCarouselIndexChange}
-        renderItem={(slide) => (
-          <TodosList>
-            {slide.item.todos.map((todo) => (
-              <TouchableOpacity
-                key={todo.id}
-                onPress={createCareForPlant(profileId)(todo.id)(todo.plantId)(
-                  todo.householdId
-                )}
-              >
-                <ListItem
-                  title={todo.title}
-                  detail={`${todo.detail} every ${todo.recurrenceDays} days.`}
-                />
-              </TouchableOpacity>
-            ))}
-          </TodosList>
-        )}
+        renderItem={(slide) => {
+          const date = slide.item.date.toISOString();
+          return (
+            <TodosList key={date}>
+              {slide.item.todos.map((todo) => (
+                <TouchableOpacity
+                  key={`${date}-${todo.id}`}
+                  onPress={() => {
+                    createCareForPlant(profileId)(todo.id)(todo.plantId)(
+                      todo.householdId
+                    )();
+                  }}
+                >
+                  <ListItem
+                    title={todo.title}
+                    detail={`${todo.detail} every ${todo.recurrenceDays} days.`}
+                  />
+                </TouchableOpacity>
+              ))}
+            </TodosList>
+          );
+        }}
         ref={carouselRef as any}
       />
     </Container>

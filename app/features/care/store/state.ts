@@ -1,5 +1,4 @@
 import { CareModel } from "../../../models/care";
-import { normalizeArrayById } from "../../../utils/normalize";
 import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -84,15 +83,6 @@ export const selectMostRecentCareForTodo = (householdId: string) => (
 //     }),
 //     O.getOrElse(() => 0)
 //   );
-
-export const setCares = store.createMutator(
-  (s, householdId: string, cares: CareModel[]) => {
-    s.cares.caresByHouseholdId[householdId] = {
-      ...s.cares.caresByHouseholdId[householdId],
-      ...normalizeArrayById(cares),
-    };
-  }
-);
 
 export const upsertCare = store.createMutator(
   (s, householdId: string, care: CareModel) => {

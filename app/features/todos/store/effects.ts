@@ -6,6 +6,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
 import { selectTodosByHouseholdIdAndPlantId } from "./state";
+import firebase from "firebase";
 
 export const createTodoForPlant = (plantId: string) => (
   householdId: string
@@ -18,10 +19,12 @@ export const createTodoForPlant = (plantId: string) => (
         async () => {
           const id = uuid();
           const todoToSave = makeTodoModel({
+            id,
             plantId,
             householdId,
             title: "Water",
             detail: "Give it a little drink if the topsoil is try",
+            recurrenceDays: Math.floor(Math.random() * 5) + 1,
             ...todo,
           });
           await database(householdId).doc(id).set(todoToSave);
@@ -38,8 +41,9 @@ export const deleteTodosByPlant = (plantId: string) => (
   TE.tryCatch(
     async () => {
       const todos = selectTodosByHouseholdIdAndPlantId(householdId, plantId);
-      const db = database(householdId);
-      await Promise.all(todos.map((todo) => db.doc(todo.id).delete()));
+      const batch = firebase.firestore().batch();
+      todos.forEach((todo) => batch.delete(database(householdId).doc(todo.id)));
+      await batch.commit();
     },
     () => "BAD_REQUEST" as IErr
   );

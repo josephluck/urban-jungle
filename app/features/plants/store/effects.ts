@@ -45,15 +45,16 @@ export const createPlantForHousehold = (
  */
 export const deletePlantByHouseholdId = (householdId: string) => (
   plantId: string
-): TE.TaskEither<IErr, void> =>
+): TE.TaskEither<IErr, string> =>
   pipe(
     TE.tryCatch(
       async () => {
         await database(householdId).doc(plantId).delete();
+        return householdId;
       },
       () => "BAD_REQUEST" as IErr
     ),
-    TE.chain(() => deleteTodosByPlant(plantId)(householdId))
+    TE.chainFirst(() => deleteTodosByPlant(plantId)(householdId))
   );
 
 const defaultPlant: Omit<PlantModel, "id" | "dateCreated" | "householdId"> = {

@@ -1,5 +1,4 @@
 import { PlantModel } from "../../../models/plant";
-import { normalizeArrayById } from "../../../utils/normalize";
 import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -31,34 +30,12 @@ export const selectPlantByHouseholdAndId = (householdId: string) => (
     O.chain((plants) => O.fromNullable(plants[plantId]))
   );
 
-export interface PlantTimelineItem {
-  id: string;
-  householdId: string;
-  name: string;
-  nextCareDueInDays: number;
-}
-
-export interface TimelineSection {
-  title: string;
-  // NB: needs to be data for SectionList
-  data: PlantTimelineItem[];
-}
-
-export const setPlants = store.createMutator(
-  (s, householdId: string, plants: PlantModel[]) => {
-    s.plants.plantsByHouseholdId[householdId] = {
-      ...s.plants.plantsByHouseholdId[householdId],
-      ...normalizeArrayById(plants),
-    };
-  }
-);
-
 export const upsertPlant = store.createMutator(
   (s, householdId: string, plant: PlantModel) => {
-    if (!s.plants.plantsByHouseholdId[householdId]) {
-      s.plants.plantsByHouseholdId[householdId] = {};
-    }
-    s.plants.plantsByHouseholdId[householdId][plant.id] = plant;
+    s.plants.plantsByHouseholdId[householdId] = {
+      ...s.plants.plantsByHouseholdId[householdId],
+      [plant.id]: plant,
+    };
   }
 );
 

@@ -7,7 +7,7 @@ import {
 } from "../store/state";
 
 /**
- * Subscribes to any plants for the given household
+ * Subscribes to any todos for the given household
  */
 export const HouseholdTodosSubscription = ({
   householdId,
@@ -36,7 +36,7 @@ const handleTodoSnapshot = (householdId: string) => async (
     .filter((change) => change.type === "removed")
     .map((change) => (change.doc.data() as unknown) as TodoModel);
   addedOrModified.map(upsertTodoByHouseholdId(householdId));
-  removed.map((plant) => plant.id).map(deleteTodobyHouseholdId(householdId));
+  removed.map((todo) => todo.id).map(deleteTodobyHouseholdId(householdId));
 };
 
 type Snapshot = firebase.firestore.QuerySnapshot<

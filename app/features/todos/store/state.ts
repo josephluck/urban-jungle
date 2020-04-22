@@ -1,5 +1,4 @@
 import { TodoModel } from "../../../models/todo";
-import { normalizeArrayById } from "../../../utils/normalize";
 import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -38,7 +37,7 @@ export const selectTodoNextDue = (householdId: string) => (
     O.map((lastCare) =>
       moment(lastCare.dateCreated.toDate()).add(todo.recurrenceDays, "days")
     ),
-    O.filter((nextCare) => nextCare.isSameOrAfter(moment())),
+    O.filter((nextCare) => nextCare.isSameOrAfter(moment(), "day")),
     O.getOrElse(() => moment())
   );
 
@@ -61,27 +60,20 @@ export const selectTodosSchedule = (householdId: string) => (
     return {
       date,
       todos: todosWithDueDates
-        .filter((todo) => todo.dueDates.some((dueDate) => dueDate.isSame(date)))
+        .filter((todo) =>
+          todo.dueDates.some((dueDate) => dueDate.isSame(date, "day"))
+        )
         .map(({ dueDates, ...todo }) => todo),
     };
   });
 };
 
-export const setTodos = store.createMutator(
-  (s, householdId: string, todos: TodoModel[]) => {
-    s.todos.todosByHouseholdId[householdId] = {
-      ...s.todos.todosByHouseholdId[householdId],
-      ...normalizeArrayById(todos),
-    };
-  }
-);
-
 export const upsertTodo = store.createMutator(
   (s, householdId: string, todo: TodoModel) => {
-    if (!s.todos.todosByHouseholdId[householdId]) {
-      s.todos.todosByHouseholdId[householdId] = {};
-    }
-    s.todos.todosByHouseholdId[householdId][todo.id] = todo;
+    s.todos.todosByHouseholdId[householdId] = {
+      ...s.todos.todosByHouseholdId[householdId],
+      [todo.id]: todo,
+    };
   }
 );
 
