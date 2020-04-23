@@ -1,4 +1,4 @@
-import { BaseModel } from "./base";
+import { BaseModel, makeBaseModel } from "./base";
 
 export interface ProfileModel extends BaseModel {
   /**
@@ -18,3 +18,13 @@ export interface ProfileModel extends BaseModel {
    */
   avatar?: string;
 }
+
+export const makeProfileModel = (
+  model: Partial<ProfileModel> = {}
+): ProfileModel => ({
+  ...makeBaseModel(model),
+  name: "",
+  email: "",
+  householdIds: [],
+  ...model,
+});

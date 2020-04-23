@@ -2,6 +2,9 @@ import { CareModel } from "../../../models/care";
 import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import moment from "moment";
+import { selectTodoByHouseholdIdAndId } from "../../todos/store/state";
+import { makeTodoModel } from "../../../models/todo";
 
 export const selectNormalizedCaresByHouseholdId = store.createSelector(
   (s, householdId: string): O.Option<Record<string, CareModel>> =>
@@ -14,6 +17,22 @@ export const selectCaresByHouseholdId = (householdId: string): CareModel[] =>
     O.map(Object.values),
     O.getOrElse(() => [] as CareModel[])
   );
+
+/**
+ * Selects cares and maps their associated todos.
+ * Only cares with an associated todo are returned.
+ */
+export const selectCaresWithTodoByHouseholdId = (householdId: string) =>
+  selectCaresByHouseholdId(householdId)
+    .map((care) => ({
+      ...care,
+      todo: selectTodoByHouseholdIdAndId(householdId)(care.todoId),
+    }))
+    .filter((care) => O.isSome(care.todo))
+    .map((care) => ({
+      ...care,
+      todo: pipe(care.todo, O.getOrElse(makeTodoModel)),
+    }));
 
 export const selectCaresByHouseholdIdAndPlantId = (
   householdId: string,
@@ -49,6 +68,19 @@ export const selectMostRecentCareForTodo = (householdId: string) => (
   O.fromNullable(
     sortCaresByMostRecent(selectCaresForTodo(householdId)(todoId))[0]
   );
+
+export const selectCareHistory = (householdId: string) => (days: number) => {
+  const cares = selectCaresWithTodoByHouseholdId(householdId);
+  return Array.from({ length: days }).map((_, index) => {
+    const date = index === 0 ? moment() : moment().subtract(index, "days");
+    return {
+      date,
+      cares: cares.filter((care) =>
+        moment(care.dateCreated.toDate()).isSame(date, "day")
+      ),
+    };
+  });
+};
 
 // const numberOfMillisInDay = 86400000;
 

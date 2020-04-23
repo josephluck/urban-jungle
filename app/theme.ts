@@ -82,7 +82,7 @@ const colors = {
   midOffGray: "rgba(113, 121, 134, 1)",
   lightOffGray: "rgba(146, 155, 168, 1)",
   offWhite: "rgba(205, 206, 210, 1)",
-  nearWhite: "rgba(225, 226, 230, 1)",
+  nearWhite: "rgba(235, 236, 240, 1)",
   blackTint08: "rgba(0, 0, 0, 0.8)",
   blackTint04: "rgba(0, 0, 0, 0.4)",
   whiteTint01: "rgba(247, 247, 248, 0.1)",

@@ -4,9 +4,8 @@ import styled from "styled-components/native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import { BodyText } from "../../../components/typography";
 import { symbols } from "../../../theme";
-import { Dimensions, ScrollView } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import { ListItem } from "../../../components/list-item";
-import { selectTodosSchedule } from "../../todos/store/state";
 import { useStore } from "../../../store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -14,17 +13,10 @@ import * as O from "fp-ts/lib/Option";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { createCareForPlant } from "../../care/store/effects";
 import { selectCurrentUserId } from "../../auth/store/state";
+import { selectSchedule } from "./schedule";
 
 export const Calendar = (_props: { householdId: string }) => {
-  const scrollViewRef = useRef<ScrollView>(null);
-  const carouselRef = useRef<CarouselStatic<any>>(null);
-  // const numberOfDays = 15; // NB: 1 week either side of today
-  // const todaysIndex = Math.floor(numberOfDays / 2);
-  const today = moment();
-  // const earliestDate = useMemo(
-  //   () => today.clone().subtract(todaysIndex, "days"),
-  //   [today, numberOfDays]
-  // );
+  const today = useMemo(() => moment(), []);
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
@@ -37,19 +29,22 @@ export const Calendar = (_props: { householdId: string }) => {
     _profileId,
     O.getOrElse(() => "")
   );
-  const schedule = useStore(() => selectTodosSchedule(selectedHouseholdId)(7), [
+  const schedule = useStore(() => selectSchedule(selectedHouseholdId, 4), [
     selectedHouseholdId,
   ]);
-
+  const todaysIndex = useMemo(() => Math.floor(schedule.length / 2), []);
+  const windowWidth = useMemo(() => Dimensions.get("window").width, []);
   const days = schedule.map((day, index) => ({
     ...day,
     index,
     isPast: false,
-    isToday: index === 0,
+    isToday: index === todaysIndex,
   }));
+
   const [activeMonth, setActiveMonth] = useState(() => today.format("MMMM"));
 
-  const windowWidth = useMemo(() => Dimensions.get("window").width, []);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const carouselRef = useRef<CarouselStatic<any>>(null);
 
   const snapDaysToIndex = useCallback(
     (index: number) => {
@@ -125,7 +120,7 @@ export const Calendar = (_props: { householdId: string }) => {
       </DaysContainer>
       <Carousel
         data={days}
-        // firstItem={todaysIndex}
+        firstItem={todaysIndex}
         sliderWidth={windowWidth}
         itemWidth={windowWidth}
         nestedScrollEnabled
@@ -139,17 +134,33 @@ export const Calendar = (_props: { householdId: string }) => {
               {slide.item.todos.map((todo) => (
                 <TouchableOpacity
                   key={`${date}-${todo.id}`}
-                  onPress={() => {
-                    createCareForPlant(profileId)(todo.id)(todo.plantId)(
-                      todo.householdId
-                    )();
-                  }}
+                  disabled={!slide.item.isToday}
+                  onPress={createCareForPlant(profileId)(todo.id)(todo.plantId)(
+                    todo.householdId
+                  )}
                 >
                   <ListItem
                     title={todo.title}
                     detail={`${todo.detail} every ${todo.recurrenceDays} days.`}
+                    image={pipe(
+                      todo.plant,
+                      O.chain((plant) => O.fromNullable(plant.avatar)),
+                      O.getOrElse(() => "")
+                    )}
                   />
                 </TouchableOpacity>
+              ))}
+              {slide.item.cares.map((care) => (
+                <View key={care.id}>
+                  <ListItem
+                    title={care.todo.title}
+                    detail={care.todo.detail}
+                    image={pipe(
+                      O.fromNullable(care.plant.avatar),
+                      O.getOrElse(() => "")
+                    )}
+                  />
+                </View>
               ))}
             </TodosList>
           );

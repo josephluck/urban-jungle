@@ -1,4 +1,5 @@
 import * as TE from "fp-ts/lib/TaskEither";
+import * as O from "fp-ts/lib/Option";
 import { CareModel, makeCareModel } from "../../../models/care";
 import { IErr } from "../../../utils/err";
 import uuid from "uuid";
@@ -6,14 +7,25 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
 import { selectCurrentUserId } from "../../auth/store/state";
+import { selectTodoByHouseholdIdAndId } from "../../todos/store/state";
+import { sequenceT } from "fp-ts/lib/Apply";
+import { selectProfileById2 } from "../../profiles/store/state";
+import { selectPlantByHouseholdAndId } from "../../plants/store/state";
+
+const sequenceO = sequenceT(O.option);
 
 export const createCareForPlant = (profileId: string) => (todoId: string) => (
   plantId: string
 ) => (householdId: string): TE.TaskEither<IErr, CareModel> =>
   pipe(
-    selectHouseholdById(householdId),
+    sequenceO(
+      selectTodoByHouseholdIdAndId(householdId)(todoId),
+      selectPlantByHouseholdAndId(householdId)(plantId),
+      selectProfileById2(profileId),
+      selectHouseholdById(householdId)
+    ),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.chain(() =>
+    TE.chain(([todo, plant, profile]) =>
       TE.tryCatch(
         async () => {
           const id = uuid();
@@ -22,6 +34,9 @@ export const createCareForPlant = (profileId: string) => (todoId: string) => (
             profileId,
             plantId,
             householdId,
+            todo,
+            plant,
+            profile,
           });
           await database(householdId).doc(id).set(careToSave);
           return careToSave;

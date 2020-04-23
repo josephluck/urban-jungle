@@ -1,10 +1,11 @@
 import { store, defaultState } from "../../../store/state";
-import { makeTodoModel } from "../../../models/todo";
+import { makeTodoModel, TodoModel } from "../../../models/todo";
 import { makeCareModel } from "../../../models/care";
 import moment from "moment";
 import firebase from "firebase";
 import { selectTodosSchedule } from "./state";
 import { defaultDate } from "../../../__mocks__/moment";
+import * as O from "fp-ts/lib/Option";
 
 const makeFirebaseDate = (
   daysAdjustment: number = 0
@@ -17,6 +18,8 @@ const makeFirebaseDate = (
       : moment().subtract(Math.abs(daysAdjustment), "days");
   return firebase.firestore.Timestamp.fromDate(date.toDate());
 };
+
+const withNonePlant = (todo: TodoModel) => ({ ...todo, plant: O.none });
 
 describe("store / todos", () => {
   const init = store.createMutator;
@@ -44,7 +47,7 @@ describe("store / todos", () => {
 
       expect(schedule).toHaveLength(1);
       expect(schedule[0].todos).toHaveLength(1);
-      expect(schedule[0].todos[0]).toEqual(todo1);
+      expect(schedule[0].todos[0]).toEqual(withNonePlant(todo1));
     });
 
     it("includes todos where the last care was before the next due date", () => {
@@ -79,7 +82,7 @@ describe("store / todos", () => {
         new Date(defaultDate).getTime()
       );
       expect(schedule[0].todos).toHaveLength(1);
-      expect(schedule[0].todos[0]).toEqual(todo1);
+      expect(schedule[0].todos[0]).toEqual(withNonePlant(todo1));
     });
 
     it("repeats a single todo according to it's recurrence days", () => {
@@ -99,15 +102,25 @@ describe("store / todos", () => {
       const schedule = selectTodosSchedule("household1")(10);
 
       expect(schedule).toHaveLength(10);
-      expect(schedule[0].todos).toEqual([todo1]);
+      expect(schedule[0].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[1].todos).toEqual([]);
-      expect(schedule[2].todos).toEqual([todo1]);
+      expect(schedule[2].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[3].todos).toEqual([]);
-      expect(schedule[4].todos).toEqual([todo1]);
+      expect(schedule[4].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[5].todos).toEqual([]);
-      expect(schedule[6].todos).toEqual([todo1]);
+      expect(schedule[6].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[7].todos).toEqual([]);
-      expect(schedule[8].todos).toEqual([todo1]);
+      expect(schedule[8].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[9].todos).toEqual([]);
     });
 
@@ -140,16 +153,18 @@ describe("store / todos", () => {
       const schedule = selectTodosSchedule("household1")(10);
 
       expect(schedule).toHaveLength(10);
-      expect(schedule[0].todos).toEqual([todo1, todo2, todo3]);
+      expect(schedule[0].todos).toEqual(
+        [todo1, todo2, todo3].map(withNonePlant)
+      );
       expect(schedule[1].todos).toEqual([]);
-      expect(schedule[2].todos).toEqual([todo1]);
-      expect(schedule[3].todos).toEqual([todo2]);
-      expect(schedule[4].todos).toEqual([todo1, todo3]);
+      expect(schedule[2].todos).toEqual([todo1].map(withNonePlant));
+      expect(schedule[3].todos).toEqual([todo2].map(withNonePlant));
+      expect(schedule[4].todos).toEqual([todo1, todo3].map(withNonePlant));
       expect(schedule[5].todos).toEqual([]);
-      expect(schedule[6].todos).toEqual([todo1, todo2]);
+      expect(schedule[6].todos).toEqual([todo1, todo2].map(withNonePlant));
       expect(schedule[7].todos).toEqual([]);
-      expect(schedule[8].todos).toEqual([todo1, todo3]);
-      expect(schedule[9].todos).toEqual([todo2]);
+      expect(schedule[8].todos).toEqual([todo1, todo3].map(withNonePlant));
+      expect(schedule[9].todos).toEqual([todo2].map(withNonePlant));
     });
 
     it("skips a todo if it's been cared for today", () => {
@@ -250,9 +265,13 @@ describe("store / todos", () => {
 
       expect(schedule[0].todos).toEqual([]);
       expect(schedule[1].todos).toEqual([]);
-      expect(schedule[2].todos).toEqual([todo1]);
+      expect(schedule[2].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[3].todos).toEqual([]);
-      expect(schedule[4].todos).toEqual([todo1]);
+      expect(schedule[4].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
     });
 
     it("skips a todo if it's been cared for at any time today and includes the next due date", () => {
@@ -286,9 +305,13 @@ describe("store / todos", () => {
 
       expect(schedule[0].todos).toEqual([]);
       expect(schedule[1].todos).toEqual([]);
-      expect(schedule[2].todos).toEqual([todo1]);
+      expect(schedule[2].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[3].todos).toEqual([]);
-      expect(schedule[4].todos).toEqual([todo1]);
+      expect(schedule[4].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
     });
 
     it("takes in to account a todos next due date based on when it was last done", () => {
@@ -321,11 +344,15 @@ describe("store / todos", () => {
       expect(schedule).toHaveLength(10);
       expect(schedule[0].todos).toEqual([]);
       expect(schedule[1].todos).toEqual([]);
-      expect(schedule[2].todos).toEqual([todo1]);
+      expect(schedule[2].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[3].todos).toEqual([]);
       expect(schedule[4].todos).toEqual([]);
       expect(schedule[5].todos).toEqual([]);
-      expect(schedule[6].todos).toEqual([todo1]);
+      expect(schedule[6].todos).toEqual(
+        [todo1].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[7].todos).toEqual([]);
       expect(schedule[8].todos).toEqual([]);
       expect(schedule[9].todos).toEqual([]);
@@ -391,25 +418,45 @@ describe("store / todos", () => {
       })();
 
       const schedule = selectTodosSchedule("household1")(20);
-      expect(schedule[0].todos).toEqual([todo3]);
+      expect(schedule[0].todos).toEqual(
+        [todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[1].todos).toEqual([]);
-      expect(schedule[2].todos).toEqual([todo3]);
+      expect(schedule[2].todos).toEqual(
+        [todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[3].todos).toEqual([]);
-      expect(schedule[4].todos).toEqual([todo1, todo3]);
+      expect(schedule[4].todos).toEqual(
+        [todo1, todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[5].todos).toEqual([]);
-      expect(schedule[6].todos).toEqual([todo2, todo3]);
+      expect(schedule[6].todos).toEqual(
+        [todo2, todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[7].todos).toEqual([]);
-      expect(schedule[8].todos).toEqual([todo1, todo3]);
+      expect(schedule[8].todos).toEqual(
+        [todo1, todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[9].todos).toEqual([]);
-      expect(schedule[10].todos).toEqual([todo3]);
+      expect(schedule[10].todos).toEqual(
+        [todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[11].todos).toEqual([]);
-      expect(schedule[12].todos).toEqual([todo1, todo2, todo3]);
+      expect(schedule[12].todos).toEqual(
+        [todo1, todo2, todo3].map(withNonePlant)
+      );
       expect(schedule[13].todos).toEqual([]);
-      expect(schedule[14].todos).toEqual([todo3]);
+      expect(schedule[14].todos).toEqual(
+        [todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[15].todos).toEqual([]);
-      expect(schedule[16].todos).toEqual([todo1, todo3]);
+      expect(schedule[16].todos).toEqual(
+        [todo1, todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[17].todos).toEqual([]);
-      expect(schedule[18].todos).toEqual([todo2, todo3]);
+      expect(schedule[18].todos).toEqual(
+        [todo2, todo3].map(withNonePlant).map(withNonePlant)
+      );
       expect(schedule[19].todos).toEqual([]);
     });
   });

@@ -4,6 +4,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import { selectMostRecentCareForTodo } from "../../care/store/state";
+import { selectPlantByHouseholdAndId } from "../../plants/store/state";
 
 export const selectNormalizedTodosByHouseholdId = store.createSelector(
   (s, householdId: string): O.Option<Record<string, TodoModel>> =>
@@ -23,6 +24,13 @@ export const selectTodosByHouseholdIdAndPlantId = (
 ): TodoModel[] =>
   selectTodosByHouseholdId(householdId).filter(
     (todo) => todo.plantId === plantId
+  );
+
+export const selectTodoByHouseholdIdAndId = (householdId: string) => (
+  todoId: string
+): O.Option<TodoModel> =>
+  O.fromNullable(
+    selectTodosByHouseholdId(householdId).find((todo) => todo.id === todoId)
   );
 
 /**
@@ -63,7 +71,10 @@ export const selectTodosSchedule = (householdId: string) => (
         .filter((todo) =>
           todo.dueDates.some((dueDate) => dueDate.isSame(date, "day"))
         )
-        .map(({ dueDates, ...todo }) => todo),
+        .map(({ dueDates, ...todo }) => ({
+          ...todo,
+          plant: selectPlantByHouseholdAndId(householdId)(todo.plantId),
+        })),
     };
   });
 };
