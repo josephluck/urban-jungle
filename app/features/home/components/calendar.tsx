@@ -1,4 +1,10 @@
-import React, { useMemo, useRef, useCallback, useState } from "react";
+import React, {
+  useMemo,
+  useRef,
+  useCallback,
+  useState,
+  useEffect,
+} from "react";
 import moment from "moment";
 import styled from "styled-components/native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
@@ -90,9 +96,14 @@ export const Calendar = (_props: { householdId: string }) => {
     [days, snapDaysToIndex, activeMonth]
   );
 
+  const hasSnappedInitialDays = useRef(false);
+
   useEffect(() => {
-    snapDaysToIndex(todaysIndex);
-  }, []);
+    if (!hasSnappedInitialDays.current && scrollViewRef.current) {
+      snapDaysToIndex(todaysIndex);
+      hasSnappedInitialDays.current = true;
+    }
+  }, [hasSnappedInitialDays.current, scrollViewRef.current]);
 
   return (
     <Container>

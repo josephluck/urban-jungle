@@ -48,6 +48,8 @@ export default () => {
   );
 };
 
+console.disableYellowBox = true;
+
 const AppWrapper = styled.View`
   flex: 1;
   background-color: ${(props) => props.theme.appBackground};

@@ -8,10 +8,12 @@ export const ListItem = ({
   title,
   detail,
   image,
+  showImageFallback = true,
 }: {
   title?: React.ReactNode;
   detail?: React.ReactNode;
   image?: string;
+  showImageFallback?: boolean;
 }) => (
   <Container>
     {image ? (
@@ -22,6 +24,8 @@ export const ListItem = ({
           source={{ uri: image }}
         />
       </Circle>
+    ) : showImageFallback ? (
+      <Circle />
     ) : null}
     <Detail>
       {title ? <Title>{title}</Title> : null}
