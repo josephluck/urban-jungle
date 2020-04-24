@@ -1,22 +1,24 @@
 import React from "react";
 import styled from "styled-components/native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+// import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { symbols } from "../theme";
 import { BodyText } from "./typography";
+import { StyleProp, ViewStyle } from "react-native";
 
 export const IconButton = ({
-  icon,
   children,
   onPress,
+  style,
 }: {
-  icon: IconProp;
-  children: React.ReactNode;
+  icon?: IconProp;
+  style?: StyleProp<ViewStyle>;
+  children?: string;
   onPress: () => void;
 }) => (
-  <IconButtonContainer onPress={onPress} activeOpacity={0.6}>
-    <FontAwesomeIcon icon={icon} />
-    <IconButtonText weight="semibold">{children}</IconButtonText>
+  <IconButtonContainer onPress={onPress} activeOpacity={0.6} style={style}>
+    {/* <FontAwesomeIcon icon={icon} /> */}
+    {children && <IconButtonText weight="semibold">{children}</IconButtonText>}
   </IconButtonContainer>
 );
 
@@ -28,7 +30,6 @@ const IconButtonContainer = styled.TouchableOpacity`
   border-color: ${symbols.colors.nearBlack};
   align-items: center;
   border-radius: 9999;
-  background-color: ${symbols.colors.appBackground};
 `;
 
 const IconButtonText = styled(BodyText)`

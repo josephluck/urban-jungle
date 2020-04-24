@@ -43,9 +43,10 @@ const size = {
   closeBarWidth: 26,
   avatarSmall: 40,
   avatarDefault: 50,
-  avatarLarge: 80,
+  avatarLarge: 120,
   bottomSheetHandleHeight: 4,
   bottomSheetHandleWidth: 30,
+  minimumTouchableSize: 28,
 };
 
 export type AvatarSize = "small" | "default" | "large";
@@ -93,6 +94,7 @@ const colors = {
   darkGreen: "rgba(5, 194, 125, 1)",
   solidBlue: "#0909F9",
   appBackground: "rgba(255, 255, 255, 1)",
+  transparent: "transparent",
 };
 
 export const symbols = {
@@ -125,7 +127,7 @@ export const darkTheme = {
 export const lightTheme: Theme = {
   type: "dark-content" as StatusBarStyle,
   appBackground: colors.pureWhite,
-  avatarBorder: colors.lightOffGray,
+  avatarBorder: colors.offWhite,
   avatarBackground: colors.nearWhite,
   avatarPlaceholderLetter: colors.nearBlack,
   defaultTextColor: colors.offBlack,

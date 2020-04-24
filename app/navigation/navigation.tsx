@@ -99,9 +99,7 @@ const PrivateTabs = createBottomTabNavigator(
           <FontAwesomeIcon
             icon={icon}
             size={tabIconSize}
-            color={
-              focused ? symbols.colors.solidBlue : symbols.colors.lightOffGray
-            }
+            color={focused ? symbols.colors.solidBlue : symbols.colors.offWhite}
           />
         );
       },
