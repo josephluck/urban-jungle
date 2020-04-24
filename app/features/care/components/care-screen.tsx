@@ -11,13 +11,10 @@ import {
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import { HouseholdPlantsSubscription } from "../../plants/subscriptions/household-plants";
 import { useStore } from "../../../store/state";
-import { HouseholdCaresSubscription } from "../subscriptions/household-cares";
 import { Schedule } from "./schedule";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
-import { HouseholdTodosSubscription } from "../../todos/subscriptions/household-todos";
 
 export const Root = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -42,9 +39,6 @@ const CareScreen = () => {
     <ScreenLayout>
       {selectedHouseholdId ? (
         <CareScreenContainer>
-          <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
-          <HouseholdCaresSubscription householdId={selectedHouseholdId} />
-          <HouseholdTodosSubscription householdId={selectedHouseholdId} />
           <WelcomeMessage>👋 You have a few things to do today.</WelcomeMessage>
           <Schedule householdId={selectedHouseholdId} />
         </CareScreenContainer>

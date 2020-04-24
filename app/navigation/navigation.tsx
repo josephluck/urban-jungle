@@ -2,7 +2,7 @@ import React from "react";
 import { createSwitchNavigator } from "react-navigation";
 import { AUTH_STACK, AuthNavigator } from "../features/auth/navigation/stack";
 import { Root } from "../features/care/components/care-screen";
-import { Plants } from "../features/plants/components/plants";
+import { Plants } from "../features/plants/components/plants-screen";
 import { Manage } from "../features/manage/components/manage";
 import { createStackNavigator } from "react-navigation-stack";
 import { CARE_SCREEN } from "../features/care/navigation/routes";
@@ -14,6 +14,10 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { symbols } from "../theme";
+import {
+  PLANT_SCREEN,
+  Plant,
+} from "../features/plants/components/plant-screen";
 
 const CareStack = createStackNavigator(
   {
@@ -34,9 +38,8 @@ const PLANTS_SCREEN = "PLANTS_SCREEN";
 
 const PlantsStack = createStackNavigator(
   {
-    [PLANTS_SCREEN]: {
-      screen: Plants,
-    },
+    [PLANTS_SCREEN]: Plants,
+    [PLANT_SCREEN]: Plant,
   },
   {
     initialRouteName: PLANTS_SCREEN,

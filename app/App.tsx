@@ -13,6 +13,12 @@ import { selectInitializing } from "./features/auth/store/state";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { useStore } from "./store/state";
 import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
+import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
+import { HouseholdPlantsSubscription } from "./features/plants/subscriptions/household-plants";
+import { HouseholdCaresSubscription } from "./features/care/subscriptions/household-cares";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as O from "fp-ts/lib/Option";
+import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
 
 // reactotron.configure();
 
@@ -28,6 +34,14 @@ export default () => {
 
   const loading = fontsLoading || authInitializing;
 
+  const selectedHouseholdId_ = useStore(
+    selectedSelectedOrMostRecentHouseholdId
+  );
+  const selectedHouseholdId = pipe(
+    selectedHouseholdId_,
+    O.getOrElse(() => "")
+  );
+
   return (
     <ThemeProvider theme={lightTheme}>
       <StatusBar barStyle={lightTheme.type} />
@@ -39,6 +53,15 @@ export default () => {
         ) : (
           <>
             <CurrentProfileHouseholdsSubscription />
+            {selectedHouseholdId ? (
+              <>
+                <HouseholdPlantsSubscription
+                  householdId={selectedHouseholdId}
+                />
+                <HouseholdCaresSubscription householdId={selectedHouseholdId} />
+                <HouseholdTodosSubscription householdId={selectedHouseholdId} />
+              </>
+            ) : null}
             <AppContainer />
           </>
         )}
