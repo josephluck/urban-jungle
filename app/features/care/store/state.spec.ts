@@ -54,46 +54,7 @@ describe("store / cares", () => {
 
       expect(schedule).toHaveLength(1);
       expect(schedule[0].cares).toHaveLength(1);
-      expect(schedule[0].cares[0]).toEqual({ ...care1, todo: todo1 });
-    });
-
-    it("includes only includes cares that have an associated todo", () => {
-      const todo1 = makeTodoModel({
-        id: "todo1",
-        householdId: "household1",
-        recurrenceDays: 2,
-      });
-      const care1 = makeCareModel({
-        id: "care1",
-        householdId: "household1",
-        todoId: "todo1",
-        dateCreated: makeFirebaseDate(),
-      });
-      const care2 = makeCareModel({
-        id: "care2",
-        householdId: "household1",
-        todoId: "todo2",
-        dateCreated: makeFirebaseDate(),
-      });
-
-      init((state) => {
-        state.todos.todosByHouseholdId = {
-          household1: {
-            todo1,
-          },
-        };
-        state.cares.caresByHouseholdId = {
-          household1: {
-            care1,
-            care2,
-          },
-        };
-      })();
-      const schedule = selectCareHistory("household1")(1);
-
-      expect(schedule).toHaveLength(1);
-      expect(schedule[0].cares).toHaveLength(1);
-      expect(schedule[0].cares[0]).toEqual({ ...care1, todo: todo1 });
+      expect(schedule[0].cares[0]).toEqual(care1);
     });
 
     it("includes multiple cares for the same todo", () => {
@@ -132,9 +93,9 @@ describe("store / cares", () => {
 
       expect(schedule).toHaveLength(2);
       expect(schedule[0].cares).toHaveLength(1);
-      expect(schedule[0].cares[0]).toEqual({ ...care1, todo: todo1 });
+      expect(schedule[0].cares[0]).toEqual(care1);
       expect(schedule[1].cares).toHaveLength(1);
-      expect(schedule[1].cares[0]).toEqual({ ...care2, todo: todo1 });
+      expect(schedule[1].cares[0]).toEqual(care2);
     });
 
     it("includes multiple todos and cares", () => {
@@ -193,12 +154,12 @@ describe("store / cares", () => {
 
       expect(schedule).toHaveLength(3);
       expect(schedule[0].cares).toHaveLength(1);
-      expect(schedule[0].cares[0]).toEqual({ ...care1, todo: todo1 });
+      expect(schedule[0].cares[0]).toEqual(care1);
       expect(schedule[1].cares).toHaveLength(2);
-      expect(schedule[1].cares[0]).toEqual({ ...care2, todo: todo1 });
-      expect(schedule[1].cares[1]).toEqual({ ...care3, todo: todo2 });
+      expect(schedule[1].cares[0]).toEqual(care2);
+      expect(schedule[1].cares[1]).toEqual(care3);
       expect(schedule[2].cares).toHaveLength(1);
-      expect(schedule[2].cares[0]).toEqual({ ...care4, todo: todo2 });
+      expect(schedule[2].cares[0]).toEqual(care4);
     });
   });
 });
