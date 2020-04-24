@@ -90,6 +90,10 @@ export const Calendar = (_props: { householdId: string }) => {
     [days, snapDaysToIndex, activeMonth]
   );
 
+  useEffect(() => {
+    snapDaysToIndex(todaysIndex);
+  }, []);
+
   return (
     <Container>
       <MonthText weight="semibold">{activeMonth}</MonthText>
