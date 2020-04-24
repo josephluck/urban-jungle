@@ -207,6 +207,6 @@ export const retrieveSelectedHouseholdIdFromStorage = (): TE.TaskEither<
 export const SELECTED_HOUSEHOLD_ID_KEY = "SELECTED_HOUSEHOLD_ID";
 
 export const defaultHousehold: Omit<HouseholdModel, "id" | "dateCreated"> = {
-  name: "My Home",
+  name: "My Urban Jungle",
   profileIds: [],
 };

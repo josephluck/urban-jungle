@@ -5,7 +5,7 @@ import { selectHasAuthenticated } from "../store/state";
 import { signIn } from "../store/effects";
 import { Button, TextInput, Text } from "react-native";
 import { NavigationContext } from "react-navigation";
-import { createHomeRoute } from "../../home/navigation/routes";
+import { createCareRoute } from "../../care/navigation/routes";
 import { useStore } from "../../../store/state";
 
 export const SignIn = () => {
@@ -18,7 +18,7 @@ export const SignIn = () => {
 
   useEffect(() => {
     if (hasAuthenticated) {
-      navigate(createHomeRoute());
+      navigate(createCareRoute());
     }
   }, [hasAuthenticated]);
 

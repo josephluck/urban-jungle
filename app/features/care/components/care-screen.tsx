@@ -13,23 +13,23 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { HouseholdPlantsSubscription } from "../../plants/subscriptions/household-plants";
 import { useStore } from "../../../store/state";
-import { HouseholdCaresSubscription } from "../../care/subscriptions/household-cares";
-import { Calendar } from "./calendar";
+import { HouseholdCaresSubscription } from "../subscriptions/household-cares";
+import { Schedule } from "./schedule";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
 import { HouseholdTodosSubscription } from "../../todos/subscriptions/household-todos";
 
-export const Home = () => {
+export const Root = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
 
   if (hasAuthenticated) {
-    return <HomeScreen />;
+    return <CareScreen />;
   }
 
   return <SplashScreen />;
 };
 
-const HomeScreen = () => {
+const CareScreen = () => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
@@ -41,13 +41,13 @@ const HomeScreen = () => {
   return (
     <ScreenLayout>
       {selectedHouseholdId ? (
-        <HomeScreenContainer>
+        <CareScreenContainer>
           <HouseholdPlantsSubscription householdId={selectedHouseholdId} />
           <HouseholdCaresSubscription householdId={selectedHouseholdId} />
           <HouseholdTodosSubscription householdId={selectedHouseholdId} />
           <WelcomeMessage>👋 You have a few things to do today.</WelcomeMessage>
-          <Calendar householdId={selectedHouseholdId} />
-        </HomeScreenContainer>
+          <Schedule householdId={selectedHouseholdId} />
+        </CareScreenContainer>
       ) : null}
     </ScreenLayout>
   );
@@ -58,7 +58,7 @@ const WelcomeMessage = styled(Heading)`
   margin-bottom: ${symbols.spacing.appHorizontal * 2};
 `;
 
-const HomeScreenContainer = styled.View`
+const CareScreenContainer = styled.View`
   padding-top: ${symbols.spacing.appVertical};
   flex-grow: 1;
   background-color: ${symbols.colors.appBackground};

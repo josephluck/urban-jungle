@@ -1,4 +1,4 @@
-import { selectCareHistory } from "../../care/store/state";
+import { selectCareHistory } from "./state";
 import { selectTodosSchedule } from "../../todos/store/state";
 import { TodoModel } from "../../../models/todo";
 import { CareModel } from "../../../models/care";
@@ -20,15 +20,14 @@ export const selectSchedule = (
   householdId: string,
   numberOfDaysEitherSide: number
 ): ScheduleItem[] => {
-  // NB: +1 to include today
   const allCares = selectCareHistory(householdId)(
-    numberOfDaysEitherSide + 1
+    numberOfDaysEitherSide + 1 // NB: +1 to include today
   ).map((item) => ({
     ...item,
     todos: [] as TodoWithPlant[],
   }));
   const allTodos = selectTodosSchedule(householdId)(
-    numberOfDaysEitherSide + 1
+    numberOfDaysEitherSide + 1 // NB: +1 to include today
   ).map((item) => ({
     ...item,
     cares: [] as CareModel[],

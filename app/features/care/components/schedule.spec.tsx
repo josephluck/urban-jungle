@@ -13,7 +13,7 @@ import firebase from "firebase";
 import {
   upsertCareByHouseholdId,
   selectCaresByHouseholdId,
-} from "../../care/store/state";
+} from "../store/state";
 import { makeCareModel } from "../../../models/care";
 
 const makeFirebaseDate = (

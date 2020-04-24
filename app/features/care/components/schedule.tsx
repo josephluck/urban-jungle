@@ -17,11 +17,11 @@ import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { createCareForPlant } from "../../care/store/effects";
+import { createCareForPlant } from "../store/effects";
 import { selectCurrentUserId } from "../../auth/store/state";
-import { selectSchedule } from "./schedule";
+import { selectSchedule } from "../store/schedule";
 
-export const Calendar = (_props: { householdId: string }) => {
+export const Schedule = (_props: { householdId: string }) => {
   const today = useMemo(() => moment(), []);
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
@@ -35,7 +35,7 @@ export const Calendar = (_props: { householdId: string }) => {
     _profileId,
     O.getOrElse(() => "")
   );
-  const schedule = useStore(() => selectSchedule(selectedHouseholdId, 4), [
+  const schedule = useStore(() => selectSchedule(selectedHouseholdId, 7), [
     selectedHouseholdId,
   ]);
   const todaysIndex = useMemo(() => Math.floor(schedule.length / 2), []);

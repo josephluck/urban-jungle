@@ -1,15 +1,13 @@
 import React from "react";
 import { createSwitchNavigator } from "react-navigation";
 import { AUTH_STACK, AuthNavigator } from "../features/auth/navigation/stack";
-import { Home } from "../features/home/components/home";
+import { Root } from "../features/care/components/care-screen";
 import { Plants } from "../features/plants/components/plants";
 import { Manage } from "../features/manage/components/manage";
 import { createStackNavigator } from "react-navigation-stack";
-import { HOME_SCREEN } from "../features/home/navigation/routes";
+import { CARE_SCREEN } from "../features/care/navigation/routes";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import {
-  // faTint,
-  // faFillDrip,
   faHandHoldingWater,
   faSeedling,
   faUserCircle,
@@ -17,14 +15,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { symbols } from "../theme";
 
-const HomeStack = createStackNavigator(
+const CareStack = createStackNavigator(
   {
-    [HOME_SCREEN]: {
-      screen: Home,
+    [CARE_SCREEN]: {
+      screen: Root,
     },
   },
   {
-    initialRouteName: HOME_SCREEN,
+    initialRouteName: CARE_SCREEN,
     headerMode: "none",
     navigationOptions: {
       headerShown: false,
@@ -71,7 +69,7 @@ const tabBarPadding = symbols.spacing._12;
 
 const PrivateTabs = createBottomTabNavigator(
   {
-    [HOME_SCREEN]: HomeStack,
+    [CARE_SCREEN]: CareStack,
     [PLANTS_SCREEN]: PlantsStack,
     [MANAGE_SCREEN]: ManageStack,
   },
@@ -89,7 +87,7 @@ const PrivateTabs = createBottomTabNavigator(
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state;
         const icon =
-          routeName === HOME_SCREEN
+          routeName === CARE_SCREEN
             ? faHandHoldingWater
             : routeName === PLANTS_SCREEN
             ? faSeedling
