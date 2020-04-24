@@ -11,6 +11,7 @@ import { ListItem } from "../../../components/list-item";
 import { Heading } from "../../../components/typography";
 import { IconButton } from "../../../components/icon-button";
 import { faShare } from "@fortawesome/pro-regular-svg-icons";
+import { shareHouseholdInvitation } from "../../households/store/effects";
 
 export const Manage = () => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -52,7 +53,10 @@ const ManageScreen = () => {
         <ScreenContainer>
           <WelcomeMessageContainer>
             <Heading>Your network</Heading>
-            <IconButton icon={faShare} onPress={console.log}>
+            <IconButton
+              icon={faShare}
+              onPress={shareHouseholdInvitation(selectedHouseholdId)}
+            >
               Invite
             </IconButton>
           </WelcomeMessageContainer>

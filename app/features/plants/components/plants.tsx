@@ -67,7 +67,7 @@ const PlantsScreen = () => {
                   deletePlantByHouseholdId(selectedHouseholdId)(plant.id)()
                 }
               >
-                <ListItem title={plant.name} />
+                <ListItem title={plant.name} image={plant.avatar} />
               </TouchableOpacity>
             ))}
           </PlantsList>
