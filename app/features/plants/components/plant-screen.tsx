@@ -7,17 +7,15 @@ import * as O from "fp-ts/lib/Option";
 import { useStore } from "../../../store/state";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
-import { Heading, SubHeading } from "../../../components/typography";
+import { SubHeading } from "../../../components/typography";
 import { selectPlantByHouseholdAndId } from "../store/state";
 import { NavigationStackScreenProps } from "react-navigation-stack";
-import { TouchableIcon } from "../../../components/touchable-icon";
-import { faArrowLeft } from "@fortawesome/pro-regular-svg-icons";
-import { faEdit } from "@fortawesome/pro-solid-svg-icons";
 import { IconButton } from "../../../components/icon-button";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { createTodoForPlant } from "../../todos/store/effects";
 import { ListItem } from "../../../components/list-item";
 import { selectTodosForPlant } from "../../todos/store/state";
+import { BackButton } from "../../../components/back-button";
 
 export const Plant = (props: NavigationStackScreenProps) => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -59,26 +57,18 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 <ScreenControls>
                   <BackButtonWrapper>
                     <BackButton
-                      icon={faArrowLeft}
                       onPress={() => navigation.goBack()}
                       style={{ marginRight: symbols.spacing._12 }}
-                      size={symbols.font._28.size}
                     />
-                    <Heading
+                    <SubHeading
+                      weight="bold"
                       numberOfLines={1}
                       ellipsizeMode="tail"
                       style={{ flex: 1 }}
                     >
                       {plant.name}
-                    </Heading>
+                    </SubHeading>
                   </BackButtonWrapper>
-                  <IconButton
-                    icon={faEdit}
-                    onPress={createTodoForPlant(plant.id)(plant.householdId)()}
-                    style={{ marginLeft: symbols.spacing._16 }}
-                  >
-                    Edit
-                  </IconButton>
                 </ScreenControls>
               </Header>
               <ScreenContent stickyHeaderIndices={[1]}>
@@ -89,18 +79,18 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                     <PlantImagePlaceholder />
                   )}
                 </AvatarWrapper>
-                <TabsContainer>
-                  <SubHeading style={{ opacity: 0.2 }}>Details</SubHeading>
-                  <SubHeading style={{ opacity: 1 }}>Next up</SubHeading>
-                  <SubHeading style={{ opacity: 0.2 }}>History</SubHeading>
-                </TabsContainer>
+                <SectionHeading>
+                  <SubHeading weight="bold">Todos</SubHeading>
+                  <IconButton
+                    onPress={createTodoForPlant(plant.id)(plant.householdId)()}
+                    style={{ marginLeft: symbols.spacing._16 }}
+                  >
+                    Add
+                  </IconButton>
+                </SectionHeading>
                 <View>
                   {todos.map((todo) => (
-                    <ListItem
-                      key={todo.id}
-                      title={todo.title}
-                      detail={todo.detail}
-                    />
+                    <ListItem key={todo.id} title={todo.title} />
                   ))}
                 </View>
               </ScreenContent>
@@ -125,7 +115,7 @@ const ScreenContainer = styled.View`
 `;
 
 const Header = styled.View`
-  padding-top: ${symbols.spacing.appVertical};
+  padding-top: ${symbols.spacing._20};
   padding-horizontal: ${symbols.spacing.appHorizontal};
   margin-bottom: ${symbols.spacing._20};
 `;
@@ -143,8 +133,6 @@ const BackButtonWrapper = styled.View`
   flex: 1;
 `;
 
-const BackButton = styled(TouchableIcon)``;
-
 const PlantImage = styled.Image`
   border-radius: 30;
   width: 100%;
@@ -159,7 +147,6 @@ const PlantImagePlaceholder = styled.View`
 `;
 
 const AvatarWrapper = styled.View`
-  margin-bottom: ${symbols.spacing._32};
   align-items: center;
 `;
 
@@ -168,9 +155,10 @@ const ScreenContent = styled.ScrollView`
   padding-horizontal: ${symbols.spacing.appHorizontal};
 `;
 
-const TabsContainer = styled.View`
+const SectionHeading = styled.View`
   flex-direction: row;
-  justify-content: space-evenly;
-  padding-bottom: ${symbols.spacing._20};
+  align-items: center;
+  justify-content: space-between;
+  padding-vertical: ${symbols.spacing._16};
   background-color: ${symbols.colors.appBackground};
 `;

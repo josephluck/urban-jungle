@@ -156,7 +156,6 @@ export const Schedule = (_props: { householdId: string }) => {
                 >
                   <ListItem
                     title={todo.title}
-                    detail={`${todo.detail} every ${todo.recurrenceDays} days.`}
                     image={pipe(
                       todo.plant,
                       O.chain((plant) => O.fromNullable(plant.avatar)),

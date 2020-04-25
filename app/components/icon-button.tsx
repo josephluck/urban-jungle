@@ -30,9 +30,11 @@ const IconButtonContainer = styled.TouchableOpacity`
   border-color: ${symbols.colors.nearBlack};
   align-items: center;
   border-radius: 9999;
+  background-color: ${symbols.colors.nearBlack};
 `;
 
 const IconButtonText = styled(BodyText)`
   margin-left: ${symbols.spacing._4};
   margin-right: ${symbols.spacing._4};
+  color: ${symbols.colors.pureWhite};
 `;
