@@ -79,6 +79,13 @@ export const selectTodosSchedule = (householdId: string) => (
   });
 };
 
+export const selectTodosForPlant = (plantId: string) => (
+  householdId: string
+): TodoModel[] =>
+  selectTodosByHouseholdId(householdId).filter(
+    (todo) => todo.plantId === plantId
+  );
+
 export const upsertTodo = store.createMutator(
   (s, householdId: string, todo: TodoModel) => {
     s.todos.todosByHouseholdId[householdId] = {

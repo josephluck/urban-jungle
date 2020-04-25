@@ -217,7 +217,7 @@ const Day = styled.TouchableOpacity<{ isPast: boolean; isToday: boolean }>`
   justify-content: center;
   align-items: center;
   margin-right: ${dayGap};
-  border-radius: ${symbols.borderRadius.tiny};
+  border-radius: ${symbols.borderRadius.small};
 `;
 
 const DayText = styled(BodyText)<{ isToday: boolean }>`
