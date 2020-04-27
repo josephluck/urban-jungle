@@ -29,7 +29,7 @@ export const ListItem = ({
     ) : null}
     <Detail>
       {title ? <Title>{title}</Title> : null}
-      {detail ? <BodyText>{detail}</BodyText> : null}
+      {detail ? <DetailText>{detail}</DetailText> : null}
     </Detail>
   </Container>
 );
@@ -56,4 +56,8 @@ const Detail = styled.View`
 
 const Title = styled(SubHeading)`
   margin-bottom: ${symbols.spacing._2};
+`;
+
+const DetailText = styled(BodyText)`
+  color: ${symbols.colors.midOffGray};
 `;

@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Feather } from "@expo/vector-icons";
 import { StyleProp, ViewStyle } from "react-native";
 
 export const TouchableIcon = ({
@@ -11,13 +10,13 @@ export const TouchableIcon = ({
   onPress,
   style,
 }: {
-  icon: IconProp;
+  icon: string;
   onPress: () => void;
   size?: number;
   style?: StyleProp<ViewStyle>;
 }) => (
   <IconButtonContainer style={style} onPress={onPress} activeOpacity={0.6}>
-    <FontAwesomeIcon icon={icon} size={size} />
+    <Feather name={icon} size={size} />
   </IconButtonContainer>
 );
 

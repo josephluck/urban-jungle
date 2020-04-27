@@ -44,6 +44,13 @@ export const selectCaresForTodo = (householdId: string) => (
     (care) => care.todoId === todoId
   );
 
+export const selectCaresForPlant = (householdId: string) => (
+  plantId: string
+): CareModel[] =>
+  selectCaresByHouseholdId(householdId).filter(
+    (care) => care.plantId === plantId
+  );
+
 export const selectMostRecentCareForTodo = (householdId: string) => (
   todoId: string
 ): O.Option<CareModel> =>

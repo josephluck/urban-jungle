@@ -8,14 +8,20 @@ import { useStore } from "../../../store/state";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
 import { SubHeading } from "../../../components/typography";
-import { selectPlantByHouseholdAndId } from "../store/state";
+import {
+  selectPlantByHouseholdAndId,
+  selectMostLovedByForPlant,
+} from "../store/state";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import { IconButton } from "../../../components/icon-button";
 import { View } from "react-native";
 import { createTodoForPlant } from "../../todos/store/effects";
 import { ListItem } from "../../../components/list-item";
 import { selectTodosForPlant } from "../../todos/store/state";
-import { BackButton } from "../../../components/back-button";
+import { selectCaresForPlant } from "../../care/store/state";
+import { TouchableIcon } from "../../../components/touchable-icon";
+import { sequenceT } from "fp-ts/lib/Apply";
+import moment from "moment";
 
 export const Plant = (props: NavigationStackScreenProps) => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -26,6 +32,8 @@ export const Plant = (props: NavigationStackScreenProps) => {
 
   return null;
 };
+
+const sequenceO = sequenceT(O.option);
 
 const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -45,6 +53,18 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     [plantId, selectedHouseholdId]
   );
 
+  const cares = useStore(
+    () => selectCaresForPlant(selectedHouseholdId)(plantId),
+    [plantId, selectedHouseholdId]
+  );
+
+  const mostLovedBy = useStore(
+    () => selectMostLovedByForPlant(selectedHouseholdId)(plantId),
+    [plantId, selectedHouseholdId]
+  );
+
+  const stickyIndicies = O.isSome(mostLovedBy) ? [1, 3, 5] : [1, 3];
+
   return (
     <ScreenLayout>
       {pipe(
@@ -56,9 +76,10 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
               <Header>
                 <ScreenControls>
                   <BackButtonWrapper>
-                    <BackButton
+                    <TouchableIcon
                       onPress={() => navigation.goBack()}
                       style={{ marginRight: symbols.spacing._12 }}
+                      icon="arrow-left"
                     />
                     <SubHeading
                       weight="bold"
@@ -69,16 +90,33 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                       {plant.name}
                     </SubHeading>
                   </BackButtonWrapper>
+                  <TouchableIcon
+                    onPress={() => navigation.goBack()}
+                    style={{ marginLeft: symbols.spacing._12 }}
+                    icon="more-vertical"
+                  />
                 </ScreenControls>
               </Header>
-              <ScreenContent stickyHeaderIndices={[1]}>
-                <AvatarWrapper>
-                  {plant.avatar ? (
-                    <PlantImage source={{ uri: plant.avatar }} />
-                  ) : (
-                    <PlantImagePlaceholder />
-                  )}
-                </AvatarWrapper>
+              <ScreenContent stickyHeaderIndices={stickyIndicies}>
+                {plant.avatar ? (
+                  <PlantImage source={{ uri: plant.avatar }} />
+                ) : (
+                  <PlantImagePlaceholder />
+                )}
+                {pipe(
+                  mostLovedBy,
+                  O.fold(
+                    () => null,
+                    (profile) => [
+                      <SectionHeading>
+                        <SubHeading weight="bold">Most loved by</SubHeading>
+                      </SectionHeading>,
+                      <View>
+                        <ListItem title={profile.name} image={profile.avatar} />
+                      </View>,
+                    ]
+                  )
+                )}
                 <SectionHeading>
                   <SubHeading weight="bold">Todos</SubHeading>
                   <IconButton
@@ -91,6 +129,20 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 <View>
                   {todos.map((todo) => (
                     <ListItem key={todo.id} title={todo.title} />
+                  ))}
+                </View>
+                <SectionHeading>
+                  <SubHeading weight="bold">Care history</SubHeading>
+                </SectionHeading>
+                <View style={{ height: 1000 }}>
+                  {cares.map((care) => (
+                    <ListItem
+                      key={care.id}
+                      title={care.todo.title}
+                      detail={`By ${care.profile.name} on ${moment(
+                        care.dateCreated.toDate()
+                      ).format("Do MMM YY")}`}
+                    />
                   ))}
                 </View>
               </ScreenContent>
@@ -144,10 +196,6 @@ const PlantImagePlaceholder = styled.View`
   border-radius: 30;
   width: 100%;
   aspect-ratio: 2;
-`;
-
-const AvatarWrapper = styled.View`
-  align-items: center;
 `;
 
 const ScreenContent = styled.ScrollView`

@@ -2,9 +2,13 @@ import { BaseModel, makeBaseModel } from "./base";
 
 export interface ProfileModel extends BaseModel {
   /**
-   * profile's name.
+   * Profile's first name.
    */
   name: string;
+  /**
+   * Profile's last name
+   */
+  lastName: string;
   /**
    * profile's email (for authentication).
    */
@@ -24,6 +28,7 @@ export const makeProfileModel = (
 ): ProfileModel => ({
   ...makeBaseModel(model),
   name: "",
+  lastName: "",
   email: "",
   householdIds: [],
   ...model,

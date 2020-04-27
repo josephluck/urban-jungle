@@ -10,7 +10,7 @@ import styled from "styled-components/native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import { BodyText } from "../../../components/typography";
 import { symbols } from "../../../theme";
-import { Dimensions, ScrollView, View } from "react-native";
+import { Dimensions, ScrollView, View, Alert } from "react-native";
 import { ListItem } from "../../../components/list-item";
 import { useStore } from "../../../store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
@@ -105,6 +105,29 @@ export const Schedule = (_props: { householdId: string }) => {
     }
   }, [hasSnappedInitialDays.current, scrollViewRef.current]);
 
+  const handleCareForPlant = useCallback(
+    (todoId: string, plantId: string, householdId: string) => {
+      Alert.alert(
+        "Care",
+        "Did you do it?",
+        [
+          {
+            text: "No",
+            style: "cancel",
+          },
+          {
+            text: "Yes",
+            onPress: () =>
+              createCareForPlant(profileId)(todoId)(plantId)(householdId),
+            style: "default",
+          },
+        ],
+        { cancelable: false }
+      );
+    },
+    [profileId, createCareForPlant]
+  );
+
   return (
     <Container>
       <MonthText weight="semibold">{activeMonth}</MonthText>
@@ -150,9 +173,9 @@ export const Schedule = (_props: { householdId: string }) => {
                 <TouchableOpacity
                   key={`${date}-${todo.id}`}
                   disabled={!slide.item.isToday}
-                  onPress={createCareForPlant(profileId)(todo.id)(todo.plantId)(
-                    todo.householdId
-                  )}
+                  onPress={() =>
+                    handleCareForPlant(todo.id, todo.plantId, todo.householdId)
+                  }
                 >
                   <ListItem
                     title={todo.title}
