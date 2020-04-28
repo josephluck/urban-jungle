@@ -10,29 +10,26 @@ import styled from "styled-components/native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import { BodyText } from "../../../components/typography";
 import { symbols } from "../../../theme";
-import { Dimensions, ScrollView, View, Alert } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import { ListItem } from "../../../components/list-item";
 import { useStore } from "../../../store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { createCareForPlant } from "../store/effects";
-import { selectCurrentUserId } from "../../auth/store/state";
 import { selectSchedule } from "../store/schedule";
 
-export const Schedule = (_props: { householdId: string }) => {
+export const Schedule = ({
+  handleNavigateToCareSession,
+}: {
+  handleNavigateToCareSession: (todoIds: string[]) => void;
+}) => {
   const today = useMemo(() => moment(), []);
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
-  );
-  const _profileId = useStore(selectCurrentUserId);
-  const profileId = pipe(
-    _profileId,
     O.getOrElse(() => "")
   );
   const schedule = useStore(() => selectSchedule(selectedHouseholdId, 7), [
@@ -105,29 +102,6 @@ export const Schedule = (_props: { householdId: string }) => {
     }
   }, [hasSnappedInitialDays.current, scrollViewRef.current]);
 
-  const handleCareForPlant = useCallback(
-    (todoId: string, plantId: string, householdId: string) => {
-      Alert.alert(
-        "Care",
-        "Did you do it?",
-        [
-          {
-            text: "No",
-            style: "cancel",
-          },
-          {
-            text: "Yes",
-            onPress: () =>
-              createCareForPlant(profileId)(todoId)(plantId)(householdId),
-            style: "default",
-          },
-        ],
-        { cancelable: false }
-      );
-    },
-    [profileId, createCareForPlant]
-  );
-
   return (
     <Container>
       <MonthText weight="semibold">{activeMonth}</MonthText>
@@ -169,15 +143,17 @@ export const Schedule = (_props: { householdId: string }) => {
           const date = slide.item.date.toISOString();
           return (
             <TodosList key={date}>
-              {slide.item.todos.map((todo) => (
-                <TouchableOpacity
-                  key={`${date}-${todo.id}`}
-                  disabled={!slide.item.isToday}
-                  onPress={() =>
-                    handleCareForPlant(todo.id, todo.plantId, todo.householdId)
-                  }
-                >
+              <TouchableOpacity
+                disabled={!slide.item.isToday || slide.item.todos.length === 0}
+                onPress={() =>
+                  handleNavigateToCareSession(
+                    slide.item.todos.map((todo) => todo.id)
+                  )
+                }
+              >
+                {slide.item.todos.map((todo) => (
                   <ListItem
+                    key={`${date}-${todo.id}`}
                     title={todo.title}
                     image={pipe(
                       todo.plant,
@@ -185,20 +161,20 @@ export const Schedule = (_props: { householdId: string }) => {
                       O.getOrElse(() => "")
                     )}
                   />
-                </TouchableOpacity>
-              ))}
-              {slide.item.cares.map((care) => (
-                <View key={care.id}>
-                  <ListItem
-                    title={care.todo.title}
-                    detail={care.todo.detail}
-                    image={pipe(
-                      O.fromNullable(care.plant.avatar),
-                      O.getOrElse(() => "")
-                    )}
-                  />
-                </View>
-              ))}
+                ))}
+                {slide.item.cares.map((care) => (
+                  <View key={care.id}>
+                    <ListItem
+                      title={care.todo.title}
+                      detail={`Done by ${care.profile.name}`}
+                      image={pipe(
+                        O.fromNullable(care.plant.avatar),
+                        O.getOrElse(() => "")
+                      )}
+                    />
+                  </View>
+                ))}
+              </TouchableOpacity>
             </TodosList>
           );
         }}

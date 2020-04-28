@@ -18,6 +18,10 @@ export const BodyText = styled.Text<{ weight?: FontWeight }>`
   font-family: ${(props) => getFontFromWeight(props.weight || "regular")};
 `;
 
+export const Paragraph = styled(BodyText)`
+  line-height: ${symbols.font._16.lineHeight * 1.2}px;
+`;
+
 export const SubHeading = styled.Text<{ weight?: FontWeight }>`
   color: ${(props) => props.theme.defaultTextColor};
   font-size: ${symbols.font._20.size}px;

@@ -2,7 +2,6 @@ import { PlantModel } from "../../../models/plant";
 import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { ProfileModel } from "../../../models/profile";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectProfileById2 } from "../../profiles/store/state";
 

@@ -18,19 +18,23 @@ import {
   PLANT_SCREEN,
   Plant,
 } from "../features/plants/components/plant-screen";
+import {
+  CareSession,
+  CARE_SESSION_SCREEN,
+} from "../features/care/components/care-session-screen";
 
 const CareStack = createStackNavigator(
   {
-    [CARE_SCREEN]: {
-      screen: Root,
-    },
+    [CARE_SCREEN]: Root,
+    [CARE_SESSION_SCREEN]: CareSession,
   },
   {
     initialRouteName: CARE_SCREEN,
     headerMode: "none",
-    navigationOptions: {
+    navigationOptions: ({ navigation }) => ({
       headerShown: false,
-    },
+      tabBarVisible: navigation.state.index === 0,
+    }),
   }
 );
 
@@ -54,9 +58,7 @@ const MANAGE_SCREEN = "MANAGE_SCREEN";
 
 const ManageStack = createStackNavigator(
   {
-    [MANAGE_SCREEN]: {
-      screen: Manage,
-    },
+    [MANAGE_SCREEN]: Manage,
   },
   {
     initialRouteName: MANAGE_SCREEN,

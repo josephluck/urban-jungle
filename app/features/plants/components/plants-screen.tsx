@@ -79,6 +79,7 @@ const ScreenContainer = styled.View`
 const PlantsList = styled.ScrollView`
   flex-grow: 1;
   background-color: ${symbols.colors.appBackground};
+  padding-bottom: ${symbols.spacing.appVertical};
 `;
 
 const WelcomeMessageContainer = styled.View`

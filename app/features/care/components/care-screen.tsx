@@ -15,18 +15,20 @@ import { useStore } from "../../../store/state";
 import { Schedule } from "./schedule";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
+import { createCareSessionRoute } from "./care-session-screen";
+import { NavigationStackScreenProps } from "react-navigation-stack";
 
-export const Root = () => {
+export const Root = (props: NavigationStackScreenProps) => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
 
   if (hasAuthenticated) {
-    return <CareScreen />;
+    return <CareScreen {...props} />;
   }
 
   return <SplashScreen />;
 };
 
-const CareScreen = () => {
+const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
@@ -35,12 +37,19 @@ const CareScreen = () => {
     O.getOrElse(() => "")
   );
 
+  const handleNavigateToCareSession = useCallback(
+    (todoIds: string[]) => {
+      navigation.navigate(createCareSessionRoute(todoIds));
+    },
+    [navigation.navigate]
+  );
+
   return (
     <ScreenLayout>
       {selectedHouseholdId ? (
         <CareScreenContainer>
           <WelcomeMessage>👋 You have a few things to do today.</WelcomeMessage>
-          <Schedule householdId={selectedHouseholdId} />
+          <Schedule handleNavigateToCareSession={handleNavigateToCareSession} />
         </CareScreenContainer>
       ) : null}
     </ScreenLayout>

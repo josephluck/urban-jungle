@@ -86,6 +86,21 @@ export const selectTodosForPlant = (plantId: string) => (
     (todo) => todo.plantId === plantId
   );
 
+export const selectTodosByIds = (householdId: string) => (todoIds: string[]) =>
+  selectTodosByHouseholdId(householdId).filter((todo) =>
+    todoIds.includes(todo.id)
+  );
+
+export const selectTodosAndPlantsByIds = (householdId: string) => (
+  todoIds: string[]
+) =>
+  selectTodosByIds(householdId)(todoIds)
+    .map((todo) => ({
+      ...todo,
+      plant: selectPlantByHouseholdAndId(householdId)(todo.plantId),
+    }))
+    .filter((todo) => O.isSome(todo.plant));
+
 export const upsertTodo = store.createMutator(
   (s, householdId: string, todo: TodoModel) => {
     s.todos.todosByHouseholdId[householdId] = {

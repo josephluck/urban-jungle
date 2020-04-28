@@ -10,25 +10,34 @@ export const IconButton = ({
   children,
   onPress,
   style,
+  disabled,
+  large = false,
 }: {
   icon?: IconProp;
   style?: StyleProp<ViewStyle>;
   children?: string;
   onPress: () => void;
+  disabled?: boolean;
+  large?: boolean;
 }) => (
-  <IconButtonContainer onPress={onPress} activeOpacity={0.6} style={style}>
-    {/* <FontAwesomeIcon icon={icon} /> */}
+  <IconButtonContainer
+    onPress={onPress}
+    activeOpacity={0.6}
+    style={style}
+    disabled={disabled}
+    large={large}
+  >
     {children && <IconButtonText weight="semibold">{children}</IconButtonText>}
   </IconButtonContainer>
 );
 
-const IconButtonContainer = styled.TouchableOpacity`
+const IconButtonContainer = styled.TouchableOpacity<{ large: boolean }>`
   flex-direction: row;
-  padding-vertical: ${symbols.spacing._4};
+  padding-vertical: ${(props) =>
+    props.large ? symbols.spacing._8 : symbols.spacing._4};
   padding-horizontal: ${symbols.spacing._6};
-  border-width: 2;
-  border-color: ${symbols.colors.nearBlack};
   align-items: center;
+  justify-content: center;
   border-radius: 9999;
   background-color: ${symbols.colors.nearBlack};
 `;

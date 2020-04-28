@@ -13,6 +13,10 @@ const borderRadius = {
 };
 
 const font = {
+  _12: {
+    size: baseFontSize * 0.8,
+    lineHeight: baseFontSize * 0.8 * 1.2,
+  },
   _16: {
     size: baseFontSize,
     lineHeight: baseFontSize * 1.2,
@@ -82,7 +86,7 @@ const colors = {
   deepGray: "rgba(54, 61, 74, 1)",
   midOffGray: "rgba(113, 121, 134, 1)",
   lightOffGray: "rgba(146, 155, 168, 1)",
-  offWhite: "rgba(205, 206, 210, 1)",
+  offWhite: "rgba(215, 216, 220, 1)",
   nearWhite: "rgba(235, 236, 240, 1)",
   blackTint08: "rgba(0, 0, 0, 0.8)",
   blackTint04: "rgba(0, 0, 0, 0.4)",
@@ -107,7 +111,7 @@ export const symbols = {
 };
 
 export const darkTheme = {
-  type: "light-content" as StatusBarStyle,
+  type: "dark-content" as StatusBarStyle,
   appBackground: colors.offBlack,
   avatarBorder: colors.midOffGray,
   avatarBackground: colors.deepGray,
@@ -125,7 +129,7 @@ export const darkTheme = {
 };
 
 export const lightTheme: Theme = {
-  type: "dark-content" as StatusBarStyle,
+  type: "light-content" as StatusBarStyle,
   appBackground: colors.pureWhite,
   avatarBorder: colors.offWhite,
   avatarBackground: colors.nearWhite,
