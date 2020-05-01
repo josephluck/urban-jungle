@@ -5,6 +5,8 @@ import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import { selectMostRecentCareForTodo } from "../../care/store/state";
 import { selectPlantByHouseholdAndId } from "../../plants/store/state";
+import { PlantModel } from "../../../models/plant";
+import { sequenceT } from "fp-ts/lib/Apply";
 
 export const selectNormalizedTodosByHouseholdId = store.createSelector(
   (s, householdId: string): O.Option<Record<string, TodoModel>> =>
@@ -91,15 +93,40 @@ export const selectTodosByIds = (householdId: string) => (todoIds: string[]) =>
     todoIds.includes(todo.id)
   );
 
+export type TodoWithPlantModel = TodoModel & {
+  plant: O.Option<PlantModel>;
+};
+
 export const selectTodosAndPlantsByIds = (householdId: string) => (
   todoIds: string[]
-) =>
+): TodoWithPlantModel[] =>
   selectTodosByIds(householdId)(todoIds)
     .map((todo) => ({
       ...todo,
       plant: selectPlantByHouseholdAndId(householdId)(todo.plantId),
     }))
     .filter((todo) => O.isSome(todo.plant));
+
+const sequenceO = sequenceT(O.option);
+
+export const sortTodosByLocationAndPlant = (
+  { title: titleA, plant: plantA }: TodoWithPlantModel,
+  { title: titleB, plant: plantB }: TodoWithPlantModel
+): number =>
+  pipe(
+    sequenceO(plantA, plantB),
+    O.fold(
+      () => -1,
+      ([
+        { id: idA, name: nameA, location: locationA = "" },
+        { id: idB, name: nameB, location: locationB = "" },
+      ]) =>
+        locationA.localeCompare(locationB) ||
+        nameA.localeCompare(nameB) ||
+        idA.localeCompare(idB) ||
+        titleA.localeCompare(titleB)
+    )
+  );
 
 export const upsertTodo = store.createMutator(
   (s, householdId: string, todo: TodoModel) => {

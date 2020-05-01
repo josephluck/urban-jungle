@@ -15,7 +15,10 @@ import { TouchableIcon } from "../../../components/touchable-icon";
 import { createCareForPlant } from "../store/effects";
 import { useRef } from "react";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
-import { selectTodosAndPlantsByIds } from "../../todos/store/state";
+import {
+  selectTodosAndPlantsByIds,
+  sortTodosByLocationAndPlant,
+} from "../../todos/store/state";
 import * as TE from "fp-ts/lib/TaskEither";
 import { Dimensions } from "react-native";
 import { ScrollView } from "react-native";
@@ -57,7 +60,10 @@ const CareSessionScreen = ({ navigation }: NavigationStackScreenProps) => {
     O.getOrElse(() => "")
   );
   const todos = useStore(
-    () => selectTodosAndPlantsByIds(selectedHouseholdId)(todoIds),
+    () =>
+      selectTodosAndPlantsByIds(selectedHouseholdId)(todoIds).sort(
+        sortTodosByLocationAndPlant
+      ),
     [selectedHouseholdId, todoIds.join("")]
   );
 

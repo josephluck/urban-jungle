@@ -3,9 +3,15 @@ import { makeTodoModel, TodoModel } from "../../../models/todo";
 import { makeCareModel } from "../../../models/care";
 import moment from "moment";
 import firebase from "firebase";
-import { selectTodosSchedule } from "./state";
+import {
+  selectTodosSchedule,
+  sortTodosByLocationAndPlant,
+  TodoWithPlantModel,
+} from "./state";
 import { defaultDate } from "../../../__mocks__/moment";
 import * as O from "fp-ts/lib/Option";
+import { makePlantModel } from "../../../models/plant";
+import { pipe } from "fp-ts/lib/pipeable";
 
 const makeFirebaseDate = (
   daysAdjustment: number = 0
@@ -458,6 +464,46 @@ describe("store / todos", () => {
         [todo2, todo3].map(withNonePlant).map(withNonePlant)
       );
       expect(schedule[19].todos).toEqual([]);
+    });
+  });
+
+  describe("sorting todos by plant and location", () => {
+    const makeTodo = (name: string, location: string, title: string) => ({
+      ...makeTodoModel({ title }),
+      plant: O.some(makePlantModel({ name, location })),
+    });
+
+    const toComparison = (todo: TodoWithPlantModel): string =>
+      [
+        pipe(
+          todo.plant,
+          O.fold(
+            () => "none",
+            (plant) => [plant.name, plant.location].join(" - ")
+          )
+        ),
+        todo.title,
+      ].join(" - ");
+
+    it("sorts todos by location, plant then todo", () => {
+      const unsorted: TodoWithPlantModel[] = [
+        makeTodo("Emma", "Lounge", "Water"),
+        makeTodo("Brian", "Bathroom", "Water"),
+        makeTodo("Nick", "Lounge", "Water"),
+        makeTodo("Emma", "Lounge", "Mist"),
+        makeTodo("Brian", "Bathroom", "Mist"),
+        makeTodo("Jane", "Bathroom", "Mist"),
+      ];
+      const expected: TodoWithPlantModel[] = [
+        makeTodo("Brian", "Bathroom", "Water"),
+        makeTodo("Brian", "Bathroom", "Mist"),
+        makeTodo("Jane", "Bathroom", "Mist"),
+        makeTodo("Emma", "Lounge", "Mist"),
+        makeTodo("Emma", "Lounge", "Water"),
+        makeTodo("Nick", "Lounge", "Water"),
+      ];
+      const actual = [...unsorted].sort(sortTodosByLocationAndPlant);
+      expect(expected.map(toComparison)).toEqual(actual.map(toComparison));
     });
   });
 });
