@@ -31,10 +31,9 @@ const CareStack = createStackNavigator(
   {
     initialRouteName: CARE_SCREEN,
     headerMode: "none",
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: {
       headerShown: false,
-      tabBarVisible: navigation.state.index === 0,
-    }),
+    },
   }
 );
 
