@@ -10,14 +10,16 @@ import styled from "styled-components/native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import { BodyText } from "../../../components/typography";
 import { symbols } from "../../../theme";
-import { Dimensions, ScrollView, View } from "react-native";
-import { ListItem } from "../../../components/list-item";
+import { Dimensions, ScrollView } from "react-native";
 import { useStore } from "../../../store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { selectSchedule } from "../store/schedule";
+import { TodoListItem } from "../../../components/todo-list-item";
+import { CareListItem } from "../../../components/care-list-item";
+import { CalendarDay, daySize } from "../../../components/calendar-day";
 
 export const Schedule = ({
   handleNavigateToCareSession,
@@ -127,17 +129,13 @@ export const Schedule = ({
         removeClippedSubviews
       >
         {days.map((day) => (
-          <Day
+          <ScheduleDay
             key={day.date.toISOString()}
             onPress={() => handleDayPress(day.index, day.date)}
+            date={day.date.date()}
             isPast={day.isPast}
             isToday={day.isToday}
-            activeOpacity={0.8}
-          >
-            <DayText weight="semibold" isToday={day.isToday}>
-              {day.date.date()}
-            </DayText>
-          </Day>
+          />
         ))}
       </DaysContainer>
       <Carousel
@@ -149,40 +147,21 @@ export const Schedule = ({
         inactiveSlideScale={1}
         inactiveSlideOpacity={1}
         onBeforeSnapToItem={handleCarouselIndexChange}
-        renderItem={(slide) => {
-          const date = slide.item.date.toISOString();
+        renderItem={({ item: { date, isToday, todos, cares } }) => {
+          const dateKey = date.toISOString();
           return (
-            <TodosList key={date}>
+            <TodosList key={dateKey}>
               <TouchableOpacity
-                disabled={!slide.item.isToday || slide.item.todos.length === 0}
+                disabled={!isToday || todos.length === 0}
                 onPress={() =>
-                  handleNavigateToCareSession(
-                    slide.item.todos.map((todo) => todo.id)
-                  )
+                  handleNavigateToCareSession(todos.map((todo) => todo.id))
                 }
               >
-                {slide.item.todos.map((todo) => (
-                  <ListItem
-                    key={`${date}-${todo.id}`}
-                    title={todo.title}
-                    image={pipe(
-                      todo.plant,
-                      O.chain((plant) => O.fromNullable(plant.avatar)),
-                      O.getOrElse(() => "")
-                    )}
-                  />
+                {todos.map((todo) => (
+                  <TodoListItem key={`${dateKey}-${todo.id}`} todo={todo} />
                 ))}
-                {slide.item.cares.map((care) => (
-                  <View key={care.id}>
-                    <ListItem
-                      title={care.todo.title}
-                      detail={`Done by ${care.profile.name}`}
-                      image={pipe(
-                        O.fromNullable(care.plant.avatar),
-                        O.getOrElse(() => "")
-                      )}
-                    />
-                  </View>
+                {cares.map((care) => (
+                  <CareListItem key={care.id} care={care} />
                 ))}
               </TouchableOpacity>
             </TodosList>
@@ -210,30 +189,15 @@ const DaysContainer = styled.ScrollView`
   margin-bottom: ${symbols.spacing._20};
 `;
 
-const daySize = 50;
-const dayGap = symbols.spacing._8;
-const dayOverallSize = daySize + dayGap;
-
-const Day = styled.TouchableOpacity<{ isPast: boolean; isToday: boolean }>`
-  width: ${daySize};
-  height: ${daySize};
-  background-color: ${(props) =>
-    props.isToday ? "transparent" : symbols.colors.nearWhite};
-  border-color: ${symbols.colors.solidBlue};
-  border-width: ${(props) => (props.isToday ? 2 : 0)};
-  opacity: ${(props) => (props.isPast ? 0.5 : 1)};
-  justify-content: center;
-  align-items: center;
-  margin-right: ${dayGap};
-  border-radius: ${symbols.borderRadius.small};
-`;
-
-const DayText = styled(BodyText)<{ isToday: boolean }>`
-  color: ${(props) =>
-    props.isToday ? symbols.colors.solidBlue : symbols.colors.offBlack};
-`;
-
 const TodosList = styled.ScrollView`
   flex: 1;
   padding-horizontal: ${symbols.spacing.appHorizontal};
+`;
+
+export const dayGap = symbols.spacing._8;
+
+export const dayOverallSize = daySize + dayGap;
+
+const ScheduleDay = styled(CalendarDay)`
+  margin-right: ${dayGap};
 `;
