@@ -1,92 +1,72 @@
-# Urban Jungle
-
-Collect and care for your plants with friends.
-
----
-
-# Set up
-
-## Dependencies
-
-Urban Jungle is set up as a Yarn Monorepo. Install dependencies at the root:
-
-```
-yarn
-```
-
-## Stack
-
-- Typescript
-- Expo & React Native
-- Styled Components
-- Firebase Auth
-- Firebase Firestore
-- Firebase Cloud Functions
-- Expo Push Notifications
-- Firebase FCM Push Notifications
-- Stately
-- Reactotron
-- Jest
-- Sentry
-
----
+<div align="center">
+  <h1>
+    <br/>
+    <br/>
+    🌱
+    <br />
+    <br />
+    Urban Jungle
+    <br />
+    <br />
+    <br />
+    <br />
+  </h1>
+  <br />
+  <p>
+    Simple reminders to help you care for your plants.
+  </p>
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+</div>
 
 # Features
 
-## Plants
+## Beautiful design
 
-Add, manage and categorise plants you own.
-
-## Care
-
-View care instructions and be reminded when care is needed. Manage care with push notifications and todos.
-
-## Household
-
-Add others to your Household to manage caring together. No double watering!
-
----
-
-# Architecture
-
-This section outlines the core architecture to support Urban Jungle's features.
-
-## Users & Authentication
-
-Users are required to sign up to Urban Jungle before they are able to use the application. Firebase Auth is used for this, using the JavaScript SDK. Initially the application uses Username & Password based authentication, but later will use 3rd party sign in such as Google and Facebook. The ultimate goal is to use passwordless authentication via SMS or Email, however Expo does not currently support it.
-
-## Household
-
-When a User signs up, they are automatically seeded with an initial Household. Each Household acts as a category for plants. Users can belong to more than one Household, but usually will only be a member of one.
-
-Households are primarily used as a mechanic for sharing Care (to avoid double care), however Households may be useful as a public showcase of a User's plant collection at some point in the future.
-
-A Household stores a list of User IDs that belong to the Household, as well as Plants and other metadata. The screen in the app lets the User see which Plants are in the Household, as well as any other User's associated with the Household.
-
-If the User only belongs to a single Household, then the User doesn't see a list of the Households they belong to and see the individual Household instead.
-
-Households can be deleted (with double confirmation) whose action depends on whether the user is the only member of the Household. If the user is the only member of the Household, then it is permanently deleted. Otherwise, the user is simply removed from the Household as to keep the household associated to other users' accounts.
-
-## Inviting a User to a Household
-
-A User can be invited to join a Household via tapping a shared deep-link. If a user opens the app for the first time up with an invitation deep link, they get a personalized message based on the person who invited them. If the user already has an account, they are taken to an invitation screen where the user can choose whether to accept the invite or ignore it.
-
-The User can choose to Accept or Ignore the Invitation. If the User Accepts the invitation, then they can see the Household in their list of Households.
+Urban Jungle has been designed with simplicity and beauty in mind for effortless plant caring.
 
 ## Plants
 
-Each Household has a list of Plants that belong to the Household. Plants can be viewed, created, updated and deleted within the context of a Household (and therefore is associated with the Household). When a user creates a Plant, they are prompted to enter Care information, as well as an optional Location which helps to group Plants together. Plants can be rearranged within Locations which orders the Plants in the Care workflow.
+Add all your plants, give them names, locations and nice pictures.
 
-## Care notifications
+## Reminders
 
-The crux of Urban Jungle's notification system revolves around a combination of Firebase Firestore, Firebase Cloud Functions and Expo Push Notifications.
+Reminders to care for your plants are what Urban Jungle is all about! Add multiple reminders per plant, at different schedules.
 
-Each day, a Cloud Function is triggered which grabs each Household from the database. For each User attached to the Household, a push notification is triggered to remind the User of any Care that needs to be done. A push notification is only triggered if there are plants to Care for that day, and will be skipped otherwise.
+## Sharing is caring
 
-It might be possible for a user to configure at which time of the day they wish to receive Care notifications, however initially the notifications will be sent at a predetermined time in the evening.
+Invite your friends and family to your household and have them help you care for your plants. No need to worry about over caring, Urban Jungle's reminders are shared.
 
-## Care workflow
+## Notifications
 
-The application shows if there are any Care responsibilities due. The User can tap on a Care session to enter the Care workflow, or the User can enter the application via the push notification to enter the Care workflow directly.
+Push notifications help make sure you never forget to care for your plants.
 
-Once the User is in the Care workflow, they are presented with a series of screens that represent each Plant that needs Care. The User is told what Care to give to each Plant in the Household, and the User can tick off each Plant once the Care for that plant has been given.
+## More
+
+Many more features are planned and if you feel like lending a hand, feel free to contribute to any of the open issues.
+
+Feel free to request new features too, but please bear in mind that this is a personal side project with a very specific purpose, so I might not agree with and/or build everything!
+
+# Application stack
+
+## Architecture
+
+Urban Jungle is built as a serverless application relying on Firebase PaaS and a few cloud functions. The front-end is built using Expo / React Native and can be run locally.
+
+## Front-end stack
+
+- TypeScript
+- React
+- React Native
+- Stately
+- Styled Components
+- Fp-ts
+- Valley
+
+## Back-end stack
+
+- Expo
+- Firebase
