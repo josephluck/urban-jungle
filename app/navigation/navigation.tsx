@@ -79,6 +79,11 @@ const PrivateTabs = createBottomTabNavigator(
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
+      tabBarOnPress: ({ navigation, defaultHandler }: any) => {
+        navigation.popToTop();
+        defaultHandler();
+      },
+
       tabBarOptions: {
         showLabel: false,
         style: {

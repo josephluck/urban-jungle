@@ -3,6 +3,7 @@ import styled from "styled-components/native";
 import { symbols } from "../theme";
 import { SubHeading } from "./typography";
 import { Label } from "./label";
+import { View } from "react-native";
 
 export const PlantOverview = ({
   name,
@@ -13,7 +14,7 @@ export const PlantOverview = ({
   location?: string;
   avatar?: string;
 }) => (
-  <>
+  <View>
     <PlantNameWrapper>
       <SubHeading>{name}</SubHeading>
       {location ? <LocationLabel>{location}</LocationLabel> : null}
@@ -23,7 +24,7 @@ export const PlantOverview = ({
     ) : (
       <PlantImagePlaceholder />
     )}
-  </>
+  </View>
 );
 
 const LocationLabel = styled(Label)`

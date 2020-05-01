@@ -192,7 +192,6 @@ const ScreenContainer = styled.View`
 `;
 
 const Header = styled.View`
-  padding-top: ${symbols.spacing._20};
   padding-horizontal: ${symbols.spacing.appHorizontal};
   margin-bottom: ${symbols.spacing._20};
 `;
