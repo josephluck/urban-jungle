@@ -36,12 +36,16 @@ export const Button = ({
   );
 };
 
-const PlainButtonContainer = styled.TouchableOpacity<{ large: boolean }>`
+const PlainButtonContainer = styled.TouchableOpacity<{
+  large: boolean;
+  disabled: boolean;
+}>`
   padding-vertical: ${(props) =>
     props.large ? symbols.spacing._8 : symbols.spacing._4};
   padding-horizontal: ${symbols.spacing._6};
   align-items: center;
   justify-content: center;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 const PrimaryButtonContainer = styled(PlainButtonContainer)`
