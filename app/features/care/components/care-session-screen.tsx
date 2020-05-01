@@ -24,7 +24,7 @@ import { Dimensions } from "react-native";
 import { ScrollView } from "react-native";
 import { createCareRoute } from "../navigation/routes";
 import { TodoModel } from "../../../models/todo";
-import { IconButton } from "../../../components/icon-button";
+import { Button } from "../../../components/button";
 import {
   BodyText,
   SubHeading,
@@ -102,6 +102,13 @@ const CareSessionScreen = ({ navigation }: NavigationStackScreenProps) => {
     [goToNextNotDoneTodo, profileId]
   );
 
+  const handleTodoSkipped = useCallback(
+    (todo: TodoModel) => {
+      goToNextNotDoneTodo(todo.id)();
+    },
+    [goToNextNotDoneTodo]
+  );
+
   return (
     <ScreenLayout>
       <ScreenContainer>
@@ -162,15 +169,23 @@ const CareSessionScreen = ({ navigation }: NavigationStackScreenProps) => {
                 </Heading>
                 <Paragraph>{slide.item.detail}</Paragraph>
               </ScrollView>
-              <ButtonWrapper>
-                <IconButton
+              <Footer>
+                <SkipButton
+                  type="plain"
+                  onPress={() => handleTodoSkipped(slide.item)}
+                  disabled={doneTodos.includes(slide.item.id)}
+                  large
+                >
+                  Skip
+                </SkipButton>
+                <Button
                   onPress={() => handleTodoDone(slide.item)}
                   disabled={doneTodos.includes(slide.item.id)}
                   large
                 >
                   It's done
-                </IconButton>
-              </ButtonWrapper>
+                </Button>
+              </Footer>
             </Slide>
           )}
           ref={carouselRef as any}
@@ -245,7 +260,11 @@ const Spacer = styled.View`
   margin-bottom: ${symbols.spacing._20};
 `;
 
-const ButtonWrapper = styled.View`
+const Footer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal};
   padding-vertical: ${symbols.spacing.appHorizontal};
+`;
+
+const SkipButton = styled(Button)`
+  margin-bottom: ${symbols.spacing._8};
 `;

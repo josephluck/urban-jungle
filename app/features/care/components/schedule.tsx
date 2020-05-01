@@ -75,8 +75,9 @@ export const Schedule = ({
     (index: number, date: moment.Moment) => {
       snapCarouselToIndex(index);
       snapDaysToIndex(index);
-      if (date.format("MMMM") !== activeMonth) {
-        setActiveMonth(date.format("MMMM"));
+      const month = date.format("MMMM");
+      if (month !== activeMonth) {
+        setActiveMonth(month);
       }
     },
     [snapCarouselToIndex, snapDaysToIndex, setActiveMonth, activeMonth]
@@ -86,8 +87,9 @@ export const Schedule = ({
     (index: number) => {
       snapDaysToIndex(index);
       const date = days[index].date;
-      if (date.format("MMMM") !== activeMonth) {
-        setActiveMonth(date.format("MMMM"));
+      const month = date.format("MMMM");
+      if (month !== activeMonth) {
+        setActiveMonth(month);
       }
     },
     [days, snapDaysToIndex, activeMonth]
@@ -96,11 +98,19 @@ export const Schedule = ({
   const hasSnappedInitialDays = useRef(false);
 
   useEffect(() => {
-    if (!hasSnappedInitialDays.current && scrollViewRef.current) {
+    if (
+      !hasSnappedInitialDays.current &&
+      scrollViewRef.current &&
+      todaysIndex > 0
+    ) {
       snapDaysToIndex(todaysIndex);
       hasSnappedInitialDays.current = true;
     }
-  }, [hasSnappedInitialDays.current, scrollViewRef.current]);
+  }, [hasSnappedInitialDays.current, scrollViewRef.current, todaysIndex]);
+
+  if (todaysIndex <= 0) {
+    return null;
+  }
 
   return (
     <Container>

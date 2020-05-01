@@ -9,8 +9,7 @@ import styled from "styled-components/native";
 import { symbols } from "../../../theme";
 import { ListItem } from "../../../components/list-item";
 import { Heading } from "../../../components/typography";
-import { faPlus } from "@fortawesome/pro-regular-svg-icons";
-import { IconButton } from "../../../components/icon-button";
+import { Button } from "../../../components/button";
 import { createPlantForHousehold } from "../store/effects";
 import { selectPlantsByHouseholdId } from "../store/state";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -43,12 +42,11 @@ const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
         <ScreenContainer>
           <WelcomeMessageContainer>
             <Heading>Your plants</Heading>
-            <IconButton
-              icon={faPlus}
+            <Button
               onPress={() => createPlantForHousehold()(selectedHouseholdId)()}
             >
               Add
-            </IconButton>
+            </Button>
           </WelcomeMessageContainer>
           <PlantsList
             contentContainerStyle={{

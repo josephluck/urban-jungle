@@ -13,7 +13,7 @@ import {
   selectMostLovedByForPlant,
 } from "../store/state";
 import { NavigationStackScreenProps } from "react-navigation-stack";
-import { IconButton } from "../../../components/icon-button";
+import { Button } from "../../../components/button";
 import { View } from "react-native";
 import { createTodoForPlant } from "../../todos/store/effects";
 import { ListItem } from "../../../components/list-item";
@@ -119,12 +119,12 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 )}
                 <SectionHeading>
                   <SubHeading weight="bold">Todos</SubHeading>
-                  <IconButton
+                  <Button
                     onPress={createTodoForPlant(plant.id)(plant.householdId)()}
                     style={{ marginLeft: symbols.spacing._16 }}
                   >
                     Add
-                  </IconButton>
+                  </Button>
                 </SectionHeading>
                 <View>
                   {todos.map((todo) => (
