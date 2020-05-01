@@ -1,24 +1,24 @@
 import { TodoModel } from "../../../models/todo";
-import { store } from "../../../store/state";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import { selectMostRecentCareForTodo } from "../../care/store/state";
-import { selectPlantByHouseholdAndId } from "../../plants/store/state";
+import { selectPlantByHouseholdId } from "../../plants/store/state";
 import { PlantModel } from "../../../models/plant";
 import { sequenceT } from "fp-ts/lib/Apply";
+import { normalizedStateFactory } from "../../../store/factory";
 
-export const selectNormalizedTodosByHouseholdId = store.createSelector(
-  (s, householdId: string): O.Option<Record<string, TodoModel>> =>
-    O.fromNullable(s.todos.todosByHouseholdId[householdId])
-);
+const methods = normalizedStateFactory<TodoModel>("todos");
 
-export const selectTodosByHouseholdId = (householdId: string): TodoModel[] =>
-  pipe(
-    selectNormalizedTodosByHouseholdId(householdId),
-    O.map(Object.values),
-    O.getOrElse(() => [] as TodoModel[])
-  );
+export const selectNormalizedTodosByHouseholdId = methods.selectNormalized;
+export const selectTodosByHouseholdId = methods.selectMany;
+export const selectTodoByHouseholdId = methods.select;
+export const selectTodosByIds = methods.selectManyByIds;
+
+export const upsertTodo = methods.upsert;
+export const upsertTodos = methods.upsertMany;
+export const removeTodo = methods.remove;
+export const removeTodos = methods.removeMany;
 
 export const selectTodosByHouseholdIdAndPlantId = (
   householdId: string,
@@ -26,13 +26,6 @@ export const selectTodosByHouseholdIdAndPlantId = (
 ): TodoModel[] =>
   selectTodosByHouseholdId(householdId).filter(
     (todo) => todo.plantId === plantId
-  );
-
-export const selectTodoByHouseholdIdAndId = (householdId: string) => (
-  todoId: string
-): O.Option<TodoModel> =>
-  O.fromNullable(
-    selectTodosByHouseholdId(householdId).find((todo) => todo.id === todoId)
   );
 
 /**
@@ -75,7 +68,7 @@ export const selectTodosSchedule = (householdId: string) => (
         )
         .map(({ dueDates, ...todo }) => ({
           ...todo,
-          plant: selectPlantByHouseholdAndId(householdId)(todo.plantId),
+          plant: selectPlantByHouseholdId(householdId, todo.plantId),
         })),
     };
   });
@@ -88,11 +81,6 @@ export const selectTodosForPlant = (plantId: string) => (
     (todo) => todo.plantId === plantId
   );
 
-export const selectTodosByIds = (householdId: string) => (todoIds: string[]) =>
-  selectTodosByHouseholdId(householdId).filter((todo) =>
-    todoIds.includes(todo.id)
-  );
-
 export type TodoWithPlantModel = TodoModel & {
   plant: O.Option<PlantModel>;
 };
@@ -100,10 +88,10 @@ export type TodoWithPlantModel = TodoModel & {
 export const selectTodosAndPlantsByIds = (householdId: string) => (
   todoIds: string[]
 ): TodoWithPlantModel[] =>
-  selectTodosByIds(householdId)(todoIds)
+  selectTodosByIds(householdId, todoIds)
     .map((todo) => ({
       ...todo,
-      plant: selectPlantByHouseholdAndId(householdId)(todo.plantId),
+      plant: selectPlantByHouseholdId(householdId, todo.plantId),
     }))
     .filter((todo) => O.isSome(todo.plant));
 
@@ -127,26 +115,3 @@ export const sortTodosByLocationAndPlant = (
         titleA.localeCompare(titleB)
     )
   );
-
-export const upsertTodo = store.createMutator(
-  (s, householdId: string, todo: TodoModel) => {
-    s.todos.todosByHouseholdId[householdId] = {
-      ...s.todos.todosByHouseholdId[householdId],
-      [todo.id]: todo,
-    };
-  }
-);
-
-export const deleteTodo = store.createMutator(
-  (s, householdId: string, todoId: string) => {
-    delete s.todos.todosByHouseholdId[householdId][todoId];
-  }
-);
-
-export const upsertTodoByHouseholdId = (householdId: string) => (
-  todo: TodoModel
-) => upsertTodo(householdId, todo);
-
-export const deleteTodobyHouseholdId = (householdId: string) => (
-  todoId: string
-) => deleteTodo(householdId, todoId);

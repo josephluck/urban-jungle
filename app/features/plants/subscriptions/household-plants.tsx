@@ -1,10 +1,7 @@
 import { database } from "../store/database";
 import { useEffect } from "react";
 import { PlantModel } from "../../../models/plant";
-import {
-  upsertPlantByHouseholdId,
-  deletePlantbyHouseholdId,
-} from "../store/state";
+import { upsertPlants, removePlants } from "../store/state";
 
 /**
  * Subscribes to any plants for the given household
@@ -31,12 +28,14 @@ const handlePlantSnapshot = (householdId: string) => async (
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))
     .map((change) => (change.doc.data() as unknown) as PlantModel);
+
   const removed: PlantModel[] = snapshot
     .docChanges()
     .filter((change) => change.type === "removed")
     .map((change) => (change.doc.data() as unknown) as PlantModel);
-  addedOrModified.map(upsertPlantByHouseholdId(householdId));
-  removed.map((plant) => plant.id).map(deletePlantbyHouseholdId(householdId));
+
+  upsertPlants(householdId, addedOrModified);
+  removePlants(householdId, removed);
 };
 
 type Snapshot = firebase.firestore.QuerySnapshot<

@@ -24,18 +24,18 @@ interface HouseholdsState {
 }
 
 interface PlantsState {
-  plantsByHouseholdId: Record<HouseholdId, Record<PlantId, PlantModel>>;
+  byHouseholdId: Record<HouseholdId, Record<PlantId, PlantModel>>;
 }
 
 interface CaresState {
-  caresByHouseholdId: Record<HouseholdId, Record<CareId, CareModel>>;
+  byHouseholdId: Record<HouseholdId, Record<CareId, CareModel>>;
 }
 
 interface TodosState {
-  todosByHouseholdId: Record<HouseholdId, Record<TodoId, TodoModel>>;
+  byHouseholdId: Record<HouseholdId, Record<TodoId, TodoModel>>;
 }
 
-interface State {
+export interface State {
   auth: AuthState;
   profiles: ProfilesState;
   households: HouseholdsState;
@@ -57,13 +57,13 @@ export const defaultState: State = {
     households: {},
   },
   plants: {
-    plantsByHouseholdId: {},
+    byHouseholdId: {},
   },
   cares: {
-    caresByHouseholdId: {},
+    byHouseholdId: {},
   },
   todos: {
-    todosByHouseholdId: {},
+    byHouseholdId: {},
   },
 };
 

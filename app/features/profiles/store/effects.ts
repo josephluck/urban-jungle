@@ -2,7 +2,7 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import * as TE from "fp-ts/lib/TaskEither";
 import { IErr } from "../../../utils/err";
-import { ProfileModel } from "../../../models/profile";
+import { ProfileModel, makeProfileModel } from "../../../models/profile";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectProfileById, selectProfiles, upsertProfile } from "./state";
 import { database } from "./database";
@@ -15,13 +15,12 @@ export const createProfileForUser = (
   TE.tryCatch(
     async () => {
       const profile: ProfileModel = {
-        id: user.uid,
-        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-        name: "Joseph Luck",
-        householdIds: [],
-        email: user.email!,
+        ...makeProfileModel({
+          id: user.uid,
+          email: user.email!,
+        }),
       };
-      await database().doc(user.uid).set(profile);
+      await database().doc(profile.id).set(profile);
       return profile;
     },
     () => "BAD_REQUEST" as IErr

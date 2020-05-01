@@ -43,7 +43,7 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
@@ -70,12 +70,12 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
           },
@@ -99,7 +99,7 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
@@ -148,7 +148,7 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
             todo2,
@@ -187,12 +187,12 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
           },
@@ -224,12 +224,12 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
             care2,
@@ -256,12 +256,12 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
           },
@@ -296,12 +296,12 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
           },
@@ -334,12 +334,12 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
           },
@@ -406,14 +406,14 @@ describe("store / todos", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
             todo2,
             todo3,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
             care2,
@@ -498,8 +498,8 @@ describe("store / todos", () => {
         makeTodo("Brian", "Bathroom", "Water"),
         makeTodo("Brian", "Bathroom", "Mist"),
         makeTodo("Jane", "Bathroom", "Mist"),
-        makeTodo("Emma", "Lounge", "Mist"),
         makeTodo("Emma", "Lounge", "Water"),
+        makeTodo("Emma", "Lounge", "Mist"),
         makeTodo("Nick", "Lounge", "Water"),
       ];
       const actual = [...unsorted].sort(sortTodosByLocationAndPlant);

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { BodyText } from "./typography";
 import { symbols } from "../theme";
+import { StyleProp, ViewStyle } from "react-native";
 
 export const CalendarDay = React.memo(
   ({
@@ -9,11 +10,13 @@ export const CalendarDay = React.memo(
     isToday,
     date,
     onPress,
+    style,
   }: {
     isPast: boolean;
     isToday: boolean;
     date: number;
     onPress: () => void;
+    style?: StyleProp<ViewStyle>;
   }) => {
     return (
       <Day
@@ -21,6 +24,7 @@ export const CalendarDay = React.memo(
         isPast={isPast}
         isToday={isToday}
         activeOpacity={0.8}
+        style={style}
       >
         <DayText weight="semibold" isToday={isToday}>
           {date}

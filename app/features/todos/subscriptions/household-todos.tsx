@@ -1,10 +1,7 @@
 import { database } from "../store/database";
 import { useEffect } from "react";
 import { TodoModel } from "../../../models/todo";
-import {
-  upsertTodoByHouseholdId,
-  deleteTodobyHouseholdId,
-} from "../store/state";
+import { upsertTodos, removeTodos } from "../store/state";
 
 /**
  * Subscribes to any todos for the given household
@@ -31,12 +28,14 @@ const handleTodoSnapshot = (householdId: string) => async (
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))
     .map((change) => (change.doc.data() as unknown) as TodoModel);
+
   const removed: TodoModel[] = snapshot
     .docChanges()
     .filter((change) => change.type === "removed")
     .map((change) => (change.doc.data() as unknown) as TodoModel);
-  addedOrModified.map(upsertTodoByHouseholdId(householdId));
-  removed.map((todo) => todo.id).map(deleteTodobyHouseholdId(householdId));
+
+  upsertTodos(householdId, addedOrModified);
+  removeTodos(householdId, removed);
 };
 
 type Snapshot = firebase.firestore.QuerySnapshot<

@@ -9,7 +9,7 @@ import styled from "styled-components/native";
 import { symbols } from "../../../theme";
 import { SubHeading } from "../../../components/typography";
 import {
-  selectPlantByHouseholdAndId,
+  selectPlantByHouseholdId,
   selectMostLovedByForPlant,
 } from "../store/state";
 import { NavigationStackScreenProps } from "react-navigation-stack";
@@ -20,7 +20,6 @@ import { ListItem } from "../../../components/list-item";
 import { selectTodosForPlant } from "../../todos/store/state";
 import { selectCaresForPlant } from "../../care/store/state";
 import { TouchableIcon } from "../../../components/touchable-icon";
-import { sequenceT } from "fp-ts/lib/Apply";
 import moment from "moment";
 import { PlantOverview } from "../../../components/plant-overview";
 
@@ -34,8 +33,6 @@ export const Plant = (props: NavigationStackScreenProps) => {
   return null;
 };
 
-const sequenceO = sequenceT(O.option);
-
 const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
   const selectedHouseholdId_ = useStore(
@@ -46,7 +43,7 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     O.getOrElse(() => "")
   );
   const plant = useStore(() =>
-    selectPlantByHouseholdAndId(selectedHouseholdId)(plantId)
+    selectPlantByHouseholdId(selectedHouseholdId, plantId)
   );
 
   const todos = useStore(
@@ -165,19 +162,6 @@ const ScreenControls = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-`;
-
-const PlantImage = styled.Image`
-  border-radius: 30;
-  width: 100%;
-  aspect-ratio: 2;
-`;
-
-const PlantImagePlaceholder = styled.View`
-  background-color: ${symbols.colors.nearWhite};
-  border-radius: 30;
-  width: 100%;
-  aspect-ratio: 2;
 `;
 
 const ScreenContent = styled.ScrollView`

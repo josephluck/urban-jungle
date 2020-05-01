@@ -39,12 +39,12 @@ describe("store / cares", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
           },
@@ -77,12 +77,12 @@ describe("store / cares", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
             care2,
@@ -135,13 +135,13 @@ describe("store / cares", () => {
       });
 
       init((state) => {
-        state.todos.todosByHouseholdId = {
+        state.todos.byHouseholdId = {
           household1: {
             todo1,
             todo2,
           },
         };
-        state.cares.caresByHouseholdId = {
+        state.cares.byHouseholdId = {
           household1: {
             care1,
             care2,
