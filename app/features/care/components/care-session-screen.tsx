@@ -25,12 +25,8 @@ import { ScrollView } from "react-native";
 import { createCareRoute } from "../navigation/routes";
 import { TodoModel } from "../../../models/todo";
 import { Button } from "../../../components/button";
-import {
-  BodyText,
-  SubHeading,
-  Heading,
-  Paragraph,
-} from "../../../components/typography";
+import { Heading, Paragraph } from "../../../components/typography";
+import { PlantOverview } from "../../../components/plant-overview";
 
 export const CareSession = (props: NavigationStackScreenProps) => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -143,23 +139,11 @@ const CareSessionScreen = ({ navigation }: NavigationStackScreenProps) => {
                   O.fold(
                     () => null,
                     (plant) => (
-                      <>
-                        <PlantNameWrapper>
-                          <SubHeading>{plant.name}</SubHeading>
-                          {plant.location ? (
-                            <Label>
-                              <LabelText weight="bold">
-                                {plant.location.toUpperCase()}
-                              </LabelText>
-                            </Label>
-                          ) : null}
-                        </PlantNameWrapper>
-                        {plant.avatar ? (
-                          <PlantImage source={{ uri: plant.avatar }} />
-                        ) : (
-                          <PlantImagePlaceholder />
-                        )}
-                      </>
+                      <PlantOverview
+                        name={plant.name}
+                        location={plant.location}
+                        avatar={plant.avatar}
+                      />
                     )
                   )
                 )}
@@ -219,41 +203,8 @@ const ScreenControls = styled.View`
   justify-content: space-between;
 `;
 
-const PlantImage = styled.Image`
-  border-radius: 30;
-  width: 100%;
-  aspect-ratio: 2;
-`;
-
-const PlantImagePlaceholder = styled.View`
-  background-color: ${symbols.colors.nearWhite};
-  border-radius: 30;
-  width: 100%;
-  aspect-ratio: 2;
-`;
-
 const Slide = styled.View`
   flex: 1;
-`;
-
-const PlantNameWrapper = styled.View`
-  padding-bottom: ${symbols.spacing._20};
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Label = styled.View`
-  margin-left: ${symbols.spacing._8};
-  padding-horizontal: ${symbols.spacing._6};
-  padding-vertical: ${symbols.spacing._2};
-  border-radius: ${symbols.borderRadius.tiny};
-  background-color: ${symbols.colors.nearWhite};
-`;
-
-const LabelText = styled(BodyText)`
-  font-size: ${symbols.font._12.size};
-  color: ${symbols.colors.deepGray};
 `;
 
 const Spacer = styled.View`

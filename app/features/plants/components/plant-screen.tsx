@@ -22,6 +22,7 @@ import { selectCaresForPlant } from "../../care/store/state";
 import { TouchableIcon } from "../../../components/touchable-icon";
 import { sequenceT } from "fp-ts/lib/Apply";
 import moment from "moment";
+import { PlantOverview } from "../../../components/plant-overview";
 
 export const Plant = (props: NavigationStackScreenProps) => {
   const hasAuthenticated = useStore(selectHasAuthenticated);
@@ -75,34 +76,22 @@ const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
             <ScreenContainer>
               <Header>
                 <ScreenControls>
-                  <BackButtonWrapper>
-                    <TouchableIcon
-                      onPress={() => navigation.goBack()}
-                      style={{ marginRight: symbols.spacing._12 }}
-                      icon="arrow-left"
-                    />
-                    <SubHeading
-                      weight="bold"
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={{ flex: 1 }}
-                    >
-                      {plant.name}
-                    </SubHeading>
-                  </BackButtonWrapper>
                   <TouchableIcon
                     onPress={() => navigation.goBack()}
-                    style={{ marginLeft: symbols.spacing._12 }}
+                    icon="arrow-left"
+                  />
+                  <TouchableIcon
+                    onPress={() => navigation.goBack()}
                     icon="more-vertical"
                   />
                 </ScreenControls>
               </Header>
               <ScreenContent stickyHeaderIndices={stickyIndicies}>
-                {plant.avatar ? (
-                  <PlantImage source={{ uri: plant.avatar }} />
-                ) : (
-                  <PlantImagePlaceholder />
-                )}
+                <PlantOverview
+                  name={plant.name}
+                  location={plant.location}
+                  avatar={plant.avatar}
+                />
                 {pipe(
                   mostLovedBy,
                   O.fold(
@@ -176,13 +165,6 @@ const ScreenControls = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-`;
-
-const BackButtonWrapper = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
 `;
 
 const PlantImage = styled.Image`

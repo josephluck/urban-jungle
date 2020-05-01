@@ -53,10 +53,7 @@ const ManageScreen = () => {
         <ScreenContainer>
           <WelcomeMessageContainer>
             <Heading>Your network</Heading>
-            <Button
-              icon={faShare}
-              onPress={shareHouseholdInvitation(selectedHouseholdId)}
-            >
+            <Button onPress={shareHouseholdInvitation(selectedHouseholdId)}>
               Invite
             </Button>
           </WelcomeMessageContainer>

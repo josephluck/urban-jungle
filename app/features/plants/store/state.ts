@@ -51,10 +51,7 @@ export const selectMostLovedByForPlant = (householdId: string) => (
         : prevId,
     ""
   );
-  console.log({ profileIdCareCount, profileIdWithMostCares });
-  if (!profileIdCareCount) {
-    return O.none;
-  }
+  console.log(selectProfileById2(profileIdWithMostCares));
   return pipe(
     selectProfileById2(profileIdWithMostCares),
     O.map((profile) => ({
