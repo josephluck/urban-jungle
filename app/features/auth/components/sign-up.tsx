@@ -5,8 +5,8 @@ import { selectHasAuthenticated } from "../store/state";
 import { signUp } from "../store/effects";
 import { Button, TextInput, Text } from "react-native";
 import { NavigationContext } from "react-navigation";
-import { createCareRoute } from "../../care/navigation/routes";
 import { useStore } from "../../../store/state";
+import { createCareRoute } from "../../care/components/care-screen";
 
 export const SignUp = () => {
   const { navigate } = useContext(NavigationContext);
