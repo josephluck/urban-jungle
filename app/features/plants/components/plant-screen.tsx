@@ -1,40 +1,29 @@
-import React from "react";
-import { ScreenLayout } from "../../../components/screen-layout";
-import { selectHasAuthenticated } from "../../auth/store/state";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import { useStore } from "../../../store/state";
-import styled from "styled-components/native";
-import { symbols } from "../../../theme";
-import { SubHeading } from "../../../components/typography";
-import {
-  selectPlantByHouseholdId,
-  selectMostLovedByForPlant,
-} from "../store/state";
-import { NavigationStackScreenProps } from "react-navigation-stack";
-import { Button } from "../../../components/button";
-import { View } from "react-native";
-import { createTodoForPlant } from "../../todos/store/effects";
-import { ListItem } from "../../../components/list-item";
-import { selectTodosForPlant } from "../../todos/store/state";
-import { selectCaresForPlant } from "../../care/store/state";
-import { TouchableIcon } from "../../../components/touchable-icon";
+import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
+import React from "react";
+import { View } from "react-native";
+import { NavigationStackScreenProps } from "react-navigation-stack";
+import styled from "styled-components/native";
+import { Button } from "../../../components/button";
+import { ListItem } from "../../../components/list-item";
 import { PlantOverview } from "../../../components/plant-overview";
+import { ScreenLayout } from "../../../components/screen-layout";
+import { TouchableIcon } from "../../../components/touchable-icon";
+import { SubHeading } from "../../../components/typography";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
+import { selectCaresForPlant } from "../../care/store/state";
+import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { createTodoForPlant } from "../../todos/store/effects";
+import { selectTodosForPlant } from "../../todos/store/state";
+import {
+  selectMostLovedByForPlant,
+  selectPlantByHouseholdId,
+} from "../store/state";
 
-export const Plant = (props: NavigationStackScreenProps) => {
-  const hasAuthenticated = useStore(selectHasAuthenticated);
-
-  if (hasAuthenticated) {
-    return <PlantScreen {...props} />;
-  }
-
-  return null;
-};
-
-const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
+export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId

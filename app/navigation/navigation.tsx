@@ -1,32 +1,36 @@
-import React from "react";
-import { createSwitchNavigator } from "react-navigation";
-import { AUTH_STACK, AuthNavigator } from "../features/auth/navigation/stack";
-import { Root } from "../features/care/components/care-screen";
-import { Plants } from "../features/plants/components/plants-screen";
-import { Manage } from "../features/manage/components/manage";
-import { createStackNavigator } from "react-navigation-stack";
-import { CARE_SCREEN } from "../features/care/navigation/routes";
-import { createBottomTabNavigator } from "react-navigation-tabs";
 import {
   faHandHoldingWater,
   faSeedling,
   faUserCircle,
 } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { symbols } from "../theme";
+import React from "react";
+import { createSwitchNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
+import { SignIn, SIGN_IN_SCREEN } from "../features/auth/components/sign-in";
+import { SignUp, SIGN_UP_SCREEN } from "../features/auth/components/sign-up";
+import { authGuard } from "../features/auth/components/splash";
 import {
-  PLANT_SCREEN,
-  Plant,
-} from "../features/plants/components/plant-screen";
+  CareScreen,
+  CARE_SCREEN,
+} from "../features/care/components/care-screen";
 import {
-  CareSession,
+  CareSessionScreen,
   CARE_SESSION_SCREEN,
 } from "../features/care/components/care-session-screen";
+import { ManageScreen } from "../features/manage/components/manage";
+import {
+  PlantScreen,
+  PLANT_SCREEN,
+} from "../features/plants/components/plant-screen";
+import { PlantsScreen } from "../features/plants/components/plants-screen";
+import { symbols } from "../theme";
 
 const CareStack = createStackNavigator(
   {
-    [CARE_SCREEN]: Root,
-    [CARE_SESSION_SCREEN]: CareSession,
+    [CARE_SCREEN]: authGuard(CareScreen),
+    [CARE_SESSION_SCREEN]: authGuard(CareSessionScreen),
   },
   {
     initialRouteName: CARE_SCREEN,
@@ -41,8 +45,8 @@ const PLANTS_SCREEN = "PLANTS_SCREEN";
 
 const PlantsStack = createStackNavigator(
   {
-    [PLANTS_SCREEN]: Plants,
-    [PLANT_SCREEN]: Plant,
+    [PLANTS_SCREEN]: authGuard(PlantsScreen),
+    [PLANT_SCREEN]: authGuard(PlantScreen),
   },
   {
     initialRouteName: PLANTS_SCREEN,
@@ -57,7 +61,7 @@ const MANAGE_SCREEN = "MANAGE_SCREEN";
 
 const ManageStack = createStackNavigator(
   {
-    [MANAGE_SCREEN]: Manage,
+    [MANAGE_SCREEN]: authGuard(ManageScreen),
   },
   {
     initialRouteName: MANAGE_SCREEN,
@@ -114,6 +118,31 @@ const PrivateTabs = createBottomTabNavigator(
 );
 
 const PRIVATE_STACK = "PRIVATE_STACK";
+
+const AuthNavigator = createStackNavigator(
+  {
+    [SIGN_IN_SCREEN]: {
+      screen: SignIn,
+      navigationOptions: {
+        title: "Sign in",
+      },
+    },
+    [SIGN_UP_SCREEN]: {
+      screen: SignUp,
+      navigationOptions: {
+        title: "Sign up",
+      },
+    },
+  },
+  {
+    headerMode: "none",
+    navigationOptions: {
+      headerShown: false,
+    },
+  }
+);
+
+const AUTH_STACK = "AUTH_STACK";
 
 export const AppNavigation = createSwitchNavigator(
   {

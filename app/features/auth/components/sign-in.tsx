@@ -40,3 +40,6 @@ export const SignIn = () => {
     </ScreenLayout>
   );
 };
+
+export const SIGN_IN_SCREEN = "LOGIN_SCREEN";
+export const createLoginRoute = () => SIGN_IN_SCREEN;

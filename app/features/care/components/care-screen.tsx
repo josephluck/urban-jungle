@@ -1,34 +1,17 @@
-import React, { useCallback, useContext } from "react";
-import { Heading } from "../../../components/typography";
-import { ScreenLayout } from "../../../components/screen-layout";
-import { selectHasAuthenticated } from "../../auth/store/state";
-import { Button } from "react-native";
-import { NavigationContext } from "react-navigation";
-import {
-  createLoginRoute,
-  createSignUpRoute,
-} from "../../auth/navigation/routes";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import { useStore } from "../../../store/state";
-import { Schedule } from "./schedule";
-import styled from "styled-components/native";
-import { symbols } from "../../../theme";
-import { createCareSessionRoute } from "./care-session-screen";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useCallback } from "react";
 import { NavigationStackScreenProps } from "react-navigation-stack";
+import styled from "styled-components/native";
+import { ScreenLayout } from "../../../components/screen-layout";
+import { Heading } from "../../../components/typography";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
+import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { createCareSessionRoute } from "./care-session-screen";
+import { Schedule } from "./schedule";
 
-export const Root = (props: NavigationStackScreenProps) => {
-  const hasAuthenticated = useStore(selectHasAuthenticated);
-
-  if (hasAuthenticated) {
-    return <CareScreen {...props} />;
-  }
-
-  return <SplashScreen />;
-};
-
-const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
+export const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
@@ -67,22 +50,5 @@ const CareScreenContainer = styled.View`
   background-color: ${symbols.colors.appBackground};
 `;
 
-const SplashScreen = () => {
-  const { navigate } = useContext(NavigationContext);
-
-  const handleSignUp = useCallback(() => {
-    navigate(createSignUpRoute());
-  }, []);
-
-  const handleSignIn = useCallback(() => {
-    navigate(createLoginRoute());
-  }, []);
-
-  return (
-    <ScreenLayout>
-      <Heading>Urban Jungle</Heading>
-      <Button title="Create account" onPress={handleSignUp} />
-      <Button title="Sign in" onPress={handleSignIn} />
-    </ScreenLayout>
-  );
-};
+export const CARE_SCREEN = "CARE_SCREEN";
+export const createCareRoute = () => CARE_SCREEN;

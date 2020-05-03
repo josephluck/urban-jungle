@@ -39,3 +39,6 @@ export const SignUp = () => {
     </ScreenLayout>
   );
 };
+
+export const SIGN_UP_SCREEN = "SIGN_UP_SCREEN";
+export const createSignUpRoute = () => SIGN_UP_SCREEN;

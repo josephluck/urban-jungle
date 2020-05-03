@@ -1,31 +1,20 @@
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
+import styled from "styled-components/native";
+import { Button } from "../../../components/button";
+import { ListItem } from "../../../components/list-item";
 import { ScreenLayout } from "../../../components/screen-layout";
-import { selectHasAuthenticated } from "../../auth/store/state";
+import { Heading } from "../../../components/typography";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
+import { shareHouseholdInvitation } from "../../households/store/effects";
 import {
   selectedSelectedOrMostRecentHouseholdId,
   selectProfilesForHousehold,
 } from "../../households/store/state";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as O from "fp-ts/lib/Option";
-import { useStore } from "../../../store/state";
-import styled from "styled-components/native";
-import { symbols } from "../../../theme";
-import { ListItem } from "../../../components/list-item";
-import { Heading } from "../../../components/typography";
-import { Button } from "../../../components/button";
-import { shareHouseholdInvitation } from "../../households/store/effects";
 
-export const Manage = () => {
-  const hasAuthenticated = useStore(selectHasAuthenticated);
-
-  if (hasAuthenticated) {
-    return <ManageScreen />;
-  }
-
-  return null;
-};
-
-const ManageScreen = () => {
+export const ManageScreen = () => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );

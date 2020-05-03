@@ -1,44 +1,31 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { ScreenLayout } from "../../../components/screen-layout";
-import {
-  selectHasAuthenticated,
-  selectCurrentUserId,
-} from "../../auth/store/state";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import { useStore } from "../../../store/state";
-import styled from "styled-components/native";
-import { symbols } from "../../../theme";
-import { NavigationStackScreenProps } from "react-navigation-stack";
-import { TouchableIcon } from "../../../components/touchable-icon";
-import { createCareForPlant } from "../store/effects";
-import { useRef } from "react";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { Dimensions, ScrollView } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
+import { NavigationStackScreenProps } from "react-navigation-stack";
+import styled from "styled-components/native";
+import { Button } from "../../../components/button";
+import { PlantOverview } from "../../../components/plant-overview";
+import { ScreenLayout } from "../../../components/screen-layout";
+import { TouchableIcon } from "../../../components/touchable-icon";
+import { Heading, Paragraph } from "../../../components/typography";
+import { TodoModel } from "../../../models/todo";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
+import { selectCurrentUserId } from "../../auth/store/state";
+import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import {
   selectTodosAndPlantsByIds,
   sortTodosByLocationAndPlant,
 } from "../../todos/store/state";
-import * as TE from "fp-ts/lib/TaskEither";
-import { Dimensions } from "react-native";
-import { ScrollView } from "react-native";
-import { createCareRoute } from "../navigation/routes";
-import { TodoModel } from "../../../models/todo";
-import { Button } from "../../../components/button";
-import { Heading, Paragraph } from "../../../components/typography";
-import { PlantOverview } from "../../../components/plant-overview";
+import { createCareForPlant } from "../store/effects";
+import { createCareRoute } from "./care-screen";
 
-export const CareSession = (props: NavigationStackScreenProps) => {
-  const hasAuthenticated = useStore(selectHasAuthenticated);
-
-  if (hasAuthenticated) {
-    return <CareSessionScreen {...props} />;
-  }
-
-  return null;
-};
-
-const CareSessionScreen = ({ navigation }: NavigationStackScreenProps) => {
+export const CareSessionScreen = ({
+  navigation,
+}: NavigationStackScreenProps) => {
   const todoIds: string[] = navigation.getParam(TODO_IDS);
   const [doneTodos, setDoneTodos] = useState<string[]>([]);
   const carouselRef = useRef<CarouselStatic<any>>(null);

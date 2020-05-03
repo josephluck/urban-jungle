@@ -1,32 +1,21 @@
-import React from "react";
-import { ScreenLayout } from "../../../components/screen-layout";
-import { selectHasAuthenticated } from "../../auth/store/state";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
-import { useStore } from "../../../store/state";
-import styled from "styled-components/native";
-import { symbols } from "../../../theme";
-import { ListItem } from "../../../components/list-item";
-import { Heading } from "../../../components/typography";
-import { Button } from "../../../components/button";
-import { createPlantForHousehold } from "../store/effects";
-import { selectPlantsByHouseholdId } from "../store/state";
+import { pipe } from "fp-ts/lib/pipeable";
+import React from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { NavigationStackScreenProps } from "react-navigation-stack";
+import styled from "styled-components/native";
+import { Button } from "../../../components/button";
+import { ListItem } from "../../../components/list-item";
+import { ScreenLayout } from "../../../components/screen-layout";
+import { Heading } from "../../../components/typography";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
+import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { createPlantForHousehold } from "../store/effects";
+import { selectPlantsByHouseholdId } from "../store/state";
 import { createPlantRoute } from "./plant-screen";
 
-export const Plants = (props: NavigationStackScreenProps) => {
-  const hasAuthenticated = useStore(selectHasAuthenticated);
-
-  if (hasAuthenticated) {
-    return <PlantsScreen {...props} />;
-  }
-
-  return null;
-};
-
-const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
+export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
