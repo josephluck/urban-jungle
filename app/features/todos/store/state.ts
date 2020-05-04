@@ -1,12 +1,12 @@
-import { TodoModel } from "../../../models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
+import { sequenceO } from "../../../fp/option";
+import { PlantModel } from "../../../models/plant";
+import { TodoModel } from "../../../models/todo";
+import { normalizedStateFactory } from "../../../store/factory";
 import { selectMostRecentCareForTodo } from "../../care/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
-import { PlantModel } from "../../../models/plant";
-import { sequenceT } from "fp-ts/lib/Apply";
-import { normalizedStateFactory } from "../../../store/factory";
 
 const methods = normalizedStateFactory<TodoModel>("todos");
 
@@ -94,8 +94,6 @@ export const selectTodosAndPlantsByIds = (householdId: string) => (
       plant: selectPlantByHouseholdId(householdId, todo.plantId),
     }))
     .filter((todo) => O.isSome(todo.plant));
-
-const sequenceO = sequenceT(O.option);
 
 export const sortTodosByLocationAndPlant = (
   { title: titleA, plant: plantA }: TodoWithPlantModel,

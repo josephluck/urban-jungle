@@ -1,3 +1,4 @@
+import { sequenceT } from "fp-ts/lib/Apply";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 
@@ -10,3 +11,5 @@ export const getFirstLetterFromOptionString = (str: string): O.Option<string> =>
     O.fromPredicate((val) => val.length > 0),
     O.chain((s) => O.fromNullable(s.split("")[0]))
   );
+
+export const sequenceO = sequenceT(O.option);

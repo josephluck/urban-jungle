@@ -6,6 +6,7 @@ import { View } from "react-native";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
 import { PlantOverview } from "../../../components/plant-overview";
 import { SubHeading } from "../../../components/typography";
@@ -20,7 +21,6 @@ import {
   selectMostLovedByForPlant,
   selectPlantByHouseholdId,
 } from "../store/state";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
