@@ -1,25 +1,25 @@
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import moment from "moment";
 import React, {
+  useCallback,
+  useEffect,
   useMemo,
   useRef,
-  useCallback,
   useState,
-  useEffect,
 } from "react";
-import moment from "moment";
-import styled from "styled-components/native";
-import Carousel, { CarouselStatic } from "react-native-snap-carousel";
-import { BodyText } from "../../../components/typography";
-import { symbols } from "../../../theme";
 import { Dimensions, ScrollView } from "react-native";
-import { useStore } from "../../../store/state";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as O from "fp-ts/lib/Option";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { selectSchedule } from "../store/schedule";
-import { TodoListItem } from "../../../components/todo-list-item";
-import { CareListItem } from "../../../components/care-list-item";
+import Carousel, { CarouselStatic } from "react-native-snap-carousel";
+import styled from "styled-components/native";
 import { CalendarDay, daySize } from "../../../components/calendar-day";
+import { CareListItem } from "../../../components/care-list-item";
+import { TodoListItem } from "../../../components/todo-list-item";
+import { BodyText } from "../../../components/typography";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
+import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { ScheduleItem, selectSchedule } from "../store/schedule";
 
 export const Schedule = ({
   handleNavigateToCareSession,
@@ -39,12 +39,6 @@ export const Schedule = ({
   ]);
   const todaysIndex = useMemo(() => Math.floor(schedule.length / 2), []);
   const windowWidth = useMemo(() => Dimensions.get("window").width, []);
-  const days = schedule.map((day, index) => ({
-    ...day,
-    index,
-    isPast: false,
-    isToday: index === todaysIndex,
-  }));
 
   const [activeMonth, setActiveMonth] = useState(() => today.format("MMMM"));
 
@@ -88,13 +82,13 @@ export const Schedule = ({
   const handleCarouselIndexChange = useCallback(
     (index: number) => {
       snapDaysToIndex(index);
-      const date = days[index].date;
+      const date = schedule[index].date;
       const month = date.format("MMMM");
       if (month !== activeMonth) {
         setActiveMonth(month);
       }
     },
-    [days, snapDaysToIndex, activeMonth]
+    [schedule, snapDaysToIndex, activeMonth]
   );
 
   const hasSnappedInitialDays = useRef(false);
@@ -109,6 +103,31 @@ export const Schedule = ({
       hasSnappedInitialDays.current = true;
     }
   }, [hasSnappedInitialDays.current, scrollViewRef.current, todaysIndex]);
+
+  const handleRenderItem = useCallback(
+    () => ({ item: { index, date, todos, cares } }: { item: ScheduleItem }) => {
+      const dateKey = date.toISOString();
+      const isToday = todaysIndex === index;
+      return (
+        <TodosList key={dateKey}>
+          <TouchableOpacity
+            disabled={!isToday || todos.length === 0}
+            onPress={() =>
+              handleNavigateToCareSession(todos.map((todo) => todo.id))
+            }
+          >
+            {todos.map((todo) => (
+              <TodoListItem key={`${dateKey}-${todo.id}`} todo={todo} />
+            ))}
+            {cares.map((care) => (
+              <CareListItem key={care.id} care={care} />
+            ))}
+          </TouchableOpacity>
+        </TodosList>
+      );
+    },
+    [handleNavigateToCareSession]
+  );
 
   if (todaysIndex <= 0) {
     return null;
@@ -128,45 +147,29 @@ export const Schedule = ({
         ref={scrollViewRef}
         removeClippedSubviews
       >
-        {days.map((day) => (
-          <ScheduleDay
-            key={day.date.toISOString()}
-            onPress={() => handleDayPress(day.index, day.date)}
-            date={day.date.date()}
-            isPast={day.isPast}
-            isToday={day.isToday}
-          />
-        ))}
+        {schedule.map((day) => {
+          const isToday = day.index === todaysIndex;
+          return (
+            <ScheduleDay
+              key={day.date.toISOString()}
+              onPress={() => handleDayPress(day.index, day.date)}
+              date={day.date.date()}
+              isToday={isToday}
+            />
+          );
+        })}
       </DaysContainer>
       <Carousel
-        data={days}
+        data={schedule}
         firstItem={todaysIndex}
         sliderWidth={windowWidth}
         itemWidth={windowWidth}
         nestedScrollEnabled
         inactiveSlideScale={1}
         inactiveSlideOpacity={1}
+        removeClippedSubviews
         onBeforeSnapToItem={handleCarouselIndexChange}
-        renderItem={({ item: { date, isToday, todos, cares } }) => {
-          const dateKey = date.toISOString();
-          return (
-            <TodosList key={dateKey}>
-              <TouchableOpacity
-                disabled={!isToday || todos.length === 0}
-                onPress={() =>
-                  handleNavigateToCareSession(todos.map((todo) => todo.id))
-                }
-              >
-                {todos.map((todo) => (
-                  <TodoListItem key={`${dateKey}-${todo.id}`} todo={todo} />
-                ))}
-                {cares.map((care) => (
-                  <CareListItem key={care.id} care={care} />
-                ))}
-              </TouchableOpacity>
-            </TodosList>
-          );
-        }}
+        renderItem={handleRenderItem}
         ref={carouselRef as any}
       />
     </Container>

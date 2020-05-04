@@ -10,6 +10,7 @@ import { ScreenLayout } from "../../../components/screen-layout";
 import { Heading } from "../../../components/typography";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
+import { sortByMostRecent } from "../../../utils/sort";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { createPlantForHousehold } from "../store/effects";
 import { selectPlantsByHouseholdId } from "../store/state";
@@ -23,7 +24,9 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
     selectedHouseholdId_,
     O.getOrElse(() => "")
   );
-  const plants = useStore(() => selectPlantsByHouseholdId(selectedHouseholdId));
+  const plants = useStore(() =>
+    selectPlantsByHouseholdId(selectedHouseholdId).sort(sortByMostRecent)
+  );
 
   return (
     <ScreenLayout>
@@ -64,7 +67,7 @@ const ScreenContainer = styled.View`
 `;
 
 const PlantsList = styled.ScrollView`
-  flex-grow: 1;
+  flex: 1;
   background-color: ${symbols.colors.appBackground};
   padding-bottom: ${symbols.spacing.appVertical};
 `;

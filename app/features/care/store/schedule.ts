@@ -1,16 +1,17 @@
-import { selectCareHistory } from "./state";
-import { selectTodosSchedule } from "../../todos/store/state";
-import { TodoModel } from "../../../models/todo";
-import { CareModel } from "../../../models/care";
 import * as O from "fp-ts/lib/Option";
-import { PlantModel } from "../../../models/plant";
 import { Moment } from "moment";
+import { CareModel } from "../../../models/care";
+import { PlantModel } from "../../../models/plant";
+import { TodoModel } from "../../../models/todo";
+import { selectTodosSchedule } from "../../todos/store/state";
+import { selectCareHistory } from "./state";
 
 type TodoWithPlant = TodoModel & {
   plant: O.Option<PlantModel>;
 };
 
-type ScheduleItem = {
+export type ScheduleItem = {
+  index: number;
   date: Moment;
   todos: TodoWithPlant[];
   cares: CareModel[];
@@ -38,5 +39,5 @@ export const selectSchedule = (
     ...previousCares.reverse(),
     { ...todaysTodos, cares: todaysCares.cares },
     ...futureTodos,
-  ];
+  ].map((item, index) => ({ ...item, index }));
 };

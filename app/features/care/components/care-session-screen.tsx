@@ -27,7 +27,7 @@ export const CareSessionScreen = ({
   navigation,
 }: NavigationStackScreenProps) => {
   const todoIds: string[] = navigation.getParam(TODO_IDS);
-  const [doneTodos, setDoneTodos] = useState<string[]>([]);
+  const [doneTodoIds, setDoneTodos] = useState<string[]>([]);
   const carouselRef = useRef<CarouselStatic<any>>(null);
   const windowWidth = useMemo(() => Dimensions.get("window").width, []);
   const selectedHouseholdId_ = useStore(
@@ -61,7 +61,7 @@ export const CareSessionScreen = ({
 
   const goToNextNotDoneTodo = useCallback(
     (todoId: string) => () => {
-      const nextDoneTodos = [...new Set([...doneTodos, todoId])];
+      const nextDoneTodos = [...new Set([...doneTodoIds, todoId])];
       setDoneTodos(nextDoneTodos);
       const indexOfNextTodo = todoIds.findIndex(
         (todoId) => !nextDoneTodos.find((id) => todoId === id)
@@ -72,15 +72,13 @@ export const CareSessionScreen = ({
         navigation.navigate(createCareRoute());
       }
     },
-    [snapCarouselToIndex, todoIds, doneTodos]
+    [snapCarouselToIndex, todoIds, doneTodoIds]
   );
 
   const handleTodoDone = useCallback(
     (todo: TodoModel) => {
-      pipe(
-        createCareForPlant(profileId)(todo.id)(todo.plantId)(todo.householdId),
-        TE.map(() => goToNextNotDoneTodo(todo.id)())
-      )();
+      goToNextNotDoneTodo(todo.id)();
+      createCareForPlant(profileId)(todo.id)(todo.plantId)(todo.householdId)();
     },
     [goToNextNotDoneTodo, profileId]
   );
@@ -108,57 +106,61 @@ export const CareSessionScreen = ({
           style={{ flex: 1 }}
           containerCustomStyle={{ flex: 1 }}
           data={todos}
+          removeClippedSubviews
           sliderWidth={windowWidth}
           itemWidth={windowWidth}
           nestedScrollEnabled
           inactiveSlideScale={1}
           inactiveSlideOpacity={1}
-          renderItem={(slide) => (
-            <Slide key={slide.item.id}>
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{
-                  paddingHorizontal: symbols.spacing.appHorizontal,
-                }}
-              >
-                {pipe(
-                  slide.item.plant,
-                  O.fold(
-                    () => null,
-                    (plant) => (
-                      <PlantOverview
-                        name={plant.name}
-                        location={plant.location}
-                        avatar={plant.avatar}
-                      />
+          renderItem={(slide) => {
+            const todoIsDone = doneTodoIds.includes(slide.item.id);
+            return (
+              <Slide key={slide.item.id}>
+                <ScrollView
+                  style={{ flex: 1 }}
+                  contentContainerStyle={{
+                    paddingHorizontal: symbols.spacing.appHorizontal,
+                  }}
+                >
+                  {pipe(
+                    slide.item.plant,
+                    O.fold(
+                      () => null,
+                      (plant) => (
+                        <PlantOverview
+                          name={plant.name}
+                          location={plant.location}
+                          avatar={plant.avatar}
+                        />
+                      )
                     )
-                  )
-                )}
-                <Spacer />
-                <Heading style={{ marginBottom: 20 }}>
-                  {slide.item.title}
-                </Heading>
-                <Paragraph>{slide.item.detail}</Paragraph>
-              </ScrollView>
-              <Footer>
-                <SkipButton
-                  type="plain"
-                  onPress={() => handleTodoSkipped(slide.item)}
-                  disabled={doneTodos.includes(slide.item.id)}
-                  large
-                >
-                  Skip
-                </SkipButton>
-                <Button
-                  onPress={() => handleTodoDone(slide.item)}
-                  disabled={doneTodos.includes(slide.item.id)}
-                  large
-                >
-                  It's done
-                </Button>
-              </Footer>
-            </Slide>
-          )}
+                  )}
+                  <Spacer />
+                  <Heading style={{ marginBottom: 20 }}>
+                    {slide.item.title}
+                  </Heading>
+                  <Paragraph>{slide.item.detail}</Paragraph>
+                </ScrollView>
+                <Footer>
+                  <SkipButton
+                    type="plain"
+                    onPress={() => handleTodoSkipped(slide.item)}
+                    disabled={todoIsDone}
+                    large
+                  >
+                    Skip
+                  </SkipButton>
+                  <Button
+                    onPress={() => handleTodoDone(slide.item)}
+                    disabled={todoIsDone}
+                    large
+                  >
+                    It's done
+                  </Button>
+                </Footer>
+              </Slide>
+            );
+          }}
           ref={carouselRef as any}
         />
       </ScreenContainer>
@@ -180,7 +182,7 @@ const ScreenContainer = styled.View`
 
 const Header = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal};
-  margin-bottom: ${symbols.spacing._20};
+  margin-vertical: ${symbols.spacing._20};
 `;
 
 const ScreenControls = styled.View`
