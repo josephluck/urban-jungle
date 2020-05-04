@@ -45,5 +45,4 @@ const ControlsContainer = styled.View`
 
 const ContentContainer = styled.ScrollView`
   flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;

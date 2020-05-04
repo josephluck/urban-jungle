@@ -65,63 +65,65 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
       onBack={handleGoBack}
       stickyHeaderIndices={stickyHeaderIndices}
     >
-      {pipe(
-        plant,
-        O.fold(
-          () => null,
-          (plant) => (
-            <>
-              <PlantOverview
-                name={plant.name}
-                location={plant.location}
-                avatar={plant.avatar}
-              />
-              <SectionHeading>
-                <SubHeading weight="bold">Todos</SubHeading>
-                <Button
-                  onPress={createTodoForPlant(plant.id)(plant.householdId)()}
-                  style={{ marginLeft: symbols.spacing._16 }}
-                >
-                  Add
-                </Button>
-              </SectionHeading>
-              <View>
-                {todos.map((todo) => (
-                  <ListItem key={todo.id} title={todo.title} />
-                ))}
-              </View>
-              {pipe(
-                mostLovedBy,
-                O.fold(
-                  () => null,
-                  (profile) => [
-                    <SectionHeading key="most-loved-by">
-                      <SubHeading weight="bold">Most loved by</SubHeading>
-                    </SectionHeading>,
-                    <View>
-                      <ListItem title={profile.name} image={profile.avatar} />
-                    </View>,
-                  ]
-                )
-              )}
-              <SectionHeading>
-                <SubHeading weight="bold">Care history</SubHeading>
-              </SectionHeading>
-              <View>
-                {cares.map((care) => (
-                  <ListItem
-                    key={care.id}
-                    title={care.todo.title}
-                    detail={`By ${care.profile.name} on ${moment(
-                      care.dateCreated.toDate()
-                    ).format("Do MMM YY")}`}
-                  />
-                ))}
-              </View>
-            </>
+      <ContentContainer>
+        {pipe(
+          plant,
+          O.fold(
+            () => null,
+            (plant) => (
+              <>
+                <PlantOverview
+                  name={plant.name}
+                  location={plant.location}
+                  avatar={plant.avatar}
+                />
+                <SectionHeading>
+                  <SubHeading weight="bold">Todos</SubHeading>
+                  <Button
+                    onPress={createTodoForPlant(plant.id)(plant.householdId)()}
+                    style={{ marginLeft: symbols.spacing._16 }}
+                  >
+                    Add
+                  </Button>
+                </SectionHeading>
+                <View>
+                  {todos.map((todo) => (
+                    <ListItem key={todo.id} title={todo.title} />
+                  ))}
+                </View>
+                {pipe(
+                  mostLovedBy,
+                  O.fold(
+                    () => null,
+                    (profile) => [
+                      <SectionHeading key="most-loved-by">
+                        <SubHeading weight="bold">Most loved by</SubHeading>
+                      </SectionHeading>,
+                      <View>
+                        <ListItem title={profile.name} image={profile.avatar} />
+                      </View>,
+                    ]
+                  )
+                )}
+                <SectionHeading>
+                  <SubHeading weight="bold">Care history</SubHeading>
+                </SectionHeading>
+                <View>
+                  {cares.map((care) => (
+                    <ListItem
+                      key={care.id}
+                      title={care.todo.title}
+                      detail={`By ${care.profile.name} on ${moment(
+                        care.dateCreated.toDate()
+                      ).format("Do MMM YY")}`}
+                    />
+                  ))}
+                </View>
+              </>
+            )
           )
-        )
-      )}
+        )}
+      </ContentContainer>
     </BackableScreenLayout>
   );
 };
@@ -141,4 +143,9 @@ const SectionHeading = styled.View`
   justify-content: space-between;
   padding-vertical: ${symbols.spacing._16}px;
   background-color: ${symbols.colors.appBackground};
+`;
+
+const ContentContainer = styled.View`
+  flex: 1;
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;
