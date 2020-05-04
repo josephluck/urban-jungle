@@ -3,7 +3,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
-import { ScreenLayout } from "../../../components/screen-layout";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { Heading } from "../../../components/typography";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";

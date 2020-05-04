@@ -6,9 +6,8 @@ import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { PlantOverview } from "../../../components/plant-overview";
-import { ScreenLayout } from "../../../components/screen-layout";
-import { TouchableIcon } from "../../../components/touchable-icon";
 import { Heading, Paragraph } from "../../../components/typography";
 import { TodoModel } from "../../../models/todo";
 import { useStore } from "../../../store/state";
@@ -90,105 +89,80 @@ export const CareSessionScreen = ({
   );
 
   return (
-    <ScreenLayout>
-      <ScreenContainer>
-        <Header>
-          <ScreenControls>
-            <TouchableIcon
-              onPress={() => navigation.goBack()}
-              style={{ marginRight: symbols.spacing._12 }}
-              icon="arrow-left"
-            />
-          </ScreenControls>
-        </Header>
-        <Carousel
-          style={{ flex: 1 }}
-          containerCustomStyle={{ flex: 1 }}
-          data={todos}
-          removeClippedSubviews
-          sliderWidth={windowWidth}
-          itemWidth={windowWidth}
-          nestedScrollEnabled
-          inactiveSlideScale={1}
-          inactiveSlideOpacity={1}
-          renderItem={(slide) => {
-            const todoIsDone = doneTodoIds.includes(slide.item.id);
-            return (
-              <Slide key={slide.item.id}>
-                <ScrollView
-                  style={{ flex: 1 }}
-                  contentContainerStyle={{
-                    paddingHorizontal: symbols.spacing.appHorizontal,
-                  }}
-                >
-                  {pipe(
-                    slide.item.plant,
-                    O.fold(
-                      () => null,
-                      (plant) => (
-                        <PlantOverview
-                          name={plant.name}
-                          location={plant.location}
-                          avatar={plant.avatar}
-                        />
-                      )
+    <BackableScreenLayout onBack={() => navigation.goBack()}>
+      <Carousel
+        style={{ flex: 1 }}
+        containerCustomStyle={{ flex: 1 }}
+        data={todos}
+        removeClippedSubviews
+        sliderWidth={windowWidth}
+        itemWidth={windowWidth}
+        nestedScrollEnabled
+        inactiveSlideScale={1}
+        inactiveSlideOpacity={1}
+        renderItem={(slide) => {
+          const todoIsDone = doneTodoIds.includes(slide.item.id);
+          return (
+            <Slide key={slide.item.id}>
+              <ScrollView
+                style={{ flex: 1 }}
+                contentContainerStyle={{
+                  paddingHorizontal: symbols.spacing.appHorizontal,
+                }}
+              >
+                {pipe(
+                  slide.item.plant,
+                  O.fold(
+                    () => null,
+                    (plant) => (
+                      <PlantOverview
+                        name={plant.name}
+                        location={plant.location}
+                        avatar={plant.avatar}
+                      />
                     )
-                  )}
-                  <Spacer />
-                  <Heading style={{ marginBottom: 20 }}>
-                    {slide.item.title}
-                  </Heading>
-                  <Paragraph>{slide.item.detail}</Paragraph>
-                </ScrollView>
-                <Footer>
-                  <SkipButton
-                    type="plain"
-                    onPress={() => handleTodoSkipped(slide.item)}
-                    disabled={todoIsDone}
-                    large
-                  >
-                    Skip
-                  </SkipButton>
-                  <Button
-                    onPress={() => handleTodoDone(slide.item)}
-                    disabled={todoIsDone}
-                    large
-                  >
-                    It's done
-                  </Button>
-                </Footer>
-              </Slide>
-            );
-          }}
-          ref={carouselRef as any}
-        />
-      </ScreenContainer>
-    </ScreenLayout>
+                  )
+                )}
+                <Spacer />
+                <Heading style={{ marginBottom: 20 }}>
+                  {slide.item.title}
+                </Heading>
+                <Paragraph>{slide.item.detail}</Paragraph>
+              </ScrollView>
+              <Footer>
+                <SkipButton
+                  type="plain"
+                  onPress={() => handleTodoSkipped(slide.item)}
+                  disabled={todoIsDone}
+                  large
+                >
+                  Skip
+                </SkipButton>
+                <Button
+                  onPress={() => handleTodoDone(slide.item)}
+                  disabled={todoIsDone}
+                  large
+                >
+                  It's done
+                </Button>
+              </Footer>
+            </Slide>
+          );
+        }}
+        ref={carouselRef as any}
+      />
+    </BackableScreenLayout>
   );
 };
 
 export const CARE_SESSION_SCREEN = "CARE_SESSION_SCREEN";
+
 export const TODO_IDS = "TODO_IDS";
+
 export const createCareSessionRoute = (todoIds: string[]) => ({
   routeName: CARE_SESSION_SCREEN,
   params: { [TODO_IDS]: todoIds },
 });
-
-const ScreenContainer = styled.View`
-  flex-grow: 1;
-  background-color: ${symbols.colors.appBackground};
-`;
-
-const Header = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  margin-vertical: ${symbols.spacing._20}px;
-`;
-
-const ScreenControls = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
 
 const Slide = styled.View`
   flex: 1;

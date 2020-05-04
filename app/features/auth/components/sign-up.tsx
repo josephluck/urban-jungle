@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState, useEffect } from "react";
 import { Heading } from "../../../components/typography";
-import { ScreenLayout } from "../../../components/screen-layout";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { selectHasAuthenticated } from "../store/state";
 import { signUp } from "../store/effects";
 import { Button, TextInput, Text } from "react-native";

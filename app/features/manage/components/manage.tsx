@@ -4,7 +4,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { ListItem } from "../../../components/list-item";
-import { ScreenLayout } from "../../../components/screen-layout";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { Heading } from "../../../components/typography";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from "react";
 import { Button } from "react-native";
 import { NavigationComponent, NavigationContext } from "react-navigation";
-import { ScreenLayout } from "../../../components/screen-layout";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { Heading } from "../../../components/typography";
 import { useStore } from "../../../store/state";
 import { selectHasAuthenticated } from "../store/state";
