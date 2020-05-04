@@ -10,6 +10,7 @@ const borderRadius = {
   small: baseSize,
   medium: baseSize * 2,
   large: baseSize * 3,
+  pill: 9999,
 };
 
 const font = {

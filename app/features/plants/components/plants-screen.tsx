@@ -61,7 +61,7 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
 };
 
 const ScreenContainer = styled.View`
-  padding-top: ${symbols.spacing.appVertical};
+  padding-top: ${symbols.spacing.appVertical}px;
   flex-grow: 1;
   background-color: ${symbols.colors.appBackground};
 `;
@@ -69,12 +69,12 @@ const ScreenContainer = styled.View`
 const PlantsList = styled.ScrollView`
   flex: 1;
   background-color: ${symbols.colors.appBackground};
-  padding-bottom: ${symbols.spacing.appVertical};
+  padding-bottom: ${symbols.spacing.appVertical}px;
 `;
 
 const WelcomeMessageContainer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  margin-bottom: ${symbols.spacing.appHorizontal * 2};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  margin-bottom: ${symbols.spacing.appHorizontal * 2}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

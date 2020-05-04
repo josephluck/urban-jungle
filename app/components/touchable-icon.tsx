@@ -21,8 +21,8 @@ export const TouchableIcon = ({
 );
 
 const IconButtonContainer = styled.TouchableOpacity`
-  min-width: ${symbols.size.minimumTouchableSize};
-  min-height: ${symbols.size.minimumTouchableSize};
+  min-width: ${symbols.size.minimumTouchableSize}px;
+  min-height: ${symbols.size.minimumTouchableSize}px;
   align-items: center;
   justify-content: center;
 `;

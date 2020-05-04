@@ -144,8 +144,8 @@ const ScreenContainer = styled.View`
 `;
 
 const Header = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  margin-vertical: ${symbols.spacing._20};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  margin-vertical: ${symbols.spacing._20}px;
 `;
 
 const ScreenControls = styled.View`
@@ -156,13 +156,13 @@ const ScreenControls = styled.View`
 
 const ScreenContent = styled.ScrollView`
   flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;
 
 const SectionHeading = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-vertical: ${symbols.spacing._16};
+  padding-vertical: ${symbols.spacing._16}px;
   background-color: ${symbols.colors.appBackground};
 `;

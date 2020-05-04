@@ -40,12 +40,12 @@ export const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
 };
 
 const WelcomeMessage = styled(Heading)`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  margin-bottom: ${symbols.spacing.appHorizontal * 2};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  margin-bottom: ${symbols.spacing.appHorizontal * 2}px;
 `;
 
 const CareScreenContainer = styled.View`
-  padding-top: ${symbols.spacing.appVertical};
+  padding-top: ${symbols.spacing.appVertical}px;
   flex-grow: 1;
   background-color: ${symbols.colors.appBackground};
 `;

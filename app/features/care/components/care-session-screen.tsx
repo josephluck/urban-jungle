@@ -1,6 +1,5 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Dimensions, ScrollView } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
@@ -181,8 +180,8 @@ const ScreenContainer = styled.View`
 `;
 
 const Header = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  margin-vertical: ${symbols.spacing._20};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  margin-vertical: ${symbols.spacing._20}px;
 `;
 
 const ScreenControls = styled.View`
@@ -196,14 +195,14 @@ const Slide = styled.View`
 `;
 
 const Spacer = styled.View`
-  margin-bottom: ${symbols.spacing._20};
+  margin-bottom: ${symbols.spacing._20}px;
 `;
 
 const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  padding-vertical: ${symbols.spacing.appHorizontal};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-vertical: ${symbols.spacing._20}px;
 `;
 
 const SkipButton = styled(Button)`
-  margin-bottom: ${symbols.spacing._8};
+  margin-bottom: ${symbols.spacing._8}px;
 `;

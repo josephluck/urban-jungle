@@ -105,7 +105,7 @@ export const Schedule = ({
   }, [hasSnappedInitialDays.current, scrollViewRef.current, todaysIndex]);
 
   const handleRenderItem = useCallback(
-    () => ({ item: { index, date, todos, cares } }: { item: ScheduleItem }) => {
+    ({ item: { index, date, todos, cares } }: { item: ScheduleItem }) => {
       const dateKey = date.toISOString();
       const isToday = todaysIndex === index;
       return (
@@ -181,20 +181,20 @@ const Container = styled.View`
 `;
 
 const MonthText = styled(BodyText)`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  margin-bottom: ${symbols.spacing._8};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  margin-bottom: ${symbols.spacing._8}px;
 `;
 
 const DaysContainer = styled.ScrollView`
   flex-grow: 0;
-  padding-horizontal: ${symbols.spacing.appHorizontal};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
   background-color: ${symbols.colors.appBackground};
-  margin-bottom: ${symbols.spacing._20};
+  margin-bottom: ${symbols.spacing._20}px;
 `;
 
 const TodosList = styled.ScrollView`
   flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;
 
 export const dayGap = symbols.spacing._8;
@@ -202,5 +202,5 @@ export const dayGap = symbols.spacing._8;
 export const dayOverallSize = daySize + dayGap;
 
 const ScheduleDay = styled(CalendarDay)`
-  margin-right: ${dayGap};
+  margin-right: ${dayGap}px;
 `;

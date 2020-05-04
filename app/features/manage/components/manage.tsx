@@ -63,19 +63,19 @@ export const ManageScreen = () => {
 };
 
 const ScreenContainer = styled.View`
-  padding-top: ${symbols.spacing.appVertical};
-  flex-grow: 1;
+  padding-top: ${symbols.spacing.appVertical}px;
+  flex: 1;
   background-color: ${symbols.colors.appBackground};
 `;
 
 const ManageList = styled.ScrollView`
-  flex-grow: 1;
+  flex: 1;
   background-color: ${symbols.colors.appBackground};
 `;
 
 const WelcomeMessageContainer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  margin-bottom: ${symbols.spacing.appHorizontal * 2};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  margin-bottom: ${symbols.spacing.appHorizontal * 2}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

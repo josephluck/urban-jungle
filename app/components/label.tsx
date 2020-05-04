@@ -18,13 +18,13 @@ export const Label = ({
 );
 
 const LabelContainer = styled.View`
-  padding-horizontal: ${symbols.spacing._6};
-  padding-vertical: ${symbols.spacing._2};
-  border-radius: ${symbols.borderRadius.tiny};
+  padding-horizontal: ${symbols.spacing._6}px;
+  padding-vertical: ${symbols.spacing._2}px;
+  border-radius: ${symbols.borderRadius.tiny}px;
   background-color: ${symbols.colors.nearWhite};
 `;
 
 const LabelText = styled(BodyText)`
-  font-size: ${symbols.font._12.size};
+  font-size: ${symbols.font._12.size}px;
   color: ${symbols.colors.deepGray};
 `;

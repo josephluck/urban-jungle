@@ -34,16 +34,15 @@ export const CalendarDay = React.memo(
 export const daySize = 50;
 
 const Day = styled.TouchableOpacity<{ isToday: boolean }>`
-  width: ${daySize};
-  height: ${daySize};
+  width: ${daySize}px;
+  height: ${daySize}px;
   background-color: ${(props) =>
     props.isToday ? "transparent" : symbols.colors.nearWhite};
   border-color: ${symbols.colors.solidBlue};
-  border-width: ${(props) => (props.isToday ? 2 : 0)};
-  opacity: ${(props) => (props.isToday ? 1 : 0.5)};
+  border-width: ${(props) => (props.isToday ? 2 : 0)}px;
   justify-content: center;
   align-items: center;
-  border-radius: ${symbols.borderRadius.small};
+  border-radius: ${symbols.borderRadius.small}px;
 `;
 
 const DayText = styled(BodyText)<{ isToday: boolean }>`

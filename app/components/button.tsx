@@ -10,7 +10,7 @@ export const Button = ({
   children,
   onPress,
   style,
-  disabled,
+  disabled = false,
   large = false,
   type = "primary",
 }: {
@@ -27,7 +27,7 @@ export const Button = ({
     <Btn
       onPress={onPress}
       activeOpacity={0.6}
-      disabled={disabled}
+      disabled={disabled || false}
       large={large}
       style={style}
     >
@@ -41,21 +41,21 @@ const PlainButtonContainer = styled.TouchableOpacity<{
   disabled: boolean;
 }>`
   padding-vertical: ${(props) =>
-    props.large ? symbols.spacing._8 : symbols.spacing._4};
-  padding-horizontal: ${symbols.spacing._6};
+    props.large ? symbols.spacing._8 : symbols.spacing._4}px;
+  padding-horizontal: ${symbols.spacing._6}px;
   align-items: center;
   justify-content: center;
   opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 const PrimaryButtonContainer = styled(PlainButtonContainer)`
-  border-radius: 9999;
+  border-radius: ${symbols.borderRadius.pill}px;
   background-color: ${symbols.colors.nearBlack};
 `;
 
 const PlainButtonText = styled(BodyText)`
-  margin-left: ${symbols.spacing._4};
-  margin-right: ${symbols.spacing._4};
+  margin-left: ${symbols.spacing._4}px;
+  margin-right: ${symbols.spacing._4}px;
   color: ${symbols.colors.nearBlack};
 `;
 
@@ -68,7 +68,7 @@ const typesToContainer: Record<ButtonType, typeof PlainButtonContainer> = {
   primary: PrimaryButtonContainer,
 };
 
-const typesToText: Record<ButtonType, typeof ButtonText> = {
+const typesToText: Record<ButtonType, typeof PrimaryButtonText> = {
   plain: PlainButtonText,
   primary: PrimaryButtonText,
 };

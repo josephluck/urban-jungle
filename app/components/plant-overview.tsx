@@ -28,24 +28,24 @@ export const PlantOverview = ({
 );
 
 const LocationLabel = styled(Label)`
-  margin-left: ${symbols.spacing._8};
+  margin-left: ${symbols.spacing._8}px;
 `;
 
 const PlantImage = styled.Image`
-  border-radius: 30;
+  border-radius: ${symbols.borderRadius.large}px;
   width: 100%;
   aspect-ratio: 2;
 `;
 
 const PlantImagePlaceholder = styled.View`
   background-color: ${symbols.colors.nearWhite};
-  border-radius: 30;
+  border-radius: ${symbols.borderRadius.large}px;
   width: 100%;
   aspect-ratio: 2;
 `;
 
 const PlantNameWrapper = styled.View`
-  padding-bottom: ${symbols.spacing._20};
+  padding-bottom: ${symbols.spacing._20}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;

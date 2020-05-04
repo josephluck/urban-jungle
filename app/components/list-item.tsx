@@ -35,7 +35,7 @@ export const ListItem = ({
 );
 
 const Container = styled.View`
-  margin-bottom: ${symbols.spacing._20};
+  margin-bottom: ${symbols.spacing._20}px;
   flex-direction: row;
   align-items: center;
 `;
@@ -43,11 +43,11 @@ const Container = styled.View`
 const circleSize = 66;
 
 const Circle = styled.View`
-  width: ${circleSize};
-  height: ${circleSize};
+  width: ${circleSize}px;
+  height: ${circleSize}px;
   background-color: ${symbols.colors.nearWhite};
-  border-radius: ${circleSize / 2};
-  margin-right: ${symbols.spacing._12};
+  border-radius: ${circleSize / 2}px;
+  margin-right: ${symbols.spacing._12}px;
 `;
 
 const Detail = styled.View`
@@ -55,7 +55,7 @@ const Detail = styled.View`
 `;
 
 const Title = styled(SubHeading)`
-  margin-bottom: ${symbols.spacing._2};
+  margin-bottom: ${symbols.spacing._2}px;
 `;
 
 const DetailText = styled(BodyText)`
