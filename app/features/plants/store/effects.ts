@@ -16,8 +16,6 @@ export const createPlantForHousehold = (
       TE.tryCatch(
         async () => {
           const plantToSave = makePlantModel({
-            name: "New plant",
-            location: "Anywhere",
             ...plant,
             householdId,
           });

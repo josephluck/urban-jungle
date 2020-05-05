@@ -1,8 +1,12 @@
 import { makeValidator, FieldConstraintsMap } from "@josephluck/valley/lib/fp";
 import { useState } from "react";
-import { TextInputProps } from "react-native";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as E from "fp-ts/lib/Either";
+import {
+  SinglePickerFieldProps,
+  MultiPickerFieldProps,
+} from "../components/picker-field";
+import { TextFieldProps } from "../components/text-field";
 
 type Fields = Record<string, any>;
 
@@ -72,12 +76,43 @@ export function useForm<Fs extends Fields>(
     setValue(fieldKey, value);
   };
 
+  const registerOnChangePickerMulti = <Fk extends keyof Fs>(fieldKey: Fk) => (
+    value: string[]
+  ) => {
+    // @ts-ignore - TODO narrow Fk such that it only includes Fk whereby Fs[Fk] === string[]
+    setValue(fieldKey, value);
+  };
+
+  const registerOnChangePickerSingle = <Fk extends keyof Fs>(fieldKey: Fk) => (
+    value: string
+  ) => {
+    // @ts-ignore - TODO narrow Fk such that it only includes Fk whereby Fs[Fk] === string
+    setValue(fieldKey, value);
+  };
+
   const registerTextInput = <Fk extends keyof Fs>(
     fieldKey: Fk
-  ): Partial<TextInputProps> => ({
+  ): Partial<TextFieldProps> => ({
     value: values[fieldKey],
+    error: errors[fieldKey],
     onBlur: registerBlur(fieldKey),
     onChangeText: registerOnChangeText(fieldKey),
+  });
+
+  const registerMultiPickerInput = <Fk extends keyof Fs>(
+    fieldKey: Fk
+  ): Pick<MultiPickerFieldProps, "value" | "error" | "onChange"> => ({
+    value: values[fieldKey],
+    error: errors[fieldKey],
+    onChange: registerOnChangePickerMulti(fieldKey),
+  });
+
+  const registerSinglePickerInput = <Fk extends keyof Fs>(
+    fieldKey: Fk
+  ): Pick<SinglePickerFieldProps, "value" | "error" | "onChange"> => ({
+    value: values[fieldKey],
+    error: errors[fieldKey],
+    onChange: registerOnChangePickerSingle(fieldKey),
   });
 
   return {
@@ -88,6 +123,8 @@ export function useForm<Fs extends Fields>(
     setValue,
     setValues: setValuesAndValidate,
     registerTextInput,
+    registerMultiPickerInput,
+    registerSinglePickerInput,
     reset,
   };
 }

@@ -45,3 +45,11 @@ export const selectMostLovedByForPlant = (householdId: string) => (
     }))
   );
 };
+
+export const selectUniqueLocations = (householdId: string): string[] => [
+  ...new Set(
+    ...selectPlantsByHouseholdId(householdId)
+      .map((plant) => plant.location)
+      .filter(Boolean)
+  ),
+];
