@@ -1,6 +1,12 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Dimensions, ScrollView } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import { NavigationStackScreenProps } from "react-navigation-stack";
@@ -25,21 +31,36 @@ export const CareSessionScreen = ({
   navigation,
 }: NavigationStackScreenProps) => {
   const todoIds: string[] = navigation.getParam(TODO_IDS);
+
   const [doneTodoIds, setDoneTodos] = useState<string[]>([]);
+
+  /**
+   * Keeps a mutable ref of the done todos for fresh-access in the effect that
+   * keeps the carousel in sync with the next not-done todo
+   */
+  const doneTodoIdsRef = useRef<string[]>([]);
+  doneTodoIdsRef.current = doneTodoIds;
+
   const carouselRef = useRef<CarouselStatic<any>>(null);
+
   const windowWidth = useMemo(() => Dimensions.get("window").width, []);
+
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
+
   const profileId_ = useStore(selectCurrentUserId);
+
   const profileId = pipe(
     profileId_,
     O.getOrElse(() => "")
   );
+
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
     O.getOrElse(() => "")
   );
+
   const todos = useStore(
     () =>
       selectTodosAndPlantsByIds(selectedHouseholdId)(todoIds).sort(
@@ -48,45 +69,43 @@ export const CareSessionScreen = ({
     [selectedHouseholdId, todoIds.join("")]
   );
 
-  const snapCarouselToIndex = useCallback(
-    (index: number) => {
-      if (carouselRef.current) {
-        carouselRef.current.snapToItem(index, true);
-      }
-    },
-    [carouselRef.current]
+  /**
+   * When the list of done todos changes, navigate to the next not-done todo.
+   */
+  useEffect(() => {
+    const indexOfNextTodo = todoIds.findIndex(
+      (todoId) => !doneTodoIdsRef.current.includes(todoId)
+    );
+    if (indexOfNextTodo > -1) {
+      snapCarouselToIndex(indexOfNextTodo);
+    } else {
+      navigation.navigate(createCareRoute());
+    }
+  }, [doneTodoIds.length]);
+
+  const snapCarouselToIndex = useCallback((index: number) => {
+    if (carouselRef.current) {
+      carouselRef.current.snapToItem(index, true);
+    }
+  }, []);
+
+  const markTodoAsDone = useCallback(
+    (todoId: string) =>
+      setDoneTodos((current) => [...new Set([...current, todoId])]),
+    []
   );
 
-  const goToNextNotDoneTodo = useCallback(
-    (todoId: string) => () => {
-      const nextDoneTodos = [...new Set([...doneTodoIds, todoId])];
-      setDoneTodos(nextDoneTodos);
-      const indexOfNextTodo = todoIds.findIndex(
-        (todoId) => !nextDoneTodos.find((id) => todoId === id)
-      );
-      if (indexOfNextTodo > -1) {
-        snapCarouselToIndex(indexOfNextTodo);
-      } else {
-        navigation.navigate(createCareRoute());
-      }
-    },
-    [snapCarouselToIndex, todoIds, doneTodoIds]
-  );
-
-  const handleTodoDone = useCallback(
+  const completeTodo = useCallback(
     (todo: TodoModel) => {
-      goToNextNotDoneTodo(todo.id)();
+      markTodoAsDone(todo.id);
       createCareForPlant(profileId)(todo.id)(todo.plantId)(todo.householdId)();
     },
-    [goToNextNotDoneTodo, profileId]
+    [markTodoAsDone, profileId]
   );
 
-  const handleTodoSkipped = useCallback(
-    (todo: TodoModel) => {
-      goToNextNotDoneTodo(todo.id)();
-    },
-    [goToNextNotDoneTodo]
-  );
+  const skipTodo = useCallback((todo: TodoModel) => markTodoAsDone(todo.id), [
+    markTodoAsDone,
+  ]);
 
   return (
     <BackableScreenLayout onBack={() => navigation.goBack()}>
@@ -132,14 +151,14 @@ export const CareSessionScreen = ({
               <Footer>
                 <SkipButton
                   type="plain"
-                  onPress={() => handleTodoSkipped(slide.item)}
+                  onPress={() => skipTodo(slide.item)}
                   disabled={todoIsDone}
                   large
                 >
                   Skip
                 </SkipButton>
                 <Button
-                  onPress={() => handleTodoDone(slide.item)}
+                  onPress={() => completeTodo(slide.item)}
                   disabled={todoIsDone}
                   large
                 >
