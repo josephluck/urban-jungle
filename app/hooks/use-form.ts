@@ -32,9 +32,8 @@ export function useForm<Fs extends Fields>(
 
   const validate = (
     currentValues: Fs = values
-  ): ReturnType<typeof doValidate> => {
-    console.log("Running validation", { currentValues });
-    return pipe(
+  ): ReturnType<typeof doValidate> =>
+    pipe(
       doValidate(currentValues),
       E.mapLeft((e) => {
         setErrors(e);
@@ -45,7 +44,6 @@ export function useForm<Fs extends Fields>(
         return v;
       })
     );
-  };
 
   const setValue = <Fk extends keyof Fs>(fieldKey: Fk, fieldValue: Fs[Fk]) => {
     const newValues: Fs = { ...values, [fieldKey]: fieldValue };

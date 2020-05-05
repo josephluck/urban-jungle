@@ -1,26 +1,29 @@
 import React from "react";
 import { useForm, constraints } from "./use-form";
 import { Text, TextInput } from "react-native";
-import { render, fireEvent, wait } from "@testing-library/react-native";
+import { render, fireEvent } from "@testing-library/react-native";
 import { View } from "react-native";
 
 describe("useForm", () => {
+  type Fields = {
+    email: string;
+    password: string;
+    confirmPassword: string;
+  };
+
   const Form = ({
     showErrorsOnlyWhenTouched = true,
+    initialFields = {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   }: {
     showErrorsOnlyWhenTouched?: boolean;
+    initialFields?: Fields;
   }) => {
-    type Fields = {
-      email: string;
-      password: string;
-      confirmPassword: string;
-    };
     const { registerTextInput, values, errors, touched } = useForm<Fields>(
-      {
-        email: "",
-        password: "",
-        confirmPassword: "",
-      },
+      initialFields,
       {
         email: [
           constraints.isRequired,
@@ -84,9 +87,28 @@ describe("useForm", () => {
     expect(queryAllByText("Required")).toHaveLength(3);
   });
 
-  it("doesn't show any errors for initially invalid values if they arent touched", () => {
+  it("doesn't show any errors for initially invalid values if they aren't touched", () => {
     const { queryAllByText } = render(<Form />);
     expect(queryAllByText("Required")).toHaveLength(0);
+  });
+
+  it("doesn't show any errors for initially valid values", () => {
+    const { queryByTestId } = render(
+      <Form
+        showErrorsOnlyWhenTouched={false}
+        initialFields={{
+          email: "joseph@luck.com",
+          password: "P4ssword",
+          confirmPassword: "P4ssword",
+        }}
+      />
+    );
+    const emailError = queryByTestId("email-error");
+    const passwordError = queryByTestId("password-error");
+    const confirmPasswordError = queryByTestId("confirmPassword-error");
+    expect(emailError).not.toBeNull();
+    expect(passwordError).not.toBeNull();
+    expect(confirmPasswordError).not.toBeNull();
   });
 
   it("tracks errors for only touched fields", () => {
