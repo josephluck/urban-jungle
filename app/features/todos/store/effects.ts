@@ -31,7 +31,14 @@ export const upsertTodoForPlant = (plantId: string, todoId?: string) => (
             plantId,
             householdId,
           };
-          await database(householdId).doc(todoToSave.id).set(todoToSave);
+          await database(householdId)
+            .doc(todoToSave.id)
+            .set({
+              ...todoToSave,
+              activeInMonths: [...todoToSave.activeInMonths].sort(
+                (a, b) => a - b
+              ),
+            });
           return todoToSave;
         },
         () => "BAD_REQUEST" as IErr

@@ -131,10 +131,16 @@ export const PLANT_ID = "PLANT_ID";
 export const createManageTodoRoute = ({
   plantId,
   todoId,
+  activeInMonths,
   ...fields
 }: { plantId: string; todoId?: string } & Partial<Fields>) => ({
   routeName: MANAGE_TODO_SCREEN,
-  params: { [PLANT_ID]: plantId, [TODO_ID]: todoId, ...fields },
+  params: {
+    [PLANT_ID]: plantId,
+    [TODO_ID]: todoId,
+    activeInMonths: JSON.stringify(activeInMonths),
+    ...fields,
+  },
 });
 
 const ContentContainer = styled.View`
