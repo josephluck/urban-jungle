@@ -17,6 +17,8 @@ export interface TodoModel extends BaseModel {
    * The months of the year that this todo is active for.
    * Can be used to turn off this todo for months of the year that it's not
    * relevant.
+   *
+   * NB: this is zero indexed.
    */
   activeInMonths: number[];
   /**
@@ -29,8 +31,11 @@ export interface TodoModel extends BaseModel {
   detail: string;
 }
 
-export const makeTodoModel = (model: Partial<TodoModel> = {}): TodoModel => ({
-  ...makeBaseModel(model),
+export const makeTodoModel = (
+  model: Partial<TodoModel> = {},
+  id?: string
+): TodoModel => ({
+  ...makeBaseModel(model, id),
   plantId: "",
   householdId: "",
   recurrenceDays: 1,

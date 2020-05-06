@@ -1,33 +1,37 @@
-import * as TE from "fp-ts/lib/TaskEither";
-import { TodoModel, makeTodoModel } from "../../../models/todo";
-import { IErr } from "../../../utils/err";
-import uuid from "uuid";
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import { makeTodoModel, TodoModel } from "../../../models/todo";
+import { IErr } from "../../../utils/err";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
-import { selectTodosByHouseholdIdAndPlantId } from "./state";
-import firebase from "firebase";
+import {
+  selectTodoByHouseholdId,
+  selectTodosByHouseholdIdAndPlantId,
+} from "./state";
 
-export const createTodoForPlant = (plantId: string) => (
+export const upsertTodoForPlant = (plantId: string, todoId?: string) => (
   householdId: string
-) => (todo: Partial<TodoModel> = {}): TE.TaskEither<IErr, TodoModel> =>
+) => (fields: Partial<TodoModel> = {}): TE.TaskEither<IErr, TodoModel> =>
   pipe(
     selectHouseholdById(householdId),
+    O.chain(() =>
+      todoId
+        ? selectTodoByHouseholdId(householdId, todoId)
+        : O.fromNullable(makeTodoModel())
+    ),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.chain(() =>
+    TE.chain((todo) =>
       TE.tryCatch(
         async () => {
-          const id = uuid();
-          const todoToSave = makeTodoModel({
-            id,
+          const todoToSave = {
+            ...todo,
+            ...fields,
             plantId,
             householdId,
-            title: "Water",
-            detail: "Give it a little drink if the topsoil is try",
-            recurrenceDays: Math.floor(Math.random() * 5) + 1,
-            ...todo,
-          });
-          await database(householdId).doc(id).set(todoToSave);
+          };
+          await database(householdId).doc(todoToSave.id).set(todoToSave);
           return todoToSave;
         },
         () => "BAD_REQUEST" as IErr
