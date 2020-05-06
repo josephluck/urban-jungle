@@ -5,48 +5,65 @@ import { TertiaryText } from "./typography";
 import { Label } from "./label";
 import { StyleProp, ViewProps } from "react-native";
 
-type BasePickerProps = {
-  options: string[];
+export type PickerValue = string | number | undefined;
+
+export type PickerOption<Pv extends PickerValue> = {
+  value: Pv;
+  label: string;
+};
+
+type BasePickerProps<Pv extends PickerValue> = {
+  options: PickerOption<Pv>[];
   label?: string;
   error?: string;
   style?: StyleProp<ViewProps>;
   touched?: boolean;
 };
 
-export type SinglePickerFieldProps = BasePickerProps & {
-  value: string;
-  onChange: (value: string) => void;
+export type SinglePickerFieldProps<Pv extends PickerValue> = BasePickerProps<
+  Pv
+> & {
+  value: Pv;
+  onChange: (value: Pv) => void;
   multiValue: false;
 };
 
-export type MultiPickerFieldProps = BasePickerProps & {
-  value: string[];
-  onChange: (value: string[]) => void;
+export type MultiPickerFieldProps<Pv extends PickerValue> = BasePickerProps<
+  Pv
+> & {
+  value: Pv[];
+  onChange: (value: Pv[]) => void;
   multiValue: true;
 };
 
-export type PickerFieldProps = SinglePickerFieldProps | MultiPickerFieldProps;
+export type PickerFieldProps<Pv extends PickerValue> =
+  | SinglePickerFieldProps<Pv>
+  | MultiPickerFieldProps<Pv>;
 
-function isMultiValue(props: any): props is MultiPickerFieldProps {
-  return props.isMultiValue;
+function isMultiValue<Pv extends PickerValue>(
+  props: any
+): props is MultiPickerFieldProps<Pv> {
+  return props.multiValue;
 }
 
-export function PickerField<Value extends string>(
-  props: SinglePickerFieldProps
+export function PickerField<Pv extends PickerValue>(
+  props: SinglePickerFieldProps<Pv>
 ): React.ReactElement;
 
-export function PickerField<Value extends string[]>(
-  props: MultiPickerFieldProps
+export function PickerField<Pv extends PickerValue>(
+  props: MultiPickerFieldProps<Pv>
 ): React.ReactElement;
 
-export function PickerField(props: PickerFieldProps) {
-  const handleChange = (option: any) => {
-    if (isMultiValue(props)) {
-      props.value.includes(option)
-        ? props.onChange(props.value.filter((value) => value !== option))
-        : props.onChange([...props.value, option]);
+export function PickerField<Pv extends PickerValue>(
+  props: PickerFieldProps<Pv>
+) {
+  const handleChange = (value: Pv) => {
+    if (isMultiValue<Pv>(props)) {
+      props.value.includes(value)
+        ? props.onChange(props.value.filter((v) => v !== value))
+        : props.onChange([...props.value, value]);
     } else {
-      props.onChange(option === props.value ? "" : option);
+      props.onChange(value);
     }
   };
 
@@ -56,19 +73,19 @@ export function PickerField(props: PickerFieldProps) {
       <OptionsContainer>
         {props.options.map((option) => (
           <Option
-            key={option}
-            onPress={() => handleChange(option)}
+            key={option.value}
+            onPress={() => handleChange(option.value)}
             activeOpacity={0.8}
           >
             <OptionLabel
               selected={
-                isMultiValue(props)
-                  ? props.value.includes(option)
-                  : props.value === option
+                isMultiValue<Pv>(props)
+                  ? props.value.includes(option.value)
+                  : props.value === option.value
               }
               large
             >
-              {option}
+              {option.label}
             </OptionLabel>
           </Option>
         ))}

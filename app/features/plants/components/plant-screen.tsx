@@ -2,7 +2,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import React, { useCallback } from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
@@ -15,7 +15,7 @@ import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { createTodoForPlant } from "../../todos/store/effects";
+import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
 import {
   selectMostLovedByForPlant,
@@ -100,7 +100,13 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 <SectionHeading>
                   <SubHeading weight="bold">Todos</SubHeading>
                   <Button
-                    onPress={createTodoForPlant(plant.id)(plant.householdId)()}
+                    onPress={() => {
+                      navigation.navigate(
+                        createManageTodoRoute({
+                          plantId,
+                        })
+                      );
+                    }}
                     style={{ marginLeft: symbols.spacing._16 }}
                   >
                     Add
@@ -108,7 +114,20 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 </SectionHeading>
                 <View>
                   {todos.map((todo) => (
-                    <ListItem key={todo.id} title={todo.title} />
+                    <TouchableOpacity
+                      key={todo.id}
+                      onPress={() =>
+                        navigation.navigate(
+                          createManageTodoRoute({
+                            ...todo,
+                            plantId: todo.plantId,
+                            todoId: todo.id,
+                          })
+                        )
+                      }
+                    >
+                      <ListItem title={todo.title} />
+                    </TouchableOpacity>
                   ))}
                 </View>
                 {pipe(

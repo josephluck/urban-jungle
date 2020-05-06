@@ -84,7 +84,10 @@ export const ManagePlantScreen = ({
         <PickerField
           label="Location"
           multiValue={false}
-          options={locations}
+          options={locations.map((location) => ({
+            value: location,
+            label: location,
+          }))}
           {...registerSinglePickerInput("location")}
         />
       </ContentContainer>

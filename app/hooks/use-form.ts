@@ -5,15 +5,29 @@ import * as E from "fp-ts/lib/Either";
 import {
   SinglePickerFieldProps,
   MultiPickerFieldProps,
+  PickerValue,
 } from "../components/picker-field";
 import { TextFieldProps } from "../components/text-field";
 
 type Fields = Record<string, any>;
 
+type FilterType<O, T> = { [K in keyof O]: O[K] extends T ? K : never };
+
+type FilterTypeForKeys<O, T> = FilterType<O, T>[keyof O];
+
 export function useForm<Fs extends Fields>(
   initialValues: Fs,
   constraints: FieldConstraintsMap<Fs>
 ) {
+  type StringKeys = FilterTypeForKeys<Fs, string>;
+
+  type MultiPickerKeys = FilterTypeForKeys<Fs, number[] | string[]>;
+
+  // TODO: support optional single picker via a different registration that picks types that match | undefined
+  // support optional single picker as first-class of picker component, atm you can't unselect a value
+  // and make this one a required single picker
+  type SinglePickerKeys = FilterTypeForKeys<Fs, string | number | undefined>;
+
   const doValidate = makeValidator<Fs>(constraints);
 
   const [values, setValues] = useState(initialValues);
@@ -88,21 +102,19 @@ export function useForm<Fs extends Fields>(
     setValue(fieldKey, value);
   };
 
-  const registerOnChangePickerMulti = <Fk extends keyof Fs>(fieldKey: Fk) => (
-    value: string[]
-  ) => {
-    // @ts-ignore - TODO narrow Fk such that it only includes Fk whereby Fs[Fk] === string[]
+  const registerOnChangePickerMulti = <Fk extends MultiPickerKeys>(
+    fieldKey: Fk
+  ) => (value: PickerValue[]) => {
+    setValue(fieldKey, value as Fs[Fk]);
+  };
+
+  const registerOnChangePickerSingle = <Fk extends SinglePickerKeys>(
+    fieldKey: Fk
+  ) => (value: Fs[Fk]) => {
     setValue(fieldKey, value);
   };
 
-  const registerOnChangePickerSingle = <Fk extends keyof Fs>(fieldKey: Fk) => (
-    value: string
-  ) => {
-    // @ts-ignore - TODO narrow Fk such that it only includes Fk whereby Fs[Fk] === string
-    setValue(fieldKey, value);
-  };
-
-  const registerTextInput = <Fk extends keyof Fs>(
+  const registerTextInput = <Fk extends StringKeys>(
     fieldKey: Fk
   ): Partial<TextFieldProps> => ({
     value: values[fieldKey],
@@ -112,10 +124,10 @@ export function useForm<Fs extends Fields>(
     onChangeText: registerOnChangeText(fieldKey),
   });
 
-  const registerMultiPickerInput = <Fk extends keyof Fs>(
+  const registerMultiPickerInput = <Fk extends MultiPickerKeys>(
     fieldKey: Fk
   ): Pick<
-    MultiPickerFieldProps,
+    MultiPickerFieldProps<PickerValue>,
     "value" | "error" | "onChange" | "touched"
   > => ({
     value: values[fieldKey],
@@ -124,10 +136,10 @@ export function useForm<Fs extends Fields>(
     onChange: registerOnChangePickerMulti(fieldKey),
   });
 
-  const registerSinglePickerInput = <Fk extends keyof Fs>(
+  const registerSinglePickerInput = <Fk extends SinglePickerKeys>(
     fieldKey: Fk
   ): Pick<
-    SinglePickerFieldProps,
+    SinglePickerFieldProps<Fs[Fk]>,
     "value" | "error" | "onChange" | "touched"
   > => ({
     value: values[fieldKey],
