@@ -45,6 +45,15 @@ export function useForm<Fs extends Fields>(
       })
     );
 
+  const setAllTouched = () => {
+    setTouched(
+      Object.keys(initialValues).reduce(
+        (acc, key) => ({ ...acc, [key]: true }),
+        initialValues
+      )
+    );
+  };
+
   const setValue = <Fk extends keyof Fs>(fieldKey: Fk, fieldValue: Fs[Fk]) => {
     const newValues: Fs = { ...values, [fieldKey]: fieldValue };
     setValues(newValues);
@@ -55,6 +64,11 @@ export function useForm<Fs extends Fields>(
     const newValues: Fs = { ...values, ...vals };
     setValues(newValues);
     validate(newValues);
+  };
+
+  const submit = () => {
+    setAllTouched();
+    return validate();
   };
 
   const reset = () => {
@@ -93,23 +107,32 @@ export function useForm<Fs extends Fields>(
   ): Partial<TextFieldProps> => ({
     value: values[fieldKey],
     error: errors[fieldKey],
+    touched: touched[fieldKey],
     onBlur: registerBlur(fieldKey),
     onChangeText: registerOnChangeText(fieldKey),
   });
 
   const registerMultiPickerInput = <Fk extends keyof Fs>(
     fieldKey: Fk
-  ): Pick<MultiPickerFieldProps, "value" | "error" | "onChange"> => ({
+  ): Pick<
+    MultiPickerFieldProps,
+    "value" | "error" | "onChange" | "touched"
+  > => ({
     value: values[fieldKey],
     error: errors[fieldKey],
+    touched: touched[fieldKey],
     onChange: registerOnChangePickerMulti(fieldKey),
   });
 
   const registerSinglePickerInput = <Fk extends keyof Fs>(
     fieldKey: Fk
-  ): Pick<SinglePickerFieldProps, "value" | "error" | "onChange"> => ({
+  ): Pick<
+    SinglePickerFieldProps,
+    "value" | "error" | "onChange" | "touched"
+  > => ({
     value: values[fieldKey],
     error: errors[fieldKey],
+    touched: touched[fieldKey],
     onChange: registerOnChangePickerSingle(fieldKey),
   });
 
@@ -124,6 +147,7 @@ export function useForm<Fs extends Fields>(
     registerMultiPickerInput,
     registerSinglePickerInput,
     reset,
+    submit,
   };
 }
 

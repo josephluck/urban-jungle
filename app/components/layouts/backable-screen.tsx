@@ -10,12 +10,14 @@ export const BackableScreenLayout = ({
   onBack,
   headerRightIcon = "more-vertical",
   headerRightOnPress,
+  footer,
 }: {
   stickyHeaderIndices?: number[];
   children: React.ReactNode;
   onBack: () => void;
   headerRightIcon?: string;
   headerRightOnPress?: () => void;
+  footer?: React.ReactNode;
 }) => (
   <ScreenLayout>
     <HeaderContainer>
@@ -29,6 +31,7 @@ export const BackableScreenLayout = ({
     <ContentContainer stickyHeaderIndices={stickyHeaderIndices}>
       {children}
     </ContentContainer>
+    {footer}
   </ScreenLayout>
 );
 

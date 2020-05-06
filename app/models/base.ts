@@ -13,8 +13,11 @@ export interface BaseModel {
   dateCreated: firebase.firestore.Timestamp;
 }
 
-export const makeBaseModel = (model: Partial<BaseModel> = {}): BaseModel => ({
-  id: uuid(),
+export const makeBaseModel = (
+  model: Partial<BaseModel> = {},
+  id?: string
+): BaseModel => ({
+  id: id || uuid(),
   dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
   ...model,
 });

@@ -21,6 +21,7 @@ import {
   selectMostLovedByForPlant,
   selectPlantByHouseholdId,
 } from "../store/state";
+import { createManagePlantRoute } from "./manage-plant-screen";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -60,10 +61,29 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     navigation.goBack();
   }, []);
 
+  const handleEdit = useCallback(() => {
+    navigation.navigate(
+      createManagePlantRoute({
+        plantId,
+        name: pipe(
+          plant,
+          O.map((plant) => plant.name),
+          O.getOrElse(() => "")
+        ),
+        location: pipe(
+          plant,
+          O.chain((plant) => O.fromNullable(plant.location)),
+          O.getOrElse(() => "")
+        ),
+      })
+    );
+  }, [plantId, plant]);
+
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
       stickyHeaderIndices={stickyHeaderIndices}
+      headerRightOnPress={handleEdit}
     >
       <ContentContainer>
         {pipe(
@@ -96,10 +116,10 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                   O.fold(
                     () => null,
                     (profile) => [
-                      <SectionHeading key="most-loved-by">
+                      <SectionHeading key="most-loved-by-heading">
                         <SubHeading weight="bold">Most loved by</SubHeading>
                       </SectionHeading>,
-                      <View>
+                      <View key="most-loved-by">
                         <ListItem title={profile.name} image={profile.avatar} />
                       </View>,
                     ]

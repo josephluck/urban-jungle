@@ -18,6 +18,13 @@ export const BodyText = styled.Text<{ weight?: FontWeight }>`
   font-family: ${(props) => getFontFromWeight(props.weight || "regular")};
 `;
 
+export const TertiaryText = styled.Text`
+  color: ${(props) => props.theme.defaultTextColor};
+  font-size: ${symbols.font._12.size}px;
+  line-height: ${symbols.font._12.lineHeight}px;
+  font-family: ${CAROS_SEMIBOLD};
+`;
+
 export const Paragraph = styled(BodyText)`
   line-height: ${symbols.font._16.lineHeight * 1.2}px;
 `;

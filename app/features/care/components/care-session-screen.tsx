@@ -153,7 +153,6 @@ export const CareSessionScreen = ({
                   type="plain"
                   onPress={() => skipTodo(slide.item)}
                   disabled={todoIsDone}
-                  large
                 >
                   Skip
                 </SkipButton>

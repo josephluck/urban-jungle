@@ -14,22 +14,27 @@ import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { createPlantForHousehold } from "../store/effects";
+import { upsertPlantForHousehold } from "../store/effects";
 import { selectUniqueLocations } from "../store/state";
+
+type Fields = Pick<PlantModel, "name" | "location">;
 
 export const ManagePlantScreen = ({
   navigation,
 }: NavigationStackScreenProps) => {
-  type Fields = Pick<PlantModel, "name" | "location">;
-  const {
-    values,
-    validate,
-    registerTextInput,
-    registerSinglePickerInput,
-  } = useForm<Fields>(
-    { name: "", location: "" },
+  const extractFieldFromNav = (field: keyof Fields): string =>
+    navigation.getParam(field) || "";
+
+  const { submit, registerTextInput, registerSinglePickerInput } = useForm<
+    Fields
+  >(
+    {
+      name: extractFieldFromNav("name"),
+      location: extractFieldFromNav("location"),
+    },
     { name: [constraints.isRequired], location: [] }
   );
+
   const plantId = navigation.getParam(PLANT_ID);
 
   const selectedHouseholdId_ = useStore(
@@ -49,34 +54,39 @@ export const ManagePlantScreen = ({
     navigation.goBack();
   }, []);
 
-  const handleSubmit = useCallback(async () => {
-    if (plantId) {
-    } else {
+  const handleSubmit = useCallback(
+    () =>
       pipe(
         // TODO: extract these two since it'll be a common pattern?
-        TE.fromEither(validate()),
+        TE.fromEither(submit()),
         TE.mapLeft(() => "BAD_REQUEST" as IErr),
         TE.chain((plant) =>
-          createPlantForHousehold(plant)(selectedHouseholdId)
+          upsertPlantForHousehold(plant, plantId)(selectedHouseholdId)
         ),
-        TE.map((plant) => navigation.navigate(createPlantRoute(plant.id)))
-      )();
-    }
-  }, [selectedHouseholdId]);
-
-  console.log(values);
+        TE.map(() => navigation.goBack())
+      )(),
+    [selectedHouseholdId, submit]
+  );
 
   return (
-    <BackableScreenLayout onBack={handleGoBack}>
+    <BackableScreenLayout
+      onBack={handleGoBack}
+      footer={
+        <Footer>
+          <Button large onPress={handleSubmit}>
+            Save
+          </Button>
+        </Footer>
+      }
+    >
       <ContentContainer>
-        <TextField label="Name" {...registerTextInput("name")} />
+        <TextField label="Name" autoFocus {...registerTextInput("name")} />
         <PickerField
           label="Location"
           multiValue={false}
           options={locations}
           {...registerSinglePickerInput("location")}
         />
-        <Button onPress={handleSubmit}>Save</Button>
       </ContentContainer>
     </BackableScreenLayout>
   );
@@ -86,12 +96,20 @@ export const MANAGE_PLANT_SCREEN = "MANAGE_PLANT_SCREEN";
 
 export const PLANT_ID = "PLANT_ID";
 
-export const createPlantRoute = (plantId: string) => ({
+export const createManagePlantRoute = ({
+  plantId,
+  ...fields
+}: { plantId?: string } & Partial<Fields> = {}) => ({
   routeName: MANAGE_PLANT_SCREEN,
-  params: { [PLANT_ID]: plantId },
+  params: { [PLANT_ID]: plantId, ...fields },
 });
 
 const ContentContainer = styled.View`
   flex: 1;
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
+`;
+
+const Footer = styled.View`
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-vertical: ${symbols.spacing._20}px;
 `;

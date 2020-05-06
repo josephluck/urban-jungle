@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
-import { BodyText } from "./typography";
+import { TertiaryText } from "./typography";
 import { Label } from "./label";
 import { StyleProp, ViewProps } from "react-native";
 
@@ -10,6 +10,7 @@ type BasePickerProps = {
   label?: string;
   error?: string;
   style?: StyleProp<ViewProps>;
+  touched?: boolean;
 };
 
 export type SinglePickerFieldProps = BasePickerProps & {
@@ -45,7 +46,7 @@ export function PickerField(props: PickerFieldProps) {
         ? props.onChange(props.value.filter((value) => value !== option))
         : props.onChange([...props.value, option]);
     } else {
-      props.onChange(option);
+      props.onChange(option === props.value ? "" : option);
     }
   };
 
@@ -54,44 +55,56 @@ export function PickerField(props: PickerFieldProps) {
       {props.label ? <FieldLabel>{props.label}</FieldLabel> : null}
       <OptionsContainer>
         {props.options.map((option) => (
-          <Option key={option} onPress={() => handleChange(option)}>
+          <Option
+            key={option}
+            onPress={() => handleChange(option)}
+            activeOpacity={0.8}
+          >
             <OptionLabel
               selected={
                 isMultiValue(props)
                   ? props.value.includes(option)
                   : props.value === option
               }
+              large
             >
               {option}
             </OptionLabel>
           </Option>
         ))}
       </OptionsContainer>
-      {props.error ? <Error>{props.error}</Error> : null}
+      {props.touched && props.error ? <Error>{props.error}</Error> : null}
     </Container>
   );
 }
 
-const Container = styled.View``;
+const Container = styled.View`
+  margin-bottom: ${symbols.spacing._20};
+`;
 
-const FieldLabel = styled(BodyText)`
+const FieldLabel = styled(TertiaryText)`
   margin-bottom: ${symbols.spacing._6};
 `;
 
 const OptionsContainer = styled.View`
   flex-direction: row;
+  flex-wrap: wrap;
 `;
 
-const Option = styled.TouchableOpacity``;
+const Option = styled.TouchableOpacity`
+  margin-bottom: ${symbols.spacing._4};
+  margin-right: ${symbols.spacing._4};
+`;
 
 const OptionLabel = styled(Label)<{ selected: boolean }>`
   background-color: ${(props) =>
+    props.selected ? symbols.colors.pureWhite : symbols.colors.nearWhite};
+  border-width: 2;
+  border-color: ${(props) =>
     props.selected ? symbols.colors.darkGreen : symbols.colors.nearWhite};
-  color: ${(props) =>
-    props.selected ? symbols.colors.pureWhite : symbols.colors.nearBlack};
 `;
 
-const Error = styled(BodyText)`
+const Error = styled(TertiaryText)`
   margin-top: ${symbols.spacing._6};
   color: ${symbols.colors.darkRed};
 `;

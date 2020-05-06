@@ -24,9 +24,10 @@ export interface PlantModel extends BaseModel {
 }
 
 export const makePlantModel = (
-  model: Partial<PlantModel> = {}
+  model: Partial<PlantModel> = {},
+  id?: string
 ): PlantModel => ({
-  ...makeBaseModel(model),
+  ...makeBaseModel(model, id),
   name: "",
   householdId: "",
   ...model,

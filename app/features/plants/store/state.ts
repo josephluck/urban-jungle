@@ -48,8 +48,8 @@ export const selectMostLovedByForPlant = (householdId: string) => (
 
 export const selectUniqueLocations = (householdId: string): string[] => [
   ...new Set(
-    ...selectPlantsByHouseholdId(householdId)
+    selectPlantsByHouseholdId(householdId)
       .map((plant) => plant.location)
-      .filter(Boolean)
+      .filter(Boolean) as string[]
   ),
 ];

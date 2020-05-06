@@ -5,15 +5,15 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { ListItem } from "../../../components/list-item";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import { ListItem } from "../../../components/list-item";
 import { Heading } from "../../../components/typography";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { createPlantForHousehold } from "../store/effects";
 import { selectPlantsByHouseholdId } from "../store/state";
+import { createManagePlantRoute } from "./manage-plant-screen";
 import { createPlantRoute } from "./plant-screen";
 
 export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
@@ -35,7 +35,7 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
           <WelcomeMessageContainer>
             <Heading>Your plants</Heading>
             <Button
-              onPress={() => createPlantForHousehold()(selectedHouseholdId)()}
+              onPress={() => navigation.navigate(createManagePlantRoute())}
             >
               Add
             </Button>

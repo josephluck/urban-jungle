@@ -21,6 +21,10 @@ import {
 } from "../features/care/components/care-session-screen";
 import { ManageScreen } from "../features/manage/components/manage";
 import {
+  ManagePlantScreen,
+  MANAGE_PLANT_SCREEN,
+} from "../features/plants/components/manage-plant-screen";
+import {
   PlantScreen,
   PLANT_SCREEN,
 } from "../features/plants/components/plant-screen";
@@ -47,6 +51,7 @@ const PlantsStack = createStackNavigator(
   {
     [PLANTS_SCREEN]: authGuard(PlantsScreen),
     [PLANT_SCREEN]: authGuard(PlantScreen),
+    [MANAGE_PLANT_SCREEN]: authGuard(ManagePlantScreen),
   },
   {
     initialRouteName: PLANTS_SCREEN,
