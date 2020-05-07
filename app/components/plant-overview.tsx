@@ -41,7 +41,7 @@ const PlantImagePlaceholder = styled.View`
   background-color: ${symbols.colors.nearWhite};
   border-radius: ${symbols.borderRadius.large}px;
   width: 100%;
-  aspect-ratio: 2;
+  aspect-ratio: ${symbols.aspectRatio.plantImage};
 `;
 
 const PlantNameWrapper = styled.View`

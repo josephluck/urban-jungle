@@ -1,11 +1,15 @@
-import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-import React, { useCallback } from "react";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback, useState } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
+import { takeAndUploadPicture } from "../camera";
+import { StorageReference } from "../storage";
 import { symbols } from "../theme";
+import { IErr } from "../utils/err";
 import { Icon } from "./icon";
 import { TertiaryText } from "./typography";
-import { StyleProp, ViewStyle } from "react-native";
 
 export type CameraFieldProps = {
   value?: string;
@@ -15,6 +19,7 @@ export type CameraFieldProps = {
   error?: string;
   label?: string;
   style?: StyleProp<ViewStyle>;
+  type?: StorageReference;
 };
 
 export const CameraField = ({
@@ -25,13 +30,9 @@ export const CameraField = ({
   error,
   label,
   style,
+  type = "default",
 }: CameraFieldProps) => {
-  const handleAskForPermissions = useCallback(async () => {
-    const camera = await Permissions.askAsync(Permissions.CAMERA);
-    const roll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-    return camera.status === "granted" && roll.status === "granted";
-  }, []);
+  const [saving, setSaving] = useState(false);
 
   const handleClearResult = useCallback(() => {
     if (onTouched) {
@@ -44,23 +45,26 @@ export const CameraField = ({
     if (onTouched) {
       onTouched();
     }
-    if (await handleAskForPermissions()) {
-      const result = await ImagePicker.launchCameraAsync({
-        allowsEditing: true,
-        aspect: [16, 9],
-      });
-      console.log({ result });
-      if (!result.cancelled) {
-        // TODO: get base64 and upload it...
-        onChange(result.uri);
-      }
-    }
+    pipe(
+      obtainCameraPermissions,
+      TE.map(() => setSaving(true)),
+      TE.chain(() => takeAndUploadPicture(type)),
+      TE.map((uploadUri) => {
+        onChange(uploadUri);
+        setSaving(false);
+      }),
+      TE.mapLeft(() => setSaving(false))
+    )();
   };
 
+  // TODO: progress bar / loading indicator...
   return (
     <Container style={style}>
       {label ? <Label>{label}</Label> : null}
-      <ContainerButton disabled={Boolean(value)} onPress={handleLaunchCamera}>
+      <ContainerButton
+        disabled={Boolean(value) || saving}
+        onPress={handleLaunchCamera}
+      >
         {value ? (
           <TakenPictureContainer>
             <TakenPicture source={{ uri: value }} />
@@ -72,17 +76,28 @@ export const CameraField = ({
           <Icon icon="camera" size={36} color={symbols.colors.midOffGray} />
         )}
 
-        {touched && error ? <Error>{error}</Error> : null}
+        {touched && error ? <ErrorText>{error}</ErrorText> : null}
       </ContainerButton>
     </Container>
   );
 };
 
+const obtainCameraPermissions: TE.TaskEither<IErr, void> = TE.tryCatch(
+  async () => {
+    const camera = await Permissions.askAsync(Permissions.CAMERA);
+    const roll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (camera.status !== "granted" || roll.status !== "granted") {
+      throw new Error();
+    }
+  },
+  () => "BAD_REQUEST" as IErr
+);
+
 const Label = styled(TertiaryText)`
   margin-bottom: ${symbols.spacing._6};
 `;
 
-const Error = styled(TertiaryText)`
+const ErrorText = styled(TertiaryText)`
   margin-top: ${symbols.spacing._6};
   color: ${symbols.colors.darkRed};
 `;
@@ -95,7 +110,7 @@ const ContainerButton = styled.TouchableOpacity`
   background-color: ${symbols.colors.nearWhite};
   border-radius: ${symbols.borderRadius.small}px;
   width: 100%;
-  aspect-ratio: ${16 / 9};
+  aspect-ratio: ${symbols.aspectRatio.plantImage};
 `;
 
 const TakenPictureContainer = styled.View``;
@@ -116,33 +131,3 @@ const TakenPicture = styled.Image`
   width: 100%;
   aspect-ratio: ${16 / 9};
 `;
-
-// TODO: do this...
-// async function uploadImageAsync(uri) {
-//   // Why are we using XMLHttpRequest? See:
-//   // https://github.com/expo/expo/issues/2402#issuecomment-443726662
-//   const blob = await new Promise((resolve, reject) => {
-//     const xhr = new XMLHttpRequest();
-//     xhr.onload = function() {
-//       resolve(xhr.response);
-//     };
-//     xhr.onerror = function(e) {
-//       console.log(e);
-//       reject(new TypeError('Network request failed'));
-//     };
-//     xhr.responseType = 'blob';
-//     xhr.open('GET', uri, true);
-//     xhr.send(null);
-//   });
-
-//   const ref = firebase
-//     .storage()
-//     .ref()
-//     .child(uuid.v4());
-//   const snapshot = await ref.put(blob);
-
-//   // We're done with the blob, close and release it
-//   blob.close();
-
-//   return await snapshot.ref.getDownloadURL();
-// }

@@ -130,7 +130,12 @@ const colors = {
   transparent: "transparent",
 };
 
+const aspectRatio = {
+  plantImage: 16 / 9,
+};
+
 export const symbols = {
+  aspectRatio,
   borderRadius,
   colors,
   font,
