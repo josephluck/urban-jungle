@@ -1,7 +1,7 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
@@ -94,6 +94,16 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     deletePlantByHouseholdId(selectedHouseholdId)(plantId)();
   }, [plantId, selectedHouseholdId]);
 
+  const plantName = useMemo(
+    () =>
+      pipe(
+        plant,
+        O.map((p) => p.name),
+        O.getOrElse(() => "plant")
+      ),
+    [plant]
+  );
+
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
@@ -101,8 +111,12 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
       headerRightButton={
         <ContextMenuButton
           buttons={[
-            { icon: "trash", label: "Delete plant", onPress: handleDelete },
-            { icon: "edit-3", label: "Edit plant", onPress: handleEdit },
+            {
+              icon: "trash",
+              label: `Delete ${plantName}`,
+              onPress: handleDelete,
+            },
+            { icon: "edit-3", label: `Edit ${plantName}`, onPress: handleEdit },
           ]}
         />
       }

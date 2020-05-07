@@ -1,7 +1,7 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
@@ -79,14 +79,28 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
     deleteTodo(todoId)(selectedHouseholdId)();
   }, [todoId, selectedHouseholdId]);
 
+  const todoName = useMemo(
+    () =>
+      pipe(
+        todo,
+        O.map((t) => t.title),
+        O.getOrElse(() => "todo")
+      ),
+    [todo]
+  );
+
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
       headerRightButton={
         <ContextMenuButton
           buttons={[
-            { icon: "trash", label: "Delete todo", onPress: handleDelete },
-            { icon: "edit-3", label: "Edit todo", onPress: handleEdit },
+            {
+              icon: "trash",
+              label: `Delete ${todoName}`,
+              onPress: handleDelete,
+            },
+            { icon: "edit-3", label: `Edit ${todoName}`, onPress: handleEdit },
           ]}
         />
       }

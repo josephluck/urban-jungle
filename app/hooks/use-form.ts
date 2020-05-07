@@ -8,6 +8,7 @@ import {
   PickerValue,
 } from "../components/picker-field";
 import { TextFieldProps } from "../components/text-field";
+import { CameraFieldProps } from "../components/camera-field";
 
 type Fields = Record<string, any>;
 
@@ -148,6 +149,15 @@ export function useForm<Fs extends Fields>(
     onChange: registerOnChangePickerSingle(fieldKey),
   });
 
+  const registerCameraField = <Fk extends StringKeys>(
+    fieldKey: Fk
+  ): Pick<CameraFieldProps, "value" | "error" | "touched" | "onChange"> => ({
+    value: values[fieldKey],
+    error: errors[fieldKey],
+    touched: touched[fieldKey],
+    onChange: registerOnChangeText(fieldKey),
+  });
+
   return {
     values,
     touched,
@@ -160,6 +170,7 @@ export function useForm<Fs extends Fields>(
     registerSinglePickerInput,
     reset,
     submit,
+    registerCameraField,
   };
 }
 

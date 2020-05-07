@@ -16,8 +16,9 @@ import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertPlantForHousehold } from "../store/effects";
 import { selectUniqueLocations } from "../store/state";
+import { CameraField } from "../../../components/camera-field";
 
-type Fields = Pick<PlantModel, "name" | "location">;
+type Fields = Required<Pick<PlantModel, "name" | "location" | "avatar">>;
 
 export const ManagePlantScreen = ({
   navigation,
@@ -25,14 +26,18 @@ export const ManagePlantScreen = ({
   const extractFieldFromNav = (field: keyof Fields): string =>
     navigation.getParam(field) || "";
 
-  const { submit, registerTextInput, registerSinglePickerInput } = useForm<
-    Fields
-  >(
+  const {
+    submit,
+    registerTextInput,
+    registerSinglePickerInput,
+    registerCameraField,
+  } = useForm<Fields>(
     {
       name: extractFieldFromNav("name"),
       location: extractFieldFromNav("location"),
+      avatar: extractFieldFromNav("avatar"),
     },
-    { name: [constraints.isRequired], location: [] }
+    { name: [constraints.isRequired], location: [], avatar: [] }
   );
 
   const plantId = navigation.getParam(PLANT_ID);
@@ -90,6 +95,7 @@ export const ManagePlantScreen = ({
           }))}
           {...registerSinglePickerInput("location")}
         />
+        <CameraField label="Picture" {...registerCameraField("avatar")} />
       </ContentContainer>
     </BackableScreenLayout>
   );
@@ -110,6 +116,7 @@ export const createManagePlantRoute = ({
 const ContentContainer = styled.View`
   flex: 1;
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-bottom: ${symbols.spacing.appHorizontal}px;
 `;
 
 const Footer = styled.View`
