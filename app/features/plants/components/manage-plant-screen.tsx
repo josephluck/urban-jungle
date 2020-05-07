@@ -95,7 +95,11 @@ export const ManagePlantScreen = ({
           }))}
           {...registerSinglePickerInput("location")}
         />
-        <CameraField label="Picture" {...registerCameraField("avatar")} />
+        <CameraField
+          label="Picture"
+          type="plant"
+          {...registerCameraField("avatar")}
+        />
       </ContentContainer>
     </BackableScreenLayout>
   );

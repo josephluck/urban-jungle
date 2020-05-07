@@ -78,6 +78,11 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
           O.chain((plant) => O.fromNullable(plant.location)),
           O.getOrElse(() => "")
         ),
+        avatar: pipe(
+          plant,
+          O.chain((plant) => O.fromNullable(plant.avatar)),
+          O.getOrElse(() => "")
+        ),
       })
     );
   }, [plantId, plant]);
