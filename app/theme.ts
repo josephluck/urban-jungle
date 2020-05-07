@@ -1,9 +1,37 @@
 import { useContext } from "react";
 import { ThemeContext } from "styled-components/native";
 import { StatusBarStyle } from "react-native";
+import { Dimensions } from "react-native";
 
-const baseSize = 6;
-const baseFontSize = 20;
+type ScreenSize = "small" | "normal" | "large" | "xlarge";
+
+// NB: sizes from https://developer.android.com/guide/practices/screens_support.html
+const getScreenSize = (): ScreenSize => {
+  const { width, height } = Dimensions.get("window");
+
+  if (width <= 320 && height <= 426) {
+    return "small";
+  } else if (width <= 320 && height <= 470) {
+    return "normal";
+  } else if (width <= 480 && height <= 640) {
+    return "large";
+  }
+  return "xlarge";
+};
+
+type ScreenDimensions = {
+  baseSize: number;
+  baseFontSize: number;
+};
+
+const dimensions: Record<ScreenSize, ScreenDimensions> = {
+  small: { baseSize: 4, baseFontSize: 16 },
+  normal: { baseSize: 4, baseFontSize: 16 },
+  large: { baseSize: 6, baseFontSize: 20 },
+  xlarge: { baseSize: 6, baseFontSize: 20 },
+};
+
+const { baseSize, baseFontSize } = dimensions[getScreenSize()];
 
 const borderRadius = {
   tiny: baseSize / 2,
