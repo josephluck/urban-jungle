@@ -34,7 +34,7 @@ describe.skip("schedule rendering", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
 
     act(() =>
@@ -59,12 +59,12 @@ describe.skip("schedule rendering", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
     const todo2 = makeTodoModel({
       id: "todo2",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
 
     act(() =>
@@ -91,12 +91,12 @@ describe.skip("schedule rendering", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
     const todo2 = makeTodoModel({
       id: "todo2",
       householdId: "household1",
-      recurrenceDays: 2,
+      recurrenceCount: 2,
     });
 
     act(() =>
@@ -123,7 +123,7 @@ describe.skip("schedule rendering", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
     const care1 = makeCareModel({
       id: "care1",
@@ -159,7 +159,7 @@ describe.skip("schedule rendering", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
     const care1 = makeCareModel({
       id: "care1",
@@ -195,12 +195,12 @@ describe.skip("schedule rendering", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
     const todo2 = makeTodoModel({
       id: "todo2",
       householdId: "household1",
-      recurrenceDays: 2,
+      recurrenceCount: 2,
     });
     const care1 = makeCareModel({
       id: "care1",
@@ -239,17 +239,17 @@ describe.skip("schedule rendering", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 2,
+      recurrenceCount: 2,
     });
     const todo2 = makeTodoModel({
       id: "todo2",
       householdId: "household1",
-      recurrenceDays: 3,
+      recurrenceCount: 3,
     });
     const todo3 = makeTodoModel({
       id: "todo3",
       householdId: "household1",
-      recurrenceDays: 4,
+      recurrenceCount: 4,
     });
     const care1 = makeCareModel({
       id: "care1",
@@ -345,7 +345,7 @@ describe.skip("schedule rendering", () => {
     expect(queryByTestId(care3.id)).toBeDefined();
 
     act(() => {
-      upsertTodo(todo3.householdId, { ...todo3, recurrenceDays: 2 });
+      upsertTodo(todo3.householdId, { ...todo3, recurrenceCount: 2 });
     });
     await wait();
 

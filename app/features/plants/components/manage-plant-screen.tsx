@@ -80,7 +80,7 @@ export const ManagePlantScreen = ({
       }
     >
       <ContentContainer>
-        <TextField label="Name" autoFocus {...registerTextInput("name")} />
+        <TextField label="Name" {...registerTextInput("name")} />
         <PickerField
           label="Location"
           multiValue={false}

@@ -28,12 +28,12 @@ describe("schedule", () => {
     const todo1 = makeTodoModel({
       id: "todo1",
       householdId: "household1",
-      recurrenceDays: 1,
+      recurrenceCount: 1,
     });
     const todo2 = makeTodoModel({
       id: "todo2",
       householdId: "household1",
-      recurrenceDays: 2,
+      recurrenceCount: 2,
     });
     const care1 = makeCareModel({
       id: "care1",

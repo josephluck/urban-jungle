@@ -12,7 +12,11 @@ export interface TodoModel extends BaseModel {
   /**
    * How often this todo should be done.
    */
-  recurrenceDays: number;
+  recurrenceCount: number;
+  /**
+   * When this todo should recur
+   */
+  recurrenceInterval: "months" | "days";
   /**
    * The months of the year that this todo is active for.
    * Can be used to turn off this todo for months of the year that it's not
@@ -38,7 +42,8 @@ export const makeTodoModel = (
   ...makeBaseModel(model, id),
   plantId: "",
   householdId: "",
-  recurrenceDays: 1,
+  recurrenceCount: 1,
+  recurrenceInterval: "days",
   activeInMonths: [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11],
   title: "",
   detail: "",

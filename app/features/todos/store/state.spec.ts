@@ -39,7 +39,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
 
       init((state) => {
@@ -60,7 +60,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
       const care1 = makeCareModel({
         id: "care1",
@@ -95,7 +95,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
 
       init((state) => {
@@ -134,17 +134,17 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
       const todo2 = makeTodoModel({
         id: "todo2",
         householdId: "household1",
-        recurrenceDays: 3,
+        recurrenceCount: 3,
       });
       const todo3 = makeTodoModel({
         id: "todo3",
         householdId: "household1",
-        recurrenceDays: 4,
+        recurrenceCount: 4,
       });
 
       init((state) => {
@@ -177,7 +177,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
       const care1 = makeCareModel({
         id: "care1",
@@ -208,7 +208,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
       const care1 = makeCareModel({
         id: "care1",
@@ -246,7 +246,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
       const care1 = makeCareModel({
         id: "care1",
@@ -284,7 +284,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
       const care1 = makeCareModel({
         id: "care1",
@@ -324,7 +324,7 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 4,
+        recurrenceCount: 4,
       });
       const care1 = makeCareModel({
         id: "care1",
@@ -368,17 +368,17 @@ describe("store / todos", () => {
       const todo1 = makeTodoModel({
         id: "todo1",
         householdId: "household1",
-        recurrenceDays: 4,
+        recurrenceCount: 4,
       });
       const todo2 = makeTodoModel({
         id: "todo2",
         householdId: "household1",
-        recurrenceDays: 6,
+        recurrenceCount: 6,
       });
       const todo3 = makeTodoModel({
         id: "todo3",
         householdId: "household1",
-        recurrenceDays: 2,
+        recurrenceCount: 2,
       });
       const care1 = makeCareModel({
         id: "care1",

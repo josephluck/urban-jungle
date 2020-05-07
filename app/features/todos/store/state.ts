@@ -38,7 +38,10 @@ export const selectTodoNextDue = (householdId: string) => (
   pipe(
     selectMostRecentCareForTodo(householdId)(todo.id),
     O.map((lastCare) =>
-      moment(lastCare.dateCreated.toDate()).add(todo.recurrenceDays, "days")
+      moment(lastCare.dateCreated.toDate()).add(
+        todo.recurrenceCount,
+        todo.recurrenceInterval
+      )
     ),
     O.filter((nextCare) => nextCare.isSameOrAfter(moment(), "day")),
     O.getOrElse(() => moment())
@@ -54,7 +57,11 @@ export const selectTodosSchedule = (householdId: string) => (
     return {
       ...todo,
       dueDates: Array.from({ length: numberOfDays }).map((_, i) =>
-        i === 0 ? nextDue : nextDue.clone().add(todo.recurrenceDays * i, "days")
+        i === 0
+          ? nextDue
+          : nextDue
+              .clone()
+              .add(todo.recurrenceCount * i, todo.recurrenceInterval)
       ),
     };
   });

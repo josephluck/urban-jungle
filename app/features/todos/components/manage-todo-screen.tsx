@@ -110,7 +110,7 @@ export const ManageTodoScreen = ({
       }
     >
       <ContentContainer>
-        <TextField label="Title" autoFocus {...registerTextInput("title")} />
+        <TextField label="Title" {...registerTextInput("title")} />
         <TextField label="Detail" multiline {...registerTextInput("detail")} />
         <PickerField
           label="Active in"
