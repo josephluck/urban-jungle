@@ -19,6 +19,7 @@ import { HouseholdCaresSubscription } from "./features/care/subscriptions/househ
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
+import { ContextMenuProvider, ContextMenu } from "./components/context-menu";
 
 // reactotron.configure();
 
@@ -44,29 +45,36 @@ export default () => {
 
   return (
     <ThemeProvider theme={lightTheme}>
-      <StatusBar barStyle={lightTheme.type} />
-      <AppWrapper>
-        {loading ? (
-          <LoadingContainer>
-            <ActivityIndicator size="large" />
-          </LoadingContainer>
-        ) : (
-          <>
-            <CurrentProfileHouseholdsSubscription />
-            {selectedHouseholdId ? (
-              <>
-                <HouseholdPlantsSubscription
-                  householdId={selectedHouseholdId}
-                />
-                <HouseholdCaresSubscription householdId={selectedHouseholdId} />
-                <HouseholdTodosSubscription householdId={selectedHouseholdId} />
-              </>
-            ) : null}
-            <AppContainer />
-          </>
-        )}
-      </AppWrapper>
-      <ProfilesSubscription />
+      <ContextMenuProvider>
+        <StatusBar barStyle={lightTheme.type} />
+        <AppWrapper>
+          {loading ? (
+            <LoadingContainer>
+              <ActivityIndicator size="large" />
+            </LoadingContainer>
+          ) : (
+            <>
+              <CurrentProfileHouseholdsSubscription />
+              {selectedHouseholdId ? (
+                <>
+                  <HouseholdPlantsSubscription
+                    householdId={selectedHouseholdId}
+                  />
+                  <HouseholdCaresSubscription
+                    householdId={selectedHouseholdId}
+                  />
+                  <HouseholdTodosSubscription
+                    householdId={selectedHouseholdId}
+                  />
+                </>
+              ) : null}
+              <AppContainer />
+            </>
+          )}
+        </AppWrapper>
+        <ProfilesSubscription />
+        <ContextMenu />
+      </ContextMenuProvider>
     </ThemeProvider>
   );
 };

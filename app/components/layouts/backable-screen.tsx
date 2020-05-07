@@ -4,28 +4,29 @@ import { symbols } from "../../theme";
 import { TouchableIcon } from "../touchable-icon";
 import { ScreenLayout } from "./screen-layout";
 
+type HeaderRightButton = {
+  icon: string;
+  onPress: () => any;
+};
+
 export const BackableScreenLayout = ({
   stickyHeaderIndices,
   children,
   onBack,
-  headerRightIcon = "more-vertical",
-  headerRightOnPress,
   footer,
+  headerRightButton,
 }: {
   stickyHeaderIndices?: number[];
   children: React.ReactNode;
   onBack: () => void;
-  headerRightIcon?: string;
-  headerRightOnPress?: () => void;
   footer?: React.ReactNode;
+  headerRightButton?: React.ReactNode;
 }) => (
   <ScreenLayout>
     <HeaderContainer>
       <ControlsContainer>
         <TouchableIcon onPress={onBack} icon="arrow-left" />
-        {headerRightIcon && headerRightOnPress ? (
-          <TouchableIcon onPress={headerRightOnPress} icon={headerRightIcon} />
-        ) : null}
+        {headerRightButton}
       </ControlsContainer>
     </HeaderContainer>
     <ContentContainer stickyHeaderIndices={stickyHeaderIndices}>

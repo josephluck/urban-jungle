@@ -13,8 +13,6 @@ import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
-import { PlantOverview } from "../../../components/plant-overview";
-import { Heading, Paragraph } from "../../../components/typography";
 import { TodoModel } from "../../../models/todo";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
@@ -26,6 +24,7 @@ import {
 } from "../../todos/store/state";
 import { createCareForPlant } from "../store/effects";
 import { createCareRoute } from "./care-screen";
+import { TodoOverview } from "../../../components/todo-overview";
 
 export const CareSessionScreen = ({
   navigation,
@@ -133,20 +132,9 @@ export const CareSessionScreen = ({
                   slide.item.plant,
                   O.fold(
                     () => null,
-                    (plant) => (
-                      <PlantOverview
-                        name={plant.name}
-                        location={plant.location}
-                        avatar={plant.avatar}
-                      />
-                    )
+                    (plant) => <TodoOverview plant={plant} todo={slide.item} />
                   )
                 )}
-                <Spacer />
-                <Heading style={{ marginBottom: 20 }}>
-                  {slide.item.title}
-                </Heading>
-                <Paragraph>{slide.item.detail}</Paragraph>
               </ScrollView>
               <Footer>
                 <SkipButton
@@ -184,10 +172,6 @@ export const createCareSessionRoute = (todoIds: string[]) => ({
 
 const Slide = styled.View`
   flex: 1;
-`;
-
-const Spacer = styled.View`
-  margin-bottom: ${symbols.spacing._20}px;
 `;
 
 const Footer = styled.View`

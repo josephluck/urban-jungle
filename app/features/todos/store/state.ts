@@ -5,8 +5,12 @@ import { sequenceO } from "../../../fp/option";
 import { PlantModel } from "../../../models/plant";
 import { TodoModel } from "../../../models/todo";
 import { normalizedStateFactory } from "../../../store/factory";
-import { selectMostRecentCareForTodo } from "../../care/store/state";
+import {
+  selectMostRecentCareForTodo,
+  selectCaresForTodo,
+} from "../../care/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
+import { selectProfileById2 } from "../../profiles/store/state";
 
 const methods = normalizedStateFactory<TodoModel>("todos");
 
@@ -120,3 +124,31 @@ export const sortTodosByLocationAndPlant = (
         titleA.localeCompare(titleB)
     )
   );
+
+export const selectMostLovedByForTodo = (householdId: string) => (
+  todoId: string
+) => {
+  const profileIdCareCount = selectCaresForTodo(householdId)(todoId).reduce(
+    (acc, care) => ({
+      ...acc,
+      [care.profileId]: acc[care.profileId] ? acc[care.profileId] + 1 : 1,
+    }),
+    {} as Record<string, number>
+  );
+  const profileIdWithMostCares = Object.keys(profileIdCareCount).reduce(
+    (prevId, currId) =>
+      !prevId
+        ? currId
+        : profileIdCareCount[currId] > profileIdCareCount[prevId]
+        ? currId
+        : prevId,
+    ""
+  );
+  return pipe(
+    selectProfileById2(profileIdWithMostCares),
+    O.map((profile) => ({
+      ...profile,
+      count: profileIdCareCount[profileIdWithMostCares],
+    }))
+  );
+};

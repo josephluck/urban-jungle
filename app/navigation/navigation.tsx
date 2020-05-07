@@ -29,11 +29,15 @@ import {
   PLANT_SCREEN,
 } from "../features/plants/components/plant-screen";
 import { PlantsScreen } from "../features/plants/components/plants-screen";
-import { symbols } from "../theme";
 import {
-  MANAGE_TODO_SCREEN,
   ManageTodoScreen,
+  MANAGE_TODO_SCREEN,
 } from "../features/todos/components/manage-todo-screen";
+import {
+  TodoScreen,
+  TODO_SCREEN,
+} from "../features/todos/components/todo-screen";
+import { symbols } from "../theme";
 
 const CareStack = createStackNavigator(
   {
@@ -56,6 +60,7 @@ const PlantsStack = createStackNavigator(
     [PLANTS_SCREEN]: authGuard(PlantsScreen),
     [PLANT_SCREEN]: authGuard(PlantScreen),
     [MANAGE_PLANT_SCREEN]: authGuard(ManagePlantScreen),
+    [TODO_SCREEN]: authGuard(TodoScreen),
     [MANAGE_TODO_SCREEN]: authGuard(ManageTodoScreen),
   },
   {

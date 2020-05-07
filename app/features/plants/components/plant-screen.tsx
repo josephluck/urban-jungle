@@ -15,13 +15,15 @@ import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
 import {
   selectMostLovedByForPlant,
   selectPlantByHouseholdId,
 } from "../store/state";
 import { createManagePlantRoute } from "./manage-plant-screen";
+import { createTodoRoute } from "../../todos/components/todo-screen";
+import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
+import { ContextMenuButton } from "../../../components/context-menu";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -62,6 +64,7 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   }, []);
 
   const handleEdit = useCallback(() => {
+    console.log("Called");
     navigation.navigate(
       createManagePlantRoute({
         plantId,
@@ -79,11 +82,26 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     );
   }, [plantId, plant]);
 
+  const handleAddNewTodo = useCallback(() => {
+    navigation.navigate(
+      createManageTodoRoute({
+        plantId,
+      })
+    );
+  }, [plantId]);
+
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
       stickyHeaderIndices={stickyHeaderIndices}
-      headerRightOnPress={handleEdit}
+      headerRightButton={
+        <ContextMenuButton
+          buttons={[
+            { icon: "trash", label: "Delete plant", onPress: console.log },
+            { icon: "edit-3", label: "Edit plant", onPress: handleEdit },
+          ]}
+        />
+      }
     >
       <ContentContainer>
         {pipe(
@@ -100,13 +118,7 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 <SectionHeading>
                   <SubHeading weight="bold">Todos</SubHeading>
                   <Button
-                    onPress={() => {
-                      navigation.navigate(
-                        createManageTodoRoute({
-                          plantId,
-                        })
-                      );
-                    }}
+                    onPress={handleAddNewTodo}
                     style={{ marginLeft: symbols.spacing._16 }}
                   >
                     Add
@@ -118,11 +130,7 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                       key={todo.id}
                       onPress={() =>
                         navigation.navigate(
-                          createManageTodoRoute({
-                            ...todo,
-                            plantId: todo.plantId,
-                            todoId: todo.id,
-                          })
+                          createTodoRoute(todo.plantId, todo.id)
                         )
                       }
                     >
@@ -145,12 +153,13 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                   )
                 )}
                 <SectionHeading>
-                  <SubHeading weight="bold">Care history</SubHeading>
+                  <SubHeading weight="bold">History</SubHeading>
                 </SectionHeading>
                 <View>
                   {cares.map((care) => (
                     <ListItem
                       key={care.id}
+                      image={care.profile.avatar}
                       title={care.todo.title}
                       detail={`By ${care.profile.name} on ${moment(
                         care.dateCreated.toDate()
