@@ -58,3 +58,13 @@ export const deleteTodosByPlant = (plantId: string) => (
     },
     () => "BAD_REQUEST" as IErr
   );
+
+export const deleteTodo = (todoId: string) => (
+  householdId: string
+): TE.TaskEither<IErr, void> =>
+  TE.tryCatch(
+    async () => {
+      await database(householdId).doc(todoId).delete();
+    },
+    () => "BAD_REQUEST" as IErr
+  );

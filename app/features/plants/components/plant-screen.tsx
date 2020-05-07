@@ -24,6 +24,7 @@ import { createManagePlantRoute } from "./manage-plant-screen";
 import { createTodoRoute } from "../../todos/components/todo-screen";
 import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { ContextMenuButton } from "../../../components/context-menu";
+import { deletePlantByHouseholdId } from "../store/effects";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -64,7 +65,6 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   }, []);
 
   const handleEdit = useCallback(() => {
-    console.log("Called");
     navigation.navigate(
       createManagePlantRoute({
         plantId,
@@ -90,6 +90,10 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     );
   }, [plantId]);
 
+  const handleDelete = useCallback(() => {
+    deletePlantByHouseholdId(selectedHouseholdId)(plantId)();
+  }, [plantId, selectedHouseholdId]);
+
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
@@ -97,7 +101,7 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
       headerRightButton={
         <ContextMenuButton
           buttons={[
-            { icon: "trash", label: "Delete plant", onPress: console.log },
+            { icon: "trash", label: "Delete plant", onPress: handleDelete },
             { icon: "edit-3", label: "Edit plant", onPress: handleEdit },
           ]}
         />

@@ -22,6 +22,7 @@ import { sequenceO } from "../../../fp/option";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
 import { TodoOverview } from "../../../components/todo-overview";
 import { ContextMenuButton } from "../../../components/context-menu";
+import { deleteTodo } from "../store/effects";
 
 export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
   const todoId = navigation.getParam(TODO_ID);
@@ -74,14 +75,18 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
     );
   }, [todoId, todo]);
 
+  const handleDelete = useCallback(() => {
+    deleteTodo(todoId)(selectedHouseholdId)();
+  }, [todoId, selectedHouseholdId]);
+
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
       headerRightButton={
         <ContextMenuButton
           buttons={[
-            { icon: "trash", label: "Delete", onPress: console.log },
-            { icon: "edit-3", label: "Edit", onPress: handleEdit },
+            { icon: "trash", label: "Delete todo", onPress: handleDelete },
+            { icon: "edit-3", label: "Edit todo", onPress: handleEdit },
           ]}
         />
       }
