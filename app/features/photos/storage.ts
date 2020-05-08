@@ -2,9 +2,9 @@ import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import uuid from "uuid";
-import { IErr } from "./utils/err";
+import { IErr } from "../../utils/err";
 
-export type StorageReference = "plant" | "profile" | "default";
+export type StorageEntityType = "plant" | "profile" | "default";
 
 // NB: see https://github.com/expo/expo/issues/2402#issuecomment-443726662
 const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
@@ -26,7 +26,7 @@ const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
     () => "BAD_REQUEST" as IErr
   );
 
-export const uploadFile = (reference: StorageReference = "default") => (
+export const uploadFile = (reference: StorageEntityType = "default") => (
   uri: string
 ): TE.TaskEither<IErr, string> =>
   pipe(

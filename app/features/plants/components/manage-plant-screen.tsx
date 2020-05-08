@@ -17,8 +17,11 @@ import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/
 import { upsertPlantForHousehold } from "../store/effects";
 import { selectUniqueLocations } from "../store/state";
 import { CameraField } from "../../../components/camera-field";
+import { ImageModel } from "../../../models/photo";
 
-type Fields = Required<Pick<PlantModel, "name" | "location" | "avatar">>;
+type Fields = Required<Pick<PlantModel, "name" | "location">> & {
+  avatar: ImageModel;
+};
 
 export const ManagePlantScreen = ({
   navigation,
@@ -35,7 +38,7 @@ export const ManagePlantScreen = ({
     {
       name: extractFieldFromNav("name"),
       location: extractFieldFromNav("location"),
-      avatar: extractFieldFromNav("avatar"),
+      avatar: { uri: "", width: 0, height: 0 }, // TODO, pass these as single properties through nav?
     },
     { name: [constraints.isRequired], location: [], avatar: [] }
   );

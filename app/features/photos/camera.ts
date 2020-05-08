@@ -1,8 +1,8 @@
 import * as TE from "fp-ts/lib/TaskEither";
 import * as ImagePicker from "expo-image-picker";
-import { uploadFile, StorageReference } from "./storage";
+import { uploadFile, StorageEntityType } from "./storage";
 import { pipe } from "fp-ts/lib/pipeable";
-import { IErr } from "./utils/err";
+import { IErr } from "../../utils/err";
 
 export const takePicture: TE.TaskEither<IErr, ImageInfo> = TE.tryCatch(
   async () => {
@@ -20,15 +20,16 @@ export const takePicture: TE.TaskEither<IErr, ImageInfo> = TE.tryCatch(
   () => "BAD_REQUEST" as IErr
 );
 
-export const takeAndUploadPicture = (reference: StorageReference = "default") =>
+export const takeAndUploadPicture = (
+  reference: StorageEntityType = "default"
+): TE.TaskEither<IErr, ImageInfo> =>
   pipe(
     takePicture,
-    TE.map((imageInfo) => imageInfo.uri),
-    TE.chain(uploadFile(reference))
+    TE.chainFirst((imageInfo) => uploadFile(reference)(imageInfo.uri))
   );
 
 // TODO: this is from ImagePicker, but not exported
-type ImageInfo = {
+export type ImageInfo = {
   uri: string;
   width: number;
   height: number;

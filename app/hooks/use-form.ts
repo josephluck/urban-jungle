@@ -1,3 +1,4 @@
+import * as O from "fp-ts/lib/Option";
 import { makeValidator, FieldConstraintsMap } from "@josephluck/valley/lib/fp";
 import { useState } from "react";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -9,6 +10,7 @@ import {
 } from "../components/picker-field";
 import { TextFieldProps } from "../components/text-field";
 import { CameraFieldProps } from "../components/camera-field";
+import { ImageModel, makeImageModel } from "../models/photo";
 
 type Fields = Record<string, any>;
 
@@ -28,6 +30,8 @@ export function useForm<Fs extends Fields>(
   // support optional single picker as first-class of picker component, atm you can't unselect a value
   // and make this one a required single picker
   type SinglePickerKeys = FilterTypeForKeys<Fs, string | number | undefined>;
+
+  type CameraKeys = FilterTypeForKeys<Fs, ImageModel>;
 
   const doValidate = makeValidator<Fs>(constraints);
 
@@ -115,6 +119,12 @@ export function useForm<Fs extends Fields>(
     setValue(fieldKey, value);
   };
 
+  const registerOnChangeCamera = <Fk extends CameraKeys>(fieldKey: Fk) => (
+    value: Fs[Fk]
+  ) => {
+    setValue(fieldKey, value);
+  };
+
   const registerTextInput = <Fk extends StringKeys>(
     fieldKey: Fk
   ): Partial<TextFieldProps> => ({
@@ -149,14 +159,21 @@ export function useForm<Fs extends Fields>(
     onChange: registerOnChangePickerSingle(fieldKey),
   });
 
-  const registerCameraField = <Fk extends StringKeys>(
+  const registerCameraField = <Fk extends CameraKeys>(
     fieldKey: Fk
-  ): Pick<CameraFieldProps, "value" | "error" | "touched" | "onChange"> => ({
-    value: values[fieldKey],
-    error: errors[fieldKey],
-    touched: touched[fieldKey],
-    onChange: registerOnChangeText(fieldKey),
-  });
+  ): Pick<CameraFieldProps, "value" | "error" | "touched" | "onChange"> => {
+    const value: ImageModel = pipe(
+      O.fromNullable(values[fieldKey] as ImageModel),
+      O.filter((image) => Boolean(image) && Boolean(image.uri)),
+      O.getOrElse(() => makeImageModel())
+    );
+    return {
+      value,
+      error: errors[fieldKey],
+      touched: touched[fieldKey],
+      onChange: registerOnChangeCamera(fieldKey) as (value: ImageModel) => void,
+    };
+  };
 
   return {
     values,

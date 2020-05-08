@@ -4,22 +4,23 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-import { takeAndUploadPicture } from "../camera";
-import { StorageReference } from "../storage";
+import { takeAndUploadPicture } from "../features/photos/camera";
+import { StorageEntityType } from "../features/photos/storage";
 import { symbols } from "../theme";
 import { IErr } from "../utils/err";
 import { Icon } from "./icon";
 import { TertiaryText } from "./typography";
+import { ImageModel } from "../models/photo";
 
 export type CameraFieldProps = {
-  value?: string;
-  onChange: (value: string) => void;
+  value?: ImageModel;
+  onChange: (value: ImageModel) => void;
   onTouched?: () => void;
   touched?: boolean;
   error?: string;
   label?: string;
   style?: StyleProp<ViewStyle>;
-  type?: StorageReference;
+  type?: StorageEntityType;
 };
 
 export const CameraField = ({
@@ -38,7 +39,7 @@ export const CameraField = ({
     if (onTouched) {
       onTouched();
     }
-    onChange("");
+    onChange({ uri: "", height: 0, width: 0 });
   }, []);
 
   const handleLaunchCamera = async () => {
@@ -49,8 +50,8 @@ export const CameraField = ({
       obtainCameraPermissions,
       TE.map(() => setSaving(true)),
       TE.chain(() => takeAndUploadPicture(type)),
-      TE.map((uploadUri) => {
-        onChange(uploadUri);
+      TE.map((image) => {
+        onChange(image);
         setSaving(false);
       }),
       TE.mapLeft(() => setSaving(false))
@@ -67,7 +68,7 @@ export const CameraField = ({
       >
         {value ? (
           <TakenPictureContainer>
-            <TakenPicture source={{ uri: value }} />
+            <TakenPicture source={{ uri: value.uri }} />
             <RetryButton onPress={handleClearResult}>
               <Icon icon="x" size={20} />
             </RetryButton>
