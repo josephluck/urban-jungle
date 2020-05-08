@@ -6,6 +6,7 @@ import { IErr } from "./utils/err";
 
 export type StorageReference = "plant" | "profile" | "default";
 
+// NB: see https://github.com/expo/expo/issues/2402#issuecomment-443726662
 const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
   TE.tryCatch(
     () =>
