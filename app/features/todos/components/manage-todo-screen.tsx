@@ -138,7 +138,6 @@ export const createManageTodoRoute = ({
   params: {
     [PLANT_ID]: plantId,
     [TODO_ID]: todoId,
-    activeInMonths: JSON.stringify(activeInMonths),
     ...fields,
   },
 });

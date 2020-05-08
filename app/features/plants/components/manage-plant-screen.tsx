@@ -17,7 +17,8 @@ import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/
 import { upsertPlantForHousehold } from "../store/effects";
 import { selectUniqueLocations } from "../store/state";
 import { CameraField } from "../../../components/camera-field";
-import { ImageModel } from "../../../models/photo";
+import { ImageModel, makeImageModel } from "../../../models/image";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 type Fields = Required<Pick<PlantModel, "name" | "location">> & {
   avatar: ImageModel;
@@ -26,8 +27,7 @@ type Fields = Required<Pick<PlantModel, "name" | "location">> & {
 export const ManagePlantScreen = ({
   navigation,
 }: NavigationStackScreenProps) => {
-  const extractFieldFromNav = (field: keyof Fields): string =>
-    navigation.getParam(field) || "";
+  const { plantId = "", ...params } = managePlantRoute.getParams(navigation);
 
   const {
     submit,
@@ -36,14 +36,12 @@ export const ManagePlantScreen = ({
     registerCameraField,
   } = useForm<Fields>(
     {
-      name: extractFieldFromNav("name"),
-      location: extractFieldFromNav("location"),
-      avatar: { uri: "", width: 0, height: 0 }, // TODO, pass these as single properties through nav?
+      name: params.name || "",
+      location: params.location || "",
+      avatar: params.avatar || makeImageModel(),
     },
     { name: [constraints.isRequired], location: [], avatar: [] }
   );
-
-  const plantId = navigation.getParam(PLANT_ID);
 
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
@@ -108,18 +106,6 @@ export const ManagePlantScreen = ({
   );
 };
 
-export const MANAGE_PLANT_SCREEN = "MANAGE_PLANT_SCREEN";
-
-export const PLANT_ID = "PLANT_ID";
-
-export const createManagePlantRoute = ({
-  plantId,
-  ...fields
-}: { plantId?: string } & Partial<Fields> = {}) => ({
-  routeName: MANAGE_PLANT_SCREEN,
-  params: { [PLANT_ID]: plantId, ...fields },
-});
-
 const ContentContainer = styled.View`
   flex: 1;
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
@@ -130,3 +116,35 @@ const Footer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
   padding-vertical: ${symbols.spacing._20}px;
 `;
+
+type ManagePlantRouteParams = {
+  plantId?: string;
+  name?: string;
+  location?: string;
+  avatar?: ImageModel;
+};
+
+export const managePlantRoute = makeNavigationRoute<ManagePlantRouteParams>({
+  screen: ManagePlantScreen,
+  routeName: "MANAGE_PLANT_SCREEN",
+  defaultParams: {
+    plantId: "",
+    name: "",
+    location: "",
+    avatar: makeImageModel(),
+  },
+  serializeParams: ({ avatar, ...params }) => ({
+    ...params,
+    avatar: JSON.stringify(avatar),
+  }),
+  deserializeParams: (params) => ({
+    plantId: params.plantId,
+    name: params.name,
+    location: params.location,
+    avatar: pipe(
+      O.fromNullable(params.avatar),
+      O.map(JSON.parse),
+      O.getOrElse(() => makeImageModel())
+    ),
+  }),
+});

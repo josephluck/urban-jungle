@@ -11,6 +11,7 @@ export const TodoListItem = React.memo(
         pipe(
           todo.plant,
           O.chain((plant) => O.fromNullable(plant.avatar)),
+          O.map((avatar) => avatar.uri),
           O.getOrElse(() => "")
         ),
       [todo.id]

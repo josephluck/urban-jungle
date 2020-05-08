@@ -20,11 +20,12 @@ import {
   selectMostLovedByForPlant,
   selectPlantByHouseholdId,
 } from "../store/state";
-import { createManagePlantRoute } from "./manage-plant-screen";
+import { managePlantRoute } from "./manage-plant-screen";
 import { createTodoRoute } from "../../todos/components/todo-screen";
 import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { ContextMenuButton } from "../../../components/context-menu";
 import { deletePlantByHouseholdId } from "../store/effects";
+import { makeImageModel } from "../../../models/image";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -65,26 +66,24 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   }, []);
 
   const handleEdit = useCallback(() => {
-    navigation.navigate(
-      createManagePlantRoute({
-        plantId,
-        name: pipe(
-          plant,
-          O.map((plant) => plant.name),
-          O.getOrElse(() => "")
-        ),
-        location: pipe(
-          plant,
-          O.chain((plant) => O.fromNullable(plant.location)),
-          O.getOrElse(() => "")
-        ),
-        avatar: pipe(
-          plant,
-          O.chain((plant) => O.fromNullable(plant.avatar)),
-          O.getOrElse(() => "")
-        ),
-      })
-    );
+    managePlantRoute.navigateTo(navigation, {
+      plantId,
+      name: pipe(
+        plant,
+        O.map((plant) => plant.name),
+        O.getOrElse(() => "")
+      ),
+      location: pipe(
+        plant,
+        O.chain((plant) => O.fromNullable(plant.location)),
+        O.getOrElse(() => "")
+      ),
+      avatar: pipe(
+        plant,
+        O.chain((plant) => O.fromNullable(plant.avatar)),
+        O.getOrElse(() => makeImageModel())
+      ),
+    });
   }, [plantId, plant]);
 
   const handleAddNewTodo = useCallback(() => {
@@ -96,6 +95,7 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   }, [plantId]);
 
   const handleDelete = useCallback(() => {
+    navigation.goBack();
     deletePlantByHouseholdId(selectedHouseholdId)(plantId)();
   }, [plantId, selectedHouseholdId]);
 
@@ -136,7 +136,11 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 <PlantOverview
                   name={plant.name}
                   location={plant.location}
-                  avatar={plant.avatar}
+                  avatar={pipe(
+                    O.fromNullable(plant.avatar),
+                    O.map((avatar) => avatar.uri),
+                    O.getOrElse(() => "")
+                  )}
                 />
                 <SectionHeading>
                   <SubHeading weight="bold">Todos</SubHeading>

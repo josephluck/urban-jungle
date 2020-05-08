@@ -10,6 +10,7 @@ export const CareListItem = React.memo(
       () =>
         pipe(
           O.fromNullable(care.plant.avatar),
+          O.map((avatar) => avatar.uri),
           O.getOrElse(() => "")
         ),
       [care.id]

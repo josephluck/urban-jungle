@@ -48,7 +48,7 @@ export const upsertPlantForHousehold = (
 
 /**
  * TODOS
- * Remove avatar from plant model
+ * Make avatar an optional PhotoModel
  * Make sure upload works as expected for both new plants and editing plants
  * Figure out how data fetching works with nested collection
  * ^ May need to update how plants are fetched to include sub-collection?
@@ -78,6 +78,16 @@ export const uploadPlantImage = (
             .doc(photoToSave.id)
             .set(photoToSave);
           return photoToSave;
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    ),
+    TE.chainFirst((photo) =>
+      TE.tryCatch(
+        async () => {
+          await database(householdId)
+            .doc(plantId)
+            .set({ avatar: photo }, { merge: true });
         },
         () => "BAD_REQUEST" as IErr
       )

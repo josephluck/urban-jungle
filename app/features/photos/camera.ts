@@ -10,7 +10,6 @@ export const takePicture: TE.TaskEither<IErr, ImageInfo> = TE.tryCatch(
       allowsEditing: true,
       aspect: [16, 9],
     });
-    console.log({ result });
     if (result.cancelled) {
       throw new Error("Cancelled");
     } else {

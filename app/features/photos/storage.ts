@@ -15,8 +15,7 @@ const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
         xhr.onload = function () {
           resolve(xhr.response);
         };
-        xhr.onerror = function (e) {
-          console.log(e);
+        xhr.onerror = function () {
           reject(new TypeError("Network request failed"));
         };
         xhr.responseType = "blob";

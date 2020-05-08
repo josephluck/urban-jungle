@@ -13,19 +13,27 @@ import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { selectPlantsByHouseholdId } from "../store/state";
-import { createManagePlantRoute } from "./manage-plant-screen";
+import { managePlantRoute } from "./manage-plant-screen";
 import { createPlantRoute } from "./plant-screen";
+import { useCallback } from "react";
 
 export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
+
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
     O.getOrElse(() => "")
   );
+
   const plants = useStore(() =>
     selectPlantsByHouseholdId(selectedHouseholdId).sort(sortByMostRecent)
+  );
+
+  const handleAddNew = useCallback(
+    () => managePlantRoute.navigateTo(navigation, {}),
+    []
   );
 
   return (
@@ -34,11 +42,7 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
         <ScreenContainer>
           <WelcomeMessageContainer>
             <Heading>Your plants</Heading>
-            <Button
-              onPress={() => navigation.navigate(createManagePlantRoute())}
-            >
-              Add
-            </Button>
+            <Button onPress={handleAddNew}>Add</Button>
           </WelcomeMessageContainer>
           <PlantsList
             contentContainerStyle={{
@@ -50,7 +54,14 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
                 key={plant.id}
                 onPress={() => navigation.navigate(createPlantRoute(plant.id))}
               >
-                <ListItem title={plant.name} image={plant.avatar} />
+                <ListItem
+                  title={plant.name}
+                  image={pipe(
+                    O.fromNullable(plant.avatar),
+                    O.map((avatar) => avatar.uri),
+                    O.getOrElse(() => "")
+                  )}
+                />
               </TouchableOpacity>
             ))}
           </PlantsList>

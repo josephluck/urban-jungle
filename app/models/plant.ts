@@ -1,4 +1,5 @@
 import { BaseModel, makeBaseModel } from "./base";
+import { PhotoModel } from "./photo";
 
 export interface PlantModel extends BaseModel {
   /**
@@ -18,9 +19,9 @@ export interface PlantModel extends BaseModel {
    */
   nickname?: string;
   /**
-   * Pretty picture of the profile. If not provided, falls back to a placeholder.
+   * Pretty picture of the plant. If not provided, falls back to a placeholder.
    */
-  avatar?: string;
+  avatar?: PhotoModel;
 }
 
 export const makePlantModel = (
