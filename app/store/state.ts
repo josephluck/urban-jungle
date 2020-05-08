@@ -4,8 +4,7 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { CareModel } from "../models/care";
 import { HouseholdModel } from "../models/household";
-import { CareId, HouseholdId, PhotoId, PlantId, TodoId, UserId } from "../models/ids";
-import { PhotoModel } from "../models/photo";
+import { CareId, HouseholdId, PlantId, TodoId, UserId } from "../models/ids";
 import { PlantModel } from "../models/plant";
 import { ProfileModel } from "../models/profile";
 import { TodoModel } from "../models/todo";
@@ -36,10 +35,6 @@ interface TodosState {
   byHouseholdId: Record<HouseholdId, Record<TodoId, TodoModel>>;
 }
 
-interface PhotosState {
-  byHouseholdId: Record<HouseholdId, Record<PhotoId, PhotoModel>>;
-}
-
 export interface State {
   auth: AuthState;
   profiles: ProfilesState;
@@ -47,7 +42,6 @@ export interface State {
   plants: PlantsState;
   cares: CaresState;
   todos: TodosState;
-  photos: PhotosState;
 }
 
 export const defaultState: State = {
@@ -71,9 +65,6 @@ export const defaultState: State = {
   todos: {
     byHouseholdId: {},
   },
-  photos: {
-    byHouseholdId: {}
-  }
 };
 
 export const store = stately<State>(defaultState);

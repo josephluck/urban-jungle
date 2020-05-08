@@ -4,21 +4,20 @@ import { PlantModel, makePlantModel } from "../../../models/plant";
 import { IErr } from "../../../utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
-import { database } from "./database";
+import { database, photosDatabase } from "./database";
 import { deleteTodosByPlant } from "../../todos/store/effects";
 import { selectPlantByHouseholdId } from "./state";
 import { BaseModel } from "../../../models/base";
-import uuid from "uuid";
-import { upsertPhotoForHousehold } from "../../photos/store/effects";
-import { ImageModel } from "../../../models/photo";
+import { ImageModel } from "../../../models/image";
+import { PhotoModel, makePhotoModel } from "../../../models/photo";
 
 type Fields = Omit<PlantModel, keyof BaseModel | "householdId" | "avatar"> & {
-  image: ImageModel;
+  avatar: ImageModel;
 };
 
 export const upsertPlantForHousehold = (
-  { image, ...fields }: Partial<Fields> = {},
-  plantId: string = uuid()
+  { avatar, ...fields }: Partial<Fields> = {},
+  plantId: string
 ) => (householdId: string): TE.TaskEither<IErr, PlantModel> =>
   pipe(
     selectHouseholdById(householdId),
@@ -29,58 +28,56 @@ export const upsertPlantForHousehold = (
     ),
     TE.fromOption(() => "NOT_FOUND" as IErr),
     TE.chain((plant) =>
-      image
-        ? savePlantWithImage(plant, plantId, householdId, fields, image)
-        : savePlantWithoutImage(plant, plantId, householdId, fields)
-    )
-  );
-
-export const savePlantWithoutImage = (
-  plant: PlantModel,
-  plantId: string,
-  householdId: string,
-  fields: Partial<Fields>
-) =>
-  pipe(
-    TE.tryCatch(
-      async () => {
-        const plantToSave = {
-          ...plant,
-          ...fields,
-          householdId,
-          plantId,
-        };
-        await database(householdId).doc(plantToSave.id).set(plantToSave);
-        return plantToSave;
-      },
-      () => "BAD_REQUEST" as IErr
-    )
-  );
-
-export const savePlantWithImage = (
-  plant: PlantModel,
-  plantId: string,
-  householdId: string,
-  fields: Partial<Fields>,
-  image: ImageModel
-) =>
-  pipe(
-    upsertPhotoForHousehold(
-      { ...image, associatedType: "plant" },
-      plantId
-    )(householdId),
-    TE.chain((photo) =>
       TE.tryCatch(
         async () => {
-          const plantToSave = {
+          const plantToSave: PlantModel = {
             ...plant,
             ...fields,
             householdId,
-            plantId,
-            avatar: photo.uri,
           };
           await database(householdId).doc(plantToSave.id).set(plantToSave);
           return plantToSave;
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    ),
+    TE.chainFirst((plant) =>
+      uploadPlantImage(householdId, plant.id, O.fromNullable(avatar))
+    )
+  );
+
+/**
+ * TODOS
+ * Remove avatar from plant model
+ * Make sure upload works as expected for both new plants and editing plants
+ * Figure out how data fetching works with nested collection
+ * ^ May need to update how plants are fetched to include sub-collection?
+ * Add state for plant images by plant id
+ * Add selector for most recent image for plant
+ * Update views to use most recent image for plant
+ * Add carousel in plant view for cycling through images
+ * Add long press in carousel for deleting an image (with confirmation)
+ * Maybe a default flag on an image? Might be good to allow users to choose a primary image
+ */
+
+export const uploadPlantImage = (
+  householdId: string,
+  plantId: string,
+  image: O.Option<ImageModel>
+): TE.TaskEither<IErr, PhotoModel> =>
+  pipe(
+    image,
+    TE.fromOption(() => "BAD_REQUEST" as IErr),
+    TE.chain((img) =>
+      TE.tryCatch(
+        async () => {
+          const photoToSave: PhotoModel = {
+            ...makePhotoModel(img),
+          };
+          await photosDatabase(householdId)(plantId)
+            .doc(photoToSave.id)
+            .set(photoToSave);
+          return photoToSave;
         },
         () => "BAD_REQUEST" as IErr
       )

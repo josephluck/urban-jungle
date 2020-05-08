@@ -10,7 +10,7 @@ import {
 } from "../components/picker-field";
 import { TextFieldProps } from "../components/text-field";
 import { CameraFieldProps } from "../components/camera-field";
-import { ImageModel, makeImageModel } from "../models/photo";
+import { ImageModel, makeImageModel } from "../models/image";
 
 type Fields = Record<string, any>;
 

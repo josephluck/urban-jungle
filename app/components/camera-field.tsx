@@ -1,3 +1,4 @@
+import * as O from "fp-ts/lib/Option";
 import * as Permissions from "expo-permissions";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -10,7 +11,7 @@ import { symbols } from "../theme";
 import { IErr } from "../utils/err";
 import { Icon } from "./icon";
 import { TertiaryText } from "./typography";
-import { ImageModel } from "../models/photo";
+import { ImageModel } from "../models/image";
 
 export type CameraFieldProps = {
   value?: ImageModel;
@@ -58,15 +59,21 @@ export const CameraField = ({
     )();
   };
 
+  const hasValue = pipe(
+    O.fromNullable(value),
+    O.filter((v) => Boolean(v.uri)),
+    O.isSome
+  );
+
   // TODO: progress bar / loading indicator...
   return (
     <Container style={style}>
       {label ? <Label>{label}</Label> : null}
       <ContainerButton
-        disabled={Boolean(value) || saving}
+        disabled={hasValue || saving}
         onPress={handleLaunchCamera}
       >
-        {value ? (
+        {hasValue && value ? (
           <TakenPictureContainer>
             <TakenPicture source={{ uri: value.uri }} />
             <RetryButton onPress={handleClearResult}>
