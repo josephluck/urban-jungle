@@ -1,4 +1,5 @@
 import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
@@ -19,7 +20,7 @@ import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/
 import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { createTodoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
-import { deletePlantByHouseholdId } from "../store/effects";
+import { deletePlantByHouseholdId, savePlantImage } from "../store/effects";
 import {
   selectMostLovedByForPlant,
   selectPlantByHouseholdId,
@@ -28,6 +29,7 @@ import { HouseholdPlantsPhotosSubscription } from "../subscriptions/plant-photos
 import { managePlantRoute } from "./manage-plant-screen";
 import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
 import { PlantImageCarousel } from "../../../components/plant-image-carousel";
+import { takeAndUploadPicture } from "../../photos/camera";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -102,7 +104,12 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   }, [plantId, selectedHouseholdId]);
 
   const handleTakePicture = useCallback(() => {
-    // takeAndUploadPicture(type)
+    pipe(
+      takeAndUploadPicture("plant"),
+      TE.chain((value) =>
+        savePlantImage(selectedHouseholdId, plantId, O.some(value))
+      )
+    )();
   }, [plantId, selectedHouseholdId]);
 
   const plantName = useMemo(

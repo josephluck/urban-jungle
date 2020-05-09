@@ -18,7 +18,7 @@ export const PlantImageUploader = ({
     pipe(savePlantImage(householdId, plantId, O.fromNullable(imageInfo)))();
   };
 
-  return <CameraButton onChange={handleSubmit} />;
+  return <CameraButton type="plant" onChange={handleSubmit} />;
 };
 
 const CameraButton = styled(CameraField)`
