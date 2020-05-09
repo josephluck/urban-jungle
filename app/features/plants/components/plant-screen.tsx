@@ -9,7 +9,6 @@ import { Button } from "../../../components/button";
 import { ContextMenuButton } from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
-import { PlantOverview } from "../../../components/plant-overview";
 import { SubHeading } from "../../../components/typography";
 import { makeImageModel } from "../../../models/image";
 import { useStore } from "../../../store/state";
@@ -23,11 +22,12 @@ import { selectTodosForPlant } from "../../todos/store/state";
 import { deletePlantByHouseholdId } from "../store/effects";
 import {
   selectMostLovedByForPlant,
-  selectPhotosForPlant,
   selectPlantByHouseholdId,
 } from "../store/state";
 import { HouseholdPlantsPhotosSubscription } from "../subscriptions/plant-photos";
 import { managePlantRoute } from "./manage-plant-screen";
+import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
+import { PlantImageCarousel } from "../../../components/plant-image-carousel";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -60,8 +60,6 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     () => selectMostLovedByForPlant(selectedHouseholdId)(plantId),
     [plantId, selectedHouseholdId]
   );
-
-  const photos = useStore(() => selectPhotosForPlant(plantId), [plantId]);
 
   const stickyHeaderIndices = O.isSome(mostLovedBy) ? [1, 3, 5] : [1, 3];
 
@@ -103,6 +101,10 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     deletePlantByHouseholdId(selectedHouseholdId)(plantId)();
   }, [plantId, selectedHouseholdId]);
 
+  const handleTakePicture = useCallback(() => {
+    // takeAndUploadPicture(type)
+  }, [plantId, selectedHouseholdId]);
+
   const plantName = useMemo(
     () =>
       pipe(
@@ -120,6 +122,11 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
       headerRightButton={
         <ContextMenuButton
           buttons={[
+            {
+              icon: "camera",
+              label: `Snap ${plantName}`,
+              onPress: handleTakePicture,
+            },
             {
               icon: "trash",
               label: `Delete ${plantName}`,
@@ -140,12 +147,15 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                 plantId={plantId}
                 householdId={plant.householdId}
               />
-              <PlantOverview
-                name={plant.name}
-                location={plant.location}
-                photos={photos}
-                plantId={plant.id}
-                householdId={plant.householdId}
+              <SectionContent>
+                <PlantNameAndLocation
+                  name={plant.name}
+                  location={plant.location}
+                />
+              </SectionContent>
+              <PlantImageCarousel
+                householdId={selectedHouseholdId}
+                plantId={plantId}
               />
               <SectionHeading>
                 <SubHeading weight="bold">Todos</SubHeading>

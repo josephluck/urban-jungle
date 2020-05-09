@@ -110,41 +110,38 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
         O.fold(
           () => null,
           ([plant, todo]) => (
-            <>
+            <ContentContainer>
               <TodoOverview plant={plant} todo={todo} />
-
-              <ContentContainer>
-                {pipe(
-                  mostLovedBy,
-                  O.fold(
-                    () => null,
-                    (profile) => [
-                      <SectionHeading key="most-done-by-heading">
-                        <SubHeading weight="bold">Most done by</SubHeading>
-                      </SectionHeading>,
-                      <View key="most-done-by">
-                        <ListItem title={profile.name} image={profile.avatar} />
-                      </View>,
-                    ]
-                  )
-                )}
-                <SectionHeading>
-                  <SubHeading weight="bold">History</SubHeading>
-                </SectionHeading>
-                <View>
-                  {cares.map((care) => (
-                    <ListItem
-                      key={care.id}
-                      image={care.profile.avatar}
-                      title={`By ${care.profile.name}`}
-                      detail={`On ${moment(care.dateCreated.toDate()).format(
-                        "Do MMM YY"
-                      )}`}
-                    />
-                  ))}
-                </View>
-              </ContentContainer>
-            </>
+              {pipe(
+                mostLovedBy,
+                O.fold(
+                  () => null,
+                  (profile) => [
+                    <SectionHeading key="most-done-by-heading">
+                      <SubHeading weight="bold">Most done by</SubHeading>
+                    </SectionHeading>,
+                    <View key="most-done-by">
+                      <ListItem title={profile.name} image={profile.avatar} />
+                    </View>,
+                  ]
+                )
+              )}
+              <SectionHeading>
+                <SubHeading weight="bold">History</SubHeading>
+              </SectionHeading>
+              <View>
+                {cares.map((care) => (
+                  <ListItem
+                    key={care.id}
+                    image={care.profile.avatar}
+                    title={`By ${care.profile.name}`}
+                    detail={`On ${moment(care.dateCreated.toDate()).format(
+                      "Do MMM YY"
+                    )}`}
+                  />
+                ))}
+              </View>
+            </ContentContainer>
           )
         )
       )}

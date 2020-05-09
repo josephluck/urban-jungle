@@ -5,7 +5,8 @@ import styled from "styled-components/native";
 import { PlantModel } from "../models/plant";
 import { TodoModel } from "../models/todo";
 import { symbols } from "../theme";
-import { PlantOverview } from "./plant-overview";
+import { PlantImage } from "./plant-image";
+import { PlantNameAndLocation } from "./plant-name-and-location";
 import { Heading, Paragraph } from "./typography";
 
 export const TodoOverview = ({
@@ -16,28 +17,19 @@ export const TodoOverview = ({
   todo: TodoModel;
 }) => (
   <>
-    <PlantOverview
-      name={plant.name}
-      location={plant.location}
-      avatar={pipe(
+    <PlantNameAndLocation name={plant.name} location={plant.location} />
+    <PlantImage
+      uri={pipe(
         O.fromNullable(plant.avatar),
         O.map((avatar) => avatar.uri),
-        O.getOrElse(() => "")
+        O.getOrElse(() => undefined as string | undefined)
       )}
-      plantId={plant.id}
-      householdId={plant.householdId}
     />
-    <SectionContent>
-      <Title>{todo.title}</Title>
-      <Paragraph>{todo.detail}</Paragraph>
-    </SectionContent>
+    <Title>{todo.title}</Title>
+    <Paragraph>{todo.detail}</Paragraph>
   </>
 );
 
 const Title = styled(Heading)`
   margin-vertical: ${symbols.spacing._20}px;
-`;
-
-const SectionContent = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal};
 `;
