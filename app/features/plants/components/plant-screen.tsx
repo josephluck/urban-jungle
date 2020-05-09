@@ -1,6 +1,6 @@
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
@@ -10,6 +10,8 @@ import { Button } from "../../../components/button";
 import { ContextMenuButton } from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
+import { PlantImageCarousel } from "../../../components/plant-image-carousel";
+import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
 import { SubHeading } from "../../../components/typography";
 import { makeImageModel } from "../../../models/image";
 import { useStore } from "../../../store/state";
@@ -17,6 +19,7 @@ import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { takeAndUploadPicture } from "../../photos/camera";
 import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { createTodoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
@@ -27,9 +30,6 @@ import {
 } from "../store/state";
 import { HouseholdPlantsPhotosSubscription } from "../subscriptions/plant-photos";
 import { managePlantRoute } from "./manage-plant-screen";
-import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
-import { PlantImageCarousel } from "../../../components/plant-image-carousel";
-import { takeAndUploadPicture } from "../../photos/camera";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);

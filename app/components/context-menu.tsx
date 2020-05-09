@@ -1,16 +1,23 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
-import { StyleProp, ViewProps, BackHandler } from "react-native";
-import { TouchableIcon } from "./touchable-icon";
-import BottomSheet from "reanimated-bottom-sheet";
-import { useRef } from "react";
-import BottomSheetBehavior from "reanimated-bottom-sheet";
-import { useEffect } from "react";
+import { Feather } from "@expo/vector-icons";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { BackHandler, StyleProp, ViewProps } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import Reanimated from "react-native-reanimated";
+import {
+  default as BottomSheet,
+  default as BottomSheetBehavior,
+} from "reanimated-bottom-sheet";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
+import { TouchableIcon } from "./touchable-icon";
 import { SubHeading } from "./typography";
-import Reanimated from "react-native-reanimated";
-import { Feather } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 type ContextMenuButtonType = {
   label: string;
@@ -236,13 +243,18 @@ export const ContextMenuButton = ({
   }, [setVisible, setButtons]);
 
   return (
-    <TouchableIcon
+    <ContextButton
       style={style}
       onPress={handleShowContextMenu}
       icon="more-vertical"
     />
   );
 };
+
+const ContextButton = styled(TouchableIcon)`
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-vertical: ${symbols.spacing._20}px;
+`;
 
 /**
  * Custom hook that provides an easy way to create a Reanimated interpolation

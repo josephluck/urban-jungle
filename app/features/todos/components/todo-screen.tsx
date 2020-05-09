@@ -5,24 +5,24 @@ import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
+import { ContextMenuButton } from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
+import { TodoOverview } from "../../../components/todo-overview";
 import { SubHeading } from "../../../components/typography";
+import { sequenceO } from "../../../fp/option";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForTodo } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { selectPlantByHouseholdId } from "../../plants/store/state";
+import { deleteTodo } from "../store/effects";
 import {
   selectMostLovedByForTodo,
   selectTodoByHouseholdId,
 } from "../store/state";
 import { createManageTodoRoute } from "./manage-todo-screen";
-import { sequenceO } from "../../../fp/option";
-import { selectPlantByHouseholdId } from "../../plants/store/state";
-import { TodoOverview } from "../../../components/todo-overview";
-import { ContextMenuButton } from "../../../components/context-menu";
-import { deleteTodo } from "../store/effects";
 
 export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
   const todoId = navigation.getParam(TODO_ID);
