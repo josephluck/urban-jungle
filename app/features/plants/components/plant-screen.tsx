@@ -28,7 +28,6 @@ import {
   selectMostLovedByForPlant,
   selectPlantByHouseholdId,
 } from "../store/state";
-import { HouseholdPlantsPhotosSubscription } from "../subscriptions/plant-photos";
 import { managePlantRoute } from "./manage-plant-screen";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
@@ -150,10 +149,6 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
           () => null,
           (plant) => (
             <>
-              <HouseholdPlantsPhotosSubscription
-                plantId={plantId}
-                householdId={plant.householdId}
-              />
               <SectionContent>
                 <PlantNameAndLocation
                   name={plant.name}

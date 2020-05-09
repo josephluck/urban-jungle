@@ -20,6 +20,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
 import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
 import { ContextMenuProvider, ContextMenu } from "./components/context-menu";
+import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
 
 // reactotron.configure();
 
@@ -64,6 +65,9 @@ export default () => {
                     householdId={selectedHouseholdId}
                   />
                   <HouseholdTodosSubscription
+                    householdId={selectedHouseholdId}
+                  />
+                  <HouseholdPhotosSubscription
                     householdId={selectedHouseholdId}
                   />
                 </>

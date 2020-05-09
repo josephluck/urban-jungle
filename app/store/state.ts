@@ -33,7 +33,6 @@ interface HouseholdsState {
 
 interface PlantsState {
   byHouseholdId: Record<HouseholdId, Record<PlantId, PlantModel>>;
-  photosById: Record<PlantId, Record<PhotoId, PhotoModel>>;
 }
 
 interface CaresState {
@@ -44,6 +43,10 @@ interface TodosState {
   byHouseholdId: Record<HouseholdId, Record<TodoId, TodoModel>>;
 }
 
+interface PhotosState {
+  byHouseholdId: Record<HouseholdId, Record<PhotoId, PhotoModel>>;
+}
+
 export interface State {
   auth: AuthState;
   profiles: ProfilesState;
@@ -51,6 +54,7 @@ export interface State {
   plants: PlantsState;
   cares: CaresState;
   todos: TodosState;
+  photos: PhotosState;
 }
 
 export const defaultState: State = {
@@ -67,12 +71,14 @@ export const defaultState: State = {
   },
   plants: {
     byHouseholdId: {},
-    photosById: {},
   },
   cares: {
     byHouseholdId: {},
   },
   todos: {
+    byHouseholdId: {},
+  },
+  photos: {
     byHouseholdId: {},
   },
 };

@@ -5,20 +5,20 @@ import React, { useCallback } from "react";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { CameraField } from "../../../components/camera-field";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
+import { ImageModel, makeImageModel } from "../../../models/image";
 import { PlantModel } from "../../../models/plant";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertPlantForHousehold } from "../store/effects";
 import { selectUniqueLocations } from "../store/state";
-import { CameraField } from "../../../components/camera-field";
-import { ImageModel, makeImageModel } from "../../../models/image";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 type Fields = Required<Pick<PlantModel, "name" | "location">> & {
   avatar: ImageModel;

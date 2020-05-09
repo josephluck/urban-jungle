@@ -3,21 +3,21 @@ import { Dimensions } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
 import { deletePlantPhoto } from "../features/plants/store/effects";
-import { selectPhotosForPlant } from "../features/plants/store/state";
 import { PhotoModel } from "../models/photo";
 import { useStore } from "../store/state";
 import { symbols } from "../theme";
 import { PlantImage } from "./plant-image";
 import { PlantImageUploader } from "./plant-image-uploader";
+import { selectPhotosForPlant } from "../features/photos/store/state";
 
 const horizontalMargin = symbols.spacing._4;
 const sliderWidth = Dimensions.get("window").width;
 const slideWidth = sliderWidth - symbols.spacing.appHorizontal * 2;
 const itemWidth = slideWidth + horizontalMargin * 2;
 
-type CameraSlide = { type: "camera"; id: string };
+type CameraSlide = { slideType: "camera"; id: string };
 
-type PhotoSlide = { type: "photo" } & PhotoModel;
+type PhotoSlide = { slideType: "photo" } & PhotoModel;
 
 type SlideItem = PhotoSlide | CameraSlide;
 
@@ -28,13 +28,16 @@ export const PlantImageCarousel = ({
   plantId: string;
   householdId: string;
 }) => {
-  const photos = useStore(() => selectPhotosForPlant(plantId), [plantId]);
+  const photos = useStore(() => selectPhotosForPlant(householdId, plantId), [
+    householdId,
+    plantId,
+  ]);
 
   const carouselRef = useRef<CarouselStatic<SlideItem>>(null);
 
   const slideItems: SlideItem[] = [
-    { type: "camera" as const, id: "camera" },
-    ...photos.map((photo) => ({ ...photo, type: "photo" as const })),
+    { slideType: "camera" as const, id: "camera" },
+    ...photos.map((photo) => ({ ...photo, slideType: "photo" as const })),
   ];
 
   useEffect(() => {
@@ -68,7 +71,7 @@ export const PlantImageCarousel = ({
       inactiveSlideOpacity={0.8}
       renderItem={(slide) => (
         <Slide key={slide.item.id}>
-          {slide.item.type === "camera" ? (
+          {slide.item.slideType === "camera" ? (
             <PlantImageUploader householdId={householdId} plantId={plantId} />
           ) : (
             <PlantImageButton

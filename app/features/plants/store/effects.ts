@@ -1,21 +1,18 @@
-import * as TE from "fp-ts/lib/TaskEither";
+import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
-import { PlantModel, makePlantModel } from "../../../models/plant";
-import { IErr } from "../../../utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
-import { selectHouseholdById } from "../../households/store/state";
-import { database, photosDatabase } from "./database";
-import { deleteTodosByPlant } from "../../todos/store/effects";
-import {
-  selectPlantByHouseholdId,
-  selectMostRecentPlantPhoto,
-  isPlantAvatarThisPhoto,
-} from "./state";
+import * as TE from "fp-ts/lib/TaskEither";
 import { BaseModel } from "../../../models/base";
 import { ImageModel } from "../../../models/image";
-import { PhotoModel, makePhotoModel } from "../../../models/photo";
-import firebase from "firebase";
-import { log } from "../../../fp/log";
+import { makePhotoModel, PhotoModel } from "../../../models/photo";
+import { makePlantModel, PlantModel } from "../../../models/plant";
+import { IErr } from "../../../utils/err";
+import { selectHouseholdById } from "../../households/store/state";
+import { photosDatabase } from "../../photos/store/database";
+import { selectMostRecentPlantPhoto } from "../../photos/store/state";
+import { deleteTodosByPlant } from "../../todos/store/effects";
+import { database } from "./database";
+import { isPlantAvatarThisPhoto, selectPlantByHouseholdId } from "./state";
 
 type Fields = Omit<PlantModel, keyof BaseModel | "householdId" | "avatar"> & {
   avatar: ImageModel;
@@ -81,8 +78,13 @@ export const savePlantImage = (
     TE.chain((img) =>
       TE.tryCatch(
         async () => {
-          const photoToSave = makePhotoModel(img);
-          await photosDatabase(householdId)(plantId)
+          const photoToSave = makePhotoModel({
+            ...img,
+            type: "plant",
+            householdId,
+            associatedId: plantId,
+          });
+          await photosDatabase(householdId)
             .doc(photoToSave.id)
             .set(photoToSave);
           return photoToSave;
@@ -119,7 +121,7 @@ export const deletePlantPhoto = (householdId: string, plantId: string) => (
   pipe(
     TE.tryCatch(
       async () => {
-        await photosDatabase(householdId)(plantId).doc(photoId).delete();
+        await photosDatabase(householdId).doc(photoId).delete();
       },
       () => "BAD_REQUEST" as IErr
     ),
@@ -150,10 +152,8 @@ export const setMostRecentPlantPhotoAsPrimary = (
   excludePhotoId?: string
 ): TE.TaskEither<IErr, void> =>
   pipe(
-    selectMostRecentPlantPhoto(plantId, excludePhotoId),
-    log("Selected the most recent photo"),
+    selectMostRecentPlantPhoto(householdId, plantId, excludePhotoId),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    log("Kicking off setting photo as plant avatar"),
     TE.chain(setPhotoAsPlantAvatar(householdId, plantId))
   );
 
