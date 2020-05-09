@@ -35,6 +35,7 @@ import {
   TODO_SCREEN,
 } from "../features/todos/components/todo-screen";
 import { symbols } from "../theme";
+import { logGlobalState } from "../store/state";
 
 const CareStack = createStackNavigator(
   {
@@ -96,6 +97,7 @@ const PrivateTabs = createBottomTabNavigator(
   {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarOnPress: ({ navigation, defaultHandler }: any) => {
+        logGlobalState();
         navigation.popToTop();
         defaultHandler();
       },

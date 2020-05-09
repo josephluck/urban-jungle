@@ -105,15 +105,15 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
         />
       }
     >
-      <ContentContainer>
-        {pipe(
-          sequenceO(plant, todo),
-          O.fold(
-            () => null,
-            ([plant, todo]) => (
-              <>
-                <TodoOverview plant={plant} todo={todo} />
+      {pipe(
+        sequenceO(plant, todo),
+        O.fold(
+          () => null,
+          ([plant, todo]) => (
+            <>
+              <TodoOverview plant={plant} todo={todo} />
 
+              <ContentContainer>
                 {pipe(
                   mostLovedBy,
                   O.fold(
@@ -143,11 +143,11 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
                     />
                   ))}
                 </View>
-              </>
-            )
+              </ContentContainer>
+            </>
           )
-        )}
-      </ContentContainer>
+        )
+      )}
     </BackableScreenLayout>
   );
 };
@@ -172,6 +172,5 @@ const SectionHeading = styled.View`
 `;
 
 const ContentContainer = styled.View`
-  flex: 1;
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;

@@ -1,46 +1,156 @@
-import React from "react";
+// TODO: replace usages of custom one from other files, use this proper import...
+import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useEffect, useRef, useCallback } from "react";
+import { Dimensions, View } from "react-native";
+import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
+import {
+  savePlantImage,
+  deletePlantPhoto,
+} from "../features/plants/store/effects";
+import { PhotoModel } from "../models/photo";
 import { symbols } from "../theme";
-import { SubHeading } from "./typography";
+import { CameraField } from "./camera-field";
 import { Label } from "./label";
-import { View } from "react-native";
+import { SubHeading } from "./typography";
+
+const horizontalMargin = symbols.spacing._4;
+const sliderWidth = Dimensions.get("window").width;
+const slideWidth = sliderWidth - symbols.spacing.appHorizontal * 2;
+const itemWidth = slideWidth + horizontalMargin * 2;
+
+type CameraSlide = { type: "camera"; id: string };
+
+type PhotoSlide = { type: "photo" } & PhotoModel;
+
+type SlideItem = PhotoSlide | CameraSlide;
 
 export const PlantOverview = ({
   name,
   location,
   avatar,
+  photos = [],
+  plantId,
+  householdId,
 }: {
   name: string;
   location?: string;
   avatar?: string;
-}) => (
-  <View>
-    <PlantNameWrapper>
-      <SubHeading>{name}</SubHeading>
-      {location ? <LocationLabel>{location}</LocationLabel> : null}
-    </PlantNameWrapper>
-    {avatar ? (
-      <PlantImage source={{ uri: avatar }} />
-    ) : (
-      <PlantImagePlaceholder />
-    )}
-  </View>
-);
+  plantId: string;
+  householdId: string;
+  photos?: PhotoModel[];
+}) => {
+  const carouselRef = useRef<CarouselStatic<SlideItem>>(null);
+
+  const slideItems: SlideItem[] = [
+    { type: "camera" as const, id: "camera" },
+    ...photos.map((photo) => ({ ...photo, type: "photo" as const })),
+  ];
+
+  useEffect(() => {
+    if (photos.length > 0) {
+      requestAnimationFrame(() => {
+        if (carouselRef.current) {
+          // NB: we assume the latest upload is the first item
+          carouselRef.current.snapToItem(1, true);
+        }
+      });
+    }
+  }, [photos.length]);
+
+  const handleDeleteImage = useCallback(
+    (photoId: string) => {
+      deletePlantPhoto(householdId, plantId)(photoId)();
+    },
+    [householdId, plantId]
+  );
+
+  return (
+    <View>
+      <PaddingContainer>
+        <PlantNameWrapper>
+          <SubHeading>{name}</SubHeading>
+          {location ? <LocationLabel>{location}</LocationLabel> : null}
+        </PlantNameWrapper>
+      </PaddingContainer>
+      {avatar ? (
+        <PaddingContainer>
+          <PlantImage source={{ uri: avatar }} />
+        </PaddingContainer>
+      ) : (
+        <Carousel
+          style={{ flex: 1 }}
+          containerCustomStyle={{ flex: 1 }}
+          data={slideItems}
+          removeClippedSubviews
+          sliderWidth={sliderWidth}
+          itemWidth={itemWidth}
+          nestedScrollEnabled
+          inactiveSlideScale={1}
+          inactiveSlideOpacity={0.8}
+          renderItem={(slide) => (
+            <Slide key={slide.item.id}>
+              {slide.item.type === "camera" ? (
+                <PlantImageUploader
+                  householdId={householdId}
+                  plantId={plantId}
+                />
+              ) : (
+                <PlantImageButton
+                  onLongPress={() => handleDeleteImage(slide.item.id)}
+                >
+                  <PlantImage source={{ uri: slide.item.uri }} />
+                </PlantImageButton>
+              )}
+            </Slide>
+          )}
+          ref={carouselRef as any}
+        />
+      )}
+    </View>
+  );
+};
+
+const PlantImageUploader = ({
+  householdId,
+  plantId,
+}: {
+  householdId: string;
+  plantId: string;
+}) => {
+  const handleSubmit = (imageInfo: ImageInfo) => {
+    pipe(savePlantImage(householdId, plantId, O.fromNullable(imageInfo)))();
+  };
+
+  return <CameraButton onChange={handleSubmit} />;
+};
+
+const CameraButton = styled(CameraField)`
+  border-radius: ${symbols.borderRadius.large};
+`;
+
+const PaddingContainer = styled.View`
+  padding-horizontal: ${symbols.spacing.appHorizontal};
+`;
 
 const LocationLabel = styled(Label)`
   margin-left: ${symbols.spacing._8}px;
 `;
 
-const PlantImage = styled.Image`
-  border-radius: ${symbols.borderRadius.large}px;
-  width: 100%;
-  aspect-ratio: 2;
+const Slide = styled.View`
+  width: ${itemWidth};
+  padding-horizontal: ${symbols.spacing._4}px;
 `;
 
-const PlantImagePlaceholder = styled.View`
-  background-color: ${symbols.colors.nearWhite};
+const PlantImageButton = styled.TouchableOpacity`
+  width: ${slideWidth}px;
+`;
+
+const PlantImage = styled.Image`
+  width: ${slideWidth}px;
   border-radius: ${symbols.borderRadius.large}px;
-  width: 100%;
   aspect-ratio: ${symbols.aspectRatio.plantImage};
 `;
 

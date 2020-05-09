@@ -6,10 +6,16 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { selectHouseholdById } from "../../households/store/state";
 import { database, photosDatabase } from "./database";
 import { deleteTodosByPlant } from "../../todos/store/effects";
-import { selectPlantByHouseholdId } from "./state";
+import {
+  selectPlantByHouseholdId,
+  selectMostRecentPlantPhoto,
+  isPlantAvatarThisPhoto,
+} from "./state";
 import { BaseModel } from "../../../models/base";
 import { ImageModel } from "../../../models/image";
 import { PhotoModel, makePhotoModel } from "../../../models/photo";
+import firebase from "firebase";
+import { log } from "../../../fp/log";
 
 type Fields = Omit<PlantModel, keyof BaseModel | "householdId" | "avatar"> & {
   avatar: ImageModel;
@@ -42,7 +48,7 @@ export const upsertPlantForHousehold = (
       )
     ),
     TE.chainFirst((plant) =>
-      uploadPlantImage(householdId, plant.id, O.fromNullable(avatar))
+      savePlantImage(householdId, plant.id, O.fromNullable(avatar))
     )
   );
 
@@ -60,7 +66,11 @@ export const upsertPlantForHousehold = (
  * Maybe a default flag on an image? Might be good to allow users to choose a primary image
  */
 
-export const uploadPlantImage = (
+/**
+ * Sets a photo in to storage and assigns it to the plant's primary avatar
+ * NB: assumes the image is already in firebase storage
+ */
+export const savePlantImage = (
   householdId: string,
   plantId: string,
   image: O.Option<ImageModel>
@@ -71,9 +81,7 @@ export const uploadPlantImage = (
     TE.chain((img) =>
       TE.tryCatch(
         async () => {
-          const photoToSave: PhotoModel = {
-            ...makePhotoModel(img),
-          };
+          const photoToSave = makePhotoModel(img);
           await photosDatabase(householdId)(plantId)
             .doc(photoToSave.id)
             .set(photoToSave);
@@ -82,16 +90,89 @@ export const uploadPlantImage = (
         () => "BAD_REQUEST" as IErr
       )
     ),
-    TE.chainFirst((photo) =>
-      TE.tryCatch(
-        async () => {
-          await database(householdId)
-            .doc(plantId)
-            .set({ avatar: photo }, { merge: true });
-        },
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+    TE.chainFirst(setPhotoAsPlantAvatar(householdId, plantId))
+  );
+
+export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
+  photo: PhotoModel
+) =>
+  TE.tryCatch(
+    async () => {
+      await database(householdId)
+        .doc(plantId)
+        .set({ avatar: photo }, { merge: true });
+    },
+    () => "BAD_REQUEST" as IErr
+  );
+
+/**
+ * Deletes a plant's image from the database.
+ * Also checks whether the deleted photo is the plant's primary avatar, if it is
+ * it'll set the next most recent photo as the primary avatar (if there is
+ * another one!)
+ *
+ * NB: doesn't remove the image from firebase storage.. should probably do that.
+ */
+export const deletePlantPhoto = (householdId: string, plantId: string) => (
+  photoId: string
+): TE.TaskEither<IErr, void> =>
+  pipe(
+    TE.tryCatch(
+      async () => {
+        await photosDatabase(householdId)(plantId).doc(photoId).delete();
+      },
+      () => "BAD_REQUEST" as IErr
+    ),
+    TE.chain(() => {
+      if (isPlantAvatarThisPhoto(householdId, plantId)(photoId)) {
+        return pipe(
+          deletePlantAvatar(householdId, plantId)(),
+          TE.chain(() =>
+            setMostRecentPlantPhotoAsPrimary(householdId, plantId, photoId)
+          )
+        );
+      }
+      return TE.right(void null); // no-op if the deleted photo isn't the primary
+    })
+  );
+
+/**
+ * Sets the most recent plant photo as the primary avatar for the plant.
+ * Takes an optional ID to filter by (this is useful for when deleting a photo
+ * and the state hasn't had a chance to become consistent yet).
+ *
+ * NB: this is defensive in the sense that it'll only set the most recent photo
+ * if there are photos.
+ */
+export const setMostRecentPlantPhotoAsPrimary = (
+  householdId: string,
+  plantId: string,
+  excludePhotoId?: string
+): TE.TaskEither<IErr, void> =>
+  pipe(
+    selectMostRecentPlantPhoto(plantId, excludePhotoId),
+    log("Selected the most recent photo"),
+    TE.fromOption(() => "NOT_FOUND" as IErr),
+    log("Kicking off setting photo as plant avatar"),
+    TE.chain(setPhotoAsPlantAvatar(householdId, plantId))
+  );
+
+/**
+ * Deletes the avatar property from the plant.
+ * NB: does not remove from the plant's photos subcollection, nor does it
+ * actually remove the photo from firebase storage
+ */
+export const deletePlantAvatar = (householdId: string, plantId: string) => () =>
+  TE.tryCatch(
+    async () => {
+      await database(householdId)
+        .doc(plantId)
+        .set(
+          { avatar: firebase.firestore.FieldValue.delete() },
+          { merge: true }
+        );
+    },
+    () => "BAD_REQUEST" as IErr
   );
 
 export const deletePlantByHouseholdId = (householdId: string) => (

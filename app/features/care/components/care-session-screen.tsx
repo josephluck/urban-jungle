@@ -13,6 +13,7 @@ import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { TodoOverview } from "../../../components/todo-overview";
 import { TodoModel } from "../../../models/todo";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
@@ -24,7 +25,6 @@ import {
 } from "../../todos/store/state";
 import { createCareForPlant } from "../store/effects";
 import { createCareRoute } from "./care-screen";
-import { TodoOverview } from "../../../components/todo-overview";
 
 export const CareSessionScreen = ({
   navigation,
@@ -122,12 +122,7 @@ export const CareSessionScreen = ({
           const todoIsDone = doneTodoIds.includes(slide.item.id);
           return (
             <Slide key={slide.item.id}>
-              <ScrollView
-                style={{ flex: 1 }}
-                contentContainerStyle={{
-                  paddingHorizontal: symbols.spacing.appHorizontal,
-                }}
-              >
+              <ScrollView style={{ flex: 1 }}>
                 {pipe(
                   slide.item.plant,
                   O.fold(

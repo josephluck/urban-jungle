@@ -67,11 +67,12 @@ export const CameraField = ({
 
   // TODO: progress bar / loading indicator...
   return (
-    <Container style={style}>
+    <>
       {label ? <Label>{label}</Label> : null}
       <ContainerButton
         disabled={hasValue || saving}
         onPress={handleLaunchCamera}
+        style={style}
       >
         {hasValue && value ? (
           <TakenPictureContainer>
@@ -86,7 +87,7 @@ export const CameraField = ({
 
         {touched && error ? <ErrorText>{error}</ErrorText> : null}
       </ContainerButton>
-    </Container>
+    </>
   );
 };
 
@@ -135,7 +136,6 @@ const RetryButton = styled.TouchableOpacity`
 `;
 
 const TakenPicture = styled.Image`
-  border-radius: ${symbols.borderRadius.small}px;
   width: 100%;
   aspect-ratio: ${16 / 9};
 `;

@@ -2,30 +2,32 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { ContextMenuButton } from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
 import { PlantOverview } from "../../../components/plant-overview";
 import { SubHeading } from "../../../components/typography";
+import { makeImageModel } from "../../../models/image";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
+import { createTodoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
+import { deletePlantByHouseholdId } from "../store/effects";
 import {
   selectMostLovedByForPlant,
+  selectPhotosForPlant,
   selectPlantByHouseholdId,
 } from "../store/state";
+import { HouseholdPlantsPhotosSubscription } from "../subscriptions/plant-photos";
 import { managePlantRoute } from "./manage-plant-screen";
-import { createTodoRoute } from "../../todos/components/todo-screen";
-import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
-import { ContextMenuButton } from "../../../components/context-menu";
-import { deletePlantByHouseholdId } from "../store/effects";
-import { makeImageModel } from "../../../models/image";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const plantId = navigation.getParam(PLANT_ID);
@@ -58,6 +60,8 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
     () => selectMostLovedByForPlant(selectedHouseholdId)(plantId),
     [plantId, selectedHouseholdId]
   );
+
+  const photos = useStore(() => selectPhotosForPlant(plantId), [plantId]);
 
   const stickyHeaderIndices = O.isSome(mostLovedBy) ? [1, 3, 5] : [1, 3];
 
@@ -126,79 +130,79 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
         />
       }
     >
-      <ContentContainer>
-        {pipe(
-          plant,
-          O.fold(
-            () => null,
-            (plant) => (
-              <>
-                <PlantOverview
-                  name={plant.name}
-                  location={plant.location}
-                  avatar={pipe(
-                    O.fromNullable(plant.avatar),
-                    O.map((avatar) => avatar.uri),
-                    O.getOrElse(() => "")
-                  )}
-                />
-                <SectionHeading>
-                  <SubHeading weight="bold">Todos</SubHeading>
-                  <Button
-                    onPress={handleAddNewTodo}
-                    style={{ marginLeft: symbols.spacing._16 }}
+      {pipe(
+        plant,
+        O.fold(
+          () => null,
+          (plant) => (
+            <>
+              <HouseholdPlantsPhotosSubscription
+                plantId={plantId}
+                householdId={plant.householdId}
+              />
+              <PlantOverview
+                name={plant.name}
+                location={plant.location}
+                photos={photos}
+                plantId={plant.id}
+                householdId={plant.householdId}
+              />
+              <SectionHeading>
+                <SubHeading weight="bold">Todos</SubHeading>
+                <Button
+                  onPress={handleAddNewTodo}
+                  style={{ marginLeft: symbols.spacing._16 }}
+                >
+                  Add
+                </Button>
+              </SectionHeading>
+              <SectionContent>
+                {todos.map((todo) => (
+                  <TouchableOpacity
+                    key={todo.id}
+                    onPress={() =>
+                      navigation.navigate(
+                        createTodoRoute(todo.plantId, todo.id)
+                      )
+                    }
                   >
-                    Add
-                  </Button>
-                </SectionHeading>
-                <View>
-                  {todos.map((todo) => (
-                    <TouchableOpacity
-                      key={todo.id}
-                      onPress={() =>
-                        navigation.navigate(
-                          createTodoRoute(todo.plantId, todo.id)
-                        )
-                      }
-                    >
-                      <ListItem title={todo.title} />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                {pipe(
-                  mostLovedBy,
-                  O.fold(
-                    () => null,
-                    (profile) => [
-                      <SectionHeading key="most-loved-by-heading">
-                        <SubHeading weight="bold">Most loved by</SubHeading>
-                      </SectionHeading>,
-                      <View key="most-loved-by">
-                        <ListItem title={profile.name} image={profile.avatar} />
-                      </View>,
-                    ]
-                  )
-                )}
-                <SectionHeading>
-                  <SubHeading weight="bold">History</SubHeading>
-                </SectionHeading>
-                <View>
-                  {cares.map((care) => (
-                    <ListItem
-                      key={care.id}
-                      image={care.profile.avatar}
-                      title={care.todo.title}
-                      detail={`By ${care.profile.name} on ${moment(
-                        care.dateCreated.toDate()
-                      ).format("Do MMM YY")}`}
-                    />
-                  ))}
-                </View>
-              </>
-            )
+                    <ListItem title={todo.title} />
+                  </TouchableOpacity>
+                ))}
+              </SectionContent>
+              {pipe(
+                mostLovedBy,
+                O.fold(
+                  () => null,
+                  (profile) => [
+                    <SectionHeading key="most-loved-by-heading">
+                      <SubHeading weight="bold">Most loved by</SubHeading>
+                    </SectionHeading>,
+                    <SectionContent key="most-loved-by">
+                      <ListItem title={profile.name} image={profile.avatar} />
+                    </SectionContent>,
+                  ]
+                )
+              )}
+              <SectionHeading>
+                <SubHeading weight="bold">History</SubHeading>
+              </SectionHeading>
+              <SectionContent>
+                {cares.map((care) => (
+                  <ListItem
+                    key={care.id}
+                    image={care.profile.avatar}
+                    title={care.todo.title}
+                    detail={`By ${care.profile.name} on ${moment(
+                      care.dateCreated.toDate()
+                    ).format("Do MMM YY")}`}
+                  />
+                ))}
+              </SectionContent>
+            </>
           )
-        )}
-      </ContentContainer>
+        )
+      )}
     </BackableScreenLayout>
   );
 };
@@ -218,9 +222,9 @@ const SectionHeading = styled.View`
   justify-content: space-between;
   padding-vertical: ${symbols.spacing._16}px;
   background-color: ${symbols.colors.appBackground};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;
 
-const ContentContainer = styled.View`
-  flex: 1;
+const SectionContent = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;

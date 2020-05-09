@@ -4,10 +4,18 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { CareModel } from "../models/care";
 import { HouseholdModel } from "../models/household";
-import { CareId, HouseholdId, PlantId, TodoId, UserId } from "../models/ids";
+import {
+  CareId,
+  HouseholdId,
+  PlantId,
+  TodoId,
+  UserId,
+  PhotoId,
+} from "../models/ids";
 import { PlantModel } from "../models/plant";
 import { ProfileModel } from "../models/profile";
 import { TodoModel } from "../models/todo";
+import { PhotoModel } from "../models/photo";
 
 interface AuthState {
   initializing: boolean;
@@ -25,6 +33,7 @@ interface HouseholdsState {
 
 interface PlantsState {
   byHouseholdId: Record<HouseholdId, Record<PlantId, PlantModel>>;
+  photosById: Record<PlantId, Record<PhotoId, PhotoModel>>;
 }
 
 interface CaresState {
@@ -58,6 +67,7 @@ export const defaultState: State = {
   },
   plants: {
     byHouseholdId: {},
+    photosById: {},
   },
   cares: {
     byHouseholdId: {},
@@ -68,6 +78,8 @@ export const defaultState: State = {
 };
 
 export const store = stately<State>(defaultState);
+
+export const logGlobalState = store.createEffect(console.log);
 
 export const resetGlobalState = store.createMutator((s) => {
   s = defaultState;
