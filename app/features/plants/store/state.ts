@@ -5,7 +5,7 @@ import { selectCaresForPlant } from "../../care/store/state";
 import { selectProfileById2 } from "../../profiles/store/state";
 import { normalizedStateFactory } from "../../../store/factory";
 import { PhotoModel } from "../../../models/photo";
-import { store } from "../../../store/state";
+import { store, State } from "../../../store/state";
 import { sortByMostRecent } from "../../../utils/sort";
 
 const methods = normalizedStateFactory<PlantModel>("plants");
@@ -17,7 +17,22 @@ export const selectPlantByHouseholdId = methods.select;
 export const selectPlantsByIds = methods.selectManyByIds;
 
 export const upsertPlant = methods.upsert;
-export const upsertPlants = methods.upsertMany;
+export const upsertPlants = store.createSelector(
+  (state: State, householdId: string, plants: PlantModel[]) => {
+    plants.forEach((plant) => {
+      if (!state.plants.byHouseholdId[householdId]) {
+        state.plants.byHouseholdId[householdId] = {};
+      }
+      state.plants.byHouseholdId[householdId][plant.id] = plant;
+      if (plant.avatar) {
+        if (!state.plants.photosById[plant.id]) {
+          state.plants.photosById[plant.id] = {};
+        }
+        state.plants.photosById[plant.id][plant.avatar.id] = plant.avatar;
+      }
+    });
+  }
+);
 export const removePlant = methods.remove;
 export const removePlants = methods.removeMany;
 
