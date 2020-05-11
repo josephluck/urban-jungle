@@ -167,6 +167,7 @@ export const careSessionRoute = makeNavigationRoute<{
 }>({
   screen: CareSessionScreen,
   routeName: "CARE_SESSION_SCREEN",
+  authenticated: true,
   defaultParams: {
     todoIds: [],
   },

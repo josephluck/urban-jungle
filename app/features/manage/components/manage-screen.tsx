@@ -66,6 +66,7 @@ export const ManageScreen = () => {
 export const manageRoute = makeNavigationRoute({
   screen: ManageScreen,
   routeName: "MANAGE_SCREEN",
+  authenticated: true,
 });
 
 const ScreenContainer = styled.View`

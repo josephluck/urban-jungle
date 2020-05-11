@@ -10,7 +10,6 @@ import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
 import { SignIn, SIGN_IN_SCREEN } from "../features/auth/components/sign-in";
 import { SignUp, SIGN_UP_SCREEN } from "../features/auth/components/sign-up";
-import { authGuard } from "../features/auth/components/splash";
 import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { manageRoute } from "../features/manage/components/manage-screen";
@@ -24,8 +23,8 @@ import { logGlobalState } from "../store/state";
 
 const CareStack = createStackNavigator(
   {
-    [careRoute.routeName]: authGuard(careRoute.screen),
-    [careSessionRoute.routeName]: authGuard(careSessionRoute.screen),
+    [careRoute.routeName]: careRoute.screen,
+    [careSessionRoute.routeName]: careSessionRoute.screen,
   },
   {
     initialRouteName: careRoute.routeName,
@@ -38,11 +37,11 @@ const CareStack = createStackNavigator(
 
 const PlantsStack = createStackNavigator(
   {
-    [plantsRoute.routeName]: authGuard(plantsRoute.screen),
-    [plantRoute.routeName]: authGuard(plantRoute.screen),
-    [managePlantRoute.routeName]: authGuard(managePlantRoute.screen),
-    [todoRoute.routeName]: authGuard(todoRoute.screen),
-    [manageTodoRoute.routeName]: authGuard(manageTodoRoute.screen),
+    [plantsRoute.routeName]: plantsRoute.screen,
+    [plantRoute.routeName]: plantRoute.screen,
+    [managePlantRoute.routeName]: managePlantRoute.screen,
+    [todoRoute.routeName]: todoRoute.screen,
+    [manageTodoRoute.routeName]: manageTodoRoute.screen,
   },
   {
     initialRouteName: plantsRoute.routeName,
@@ -55,7 +54,7 @@ const PlantsStack = createStackNavigator(
 
 const ManageStack = createStackNavigator(
   {
-    [manageRoute.routeName]: authGuard(manageRoute.screen),
+    [manageRoute.routeName]: manageRoute.screen,
   },
   {
     initialRouteName: manageRoute.routeName,

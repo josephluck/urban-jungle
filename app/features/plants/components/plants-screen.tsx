@@ -77,6 +77,7 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
 export const plantsRoute = makeNavigationRoute({
   screen: PlantsScreen,
   routeName: "PLANTS_SCREEN",
+  authenticated: true,
 });
 
 const ScreenContainer = styled.View`

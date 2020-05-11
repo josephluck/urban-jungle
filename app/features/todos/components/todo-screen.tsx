@@ -153,6 +153,7 @@ export const todoRoute = makeNavigationRoute<{
 }>({
   screen: TodoScreen,
   routeName: "TODO_SCREEN",
+  authenticated: true,
   defaultParams: {
     todoId: "",
     plantId: "",

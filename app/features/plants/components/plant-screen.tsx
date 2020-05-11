@@ -222,6 +222,7 @@ export const plantRoute = makeNavigationRoute<{
 }>({
   screen: PlantScreen,
   routeName: "PLANT_SCREEN",
+  authenticated: true,
   defaultParams: {
     plantId: "",
   },

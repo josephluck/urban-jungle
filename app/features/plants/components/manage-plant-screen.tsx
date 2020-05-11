@@ -127,6 +127,7 @@ type ManagePlantRouteParams = {
 export const managePlantRoute = makeNavigationRoute<ManagePlantRouteParams>({
   screen: ManagePlantScreen,
   routeName: "MANAGE_PLANT_SCREEN",
+  authenticated: true,
   defaultParams: {
     plantId: "",
     name: "",

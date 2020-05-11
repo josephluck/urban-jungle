@@ -1,9 +1,10 @@
 import {
+  NavigationComponent,
   NavigationParams,
   NavigationRoute,
-  NavigationComponent,
 } from "react-navigation";
 import { StackNavigationProp } from "react-navigation-stack/lib/typescript/src/vendor/types";
+import { authGuard } from "./auth-guard";
 
 type NavigationSingleton = StackNavigationProp<
   NavigationRoute<NavigationParams>,
@@ -22,17 +23,19 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
   routeName,
   screen,
   defaultParams = {} as Params,
-  serializeParams = id,
+  serializeParams = id as SerializeParams<Params>,
   deserializeParams = id as DeserializeParams<Params>,
+  authenticated = false,
 }: {
   routeName: string;
   screen: NavigationComponent<any, any>;
   defaultParams?: Params;
   serializeParams?: SerializeParams<Params>;
   deserializeParams?: DeserializeParams<Params>;
+  authenticated?: boolean;
 }) => ({
   routeName,
-  screen,
+  screen: authenticated ? authGuard(screen) : screen,
   getParams: ({ getParam }: NavigationSingleton) => {
     const params = Object.keys(defaultParams).reduce(
       (acc, key) => ({
