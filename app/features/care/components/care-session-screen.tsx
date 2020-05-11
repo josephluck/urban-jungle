@@ -122,7 +122,12 @@ export const CareSessionScreen = ({
           const todoIsDone = doneTodoIds.includes(slide.item.id);
           return (
             <Slide key={slide.item.id}>
-              <ScrollView style={{ flex: 1 }}>
+              <ScrollView
+                style={{
+                  flex: 1,
+                  paddingHorizontal: symbols.spacing.appHorizontal,
+                }}
+              >
                 {pipe(
                   slide.item.plant,
                   O.fold(
