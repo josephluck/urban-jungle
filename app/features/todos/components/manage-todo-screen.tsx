@@ -16,6 +16,7 @@ import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertTodoForPlant } from "../store/effects";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { DualTextPickerField } from "../../../components/dual-text-picker-field";
 
 const monthOptions = [
   "January",
@@ -32,7 +33,31 @@ const monthOptions = [
   "December",
 ].map((label, value) => ({ label, value }));
 
-type Fields = Pick<TodoModel, "title" | "detail" | "activeInMonths">;
+type Fields = Pick<
+  TodoModel,
+  | "title"
+  | "detail"
+  | "activeInMonths"
+  | "recurrenceCount"
+  | "recurrenceInterval"
+>;
+
+type RecurrenceOption = {
+  label: string;
+  value: TodoModel["recurrenceInterval"];
+};
+
+const recurrenceOptions: RecurrenceOption[] = [
+  { label: "Days", value: "days" },
+  {
+    label: "Weeks",
+    value: "weeks",
+  },
+  {
+    label: "Months",
+    value: "months",
+  },
+];
 
 export const ManageTodoScreen = ({
   navigation,
@@ -41,15 +66,26 @@ export const ManageTodoScreen = ({
     navigation
   );
 
-  const { submit, registerTextInput, registerMultiPickerInput } = useForm<
-    Fields
-  >(
+  const {
+    submit,
+    registerTextInput,
+    registerMultiPickerInput,
+    registerDualPickerField,
+  } = useForm<Fields>(
     {
       title: initialFields.title || "",
       detail: initialFields.detail || "",
       activeInMonths: initialFields.activeInMonths || defaultMonths,
+      recurrenceCount: 1,
+      recurrenceInterval: "days",
     },
-    { title: [constraints.isRequired], detail: [], activeInMonths: [] }
+    {
+      title: [constraints.isRequired],
+      detail: [],
+      activeInMonths: [],
+      recurrenceInterval: [constraints.isRequired],
+      recurrenceCount: [constraints.isRequired],
+    }
   );
 
   const selectedHouseholdId_ = useStore(
@@ -93,6 +129,11 @@ export const ManageTodoScreen = ({
       <ContentContainer>
         <TextField label="Title" {...registerTextInput("title")} />
         <TextField label="Detail" multiline {...registerTextInput("detail")} />
+        <DualTextPickerField
+          label="Repeats every"
+          options={recurrenceOptions}
+          {...registerDualPickerField("title", "recurrenceInterval")}
+        />
         <PickerField
           label="Active in"
           options={monthOptions}
@@ -119,17 +160,33 @@ export const manageTodoRoute = makeNavigationRoute<ManageTodoParams>({
     plantId: "",
     activeInMonths: defaultMonths,
   },
-  serializeParams: (params) => ({
-    ...params,
+  serializeParams: ({ recurrenceCount, activeInMonths, ...params }) => ({
+    recurrenceCount: recurrenceCount ? recurrenceCount.toString() : "1",
     activeInMonths: JSON.stringify(
-      params.activeInMonths ? params.activeInMonths : defaultMonths
+      activeInMonths ? activeInMonths : defaultMonths
     ),
-  }),
-  deserializeParams: (params) => ({
     ...params,
-    activeInMonths: deserializeActiveInMonths(params.activeInMonths),
+  }),
+  deserializeParams: ({
+    recurrenceInterval,
+    recurrenceCount,
+    activeInMonths,
+    ...params
+  }) => ({
+    recurrenceCount: recurrenceCount ? parseInt(recurrenceCount) : 1,
+    recurrenceInterval: deserializeRecurrenceInterval(recurrenceInterval),
+    activeInMonths: deserializeActiveInMonths(activeInMonths),
+    ...params,
   }),
 });
+
+const deserializeRecurrenceInterval = (
+  recurrenceInterval: string
+): TodoModel["recurrenceInterval"] =>
+  recurrenceInterval &&
+  recurrenceOptions.map((o) => o.value).includes(recurrenceInterval as any)
+    ? (recurrenceInterval as TodoModel["recurrenceInterval"])
+    : "days";
 
 const deserializeActiveInMonths = (monthsStr: string) => {
   try {

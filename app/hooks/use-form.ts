@@ -11,6 +11,7 @@ import {
 import { TextFieldProps } from "../components/text-field";
 import { CameraFieldProps } from "../components/camera-field";
 import { ImageModel, makeImageModel } from "../models/image";
+import { DualTextPickerFieldProps } from "../components/dual-text-picker-field";
 
 type Fields = Record<string, any>;
 
@@ -175,6 +176,34 @@ export function useForm<Fs extends Fields>(
     };
   };
 
+  const registerDualPickerField = <
+    Fk extends StringKeys,
+    Fk2 extends SinglePickerKeys
+  >(
+    textFieldKey: Fk,
+    pickerFieldKey: Fk2
+  ): Pick<
+    DualTextPickerFieldProps<Fs[Fk2]>,
+    | "textValue"
+    | "pickerValue"
+    | "onTextChange"
+    | "onPickerChange"
+    | "error"
+    | "touched"
+    | "onBlur"
+  > => ({
+    textValue: values[textFieldKey],
+    pickerValue: values[pickerFieldKey],
+    onTextChange: registerOnChangeText(textFieldKey),
+    onPickerChange: registerOnChangePickerSingle(pickerFieldKey),
+    error: errors[textFieldKey] || errors[pickerFieldKey],
+    touched: touched[textFieldKey] || touched[pickerFieldKey],
+    onBlur: () => {
+      registerBlur(textFieldKey)();
+      registerBlur(pickerFieldKey)();
+    },
+  });
+
   return {
     values,
     touched,
@@ -182,12 +211,13 @@ export function useForm<Fs extends Fields>(
     validate,
     setValue,
     setValues: setValuesAndValidate,
+    reset,
+    submit,
     registerTextInput,
     registerMultiPickerInput,
     registerSinglePickerInput,
-    reset,
-    submit,
     registerCameraField,
+    registerDualPickerField,
   };
 }
 

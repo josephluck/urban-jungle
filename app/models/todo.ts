@@ -16,7 +16,7 @@ export interface TodoModel extends BaseModel {
   /**
    * When this todo should recur
    */
-  recurrenceInterval: "months" | "days";
+  recurrenceInterval: "months" | "weeks" | "days";
   /**
    * The months of the year that this todo is active for.
    * Can be used to turn off this todo for months of the year that it's not
