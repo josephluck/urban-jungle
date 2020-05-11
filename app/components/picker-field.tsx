@@ -1,9 +1,9 @@
 import React from "react";
+import { StyleProp, ViewProps } from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
-import { TertiaryText } from "./typography";
+import { FormField } from "./form-field";
 import { Label } from "./label";
-import { StyleProp, ViewProps } from "react-native";
 
 export type PickerValue = string | number | undefined;
 
@@ -68,8 +68,7 @@ export function PickerField<Pv extends PickerValue>(
   };
 
   return (
-    <Container style={props.style}>
-      {props.label ? <FieldLabel>{props.label}</FieldLabel> : null}
+    <FormField label={props.label} error={props.error} touched={props.touched}>
       <OptionsContainer>
         {props.options.map((option) => (
           <Option
@@ -90,18 +89,9 @@ export function PickerField<Pv extends PickerValue>(
           </Option>
         ))}
       </OptionsContainer>
-      {props.touched && props.error ? <Error>{props.error}</Error> : null}
-    </Container>
+    </FormField>
   );
 }
-
-const Container = styled.View`
-  margin-bottom: ${symbols.spacing._20};
-`;
-
-const FieldLabel = styled(TertiaryText)`
-  margin-bottom: ${symbols.spacing._6};
-`;
 
 const OptionsContainer = styled.View`
   flex-direction: row;
@@ -119,9 +109,4 @@ const OptionLabel = styled(Label)<{ selected: boolean }>`
   border-width: 2;
   border-color: ${(props) =>
     props.selected ? symbols.colors.darkGreen : symbols.colors.nearWhite};
-`;
-
-const Error = styled(TertiaryText)`
-  margin-top: ${symbols.spacing._6};
-  color: ${symbols.colors.darkRed};
 `;

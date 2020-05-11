@@ -1,5 +1,5 @@
-import * as O from "fp-ts/lib/Option";
 import * as Permissions from "expo-permissions";
+import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
@@ -7,11 +7,11 @@ import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import { takeAndUploadPicture } from "../features/photos/camera";
 import { StorageEntityType } from "../features/photos/storage";
+import { ImageModel } from "../models/image";
 import { symbols } from "../theme";
 import { IErr } from "../utils/err";
+import { FormField } from "./form-field";
 import { Icon } from "./icon";
-import { TertiaryText } from "./typography";
-import { ImageModel } from "../models/image";
 
 export type CameraFieldProps = {
   value?: ImageModel;
@@ -67,8 +67,7 @@ export const CameraField = ({
 
   // TODO: progress bar / loading indicator...
   return (
-    <>
-      {label ? <Label>{label}</Label> : null}
+    <FormField label={label} error={error} touched={touched}>
       <ContainerButton
         disabled={hasValue || saving}
         onPress={handleLaunchCamera}
@@ -84,10 +83,8 @@ export const CameraField = ({
         ) : (
           <Icon icon="camera" size={36} color={symbols.colors.midOffGray} />
         )}
-
-        {touched && error ? <ErrorText>{error}</ErrorText> : null}
       </ContainerButton>
-    </>
+    </FormField>
   );
 };
 
@@ -101,17 +98,6 @@ const obtainCameraPermissions: TE.TaskEither<IErr, void> = TE.tryCatch(
   },
   () => "BAD_REQUEST" as IErr
 );
-
-const Label = styled(TertiaryText)`
-  margin-bottom: ${symbols.spacing._6};
-`;
-
-const ErrorText = styled(TertiaryText)`
-  margin-top: ${symbols.spacing._6};
-  color: ${symbols.colors.darkRed};
-`;
-
-const Container = styled.View``;
 
 const ContainerButton = styled.TouchableOpacity`
   align-items: center;

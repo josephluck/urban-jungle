@@ -25,6 +25,8 @@ export function useForm<Fs extends Fields>(
 ) {
   type StringKeys = FilterTypeForKeys<Fs, string>;
 
+  type NumberKeys = FilterTypeForKeys<Fs, number>;
+
   type MultiPickerKeys = FilterTypeForKeys<Fs, number[] | string[]>;
 
   // TODO: support optional single picker via a different registration that picks types that match | undefined

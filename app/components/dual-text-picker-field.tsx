@@ -1,8 +1,8 @@
 import React from "react";
-import { StyleProp, ViewProps, Picker } from "react-native";
+import { Picker, StyleProp, ViewProps } from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
-import { TertiaryText } from "./typography";
+import { FormField } from "./form-field";
 import { Icon } from "./icon";
 
 export type DualTextPickerFieldProps<Pv extends any> = {
@@ -35,8 +35,7 @@ export const DualTextPickerField = <Pv extends any>({
   options,
   onBlur,
 }: DualTextPickerFieldProps<Pv>) => (
-  <Container style={style}>
-    {label ? <Label>{label}</Label> : null}
+  <FormField style={style} label={label} touched={touched} error={error}>
     <InputsContainer>
       <Input onChangeText={onTextChange} onBlur={onBlur} value={textValue} />
       <StyledPicker onValueChange={onPickerChange} selectedValue={pickerValue}>
@@ -52,17 +51,8 @@ export const DualTextPickerField = <Pv extends any>({
         <Icon size={16} icon="chevron-down" />
       </PickerIconWrapper>
     </InputsContainer>
-    {touched && error ? <ErrorText>{error}</ErrorText> : null}
-  </Container>
+  </FormField>
 );
-
-const Container = styled.View`
-  margin-bottom: ${symbols.spacing._20};
-`;
-
-const Label = styled(TertiaryText)`
-  margin-bottom: ${symbols.spacing._6};
-`;
 
 const InputsContainer = styled.View`
   background-color: ${symbols.colors.nearWhite};
@@ -106,9 +96,4 @@ const PickerIconWrapper = styled.View`
   justify-content: center;
   align-items: center;
   padding-right: ${symbols.spacing._8};
-`;
-
-const ErrorText = styled(TertiaryText)`
-  margin-top: ${symbols.spacing._6};
-  color: ${symbols.colors.darkRed};
 `;
