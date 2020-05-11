@@ -5,18 +5,18 @@ import React, { useCallback } from "react";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { DualNumberPickerField } from "../../../components/dual-number-picker-field";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { TodoModel } from "../../../models/todo";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertTodoForPlant } from "../store/effects";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { DualTextPickerField } from "../../../components/dual-text-picker-field";
 
 const monthOptions = [
   "January",
@@ -66,18 +66,20 @@ export const ManageTodoScreen = ({
     navigation
   );
 
+  console.log({ initialFields });
+
   const {
     submit,
     registerTextInput,
     registerMultiPickerInput,
-    registerDualPickerField,
+    registerDualNumberPickerField,
   } = useForm<Fields>(
     {
       title: initialFields.title || "",
       detail: initialFields.detail || "",
       activeInMonths: initialFields.activeInMonths || defaultMonths,
-      recurrenceCount: 1,
-      recurrenceInterval: "days",
+      recurrenceCount: initialFields.recurrenceCount || 1,
+      recurrenceInterval: initialFields.recurrenceInterval || "days",
     },
     {
       title: [constraints.isRequired],
@@ -129,10 +131,13 @@ export const ManageTodoScreen = ({
       <ContentContainer>
         <TextField label="Title" {...registerTextInput("title")} />
         <TextField label="Detail" multiline {...registerTextInput("detail")} />
-        <DualTextPickerField
+        <DualNumberPickerField
           label="Repeats every"
           options={recurrenceOptions}
-          {...registerDualPickerField("title", "recurrenceInterval")}
+          {...registerDualNumberPickerField(
+            "recurrenceCount",
+            "recurrenceInterval"
+          )}
         />
         <PickerField
           label="Active in"
@@ -158,6 +163,11 @@ export const manageTodoRoute = makeNavigationRoute<ManageTodoParams>({
   authenticated: true,
   defaultParams: {
     plantId: "",
+    todoId: "",
+    recurrenceInterval: "days",
+    recurrenceCount: 1,
+    title: "",
+    detail: "",
     activeInMonths: defaultMonths,
   },
   serializeParams: ({ recurrenceCount, activeInMonths, ...params }) => ({

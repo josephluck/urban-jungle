@@ -22,14 +22,14 @@ type DeserializeParams<Params extends Record<string, any>> = (
 export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
   routeName,
   screen,
-  defaultParams = {} as Params,
+  defaultParams = {} as Required<Params>,
   serializeParams = id as SerializeParams<Params>,
   deserializeParams = id as DeserializeParams<Params>,
   authenticated = false,
 }: {
   routeName: string;
   screen: NavigationComponent<any, any>;
-  defaultParams?: Params;
+  defaultParams?: Required<Params>;
   serializeParams?: SerializeParams<Params>;
   deserializeParams?: DeserializeParams<Params>;
   authenticated?: boolean;

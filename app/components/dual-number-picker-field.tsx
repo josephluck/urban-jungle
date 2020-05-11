@@ -5,14 +5,14 @@ import { symbols } from "../theme";
 import { FormField } from "./form-field";
 import { Icon } from "./icon";
 
-export type DualTextPickerFieldProps<Pv extends any> = {
+export type DualNumberPickerFieldProps<Pv extends any> = {
   label?: string;
   error?: string;
   style?: StyleProp<ViewProps>;
   touched?: boolean;
-  onChangeText?: (value: string) => void;
+  onChangeNumber?: (value: number) => void;
   onChangePicker?: (value: Pv) => void;
-  textValue: string;
+  numberValue: number;
   pickerValue: Pv;
   options: PickerOption<Pv>[];
   onBlur?: () => void;
@@ -23,21 +23,32 @@ type PickerOption<Pv> = {
   value: Pv;
 };
 
-export const DualTextPickerField = <Pv extends any>({
+export const DualNumberPickerField = <Pv extends any>({
   label,
   style,
   error,
   touched,
-  onChangeText,
+  onChangeNumber,
   onChangePicker,
-  textValue,
+  numberValue,
   pickerValue,
   options,
   onBlur,
-}: DualTextPickerFieldProps<Pv>) => (
+}: DualNumberPickerFieldProps<Pv>) => (
   <FormField style={style} label={label} touched={touched} error={error}>
     <InputsContainer>
-      <Input onChangeText={onChangeText} onBlur={onBlur} value={textValue} />
+      <Input
+        onBlur={onBlur}
+        value={(numberValue || "").toString()}
+        onChangeText={(val) => {
+          if (onChangeNumber) {
+            const asNumber = parseInt(val);
+            const isValidNumber =
+              Number.isInteger(asNumber) && !Number.isNaN(asNumber);
+            onChangeNumber(isValidNumber ? asNumber : 0);
+          }
+        }}
+      />
       <StyledPicker onValueChange={onChangePicker} selectedValue={pickerValue}>
         {options.map((option) => (
           <Picker.Item

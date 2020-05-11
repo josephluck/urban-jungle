@@ -1,18 +1,19 @@
-import * as O from "fp-ts/lib/Option";
-import { makeValidator, FieldConstraintsMap } from "@josephluck/valley/lib/fp";
-import { useState } from "react";
-import { pipe } from "fp-ts/lib/pipeable";
+import { FieldConstraintsMap, makeValidator } from "@josephluck/valley/lib/fp";
 import * as E from "fp-ts/lib/Either";
-import {
-  SinglePickerFieldProps,
-  MultiPickerFieldProps,
-  PickerValue,
-} from "../components/picker-field";
-import { TextFieldProps } from "../components/text-field";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import { useState } from "react";
 import { CameraFieldProps } from "../components/camera-field";
-import { ImageModel, makeImageModel } from "../models/image";
+import { DualNumberPickerFieldProps } from "../components/dual-number-picker-field";
 import { DualTextPickerFieldProps } from "../components/dual-text-picker-field";
 import { NumberFieldProps } from "../components/number-field";
+import {
+  MultiPickerFieldProps,
+  PickerValue,
+  SinglePickerFieldProps,
+} from "../components/picker-field";
+import { TextFieldProps } from "../components/text-field";
+import { ImageModel, makeImageModel } from "../models/image";
 
 type Fields = Record<string, any>;
 
@@ -196,7 +197,7 @@ export function useForm<Fs extends Fields>(
     };
   };
 
-  const registerDualPickerField = <
+  const registerDualTextPickerField = <
     Fk extends StringKeys,
     Fk2 extends SinglePickerKeys
   >(
@@ -206,20 +207,48 @@ export function useForm<Fs extends Fields>(
     DualTextPickerFieldProps<Fs[Fk2]>,
     | "textValue"
     | "pickerValue"
-    | "onTextChange"
-    | "onPickerChange"
+    | "onChangeText"
+    | "onChangePicker"
     | "error"
     | "touched"
     | "onBlur"
   > => ({
     textValue: values[textFieldKey],
     pickerValue: values[pickerFieldKey],
-    onTextChange: registerOnChangeText(textFieldKey),
-    onPickerChange: registerOnChangePickerSingle(pickerFieldKey),
+    onChangeText: registerOnChangeText(textFieldKey),
+    onChangePicker: registerOnChangePickerSingle(pickerFieldKey),
     error: errors[textFieldKey] || errors[pickerFieldKey],
     touched: touched[textFieldKey] || touched[pickerFieldKey],
     onBlur: () => {
       registerBlur(textFieldKey)();
+      registerBlur(pickerFieldKey)();
+    },
+  });
+
+  const registerDualNumberPickerField = <
+    Fk extends NumberKeys,
+    Fk2 extends SinglePickerKeys
+  >(
+    numberFieldKey: Fk,
+    pickerFieldKey: Fk2
+  ): Pick<
+    DualNumberPickerFieldProps<Fs[Fk2]>,
+    | "numberValue"
+    | "pickerValue"
+    | "onChangeNumber"
+    | "onChangePicker"
+    | "error"
+    | "touched"
+    | "onBlur"
+  > => ({
+    numberValue: values[numberFieldKey],
+    pickerValue: values[pickerFieldKey],
+    onChangeNumber: registerOnChangeNumber(numberFieldKey),
+    onChangePicker: registerOnChangePickerSingle(pickerFieldKey),
+    error: errors[numberFieldKey] || errors[pickerFieldKey],
+    touched: touched[numberFieldKey] || touched[pickerFieldKey],
+    onBlur: () => {
+      registerBlur(numberFieldKey)();
       registerBlur(pickerFieldKey)();
     },
   });
@@ -238,7 +267,8 @@ export function useForm<Fs extends Fields>(
     registerMultiPickerInput,
     registerSinglePickerInput,
     registerCameraField,
-    registerDualPickerField,
+    registerDualTextPickerField,
+    registerDualNumberPickerField,
   };
 }
 

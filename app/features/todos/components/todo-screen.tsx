@@ -64,6 +64,7 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
     pipe(
       todo,
       O.map((todoModel) => {
+        console.log("Going to todo", { todoModel });
         manageTodoRoute.navigateTo(navigation, {
           ...todoModel,
           plantId: todoModel.plantId,
