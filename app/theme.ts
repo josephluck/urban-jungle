@@ -119,6 +119,7 @@ const colors = {
   nearWhite: "rgba(235, 236, 240, 1)",
   blackTint08: "rgba(0, 0, 0, 0.8)",
   blackTint04: "rgba(0, 0, 0, 0.4)",
+  whiteTint05: "rgba(247, 247, 248, 0.5)",
   whiteTint01: "rgba(247, 247, 248, 0.1)",
   pureWhite: "rgba(255, 255, 255, 1)",
   paleRed: "rgba(255, 243, 245, 1)",

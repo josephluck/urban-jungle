@@ -19,6 +19,7 @@ import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertPlantForHousehold } from "../store/effects";
 import { selectUniqueLocations } from "../store/state";
+import { runWithUIState } from "../../../store/ui";
 
 type Fields = Required<Pick<PlantModel, "name" | "location">> & {
   avatar: ImageModel;
@@ -62,15 +63,17 @@ export const ManagePlantScreen = ({
 
   const handleSubmit = useCallback(
     () =>
-      pipe(
-        // TODO: extract these two since it'll be a common pattern?
-        TE.fromEither(submit()),
-        TE.mapLeft(() => "BAD_REQUEST" as IErr),
-        TE.chain((plant) =>
-          upsertPlantForHousehold(plant, plantId)(selectedHouseholdId)
-        ),
-        TE.map(() => navigation.goBack())
-      )(),
+      runWithUIState(
+        pipe(
+          // TODO: extract these two since it'll be a common pattern?
+          TE.fromEither(submit()),
+          TE.mapLeft(() => "BAD_REQUEST" as IErr),
+          TE.chain((plant) =>
+            upsertPlantForHousehold(plant, plantId)(selectedHouseholdId)
+          ),
+          TE.map(() => navigation.goBack())
+        )
+      ),
     [selectedHouseholdId, submit]
   );
 

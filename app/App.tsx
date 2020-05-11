@@ -21,6 +21,7 @@ import * as O from "fp-ts/lib/Option";
 import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
 import { ContextMenuProvider, ContextMenu } from "./components/context-menu";
 import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
+import { GlobalLoading } from "./components/global-loading";
 
 // reactotron.configure();
 
@@ -78,6 +79,7 @@ export default () => {
         </AppWrapper>
         <ProfilesSubscription />
         <ContextMenu />
+        <GlobalLoading />
       </ContextMenuProvider>
     </ThemeProvider>
   );

@@ -55,6 +55,9 @@ export interface State {
   cares: CaresState;
   todos: TodosState;
   photos: PhotosState;
+  ui: {
+    loading: boolean;
+  };
 }
 
 export const defaultState: State = {
@@ -80,6 +83,9 @@ export const defaultState: State = {
   },
   photos: {
     byHouseholdId: {},
+  },
+  ui: {
+    loading: false,
   },
 };
 
