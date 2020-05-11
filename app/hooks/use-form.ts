@@ -12,6 +12,7 @@ import { TextFieldProps } from "../components/text-field";
 import { CameraFieldProps } from "../components/camera-field";
 import { ImageModel, makeImageModel } from "../models/image";
 import { DualTextPickerFieldProps } from "../components/dual-text-picker-field";
+import { NumberFieldProps } from "../components/number-field";
 
 type Fields = Record<string, any>;
 
@@ -106,7 +107,14 @@ export function useForm<Fs extends Fields>(
   const registerOnChangeText = <Fk extends keyof Fs>(fieldKey: Fk) => (
     value: string
   ) => {
-    // @ts-ignore - TODO narrow Fk such that it only includes Fk whereby Fs[Fk] === string
+    // @ts-ignore - Argument of type 'string' is not assignable to parameter of type 'Fs[Fk]'
+    setValue(fieldKey, value);
+  };
+
+  const registerOnChangeNumber = <Fk extends keyof Fs>(fieldKey: Fk) => (
+    value: number
+  ) => {
+    // @ts-ignore - Argument of type 'number' is not assignable to parameter of type 'Fs[Fk]'
     setValue(fieldKey, value);
   };
 
@@ -136,6 +144,16 @@ export function useForm<Fs extends Fields>(
     touched: touched[fieldKey],
     onBlur: registerBlur(fieldKey),
     onChangeText: registerOnChangeText(fieldKey),
+  });
+
+  const registerNumberInput = <Fk extends NumberKeys>(
+    fieldKey: Fk
+  ): Partial<NumberFieldProps> => ({
+    value: values[fieldKey],
+    error: errors[fieldKey],
+    touched: touched[fieldKey],
+    onBlur: registerBlur(fieldKey),
+    onChangeNumber: registerOnChangeNumber(fieldKey),
   });
 
   const registerMultiPickerInput = <Fk extends MultiPickerKeys>(
@@ -216,6 +234,7 @@ export function useForm<Fs extends Fields>(
     reset,
     submit,
     registerTextInput,
+    registerNumberInput,
     registerMultiPickerInput,
     registerSinglePickerInput,
     registerCameraField,
