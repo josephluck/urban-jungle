@@ -20,8 +20,8 @@ import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { takeAndUploadPicture } from "../../photos/camera";
-import { createManageTodoRoute } from "../../todos/components/manage-todo-screen";
-import { createTodoRoute } from "../../todos/components/todo-screen";
+import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
+import { todoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
 import { deletePlantByHouseholdId, savePlantImage } from "../store/effects";
 import {
@@ -29,9 +29,10 @@ import {
   selectPlantByHouseholdId,
 } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
-  const plantId = navigation.getParam(PLANT_ID);
+  const { plantId } = plantRoute.getParams(navigation);
 
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
@@ -90,11 +91,7 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   }, [plantId, plant]);
 
   const handleAddNewTodo = useCallback(() => {
-    navigation.navigate(
-      createManageTodoRoute({
-        plantId,
-      })
-    );
+    manageTodoRoute.navigateTo(navigation, { plantId });
   }, [plantId]);
 
   const handleDelete = useCallback(() => {
@@ -173,9 +170,10 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
                   <TouchableOpacity
                     key={todo.id}
                     onPress={() =>
-                      navigation.navigate(
-                        createTodoRoute(todo.plantId, todo.id)
-                      )
+                      todoRoute.navigateTo(navigation, {
+                        plantId: todo.plantId,
+                        todoId: todo.id,
+                      })
                     }
                   >
                     <ListItem title={todo.title} />
@@ -219,13 +217,14 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   );
 };
 
-export const PLANT_SCREEN = "PLANT_SCREEN";
-
-export const PLANT_ID = "PLANT_ID";
-
-export const createPlantRoute = (plantId: string) => ({
-  routeName: PLANT_SCREEN,
-  params: { [PLANT_ID]: plantId },
+export const plantRoute = makeNavigationRoute<{
+  plantId: string;
+}>({
+  screen: PlantScreen,
+  routeName: "PLANT_SCREEN",
+  defaultParams: {
+    plantId: "",
+  },
 });
 
 const SectionHeading = styled.View`

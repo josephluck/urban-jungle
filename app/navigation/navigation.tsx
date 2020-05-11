@@ -11,58 +11,41 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import { SignIn, SIGN_IN_SCREEN } from "../features/auth/components/sign-in";
 import { SignUp, SIGN_UP_SCREEN } from "../features/auth/components/sign-up";
 import { authGuard } from "../features/auth/components/splash";
-import {
-  CareScreen,
-  CARE_SCREEN,
-} from "../features/care/components/care-screen";
-import {
-  CareSessionScreen,
-  CARE_SESSION_SCREEN,
-} from "../features/care/components/care-session-screen";
-import { ManageScreen } from "../features/manage/components/manage";
+import { careRoute } from "../features/care/components/care-screen";
+import { careSessionRoute } from "../features/care/components/care-session-screen";
+import { manageRoute } from "../features/manage/components/manage-screen";
 import { managePlantRoute } from "../features/plants/components/manage-plant-screen";
-import {
-  PlantScreen,
-  PLANT_SCREEN,
-} from "../features/plants/components/plant-screen";
-import { PlantsScreen } from "../features/plants/components/plants-screen";
-import {
-  ManageTodoScreen,
-  MANAGE_TODO_SCREEN,
-} from "../features/todos/components/manage-todo-screen";
-import {
-  TodoScreen,
-  TODO_SCREEN,
-} from "../features/todos/components/todo-screen";
+import { plantRoute } from "../features/plants/components/plant-screen";
+import { plantsRoute } from "../features/plants/components/plants-screen";
+import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
+import { todoRoute } from "../features/todos/components/todo-screen";
 import { symbols } from "../theme";
 import { logGlobalState } from "../store/state";
 
 const CareStack = createStackNavigator(
   {
-    [CARE_SCREEN]: authGuard(CareScreen),
-    [CARE_SESSION_SCREEN]: authGuard(CareSessionScreen),
+    [careRoute.routeName]: authGuard(careRoute.screen),
+    [careSessionRoute.routeName]: authGuard(careSessionRoute.screen),
   },
   {
-    initialRouteName: CARE_SCREEN,
+    initialRouteName: careRoute.routeName,
     headerMode: "none",
     navigationOptions: {
       headerShown: false,
     },
   }
 );
-
-const PLANTS_SCREEN = "PLANTS_SCREEN";
 
 const PlantsStack = createStackNavigator(
   {
-    [PLANTS_SCREEN]: authGuard(PlantsScreen),
-    [PLANT_SCREEN]: authGuard(PlantScreen),
+    [plantsRoute.routeName]: authGuard(plantsRoute.screen),
+    [plantRoute.routeName]: authGuard(plantRoute.screen),
     [managePlantRoute.routeName]: authGuard(managePlantRoute.screen),
-    [TODO_SCREEN]: authGuard(TodoScreen),
-    [MANAGE_TODO_SCREEN]: authGuard(ManageTodoScreen),
+    [todoRoute.routeName]: authGuard(todoRoute.screen),
+    [manageTodoRoute.routeName]: authGuard(manageTodoRoute.screen),
   },
   {
-    initialRouteName: PLANTS_SCREEN,
+    initialRouteName: plantsRoute.routeName,
     headerMode: "none",
     navigationOptions: {
       headerShown: false,
@@ -70,14 +53,12 @@ const PlantsStack = createStackNavigator(
   }
 );
 
-const MANAGE_SCREEN = "MANAGE_SCREEN";
-
 const ManageStack = createStackNavigator(
   {
-    [MANAGE_SCREEN]: authGuard(ManageScreen),
+    [manageRoute.routeName]: authGuard(manageRoute.screen),
   },
   {
-    initialRouteName: MANAGE_SCREEN,
+    initialRouteName: manageRoute.routeName,
     headerMode: "none",
     navigationOptions: {
       headerShown: false,
@@ -90,9 +71,9 @@ const tabBarPadding = symbols.spacing._12;
 
 const PrivateTabs = createBottomTabNavigator(
   {
-    [CARE_SCREEN]: CareStack,
-    [PLANTS_SCREEN]: PlantsStack,
-    [MANAGE_SCREEN]: ManageStack,
+    [careRoute.routeName]: CareStack,
+    [plantsRoute.routeName]: PlantsStack,
+    [manageRoute.routeName]: ManageStack,
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -114,9 +95,9 @@ const PrivateTabs = createBottomTabNavigator(
       tabBarIcon: ({ focused }) => {
         const { routeName } = navigation.state;
         const icon =
-          routeName === CARE_SCREEN
+          routeName === careRoute.routeName
             ? faHandHoldingWater
-            : routeName === PLANTS_SCREEN
+            : routeName === plantsRoute.routeName
             ? faSeedling
             : faUserCircle;
         return (

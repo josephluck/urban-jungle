@@ -24,12 +24,13 @@ import {
   sortTodosByLocationAndPlant,
 } from "../../todos/store/state";
 import { createCareForPlant } from "../store/effects";
-import { createCareRoute } from "./care-screen";
+import { careRoute } from "./care-screen";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const CareSessionScreen = ({
   navigation,
 }: NavigationStackScreenProps) => {
-  const todoIds: string[] = navigation.getParam(TODO_IDS);
+  const { todoIds = [] } = careSessionRoute.getParams(navigation);
 
   const [doneTodoIds, setDoneTodos] = useState<string[]>([]);
 
@@ -78,7 +79,7 @@ export const CareSessionScreen = ({
     if (indexOfNextTodo > -1) {
       snapCarouselToIndex(indexOfNextTodo);
     } else {
-      navigation.navigate(createCareRoute());
+      careRoute.navigateTo(navigation, {});
     }
   }, [doneTodoIds.length]);
 
@@ -161,14 +162,38 @@ export const CareSessionScreen = ({
   );
 };
 
-export const CARE_SESSION_SCREEN = "CARE_SESSION_SCREEN";
-
-export const TODO_IDS = "TODO_IDS";
-
-export const createCareSessionRoute = (todoIds: string[]) => ({
-  routeName: CARE_SESSION_SCREEN,
-  params: { [TODO_IDS]: todoIds },
+export const careSessionRoute = makeNavigationRoute<{
+  todoIds: string[];
+}>({
+  screen: CareSessionScreen,
+  routeName: "CARE_SESSION_SCREEN",
+  defaultParams: {
+    todoIds: [],
+  },
+  serializeParams: (params) => ({
+    ...params,
+    todoIds: JSON.stringify(params.todoIds ? params.todoIds : []),
+  }),
+  deserializeParams: (params) => ({
+    ...params,
+    todoIds: deserializeIntegerArray(params.todoIds),
+  }),
 });
+
+const deserializeIntegerArray = (monthsStr: string) => {
+  try {
+    if (monthsStr) {
+      const parsed = JSON.parse(monthsStr);
+      return Array.isArray(parsed) && parsed.every(Number.isInteger)
+        ? parsed
+        : [];
+    } else {
+      return [];
+    }
+  } catch (err) {
+    return [];
+  }
+};
 
 const Slide = styled.View`
   flex: 1;

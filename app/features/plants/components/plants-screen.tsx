@@ -14,8 +14,9 @@ import { sortByMostRecent } from "../../../utils/sort";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { selectPlantsByHouseholdId } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
-import { createPlantRoute } from "./plant-screen";
+import { plantRoute } from "./plant-screen";
 import { useCallback } from "react";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
   const selectedHouseholdId_ = useStore(
@@ -52,7 +53,9 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
             {plants.map((plant) => (
               <TouchableOpacity
                 key={plant.id}
-                onPress={() => navigation.navigate(createPlantRoute(plant.id))}
+                onPress={() =>
+                  plantRoute.navigateTo(navigation, { plantId: plant.id })
+                }
               >
                 <ListItem
                   title={plant.name}
@@ -70,6 +73,11 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
     </ScreenLayout>
   );
 };
+
+export const plantsRoute = makeNavigationRoute({
+  screen: PlantsScreen,
+  routeName: "PLANTS_SCREEN",
+});
 
 const ScreenContainer = styled.View`
   padding-top: ${symbols.spacing.appVertical}px;

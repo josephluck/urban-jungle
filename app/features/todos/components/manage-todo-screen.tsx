@@ -15,6 +15,7 @@ import { symbols } from "../../../theme";
 import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertTodoForPlant } from "../store/effects";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 const monthOptions = [
   "January",
@@ -33,43 +34,23 @@ const monthOptions = [
 
 type Fields = Pick<TodoModel, "title" | "detail" | "activeInMonths">;
 
-const parseActiveInMonths = (monthsStr: string): number[] => {
-  const defaultMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-  try {
-    if (monthsStr) {
-      const parsed = JSON.parse(monthsStr);
-      return Array.isArray(parsed) && parsed.every(Number.isInteger)
-        ? parsed
-        : defaultMonths;
-    } else {
-      return defaultMonths;
-    }
-  } catch (err) {
-    return defaultMonths;
-  }
-};
-
 export const ManageTodoScreen = ({
   navigation,
 }: NavigationStackScreenProps) => {
-  const extractFieldFromNav = (field: keyof Fields): string =>
-    navigation.getParam(field) || "";
+  const { plantId, todoId, ...initialFields } = manageTodoRoute.getParams(
+    navigation
+  );
 
   const { submit, registerTextInput, registerMultiPickerInput } = useForm<
     Fields
   >(
     {
-      title: extractFieldFromNav("title"),
-      detail: extractFieldFromNav("detail"),
-      activeInMonths: parseActiveInMonths(
-        extractFieldFromNav("activeInMonths")
-      ),
+      title: initialFields.title || "",
+      detail: initialFields.detail || "",
+      activeInMonths: initialFields.activeInMonths || defaultMonths,
     },
     { title: [constraints.isRequired], detail: [], activeInMonths: [] }
   );
-
-  const todoId = navigation.getParam(TODO_ID);
-  const plantId = navigation.getParam(PLANT_ID);
 
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
@@ -123,24 +104,46 @@ export const ManageTodoScreen = ({
   );
 };
 
-export const MANAGE_TODO_SCREEN = "MANAGE_TODO_SCREEN";
+const defaultMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-export const TODO_ID = "TODO_ID";
-export const PLANT_ID = "PLANT_ID";
+type ManageTodoParams = {
+  plantId: string;
+  todoId?: string;
+} & Partial<Fields>;
 
-export const createManageTodoRoute = ({
-  plantId,
-  todoId,
-  activeInMonths,
-  ...fields
-}: { plantId: string; todoId?: string } & Partial<Fields>) => ({
-  routeName: MANAGE_TODO_SCREEN,
-  params: {
-    [PLANT_ID]: plantId,
-    [TODO_ID]: todoId,
-    ...fields,
+export const manageTodoRoute = makeNavigationRoute<ManageTodoParams>({
+  screen: ManageTodoScreen,
+  routeName: "MANAGE_TODO_SCREEN",
+  defaultParams: {
+    plantId: "",
+    activeInMonths: defaultMonths,
   },
+  serializeParams: (params) => ({
+    ...params,
+    activeInMonths: JSON.stringify(
+      params.activeInMonths ? params.activeInMonths : defaultMonths
+    ),
+  }),
+  deserializeParams: (params) => ({
+    ...params,
+    activeInMonths: deserializeActiveInMonths(params.activeInMonths),
+  }),
 });
+
+const deserializeActiveInMonths = (monthsStr: string) => {
+  try {
+    if (monthsStr) {
+      const parsed = JSON.parse(monthsStr);
+      return Array.isArray(parsed) && parsed.every(Number.isInteger)
+        ? parsed
+        : defaultMonths;
+    } else {
+      return defaultMonths;
+    }
+  } catch (err) {
+    return defaultMonths;
+  }
+};
 
 const ContentContainer = styled.View`
   flex: 1;

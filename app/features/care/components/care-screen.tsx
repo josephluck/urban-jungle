@@ -8,8 +8,9 @@ import { Heading } from "../../../components/typography";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { createCareSessionRoute } from "./care-session-screen";
+import { careSessionRoute } from "./care-session-screen";
 import { Schedule } from "./schedule";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
   const selectedHouseholdId_ = useStore(
@@ -22,7 +23,7 @@ export const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
 
   const handleNavigateToCareSession = useCallback(
     (todoIds: string[]) => {
-      navigation.navigate(createCareSessionRoute(todoIds));
+      careSessionRoute.navigateTo(navigation, { todoIds });
     },
     [navigation.navigate]
   );
@@ -50,5 +51,7 @@ const CareScreenContainer = styled.View`
   background-color: ${symbols.colors.appBackground};
 `;
 
-export const CARE_SCREEN = "CARE_SCREEN";
-export const createCareRoute = () => CARE_SCREEN;
+export const careRoute = makeNavigationRoute({
+  screen: CareScreen,
+  routeName: "CARE_SCREEN",
+});

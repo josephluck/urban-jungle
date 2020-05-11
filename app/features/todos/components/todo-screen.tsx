@@ -22,11 +22,11 @@ import {
   selectMostLovedByForTodo,
   selectTodoByHouseholdId,
 } from "../store/state";
-import { createManageTodoRoute } from "./manage-todo-screen";
+import { manageTodoRoute } from "./manage-todo-screen";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
-  const todoId = navigation.getParam(TODO_ID);
-  const plantId = navigation.getParam(PLANT_ID);
+  const { todoId, plantId } = todoRoute.getParams(navigation);
 
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
@@ -64,13 +64,11 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
     pipe(
       todo,
       O.map((todoModel) => {
-        navigation.navigate(
-          createManageTodoRoute({
-            ...todoModel,
-            plantId: todoModel.plantId,
-            todoId: todoModel.id,
-          })
-        );
+        manageTodoRoute.navigateTo(navigation, {
+          ...todoModel,
+          plantId: todoModel.plantId,
+          todoId: todoModel.id,
+        });
       })
     );
   }, [todoId, todo]);
@@ -149,15 +147,16 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
   );
 };
 
-export const TODO_SCREEN = "TODO_SCREEN";
-
-export const TODO_ID = "TODO_ID";
-
-export const PLANT_ID = "PLANT_ID";
-
-export const createTodoRoute = (plantId: string, todoId: string) => ({
-  routeName: TODO_SCREEN,
-  params: { [TODO_ID]: todoId, [PLANT_ID]: plantId },
+export const todoRoute = makeNavigationRoute<{
+  todoId: string;
+  plantId: string;
+}>({
+  screen: TodoScreen,
+  routeName: "TODO_SCREEN",
+  defaultParams: {
+    todoId: "",
+    plantId: "",
+  },
 });
 
 const SectionHeading = styled.View`

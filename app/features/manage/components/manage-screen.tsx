@@ -13,6 +13,7 @@ import {
   selectedSelectedOrMostRecentHouseholdId,
   selectProfilesForHousehold,
 } from "../../households/store/state";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const ManageScreen = () => {
   const selectedHouseholdId_ = useStore(
@@ -61,6 +62,11 @@ export const ManageScreen = () => {
     </ScreenLayout>
   );
 };
+
+export const manageRoute = makeNavigationRoute({
+  screen: ManageScreen,
+  routeName: "MANAGE_SCREEN",
+});
 
 const ScreenContainer = styled.View`
   padding-top: ${symbols.spacing.appVertical}px;

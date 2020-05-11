@@ -10,18 +10,26 @@ type NavigationSingleton = StackNavigationProp<
   NavigationParams
 >;
 
-export const makeNavigationRoute = <Params extends Record<string, any>>({
+type SerializeParams<Params extends Record<string, any>> = (
+  params: Params
+) => Partial<Record<keyof Params, string>>;
+
+type DeserializeParams<Params extends Record<string, any>> = (
+  params: Record<keyof Params, string>
+) => Params;
+
+export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
   routeName,
   screen,
-  defaultParams,
-  serializeParams,
-  deserializeParams,
+  defaultParams = {} as Params,
+  serializeParams = id,
+  deserializeParams = id as DeserializeParams<Params>,
 }: {
   routeName: string;
   screen: NavigationComponent<any, any>;
-  defaultParams: Params;
-  serializeParams: (params: Params) => Partial<Record<keyof Params, string>>;
-  deserializeParams: (params: Record<keyof Params, string>) => Params;
+  defaultParams?: Params;
+  serializeParams?: SerializeParams<Params>;
+  deserializeParams?: DeserializeParams<Params>;
 }) => ({
   routeName,
   screen,
@@ -39,3 +47,5 @@ export const makeNavigationRoute = <Params extends Record<string, any>>({
     navigate({ routeName, params: serializeParams(params) });
   },
 });
+
+const id = <V>(value: V): V => value;
