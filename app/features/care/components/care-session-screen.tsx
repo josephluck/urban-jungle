@@ -34,13 +34,6 @@ export const CareSessionScreen = ({
 
   const [doneTodoIds, setDoneTodos] = useState<string[]>([]);
 
-  /**
-   * Keeps a mutable ref of the done todos for fresh-access in the effect that
-   * keeps the carousel in sync with the next not-done todo
-   */
-  const doneTodoIdsRef = useRef<string[]>([]);
-  doneTodoIdsRef.current = doneTodoIds;
-
   const carouselRef = useRef<CarouselStatic<any>>(null);
 
   const windowWidth = useMemo(() => Dimensions.get("window").width, []);
@@ -70,17 +63,36 @@ export const CareSessionScreen = ({
   );
 
   /**
+   * Keeps a mutable ref of the done todos for fresh-access in the effect that
+   * keeps the carousel in sync with the next not-done todo
+   */
+  const doneTodoIdsRef = useRef<string[]>([]);
+  doneTodoIdsRef.current = doneTodoIds;
+
+  /**
+   * Keeps a mutable ref of the list of todo ids in order that they are
+   * displayed in the carousel. Used to navigate between todos in the carousel
+   * when the user has done or skipped a todo
+   */
+  const carouselTodoIdsRef = useRef<string[]>([]);
+  carouselTodoIdsRef.current = todos.map((todo) => todo.id);
+
+  /**
    * When the list of done todos changes, navigate to the next not-done todo.
    */
   useEffect(() => {
-    const indexOfNextTodo = todoIds.findIndex(
+    const indexOfNextTodo = carouselTodoIdsRef.current.findIndex(
       (todoId) => !doneTodoIdsRef.current.includes(todoId)
     );
-    if (indexOfNextTodo > -1) {
-      snapCarouselToIndex(indexOfNextTodo);
-    } else {
-      careRoute.navigateTo(navigation, {});
-    }
+    requestAnimationFrame(() => {
+      if (indexOfNextTodo > -1) {
+        snapCarouselToIndex(indexOfNextTodo);
+      } else if (
+        doneTodoIdsRef.current.length === carouselTodoIdsRef.current.length
+      ) {
+        careRoute.navigateTo(navigation, {});
+      }
+    });
   }, [doneTodoIds.length]);
 
   const snapCarouselToIndex = useCallback((index: number) => {
@@ -177,15 +189,17 @@ export const careSessionRoute = makeNavigationRoute<{
   }),
   deserializeParams: (params) => ({
     ...params,
-    todoIds: deserializeIntegerArray(params.todoIds),
+    todoIds: deserializeStringArray(params.todoIds),
   }),
 });
 
-const deserializeIntegerArray = (monthsStr: string) => {
+const deserializeStringArray = (monthsStr: string) => {
+  console.log({ monthsStr });
   try {
     if (monthsStr) {
       const parsed = JSON.parse(monthsStr);
-      return Array.isArray(parsed) && parsed.every(Number.isInteger)
+      return Array.isArray(parsed) &&
+        parsed.every((item) => typeof item === "string")
         ? parsed
         : [];
     } else {

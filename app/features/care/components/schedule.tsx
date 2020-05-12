@@ -97,12 +97,21 @@ export const Schedule = ({
     if (
       !hasSnappedInitialDays.current &&
       scrollViewRef.current &&
-      todaysIndex > 0
+      todaysIndex === 7 &&
+      schedule.length === 15
     ) {
-      snapDaysToIndex(todaysIndex);
       hasSnappedInitialDays.current = true;
+      requestAnimationFrame(() => {
+        snapDaysToIndex(todaysIndex);
+      });
     }
-  }, [hasSnappedInitialDays.current, scrollViewRef.current, todaysIndex]);
+  }, [
+    hasSnappedInitialDays.current,
+    scrollViewRef.current,
+    todaysIndex,
+    schedule.length,
+    snapDaysToIndex,
+  ]);
 
   const handleRenderItem = useCallback(
     ({ item: { index, date, todos, cares } }: { item: ScheduleItem }) => {
@@ -128,52 +137,51 @@ export const Schedule = ({
     },
     [handleNavigateToCareSession]
   );
-
-  if (todaysIndex <= 0) {
-    return null;
+  if (todaysIndex === 7 && schedule.length === 15) {
+    return (
+      <Container>
+        <MonthText weight="semibold">{activeMonth}</MonthText>
+        <DaysContainer
+          horizontal
+          snapToInterval={dayOverallSize}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingRight: windowWidth - dayOverallSize,
+            backgroundColor: symbols.colors.appBackground,
+          }}
+          ref={scrollViewRef}
+          removeClippedSubviews
+        >
+          {schedule.map((day) => {
+            const isToday = day.index === todaysIndex;
+            return (
+              <ScheduleDay
+                key={day.date.toISOString()}
+                onPress={() => handleDayPress(day.index, day.date)}
+                date={day.date.date()}
+                isToday={isToday}
+              />
+            );
+          })}
+        </DaysContainer>
+        <Carousel
+          useScrollView
+          data={schedule}
+          firstItem={todaysIndex}
+          sliderWidth={windowWidth}
+          itemWidth={windowWidth}
+          nestedScrollEnabled
+          inactiveSlideScale={1}
+          inactiveSlideOpacity={1}
+          onBeforeSnapToItem={handleCarouselIndexChange}
+          renderItem={handleRenderItem}
+          ref={carouselRef as any}
+        />
+      </Container>
+    );
   }
 
-  return (
-    <Container>
-      <MonthText weight="semibold">{activeMonth}</MonthText>
-      <DaysContainer
-        horizontal
-        snapToInterval={dayOverallSize}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingRight: windowWidth - dayOverallSize,
-          backgroundColor: symbols.colors.appBackground,
-        }}
-        ref={scrollViewRef}
-        removeClippedSubviews
-      >
-        {schedule.map((day) => {
-          const isToday = day.index === todaysIndex;
-          return (
-            <ScheduleDay
-              key={day.date.toISOString()}
-              onPress={() => handleDayPress(day.index, day.date)}
-              date={day.date.date()}
-              isToday={isToday}
-            />
-          );
-        })}
-      </DaysContainer>
-      <Carousel
-        data={schedule}
-        firstItem={todaysIndex}
-        sliderWidth={windowWidth}
-        itemWidth={windowWidth}
-        nestedScrollEnabled
-        inactiveSlideScale={1}
-        inactiveSlideOpacity={1}
-        removeClippedSubviews
-        onBeforeSnapToItem={handleCarouselIndexChange}
-        renderItem={handleRenderItem}
-        ref={carouselRef as any}
-      />
-    </Container>
-  );
+  return null;
 };
 
 const Container = styled.View`
