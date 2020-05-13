@@ -19,6 +19,9 @@ export const takePicture: TE.TaskEither<IErr, ImageInfo> = TE.tryCatch(
   () => "BAD_REQUEST" as IErr
 );
 
+/**
+ * TODO: deprecate this as it doesn't play nicely with loading UIs
+ */
 export const takeAndUploadPicture = (
   reference: StorageEntityType = "default"
 ): TE.TaskEither<IErr, ImageInfo> =>

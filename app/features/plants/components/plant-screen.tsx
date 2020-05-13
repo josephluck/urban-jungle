@@ -19,7 +19,7 @@ import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { takeAndUploadPicture } from "../../photos/camera";
+import { takePicture } from "../../photos/camera";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { todoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
@@ -30,6 +30,8 @@ import {
 } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { uploadFile } from "../../photos/storage";
+import { UIEffect } from "../../../store/ui";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const { plantId } = plantRoute.getParams(navigation);
@@ -101,10 +103,14 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
 
   const handleTakePicture = useCallback(() => {
     pipe(
-      takeAndUploadPicture("plant"),
-      TE.chain((value) =>
-        savePlantImage(selectedHouseholdId, plantId, O.some(value))
-      )
+      takePicture,
+      TE.map(UIEffect.start),
+      TE.chainFirst((imageInfo) => uploadFile("plant")(imageInfo.uri)),
+      TE.chain((imageInfo) =>
+        savePlantImage(selectedHouseholdId, plantId, O.some(imageInfo))
+      ),
+      TE.map(UIEffect.right),
+      TE.mapLeft(UIEffect.left)
     )();
   }, [plantId, selectedHouseholdId]);
 

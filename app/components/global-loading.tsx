@@ -7,9 +7,14 @@ import { selectLoading } from "../store/ui";
 
 export const GlobalLoading = () => {
   const visible = useStore(selectLoading);
+  console.log("GlobalLoading rerendering", { visible });
 
   return (
-    <Modal animationType="fade" visible={visible} transparent>
+    <Modal
+      visible={visible}
+      transparent
+      onRequestClose={(...args) => console.log("onRequestClose", ...args)}
+    >
       <Container>
         <ActivityIndicator size="large" color={symbols.colors.solidBlue} />
       </Container>
