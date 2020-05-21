@@ -1,7 +1,7 @@
+import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { Keyboard } from "react-native";
-import { IErr } from "../utils/err";
 import { store } from "./state";
 
 export const setLoadingOn = store.createMutator((s) => {

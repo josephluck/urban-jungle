@@ -1,8 +1,8 @@
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
+import { normalizeArrayById } from "@urban-jungle/shared/utils/normalize";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { store } from "../../../store/state";
-import { normalizeArrayById } from "../../../utils/normalize";
 import {
   MiniProfile,
   selectMiniProfileById,

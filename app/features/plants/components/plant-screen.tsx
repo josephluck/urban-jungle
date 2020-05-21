@@ -1,3 +1,5 @@
+import { makeImageModel } from "@urban-jungle/shared/models/image";
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -13,13 +15,14 @@ import { ListItem } from "../../../components/list-item";
 import { PlantImageCarousel } from "../../../components/plant-image-carousel";
 import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
 import { SubHeading } from "../../../components/typography";
-import { makeImageModel } from "@urban-jungle/shared/models/image";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
+import { UIEffect } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { sortByMostRecent } from "../../../utils/sort";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { takePicture } from "../../photos/camera";
+import { uploadFile } from "../../photos/storage";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { todoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
@@ -29,9 +32,6 @@ import {
   selectPlantByHouseholdId,
 } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { uploadFile } from "../../photos/storage";
-import { UIEffect } from "../../../store/ui";
 
 export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   const { plantId } = plantRoute.getParams(navigation);

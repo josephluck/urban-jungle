@@ -13,7 +13,7 @@ import { SubHeading } from "../../../components/typography";
 import { sequenceO } from "../../../fp/option";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
-import { sortByMostRecent } from "../../../utils/sort";
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import { selectCaresForTodo } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";

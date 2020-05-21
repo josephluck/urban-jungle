@@ -1,4 +1,5 @@
 import { TodoModel } from "@urban-jungle/shared/models/todo";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -14,7 +15,6 @@ import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
-import { IErr } from "../../../utils/err";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertTodoForPlant } from "../store/effects";
 

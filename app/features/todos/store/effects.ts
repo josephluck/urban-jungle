@@ -1,9 +1,9 @@
 import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import { IErr } from "../../../utils/err";
 import { selectHouseholdById } from "../../households/store/state";
 import { database } from "./database";
 import {

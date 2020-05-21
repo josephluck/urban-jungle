@@ -1,11 +1,11 @@
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 import { resetGlobalState, store } from "../../../store/state";
-import { IErr } from "../../../utils/err";
 import {
   createHouseholdForProfile,
   createProfileHouseholdRelation,

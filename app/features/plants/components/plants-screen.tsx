@@ -1,6 +1,7 @@
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import React from "react";
+import React, { useCallback } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
@@ -8,15 +9,13 @@ import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { Heading } from "../../../components/typography";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
-import { sortByMostRecent } from "../../../utils/sort";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { selectPlantsByHouseholdId } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
 import { plantRoute } from "./plant-screen";
-import { useCallback } from "react";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
   const selectedHouseholdId_ = useStore(

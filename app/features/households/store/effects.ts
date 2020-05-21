@@ -5,7 +5,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { AsyncStorage, Share } from "react-native";
 import uuid from "uuid";
 import { makeHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
-import { IErr } from "../../../utils/err";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
 import { database } from "./database";
@@ -144,7 +144,7 @@ export const shareHouseholdInvitation = (
           // dismissed
         }
       } catch (error) {
-        alert(error.message);
+        // TODO: handle
       }
     },
     () => "BAD_REQUEST" as IErr
