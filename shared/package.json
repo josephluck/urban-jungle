@@ -1,0 +1,13 @@
+{
+  "name": "@urban-jungle/shared",
+  "version": "1.0.0",
+  "scripts": {
+    "tsc": "tsc --noEmit",
+    "format": "prettier --write \"./**/*.*\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  },
+  "private": true
+}
