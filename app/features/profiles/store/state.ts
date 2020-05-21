@@ -1,9 +1,9 @@
-import { ProfileModel } from "../../../models/profile";
-import { pipe } from "fp-ts/lib/pipeable";
+import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import { getFirstLetterFromOptionString } from "../../../fp/option";
 import { store } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
-import { getFirstLetterFromOptionString } from "../../../fp/option";
 
 /**
  * SELECTORS

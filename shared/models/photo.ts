@@ -1,6 +1,6 @@
 import { BaseModel, makeBaseModel } from "./base";
 import { ImageModel, makeImageModel } from "./image";
-import { StorageEntityType } from "../features/photos/storage";
+import { StorageEntityType } from "./storage";
 
 export interface PhotoModel extends BaseModel, ImageModel {
   /**

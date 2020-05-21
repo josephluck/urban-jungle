@@ -1,7 +1,7 @@
-import { database } from "../store/database";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { useEffect } from "react";
-import { TodoModel } from "../../../models/todo";
-import { upsertTodos, removeTodos } from "../store/state";
+import { database } from "../store/database";
+import { removeTodos, upsertTodos } from "../store/state";
 
 /**
  * Subscribes to any todos for the given household

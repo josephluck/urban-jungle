@@ -1,14 +1,14 @@
+import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import React, { useCallback, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
+import { selectPhotosForPlant } from "../features/photos/store/state";
 import { deletePlantPhoto } from "../features/plants/store/effects";
-import { PhotoModel } from "../models/photo";
 import { useStore } from "../store/state";
 import { symbols } from "../theme";
 import { PlantImage } from "./plant-image";
 import { PlantImageUploader } from "./plant-image-uploader";
-import { selectPhotosForPlant } from "../features/photos/store/state";
 
 const horizontalMargin = symbols.spacing._4;
 const sliderWidth = Dimensions.get("window").width;

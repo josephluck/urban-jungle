@@ -1,13 +1,13 @@
+import { act, render, wait } from "@testing-library/react-native";
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makeTodoModel } from "@urban-jungle/shared/models/todo";
+import firebase from "firebase";
+import moment from "moment";
 import React from "react";
 import { View } from "react-native";
-import { useStore, store, defaultState } from "../../../store/state";
+import { defaultState, store, useStore } from "../../../store/state";
 import { selectTodosSchedule, upsertTodo } from "../../todos/store/state";
-import { render, wait, act } from "@testing-library/react-native";
-import { makeTodoModel } from "../../../models/todo";
-import moment from "moment";
-import firebase from "firebase";
-import { makeCareModel } from "../../../models/care";
-import { upsertCare, selectCaresByHouseholdId } from "../store/state";
+import { selectCaresByHouseholdId, upsertCare } from "../store/state";
 
 const makeFirebaseDate = (
   daysAdjustment: number = 0

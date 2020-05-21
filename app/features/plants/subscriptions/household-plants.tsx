@@ -1,7 +1,7 @@
-import { database } from "../store/database";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { useEffect } from "react";
-import { PlantModel } from "../../../models/plant";
-import { upsertPlants, removePlants } from "../store/state";
+import { database } from "../store/database";
+import { removePlants, upsertPlants } from "../store/state";
 
 /**
  * Subscribes to any plants for the given household

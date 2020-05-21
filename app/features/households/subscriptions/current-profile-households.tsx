@@ -1,15 +1,15 @@
-import { database } from "../store/database";
-import { selectCurrentUserId } from "../../auth/store/state";
-import React, { useEffect } from "react";
+import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { HouseholdModel } from "../../../models/household";
-import { removeHouseholdFromProfile } from "../../profiles/store/effects";
-import { deleteHousehold, upsertHousehold } from "../store/state";
 import { pipe } from "fp-ts/lib/pipeable";
-import { storeSelectedHouseholdIdToStorageIfNotPresent } from "../store/effects";
-import { IErr } from "../../../utils/err";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useEffect } from "react";
 import { useStore } from "../../../store/state";
+import { IErr } from "../../../utils/err";
+import { selectCurrentUserId } from "../../auth/store/state";
+import { removeHouseholdFromProfile } from "../../profiles/store/effects";
+import { database } from "../store/database";
+import { storeSelectedHouseholdIdToStorageIfNotPresent } from "../store/effects";
+import { deleteHousehold, upsertHousehold } from "../store/state";
 
 /**
  * Subscribes to any households for the current profile ID.

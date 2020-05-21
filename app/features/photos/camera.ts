@@ -1,8 +1,9 @@
-import * as TE from "fp-ts/lib/TaskEither";
+import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import * as ImagePicker from "expo-image-picker";
-import { uploadFile, StorageEntityType } from "./storage";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import { IErr } from "../../utils/err";
+import { uploadFile } from "./storage";
 
 export const takePicture: TE.TaskEither<IErr, ImageInfo> = TE.tryCatch(
   async () => {

@@ -1,8 +1,8 @@
-import { ListItem } from "./list-item";
-import React, { useMemo } from "react";
-import { pipe } from "fp-ts/lib/pipeable";
+import { CareModel } from "@urban-jungle/shared/models/care";
 import * as O from "fp-ts/lib/Option";
-import { CareModel } from "../models/care";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useMemo } from "react";
+import { ListItem } from "./list-item";
 
 export const CareListItem = React.memo(
   ({ care }: { care: CareModel }) => {

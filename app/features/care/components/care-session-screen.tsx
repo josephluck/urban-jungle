@@ -1,3 +1,4 @@
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, {
@@ -14,7 +15,7 @@ import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TodoOverview } from "../../../components/todo-overview";
-import { TodoModel } from "../../../models/todo";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { selectCurrentUserId } from "../../auth/store/state";
@@ -25,7 +26,6 @@ import {
 } from "../../todos/store/state";
 import { createCareForPlant } from "../store/effects";
 import { careRoute } from "./care-screen";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const CareSessionScreen = ({
   navigation,

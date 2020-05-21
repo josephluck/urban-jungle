@@ -2,8 +2,8 @@ import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
-import { CareModel } from "../models/care";
-import { HouseholdModel } from "../models/household";
+import { CareModel } from "@urban-jungle/shared/models/care";
+import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import {
   CareId,
   HouseholdId,
@@ -11,11 +11,11 @@ import {
   TodoId,
   UserId,
   PhotoId,
-} from "../models/ids";
-import { PlantModel } from "../models/plant";
-import { ProfileModel } from "../models/profile";
-import { TodoModel } from "../models/todo";
-import { PhotoModel } from "../models/photo";
+} from "@urban-jungle/shared/models/ids";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
+import { ProfileModel } from "@urban-jungle/shared/models/profile";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
+import { PhotoModel } from "@urban-jungle/shared/models/photo";
 
 interface AuthState {
   initializing: boolean;

@@ -1,7 +1,7 @@
-import { database } from "../store/database";
+import { CareModel } from "@urban-jungle/shared/models/care";
 import { useEffect } from "react";
-import { CareModel } from "../../../models/care";
-import { upsertCares, removeCares } from "../store/state";
+import { database } from "../store/database";
+import { removeCares, upsertCares } from "../store/state";
 
 /**
  * Subscribes to any plants for the given household

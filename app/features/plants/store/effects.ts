@@ -1,11 +1,11 @@
+import { BaseModel } from "@urban-jungle/shared/models/base";
+import { ImageModel } from "@urban-jungle/shared/models/image";
+import { makePhotoModel, PhotoModel } from "@urban-jungle/shared/models/photo";
+import { makePlantModel, PlantModel } from "@urban-jungle/shared/models/plant";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import { BaseModel } from "../../../models/base";
-import { ImageModel } from "../../../models/image";
-import { makePhotoModel, PhotoModel } from "../../../models/photo";
-import { makePlantModel, PlantModel } from "../../../models/plant";
 import { IErr } from "../../../utils/err";
 import { selectHouseholdById } from "../../households/store/state";
 import { photosDatabase } from "../../photos/store/database";

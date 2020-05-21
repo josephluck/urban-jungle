@@ -1,3 +1,4 @@
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -10,7 +11,6 @@ import { BackableScreenLayout } from "../../../components/layouts/backable-scree
 import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
-import { TodoModel } from "../../../models/todo";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";

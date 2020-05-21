@@ -1,26 +1,26 @@
+import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { IErr } from "../../../utils/err";
-import { ProfileModel } from "../../../models/profile";
 import { pipe } from "fp-ts/lib/pipeable";
-import {
-  selectAuthUser,
-  selectCurrentUserId,
-  setUser,
-  setInitializing,
-} from "./state";
+import * as TE from "fp-ts/lib/TaskEither";
+import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
+import { resetGlobalState, store } from "../../../store/state";
+import { IErr } from "../../../utils/err";
 import {
   createHouseholdForProfile,
   createProfileHouseholdRelation,
   storeSelectedHouseholdIdToStorage,
 } from "../../households/store/effects";
-import { store, resetGlobalState } from "../../../store/state";
 import {
   createProfileForUser,
   fetchProfileIfNotFetched,
 } from "../../profiles/store/effects";
-import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
+import {
+  selectAuthUser,
+  selectCurrentUserId,
+  setInitializing,
+  setUser,
+} from "./state";
 
 export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async (user) => {

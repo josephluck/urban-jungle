@@ -1,4 +1,4 @@
-import { PlantModel } from "../../../models/plant";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { selectCaresForPlant } from "../../care/store/state";

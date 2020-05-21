@@ -1,9 +1,9 @@
+import { PlantModel } from "@urban-jungle/shared/models/plant";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import styled from "styled-components/native";
-import { PlantModel } from "../models/plant";
-import { TodoModel } from "../models/todo";
 import { symbols } from "../theme";
 import { PlantImage } from "./plant-image";
 import { PlantNameAndLocation } from "./plant-name-and-location";

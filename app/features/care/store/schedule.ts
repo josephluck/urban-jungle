@@ -1,8 +1,8 @@
+import { CareModel } from "@urban-jungle/shared/models/care";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { Moment } from "moment";
-import { CareModel } from "../../../models/care";
-import { PlantModel } from "../../../models/plant";
-import { TodoModel } from "../../../models/todo";
 import { selectTodosSchedule } from "../../todos/store/state";
 import { selectCareHistory } from "./state";
 

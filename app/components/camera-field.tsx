@@ -1,3 +1,5 @@
+import { ImageModel } from "@urban-jungle/shared/models/image";
+import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import * as Permissions from "expo-permissions";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -6,8 +8,6 @@ import React, { useCallback, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import { takeAndUploadPicture } from "../features/photos/camera";
-import { StorageEntityType } from "../features/photos/storage";
-import { ImageModel } from "../models/image";
 import { symbols } from "../theme";
 import { IErr } from "../utils/err";
 import { FormField } from "./form-field";

@@ -1,7 +1,7 @@
+import { CareModel, makeCareModel } from "@urban-jungle/shared/models/care";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { sequenceO } from "../../../fp/option";
-import { CareModel, makeCareModel } from "../../../models/care";
 import { IErr } from "../../../utils/err";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectHouseholdById } from "../../households/store/state";

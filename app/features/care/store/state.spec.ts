@@ -1,8 +1,8 @@
-import { store, defaultState } from "../../../store/state";
-import { makeTodoModel } from "../../../models/todo";
-import { makeCareModel } from "../../../models/care";
-import moment from "moment";
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makeTodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
+import moment from "moment";
+import { defaultState, store } from "../../../store/state";
 import { selectCareHistory } from "./state";
 
 const makeFirebaseDate = (

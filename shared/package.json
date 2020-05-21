@@ -5,7 +5,10 @@
     "tsc": "tsc --noEmit",
     "format": "prettier --write \"./**/*.*\""
   },
-  "dependencies": {},
+  "dependencies": {
+    "firebase": "7.9.0",
+    "uuid": "^3.4.0"
+  },
   "devDependencies": {
     "typescript": "^3.8.3"
   },

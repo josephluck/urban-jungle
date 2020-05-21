@@ -1,17 +1,17 @@
-import { store, defaultState } from "../../../store/state";
-import { makeTodoModel, TodoModel } from "../../../models/todo";
-import { makeCareModel } from "../../../models/care";
-import moment from "moment";
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makePlantModel } from "@urban-jungle/shared/models/plant";
+import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import moment from "moment";
+import { defaultState, store } from "../../../store/state";
+import { defaultDate } from "../../../__mocks__/moment";
 import {
   selectTodosSchedule,
   sortTodosByLocationAndPlant,
   TodoWithPlantModel,
 } from "./state";
-import { defaultDate } from "../../../__mocks__/moment";
-import * as O from "fp-ts/lib/Option";
-import { makePlantModel } from "../../../models/plant";
-import { pipe } from "fp-ts/lib/pipeable";
 
 const makeFirebaseDate = (
   daysAdjustment: number = 0

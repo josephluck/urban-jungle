@@ -1,4 +1,4 @@
-import { BaseModel } from "../models/base";
+import { BaseModel } from "@urban-jungle/shared/models/base";
 import { store, State } from "./state";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";

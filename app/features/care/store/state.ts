@@ -1,4 +1,4 @@
-import { CareModel } from "../../../models/care";
+import { CareModel } from "@urban-jungle/shared/models/care";
 import * as O from "fp-ts/lib/Option";
 import moment from "moment";
 import { normalizedStateFactory } from "../../../store/factory";

@@ -1,10 +1,9 @@
+import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import uuid from "uuid";
 import { IErr } from "../../utils/err";
-
-export type StorageEntityType = "plant" | "profile" | "default";
 
 // NB: see https://github.com/expo/expo/issues/2402#issuecomment-443726662
 const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>

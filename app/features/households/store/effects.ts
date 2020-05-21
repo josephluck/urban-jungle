@@ -1,15 +1,15 @@
-import uuid from "uuid";
+import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import firebase from "firebase";
-import { selectCurrentUserId } from "../../auth/store/state";
-import { IErr } from "../../../utils/err";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
-import { HouseholdModel } from "../../../models/household";
-import { database } from "./database";
-import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
+import * as TE from "fp-ts/lib/TaskEither";
 import { AsyncStorage, Share } from "react-native";
-import { setSelectedHouseholdId } from "./state";
+import uuid from "uuid";
 import { makeHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
+import { IErr } from "../../../utils/err";
+import { selectCurrentUserId } from "../../auth/store/state";
+import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
+import { database } from "./database";
+import { setSelectedHouseholdId } from "./state";
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.

@@ -1,13 +1,12 @@
-import React from "react";
-import { database } from "../store/database";
-import { selectCurrentUserId } from "../../auth/store/state";
-import { useEffect } from "react";
-import { ProfileModel } from "../../../models/profile";
-import { selectProfileIdsForHouseholds } from "../../households/store/state";
-import { pipe } from "fp-ts/lib/pipeable";
+import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useEffect } from "react";
 import { useStore } from "../../../store/state";
-import { upsertProfiles, deleteProfiles } from "../store/state";
+import { selectCurrentUserId } from "../../auth/store/state";
+import { selectProfileIdsForHouseholds } from "../../households/store/state";
+import { database } from "../store/database";
+import { deleteProfiles, upsertProfiles } from "../store/state";
 
 /**
  * Subscribes to current profile and any profiles associated with fetched

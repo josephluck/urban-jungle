@@ -1,4 +1,4 @@
-import { BaseModel } from "../models/base";
+import { BaseModel } from "@urban-jungle/shared/models/base";
 
 export const sortByMostRecent = (
   entityA: BaseModel,

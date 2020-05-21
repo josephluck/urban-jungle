@@ -13,7 +13,7 @@ import { ListItem } from "../../../components/list-item";
 import { PlantImageCarousel } from "../../../components/plant-image-carousel";
 import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
 import { SubHeading } from "../../../components/typography";
-import { makeImageModel } from "../../../models/image";
+import { makeImageModel } from "@urban-jungle/shared/models/image";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { sortByMostRecent } from "../../../utils/sort";

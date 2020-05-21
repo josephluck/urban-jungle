@@ -1,6 +1,6 @@
+import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import * as O from "fp-ts/lib/Option";
 import { normalizedStateFactory } from "../../../store/factory";
-import { PhotoModel } from "../../../models/photo";
 import { sortByMostRecent } from "../../../utils/sort";
 
 const methods = normalizedStateFactory<PhotoModel>("photos");

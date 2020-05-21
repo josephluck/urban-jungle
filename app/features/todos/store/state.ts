@@ -2,8 +2,8 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import { sequenceO } from "../../../fp/option";
-import { PlantModel } from "../../../models/plant";
-import { TodoModel } from "../../../models/todo";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { normalizedStateFactory } from "../../../store/factory";
 import {
   selectMostRecentCareForTodo,

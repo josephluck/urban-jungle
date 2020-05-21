@@ -1,14 +1,14 @@
-import { HouseholdModel } from "../../../models/household";
-import { normalizeArrayById } from "../../../utils/normalize";
+import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import { store } from "../../../store/state";
+import { normalizeArrayById } from "../../../utils/normalize";
 import {
+  MiniProfile,
+  selectMiniProfileById,
   selectProfileAvatarById,
   selectProfileNameById,
-  selectMiniProfileById,
-  MiniProfile,
 } from "../../profiles/store/state";
-import { store } from "../../../store/state";
 
 export const selectHouseholds = store.createSelector((s) =>
   Object.values(s.households.households)

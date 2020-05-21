@@ -1,4 +1,5 @@
 import { FieldConstraintsMap, makeValidator } from "@josephluck/valley/lib/fp";
+import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -13,7 +14,6 @@ import {
   SinglePickerFieldProps,
 } from "../components/picker-field";
 import { TextFieldProps } from "../components/text-field";
-import { ImageModel, makeImageModel } from "../models/image";
 
 type Fields = Record<string, any>;
 
