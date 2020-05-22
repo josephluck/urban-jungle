@@ -5,6 +5,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { sequenceT } from "fp-ts/lib/Apply";
 import * as E from "fp-ts/lib/Either";
+import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import {
@@ -15,6 +16,11 @@ import {
 } from "./api";
 import { responseError, responseSuccess } from "./response";
 import { getTodosDueToday } from "./state";
+import { Expo, ExpoPushMessage } from "expo-server-sdk";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
+
+const expo = new Expo();
 
 admin.initializeApp();
 
@@ -25,21 +31,27 @@ export const sendTodoReminders = functions.https.onRequest(
       TE.chain(([households, profiles]) =>
         TE.tryCatch(
           async () => {
-            // TODO: can this be done via sequence?
-            const tasks = households.map((household) =>
+            const data = households.map((household) =>
               getHouseholdData(household.id)
             );
-            const all = await Promise.all(
-              tasks.map((task) => filterNotifiableProfiles(profiles)(task)())
-            );
-            return flatten(
-              all.map((val) =>
+            // TODO: this is horrible. Surely we can do this through sequence?
+            const tasks = await Promise.all(
+              data.map((household) =>
                 pipe(
-                  val,
-                  E.fold(() => [], id)
-                )
+                  household,
+                  TE.chain(getPushNotificationsForHousehold(profiles))
+                )()
               )
             );
+            // TODO: this is horrible. Surely we can do this through sequence?
+            return tasks
+              .map((task) =>
+                pipe(
+                  task,
+                  E.getOrElse(() => (null as any) as PushNotification)
+                )
+              )
+              .filter(Boolean);
           },
           () => "BAD_REQUEST" as IErr
         )
@@ -51,52 +63,122 @@ export const sendTodoReminders = functions.https.onRequest(
   }
 );
 
+type PushNotification = {
+  profiles: ProfileModel[];
+  plants: { plant: PlantModel; todo: TodoModel }[];
+};
+
+const getPushNotificationsForHousehold = (profiles: ProfileModel[]) => (
+  household: HouseholdData
+): TE.TaskEither<IErr, PushNotification> =>
+  pipe(
+    filterHouseholdsDueToday()(TE.right(household)),
+    TE.map((household) => ({
+      ...household,
+      profiles: getNotifiableProfilesForHousehold(profiles)(
+        household.household
+      ),
+    })),
+    TE.map((household) => ({
+      profiles: household.profiles,
+      plants: household.todos.map((todo) => ({
+        todo,
+        plant: pipe(
+          O.fromNullable(
+            household.plants.find((plant) => plant.id === todo.plantId)
+          ),
+          O.getOrElse(() => (null as any) as PlantModel) // TODO: this is horrible. Figure out a good way to do this.
+        ),
+      })),
+    }))
+  );
+
 /**
- * TODO: this API is a bit odd..
+ * TODO: this implementation is a bit odd..
  */
-const filterNotifiableProfiles = (profiles: ProfileModel[]) => (
+const filterHouseholdsDueToday = () => (
   task: TE.TaskEither<IErr, HouseholdData>
-): TE.TaskEither<IErr, ProfileModel[]> =>
+): TE.TaskEither<IErr, HouseholdData> =>
   pipe(
     task,
-    TE.map(({ household, todos, cares }) => ({
+    TE.map(({ household, todos, cares, plants }) => ({
       household,
+      cares,
+      plants,
       todos: getTodosDueToday(household.id, todos, cares),
     })),
     TE.filterOrElse(
       ({ todos }) => todos.length > 0,
       () => "NOT_FOUND" as IErr
-    ),
-    TE.map((data) => data.household),
-    TE.map(getNotifiableProfilesForHousehold(profiles))
+    )
   );
 
-/**
- * TODO: only return profiles with Expo PN token
- */
 const getNotifiableProfilesForHousehold = (profiles: ProfileModel[]) => (
   household: HouseholdModel
 ): ProfileModel[] =>
   household.profileIds
     .map((profileId) => profiles.find((profile) => profile.id === profileId))
-    .filter(Boolean) as ProfileModel[];
+    .filter(
+      (profile) =>
+        profile &&
+        Boolean(profile.pushToken) &&
+        Expo.isExpoPushToken(profile.pushToken || "")
+    ) as ProfileModel[];
 
-/**
- * TODO: implement
- */
 const sendPushNotifications = (
-  profiles: ProfileModel[]
-): TE.TaskEither<IErr, string[]> =>
+  pushNotifications: PushNotification[]
+): TE.TaskEither<IErr, any> =>
   TE.tryCatch(
     async () => {
-      return profiles.map((profile) => profile.name);
+      const notifications: ExpoPushMessage[] = pushNotifications.map(
+        (notification) => {
+          const message = getNotificationMessage(
+            notification.plants.reduce(
+              (prev, curr) => [...prev, curr.plant],
+              [] as PlantModel[]
+            )
+          );
+          return {
+            to: notification.profiles.map((profile) => profile.pushToken || ""),
+            sound: "default",
+            body: `🌱 💦 ${message}`,
+            data: {},
+          };
+        }
+      );
+
+      const chunks = expo.chunkPushNotifications(notifications);
+      const tickets = await Promise.all(
+        chunks.map(
+          async (chunk) => await expo.sendPushNotificationsAsync(chunk)
+        )
+      );
+
+      return flatten(tickets);
     },
     () => "BAD_REQUEST" as IErr
   );
 
-const sequenceTE = sequenceT(TE.taskEither);
+const getNotificationMessage = (plants: PlantModel[]): string => {
+  const plantNames = [...new Set(plants.map((plant) => plant.name))];
+  const length = plantNames.length;
 
-const id = <Data>(val: Data): Data => val;
+  if (length > 4) {
+    const firstThreePlants = plantNames.slice(0, 3).join(", ");
+    return `${firstThreePlants} and ${length - 3} others need your help`;
+  }
+  if (length > 1) {
+    const firstPlants = plantNames.slice(0, length - 2).join(", ");
+    const lastPlant = plantNames[length - 1];
+    return `${firstPlants} and ${lastPlant} need your help`;
+  }
+  if (length === 1) {
+    return `${plantNames[0]} needs your help`;
+  }
+  return "Your plants need your help";
+};
+
+const sequenceTE = sequenceT(TE.taskEither);
 
 const flatten = <Data>(arr: Data[][]): Data[] =>
   arr.reduce((acc, val) => [...acc, ...val], [] as Data[]);

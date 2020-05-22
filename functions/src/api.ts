@@ -5,11 +5,13 @@ import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as admin from "firebase-admin";
 import * as TE from "fp-ts/lib/TaskEither";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
 
 export type HouseholdData = {
   household: HouseholdModel;
   todos: TodoModel[];
   cares: CareModel[];
+  plants: PlantModel[];
 };
 
 export const getHouseholdData = (
@@ -24,12 +26,14 @@ export const getHouseholdData = (
       const queries = await Promise.all([
         household.get(),
         household.collection("todos").get(),
-        household.collection("cares").get(), // TODO: this only has to be the most recent care
+        household.collection("cares").get(), // TODO: this is really expensive. Consider storing the last care id against the todo
+        household.collection("plants").get(),
       ]);
       return {
         household: queries[0].data() as HouseholdModel,
         todos: extractQueryData<TodoModel>(queries[1]),
         cares: extractQueryData<CareModel>(queries[2]),
+        plants: extractQueryData<PlantModel>(queries[3]),
       };
     },
     () => "BAD_REQUEST" as IErr
