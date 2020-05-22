@@ -1,6 +1,9 @@
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
+import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { sequenceT } from "fp-ts/lib/Apply";
@@ -14,59 +17,70 @@ import {
   getProfiles,
   HouseholdData,
 } from "./api";
-import { responseError, responseSuccess } from "./response";
+import {
+  logError,
+  logSuccess,
+  responseError,
+  responseSuccess,
+} from "./response";
 import { getTodosDueToday } from "./state";
-import { Expo, ExpoPushMessage } from "expo-server-sdk";
-import { TodoModel } from "@urban-jungle/shared/models/todo";
-import { PlantModel } from "@urban-jungle/shared/models/plant";
 
+const fn = functions.region("europe-west3");
 const expo = new Expo();
-
 admin.initializeApp();
 
-export const sendTodoReminders = functions.https.onRequest(
-  async (_request, response) => {
+export const scheduleTodoReminders = fn.pubsub
+  .schedule("0 19 * * *") // NB: every day at 7pm
+  .timeZone("Europe/London") // NB: GMT / BST
+  .onRun(() =>
     pipe(
-      sequenceTE(getHouseholds(), getProfiles()),
-      TE.chain(([households, profiles]) =>
-        TE.tryCatch(
-          async () => {
-            const data = households.map((household) =>
-              getHouseholdData(household.id)
-            );
-            // TODO: this is horrible. Surely we can do this through sequence?
-            const tasks = await Promise.all(
-              data.map((household) =>
-                pipe(
-                  household,
-                  TE.chain(getPushNotificationsForHousehold(profiles))
-                )()
-              )
-            );
-            // TODO: this is horrible. Surely we can do this through sequence?
-            return tasks
-              .map((task) =>
-                pipe(
-                  task,
-                  E.getOrElse(() => (null as any) as PushNotification)
-                )
-              )
-              .filter(Boolean);
-          },
-          () => "BAD_REQUEST" as IErr
-        )
-      ),
-      TE.chain(sendPushNotifications),
-      TE.mapLeft(responseError(response)),
-      TE.map(responseSuccess(response))
-    )();
-  }
-);
+      handleSendPushNotifications(),
+      TE.mapLeft(logError()),
+      TE.map(logSuccess())
+    )()
+  );
 
-type PushNotification = {
-  profiles: ProfileModel[];
-  plants: { plant: PlantModel; todo: TodoModel }[];
-};
+export const sendTodoReminders = fn.https.onRequest((_request, response) => {
+  pipe(
+    handleSendPushNotifications(),
+    TE.mapLeft(responseError(response)),
+    TE.map(responseSuccess(response))
+  )();
+});
+
+const handleSendPushNotifications = () =>
+  pipe(
+    sequenceTE(getHouseholds(), getProfiles()),
+    TE.chain(([households, profiles]) =>
+      TE.tryCatch(
+        async () => {
+          const data = households.map((household) =>
+            getHouseholdData(household.id)
+          );
+          // TODO: this is horrible. Surely we can do this through sequence?
+          const tasks = await Promise.all(
+            data.map((household) =>
+              pipe(
+                household,
+                TE.chain(getPushNotificationsForHousehold(profiles))
+              )()
+            )
+          );
+          // TODO: this is horrible. Surely we can do this through sequence?
+          return tasks
+            .map((task) =>
+              pipe(
+                task,
+                E.getOrElse(() => (null as any) as PushNotification)
+              )
+            )
+            .filter(Boolean);
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    ),
+    TE.chain(sendPushNotifications)
+  );
 
 const getPushNotificationsForHousehold = (profiles: ProfileModel[]) => (
   household: HouseholdData
@@ -127,7 +141,7 @@ const getNotifiableProfilesForHousehold = (profiles: ProfileModel[]) => (
 
 const sendPushNotifications = (
   pushNotifications: PushNotification[]
-): TE.TaskEither<IErr, any> =>
+): TE.TaskEither<IErr, ExpoPushTicket[]> =>
   TE.tryCatch(
     async () => {
       const notifications: ExpoPushMessage[] = pushNotifications.map(
@@ -179,6 +193,11 @@ const getNotificationMessage = (plants: PlantModel[]): string => {
 };
 
 const sequenceTE = sequenceT(TE.taskEither);
+
+type PushNotification = {
+  profiles: ProfileModel[];
+  plants: { plant: PlantModel; todo: TodoModel }[];
+};
 
 const flatten = <Data>(arr: Data[][]): Data[] =>
   arr.reduce((acc, val) => [...acc, ...val], [] as Data[]);

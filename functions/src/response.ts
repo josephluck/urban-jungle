@@ -37,6 +37,26 @@ export const responseError = (response: functions.Response) => (
   return body;
 };
 
+export const logSuccess = (status = 200) => <Data>(
+  data: Data
+): ResponseSuccess<Data> => {
+  const body: ResponseSuccess<Data> = {
+    status,
+    data,
+  };
+  console.log(body);
+  return body;
+};
+
+export const logError = () => (err: IErr): ResponseError => {
+  const body: ResponseError = {
+    status: errToStatus[err],
+    code: err,
+  };
+  console.log(body);
+  return body;
+};
+
 const errToStatus: Record<IErr, number> = {
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
