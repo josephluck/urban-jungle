@@ -6,7 +6,7 @@ export interface ProfileModel extends BaseModel {
    */
   name: string;
   /**
-   * Profile's last name
+   * Profile's last name.
    */
   lastName: string;
   /**
@@ -14,13 +14,17 @@ export interface ProfileModel extends BaseModel {
    */
   email: string;
   /**
-   * Which Households the profile can manage
+   * Which Households the profile can manage.
    */
   householdIds: string[];
   /**
    * Pretty picture of the profile. If not provided, falls back to a placeholder.
    */
   avatar?: string;
+  /**
+   * The Expo Push token for the user's device
+   */
+  pushToken?: string;
 }
 
 export const makeProfileModel = (

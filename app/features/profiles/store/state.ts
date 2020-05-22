@@ -37,6 +37,16 @@ export const selectCurrentProfileName = (): O.Option<string> =>
     O.map((p) => p.name)
   );
 
+export const selectPushNotificationsEnabled = (): boolean =>
+  pipe(
+    selectCurrentProfile(),
+    O.filter((profile) => Boolean(profile.pushToken)),
+    O.fold(
+      () => false,
+      () => true
+    )
+  );
+
 export const selectProfileById = (id: O.Option<string>) => (
   profiles: Record<string, ProfileModel>
 ): O.Option<ProfileModel> =>

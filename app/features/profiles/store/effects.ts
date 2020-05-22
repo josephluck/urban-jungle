@@ -108,3 +108,40 @@ export const removeHouseholdFromProfile = (
     ),
     TE.chain(fetchCurrentProfileIfNotFetched)
   );
+
+export const saveExpoPushTokenToProfile = (
+  pushToken: string
+): TE.TaskEither<IErr, void> =>
+  pipe(
+    selectCurrentUserId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain((id) =>
+      TE.tryCatch(
+        async () => {
+          await database().doc(id).update({
+            pushToken,
+          });
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    )
+  );
+
+export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>
+  pipe(
+    selectCurrentUserId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain((id) =>
+      TE.tryCatch(
+        async () => {
+          await database()
+            .doc(id)
+            .set(
+              { pushToken: firebase.firestore.FieldValue.delete() },
+              { merge: true }
+            );
+        },
+        () => "BAD_REQUEST" as IErr
+      )
+    )
+  );

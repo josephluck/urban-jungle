@@ -1,6 +1,6 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { ListItem } from "../../../components/list-item";
@@ -14,6 +14,12 @@ import {
   selectProfilesForHousehold,
 } from "../../households/store/state";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { Switch } from "react-native";
+import {
+  enablePushNotifications,
+  disablePushNotifications,
+} from "../../notifications/token";
+import { selectPushNotificationsEnabled } from "../../profiles/store/state";
 
 export const ManageScreen = () => {
   const selectedHouseholdId_ = useStore(
@@ -23,16 +29,29 @@ export const ManageScreen = () => {
     selectedHouseholdId_,
     O.getOrElse(() => "")
   );
+  const pushNotificationsEnabled = useStore(selectPushNotificationsEnabled);
   const people = useStore(
     () => selectProfilesForHousehold(selectedHouseholdId),
     [selectedHouseholdId]
   );
+
+  const handleTogglePushNotifications = useCallback(() => {
+    if (pushNotificationsEnabled) {
+      disablePushNotifications()();
+    } else {
+      enablePushNotifications()();
+    }
+  }, [pushNotificationsEnabled]);
 
   return (
     <ScreenLayout>
       {selectedHouseholdId ? (
         <ScreenContainer>
           <WelcomeMessageContainer>
+            <Switch
+              value={pushNotificationsEnabled}
+              onValueChange={handleTogglePushNotifications}
+            />
             <Heading>Your network</Heading>
             <Button onPress={shareHouseholdInvitation(selectedHouseholdId)}>
               Invite
