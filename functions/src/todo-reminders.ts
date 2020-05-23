@@ -69,47 +69,45 @@ const getNotifiableProfilesForHousehold = (profiles: ProfileModel[]) => (
 ): ProfileModel[] =>
   household.profileIds
     .map((profileId) => profiles.find((profile) => profile.id === profileId))
-    .filter(
-      (profile) =>
-        profile &&
-        Boolean(profile.pushToken) &&
-        Expo.isExpoPushToken(profile.pushToken || "")
-    ) as ProfileModel[];
+    .filter(profileHasValidPushToken) as ProfileModel[];
+
+const profileHasValidPushToken = (profile: ProfileModel | undefined): boolean =>
+  !!profile &&
+  Boolean(profile.pushToken) &&
+  Expo.isExpoPushToken(profile.pushToken || "");
 
 const sendPushNotifications = (
-  pushNotifications: PushNotification[]
+  notifications: PushNotification[]
 ): TE.TaskEither<IErr, ExpoPushTicket[]> =>
   pipe(
     TE.tryCatch(
-      async () => {
-        const notifications: ExpoPushMessage[] = pushNotifications.map(
-          (notification) => {
-            const message = getNotificationMessage(
-              notification.plants.reduce(
-                (prev, curr) => [...prev, curr.plant],
-                [] as PlantModel[]
-              )
-            );
-            return {
-              to: notification.profiles.map(
-                (profile) => profile.pushToken || ""
-              ),
-              sound: "default",
-              body: `🌱 💦 ${message}`,
-              data: {},
-            };
-          }
-        );
-
-        const chunks = expo.chunkPushNotifications(notifications);
-        return await Promise.all(
-          chunks.map((chunk) => expo.sendPushNotificationsAsync(chunk))
-        );
-      },
+      () =>
+        Promise.all(
+          expo
+            .chunkPushNotifications(notifications.map(buildExpoPushMessage))
+            .map(expo.sendPushNotificationsAsync)
+        ),
       () => "BAD_REQUEST" as IErr
     ),
     TE.map(A.flatten)
   );
+
+const buildExpoPushMessage = (
+  notification: PushNotification
+): ExpoPushMessage => {
+  const message = getNotificationMessage(
+    notification.plants.reduce(
+      (prev, curr) => [...prev, curr.plant],
+      [] as PlantModel[]
+    )
+  );
+  return {
+    to: notification.profiles.map((profile) => profile.pushToken || ""),
+    sound: "default",
+    body: `🌱 💦 ${message}`,
+    data: {},
+  };
+};
 
 const getNotificationMessage = (plants: PlantModel[]): string => {
   const plantNames = [...new Set(plants.map((plant) => plant.name))];
