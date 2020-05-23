@@ -21,3 +21,5 @@ web-report/
 
 env.*.json
 release-date.json
+google-services.json
+GoogleService-Info.plist
