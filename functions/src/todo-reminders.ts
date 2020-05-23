@@ -79,35 +79,36 @@ const getNotifiableProfilesForHousehold = (profiles: ProfileModel[]) => (
 const sendPushNotifications = (
   pushNotifications: PushNotification[]
 ): TE.TaskEither<IErr, ExpoPushTicket[]> =>
-  TE.tryCatch(
-    async () => {
-      const notifications: ExpoPushMessage[] = pushNotifications.map(
-        (notification) => {
-          const message = getNotificationMessage(
-            notification.plants.reduce(
-              (prev, curr) => [...prev, curr.plant],
-              [] as PlantModel[]
-            )
-          );
-          return {
-            to: notification.profiles.map((profile) => profile.pushToken || ""),
-            sound: "default",
-            body: `🌱 💦 ${message}`,
-            data: {},
-          };
-        }
-      );
+  pipe(
+    TE.tryCatch(
+      async () => {
+        const notifications: ExpoPushMessage[] = pushNotifications.map(
+          (notification) => {
+            const message = getNotificationMessage(
+              notification.plants.reduce(
+                (prev, curr) => [...prev, curr.plant],
+                [] as PlantModel[]
+              )
+            );
+            return {
+              to: notification.profiles.map(
+                (profile) => profile.pushToken || ""
+              ),
+              sound: "default",
+              body: `🌱 💦 ${message}`,
+              data: {},
+            };
+          }
+        );
 
-      const chunks = expo.chunkPushNotifications(notifications);
-      const tickets = await Promise.all(
-        chunks.map(
-          async (chunk) => await expo.sendPushNotificationsAsync(chunk)
-        )
-      );
-
-      return flatten(tickets);
-    },
-    () => "BAD_REQUEST" as IErr
+        const chunks = expo.chunkPushNotifications(notifications);
+        return await Promise.all(
+          chunks.map((chunk) => expo.sendPushNotificationsAsync(chunk))
+        );
+      },
+      () => "BAD_REQUEST" as IErr
+    ),
+    TE.map(A.flatten)
   );
 
 const getNotificationMessage = (plants: PlantModel[]): string => {
@@ -119,7 +120,7 @@ const getNotificationMessage = (plants: PlantModel[]): string => {
     return `${firstThreePlants} and ${length - 3} others need your help`;
   }
   if (length > 1) {
-    const firstPlants = plantNames.slice(0, length - 2).join(", ");
+    const firstPlants = plantNames.slice(0, length - 1).join(", ");
     const lastPlant = plantNames[length - 1];
     return `${firstPlants} and ${lastPlant} need your help`;
   }
@@ -135,6 +136,3 @@ type PushNotification = {
   profiles: ProfileModel[];
   plants: { plant: PlantModel; todo: TodoModel }[];
 };
-
-const flatten = <Data>(arr: Data[][]): Data[] =>
-  arr.reduce((acc, val) => [...acc, ...val], [] as Data[]);
