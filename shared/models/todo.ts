@@ -33,6 +33,14 @@ export interface TodoModel extends BaseModel {
    * Some further information about the todo.
    */
   detail: string;
+  /**
+   * The time that the todo was last done
+   */
+  dateLastDone?: firebase.firestore.Timestamp;
+  /**
+   * The profile id of the person that last did this todo
+   */
+  lastDoneBy?: string;
 }
 
 export const makeTodoModel = (
