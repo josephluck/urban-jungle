@@ -2,6 +2,7 @@ import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { useEffect } from "react";
 import { database } from "../../../database";
 import { removeTodos, upsertTodos } from "../store/state";
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
 /**
  * Subscribes to any todos for the given household
@@ -23,7 +24,7 @@ export const HouseholdTodosSubscription = ({
 };
 
 const handleTodoSnapshot = (householdId: string) => async (
-  snapshot: Snapshot
+  snapshot: FirebaseFirestoreTypes.QuerySnapshot
 ) => {
   const addedOrModified: TodoModel[] = snapshot
     .docChanges()
@@ -38,7 +39,3 @@ const handleTodoSnapshot = (householdId: string) => async (
   upsertTodos(householdId, addedOrModified);
   removeTodos(householdId, removed);
 };
-
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;

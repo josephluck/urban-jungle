@@ -1,6 +1,5 @@
 import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
-import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { CareModel } from "@urban-jungle/shared/models/care";
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
@@ -16,10 +15,11 @@ import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { PhotoModel } from "@urban-jungle/shared/models/photo";
+import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 
 interface AuthState {
   initializing: boolean;
-  authUser: O.Option<firebase.User>;
+  authUser: O.Option<FirebaseAuthTypes.User>;
 }
 
 interface ProfilesState {

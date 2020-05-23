@@ -3,7 +3,6 @@ import { ImageModel } from "@urban-jungle/shared/models/image";
 import { makePhotoModel, PhotoModel } from "@urban-jungle/shared/models/photo";
 import { makePlantModel, PlantModel } from "@urban-jungle/shared/models/plant";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -12,6 +11,7 @@ import { selectHouseholdById } from "../../households/store/state";
 import { selectMostRecentPlantPhoto } from "../../photos/store/state";
 import { deleteTodosByPlant } from "../../todos/store/effects";
 import { isPlantAvatarThisPhoto, selectPlantByHouseholdId } from "./state";
+import firestore from "@react-native-firebase/firestore";
 
 type Fields = Omit<PlantModel, keyof BaseModel | "householdId" | "avatar"> & {
   avatar: ImageModel;
@@ -172,10 +172,7 @@ export const deletePlantAvatar = (householdId: string, plantId: string) => () =>
       await database.plants
         .database(householdId)
         .doc(plantId)
-        .set(
-          { avatar: firebase.firestore.FieldValue.delete() },
-          { merge: true }
-        );
+        .set({ avatar: firestore.FieldValue.delete() }, { merge: true });
     },
     () => "BAD_REQUEST" as IErr
   );

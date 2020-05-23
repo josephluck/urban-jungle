@@ -3,7 +3,6 @@ import {
   ProfileModel,
 } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -11,9 +10,11 @@ import { database } from "../../../database";
 import { fetchCurrentProfileIfNotFetched } from "../../auth/store/effects";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectProfileById, selectProfiles, upsertProfile } from "./state";
+import { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import firestore from "@react-native-firebase/firestore";
 
 export const createProfileForUser = (
-  user: firebase.User
+  user: FirebaseAuthTypes.User
 ): TE.TaskEither<IErr, ProfileModel> =>
   TE.tryCatch(
     async () => {
@@ -63,7 +64,7 @@ export const addHouseholdToCurrentProfile = (
       TE.tryCatch(
         async () => {
           await database.profiles.database.doc(id).update({
-            householdIds: firebase.firestore.FieldValue.arrayUnion(householdId),
+            householdIds: firestore.FieldValue.arrayUnion(householdId),
           });
         },
         () => "BAD_REQUEST" as IErr
@@ -92,9 +93,7 @@ export const removeHouseholdFromProfile = (
       TE.tryCatch(
         async () => {
           await database.profiles.database.doc(id).update({
-            householdIds: firebase.firestore.FieldValue.arrayRemove(
-              householdId
-            ),
+            householdIds: firestore.FieldValue.arrayRemove(householdId),
           });
         },
         () => "BAD_REQUEST" as IErr
@@ -130,10 +129,7 @@ export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>
         async () => {
           await database.profiles.database
             .doc(id)
-            .set(
-              { pushToken: firebase.firestore.FieldValue.delete() },
-              { merge: true }
-            );
+            .set({ pushToken: firestore.FieldValue.delete() }, { merge: true });
         },
         () => "BAD_REQUEST" as IErr
       )

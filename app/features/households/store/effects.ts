@@ -1,6 +1,5 @@
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { AsyncStorage, Share } from "react-native";
@@ -10,6 +9,7 @@ import { makeHouseholdInvitationDeepLink } from "../../../linking/household-invi
 import { selectCurrentUserId } from "../../auth/store/state";
 import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
 import { setSelectedHouseholdId } from "./state";
+import firestore from "@react-native-firebase/firestore";
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
@@ -27,7 +27,7 @@ export const createHouseholdForProfile = (
           ...defaultHousehold,
           ...household,
           id,
-          dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+          dateCreated: firestore.Timestamp.fromDate(new Date()),
         });
         return id;
       },
@@ -88,7 +88,7 @@ const addProfileToHousehold = (profileId: string) => (
   TE.tryCatch(
     async () => {
       await database.households.database.doc(householdId).update({
-        profileIds: firebase.firestore.FieldValue.arrayUnion(profileId),
+        profileIds: firestore.FieldValue.arrayUnion(profileId),
       });
       return householdId;
     },
@@ -101,7 +101,7 @@ export const removeProfileFromHousehold = (profileId: string) => (
   TE.tryCatch(
     async () => {
       await database.households.database.doc(householdId).update({
-        profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
+        profileIds: firestore.FieldValue.arrayRemove(profileId),
       });
     },
     () => "BAD_REQUEST" as IErr

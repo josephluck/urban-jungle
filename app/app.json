@@ -17,7 +17,15 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+    "android": {
+      "package": "com.josephluck.urbanjungle",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json"
+    },
     "ios": {
+      "bundleIdentifier": "com.josephluck.urbanjungle",
+      "buildNumber": "1.0.0",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
     "packagerOpts": {

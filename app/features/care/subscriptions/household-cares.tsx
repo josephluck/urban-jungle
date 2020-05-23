@@ -2,6 +2,7 @@ import { CareModel } from "@urban-jungle/shared/models/care";
 import { useEffect } from "react";
 import { database } from "../../../database";
 import { removeCares, upsertCares } from "../store/state";
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
 /**
  * Subscribes to any plants for the given household
@@ -23,7 +24,7 @@ export const HouseholdCaresSubscription = ({
 };
 
 const handleCareSnapshot = (householdId: string) => async (
-  snapshot: Snapshot
+  snapshot: FirebaseFirestoreTypes.QuerySnapshot
 ) => {
   const addedOrModified: CareModel[] = snapshot
     .docChanges()
@@ -38,7 +39,3 @@ const handleCareSnapshot = (householdId: string) => async (
   upsertCares(householdId, addedOrModified);
   removeCares(householdId, removed);
 };
-
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;

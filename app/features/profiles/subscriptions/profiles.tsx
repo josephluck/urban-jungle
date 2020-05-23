@@ -7,6 +7,7 @@ import { useStore } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectProfileIdsForHouseholds } from "../../households/store/state";
 import { deleteProfiles, upsertProfiles } from "../store/state";
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
 /**
  * Subscribes to current profile and any profiles associated with fetched
@@ -42,7 +43,9 @@ export const ProfilesSubscription = () => {
   return <></>;
 };
 
-const handleProfileSnapshot = async (snapshot: Snapshot) => {
+const handleProfileSnapshot = async (
+  snapshot: FirebaseFirestoreTypes.QuerySnapshot
+) => {
   const addedOrModified: ProfileModel[] = snapshot
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))
@@ -54,7 +57,3 @@ const handleProfileSnapshot = async (snapshot: Snapshot) => {
   upsertProfiles(addedOrModified);
   deleteProfiles(removed.map((profile) => profile.id));
 };
-
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;

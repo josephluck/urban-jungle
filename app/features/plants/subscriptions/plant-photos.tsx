@@ -1,8 +1,8 @@
 import { PhotoModel } from "@urban-jungle/shared/models/photo";
-import firebase from "firebase";
 import { useEffect } from "react";
 import { database } from "../../../database";
 import { removePhotos, upsertPhotos } from "../../photos/store/state";
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
 /**
  * Subscribes to any plant photos for the given household
@@ -25,7 +25,7 @@ export const HouseholdPhotosSubscription = ({
 };
 
 const handlePlantPhotoSnapshot = (householdId: string) => async (
-  snapshot: Snapshot
+  snapshot: FirebaseFirestoreTypes.QuerySnapshot
 ) => {
   const addedOrModified: PhotoModel[] = snapshot
     .docChanges()
@@ -40,7 +40,3 @@ const handlePlantPhotoSnapshot = (householdId: string) => async (
   upsertPhotos(householdId, addedOrModified);
   removePhotos(householdId, removed);
 };
-
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;

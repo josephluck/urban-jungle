@@ -2,6 +2,7 @@ import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { useEffect } from "react";
 import { database } from "../../../database";
 import { removePlants, upsertPlants } from "../store/state";
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
 /**
  * Subscribes to any plants for the given household
@@ -23,7 +24,7 @@ export const HouseholdPlantsSubscription = ({
 };
 
 const handlePlantSnapshot = (householdId: string) => async (
-  snapshot: Snapshot
+  snapshot: FirebaseFirestoreTypes.QuerySnapshot
 ) => {
   const addedOrModified: PlantModel[] = snapshot
     .docChanges()
@@ -38,7 +39,3 @@ const handlePlantSnapshot = (householdId: string) => async (
   upsertPlants(householdId, addedOrModified);
   removePlants(householdId, removed);
 };
-
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;

@@ -1,9 +1,9 @@
 import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import uuid from "uuid";
+import storage from "@react-native-firebase/storage";
 
 // NB: see https://github.com/expo/expo/issues/2402#issuecomment-443726662
 const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
@@ -32,7 +32,7 @@ export const uploadFile = (reference: StorageEntityType = "default") => (
     TE.chain((blob) =>
       TE.tryCatch(
         async () => {
-          const ref = firebase.storage().ref(reference).child(uuid());
+          const ref = storage().ref(reference).child(uuid());
           const snapshot = await ref.put(blob);
           blob.close();
           return await snapshot.ref.getDownloadURL();

@@ -1,9 +1,9 @@
-import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { every } from "../../../fp/option";
 import { store } from "../../../store/state";
 import { selectCurrentProfile } from "../../profiles/store/state";
+import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 
 /**
  * SELECTORS
@@ -14,7 +14,7 @@ export const selectInitializing = store.createSelector(
 );
 
 export const selectAuthUser = store.createSelector(
-  (s): O.Option<firebase.User> => s.auth.authUser
+  (s): O.Option<FirebaseAuthTypes.User> => s.auth.authUser
 );
 
 export const selectCurrentUserId = (): O.Option<string> =>
@@ -31,7 +31,7 @@ export const selectHasAuthenticated = (): boolean =>
  */
 
 export const setUser = store.createMutator(
-  (s, authUser: O.Option<firebase.User>) => {
+  (s, authUser: O.Option<FirebaseAuthTypes.User>) => {
     s.auth.authUser = authUser;
   }
 );

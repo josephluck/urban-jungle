@@ -1,7 +1,7 @@
 import { act, render, wait } from "@testing-library/react-native";
 import { makeCareModel } from "@urban-jungle/shared/models/care";
 import { makeTodoModel } from "@urban-jungle/shared/models/todo";
-import firebase from "firebase";
+import firestore from "@react-native-firebase/firestore";
 import moment from "moment";
 import React from "react";
 import { View } from "react-native";
@@ -9,16 +9,14 @@ import { defaultState, store, useStore } from "../../../store/state";
 import { selectTodosSchedule, upsertTodo } from "../../todos/store/state";
 import { selectCaresByHouseholdId, upsertCare } from "../store/state";
 
-const makeFirebaseDate = (
-  daysAdjustment: number = 0
-): firebase.firestore.Timestamp => {
+const makeFirebaseDate = (daysAdjustment: number = 0): firestore.Timestamp => {
   const date =
     daysAdjustment === 0
       ? moment()
       : daysAdjustment >= 0
       ? moment().add(daysAdjustment, "days")
       : moment().subtract(Math.abs(daysAdjustment), "days");
-  return firebase.firestore.Timestamp.fromDate(date.toDate());
+  return firestore.Timestamp.fromDate(date.toDate());
 };
 
 describe.skip("schedule rendering", () => {

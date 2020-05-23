@@ -1,6 +1,7 @@
 import { HouseholdId } from "../models/ids";
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
-export const database = (firestore: firebase.firestore.Firestore) => {
+export const database = (firestore: FirebaseFirestoreTypes.Module) => {
   const profilesDatabase = firestore.collection("profiles");
 
   const householdsDatabase = firestore.collection("households");

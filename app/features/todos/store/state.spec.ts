@@ -1,7 +1,9 @@
 import { makeCareModel } from "@urban-jungle/shared/models/care";
 import { makePlantModel } from "@urban-jungle/shared/models/plant";
 import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
-import firebase from "firebase";
+import firestore, {
+  FirebaseFirestoreTypes,
+} from "@react-native-firebase/firestore";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
@@ -15,14 +17,14 @@ import {
 
 const makeFirebaseDate = (
   daysAdjustment: number = 0
-): firebase.firestore.Timestamp => {
+): FirebaseFirestoreTypes.Timestamp => {
   const date =
     daysAdjustment === 0
       ? moment()
       : daysAdjustment >= 0
       ? moment().add(daysAdjustment, "days")
       : moment().subtract(Math.abs(daysAdjustment), "days");
-  return firebase.firestore.Timestamp.fromDate(date.toDate());
+  return firestore.Timestamp.fromDate(date.toDate());
 };
 
 const withNonePlant = (todo: TodoModel) => ({ ...todo, plant: O.none });
@@ -290,7 +292,7 @@ describe("store / todos", () => {
         id: "care1",
         householdId: "household1",
         todoId: "todo1",
-        dateCreated: firebase.firestore.Timestamp.fromDate(
+        dateCreated: firestore.Timestamp.fromDate(
           moment().add(2, "minutes").toDate()
         ),
       });

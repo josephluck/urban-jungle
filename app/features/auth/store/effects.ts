@@ -1,6 +1,6 @@
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
@@ -23,7 +23,7 @@ import {
 } from "./state";
 
 export const initialize = store.createEffect(() => {
-  firebase.auth().onAuthStateChanged(async (user) => {
+  auth().onAuthStateChanged(async (user) => {
     setUser(O.fromNullable(user)); // NB: this deals with sign out as well
     if (user) {
       await fetchOrCreateProfile()();
@@ -36,9 +36,7 @@ export const initialize = store.createEffect(() => {
 
 export const signIn = store.createEffect(
   async (_, email: string, password: string) => {
-    const response = await firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password);
+    const response = await auth().signInWithEmailAndPassword(email, password);
     return response;
   }
 );
@@ -56,9 +54,10 @@ export const signUp = (
   pipe(
     TE.tryCatch(
       async () => {
-        const response = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(email, password);
+        const response = await auth().createUserWithEmailAndPassword(
+          email,
+          password
+        );
         return response;
       },
       () => "BAD_REQUEST" as IErr
@@ -71,7 +70,7 @@ export const signUp = (
  * Validates a user was correctly created
  */
 export const validateSignUp = (
-  credentials: firebase.auth.UserCredential
+  credentials: FirebaseAuthTypes.UserCredential
 ): TE.TaskEither<IErr, string> =>
   pipe(
     O.fromNullable(credentials.user),
@@ -96,7 +95,7 @@ export const handleInitialHouseholdInvitationLink = (
   );
 
 export const signOut = store.createEffect(async () => {
-  await firebase.auth().signOut();
+  await auth().signOut();
 });
 
 export const fetchOrCreateProfile = (): TE.TaskEither<IErr, ProfileModel> =>

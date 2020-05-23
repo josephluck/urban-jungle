@@ -1,20 +1,23 @@
 import { makeCareModel } from "@urban-jungle/shared/models/care";
 import { makeTodoModel } from "@urban-jungle/shared/models/todo";
-import firebase from "firebase";
+
+import firestore, {
+  FirebaseFirestoreTypes,
+} from "@react-native-firebase/firestore";
 import moment from "moment";
 import { defaultState, store } from "../../../store/state";
 import { selectCareHistory } from "./state";
 
 const makeFirebaseDate = (
   daysAdjustment: number = 0
-): firebase.firestore.Timestamp => {
+): FirebaseFirestoreTypes.Timestamp => {
   const date =
     daysAdjustment === 0
       ? moment()
       : daysAdjustment >= 0
       ? moment().add(daysAdjustment, "days")
       : moment().subtract(Math.abs(daysAdjustment), "days");
-  return firebase.firestore.Timestamp.fromDate(date.toDate());
+  return firestore.Timestamp.fromDate(date.toDate());
 };
 
 describe("store / cares", () => {

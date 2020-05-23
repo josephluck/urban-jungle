@@ -10,6 +10,7 @@ import { selectCurrentUserId } from "../../auth/store/state";
 import { removeHouseholdFromProfile } from "../../profiles/store/effects";
 import { storeSelectedHouseholdIdToStorageIfNotPresent } from "../store/effects";
 import { deleteHousehold, upsertHousehold } from "../store/state";
+import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 
 /**
  * Subscribes to any households for the current profile ID.
@@ -33,7 +34,9 @@ export const CurrentProfileHouseholdsSubscription = () => {
   return <></>;
 };
 
-const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
+const handleHouseholdSnapshot = async (
+  snapshot: FirebaseFirestoreTypes.QuerySnapshot
+) => {
   const addedOrModified: HouseholdModel[] = snapshot
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))
@@ -63,7 +66,3 @@ const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
     })
   );
 };
-
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;

@@ -6,6 +6,7 @@
     "format": "prettier --write \"./**/*.*\""
   },
   "dependencies": {
+    "@react-native-firebase/firestore": "^7.1.0",
     "firebase": "7.9.0",
     "uuid": "^3.4.0"
   },
