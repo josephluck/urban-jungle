@@ -1,6 +1,8 @@
 import { HouseholdId } from "../models/ids";
 
 export const database = (firestore: firebase.firestore.Firestore) => {
+  const profilesDatabase = firestore.collection("profiles");
+
   const householdsDatabase = firestore.collection("households");
 
   const todosDatabase = (householdId: HouseholdId) =>
@@ -16,6 +18,9 @@ export const database = (firestore: firebase.firestore.Firestore) => {
     householdsDatabase.doc(householdId).collection("cares");
 
   return {
+    profiles: {
+      database: profilesDatabase,
+    },
     households: {
       database: householdsDatabase,
     },

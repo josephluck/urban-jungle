@@ -1,11 +1,12 @@
+import { database as makeDatabase } from "@urban-jungle/shared/database/database";
 import { CareModel } from "@urban-jungle/shared/models/care";
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
+import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as admin from "firebase-admin";
 import * as TE from "fp-ts/lib/TaskEither";
-import { PlantModel } from "@urban-jungle/shared/models/plant";
 
 export type HouseholdData = {
   household: HouseholdModel;
@@ -14,15 +15,14 @@ export type HouseholdData = {
   plants: PlantModel[];
 };
 
+const database = makeDatabase(admin.firestore() as any);
+
 export const getHouseholdData = (
   householdId: string
 ): TE.TaskEither<IErr, HouseholdData> =>
   TE.tryCatch(
     async () => {
-      const household = admin
-        .firestore()
-        .collection("households")
-        .doc(householdId);
+      const household = database.households.database.doc(householdId);
       const queries = await Promise.all([
         household.get(),
         household.collection("todos").get(),
@@ -42,7 +42,7 @@ export const getHouseholdData = (
 export const getHouseholds = (): TE.TaskEither<IErr, HouseholdModel[]> =>
   TE.tryCatch(
     async () => {
-      const query = await admin.firestore().collection("households").get();
+      const query = await database.households.database.get();
       return query.docs.map((doc) => doc.data() as HouseholdModel);
     },
     () => "BAD_REQUEST" as IErr
@@ -51,12 +51,12 @@ export const getHouseholds = (): TE.TaskEither<IErr, HouseholdModel[]> =>
 export const getProfiles = (): TE.TaskEither<IErr, ProfileModel[]> =>
   TE.tryCatch(
     async () => {
-      const query = await admin.firestore().collection("profiles").get();
+      const query = await database.profiles.database.get();
       return extractQueryData<ProfileModel>(query);
     },
     () => "BAD_REQUEST" as IErr
   );
 
 export const extractQueryData = <Data>(
-  query: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
+  query: firebase.firestore.QuerySnapshot<FirebaseFirestore.DocumentData>
 ): Data[] => query.docs.map((doc) => doc.data() as Data);

@@ -2,10 +2,10 @@ import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useEffect } from "react";
+import { database } from "../../../database";
 import { useStore } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectProfileIdsForHouseholds } from "../../households/store/state";
-import { database } from "../store/database";
 import { deleteProfiles, upsertProfiles } from "../store/state";
 
 /**
@@ -32,7 +32,7 @@ export const ProfilesSubscription = () => {
 
   useEffect(() => {
     if (profileIds.length) {
-      const unsubscribe = database()
+      const unsubscribe = database.profiles.database
         .where("id", "in", profileIds)
         .onSnapshot(handleProfileSnapshot);
       return unsubscribe;
