@@ -3,7 +3,7 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { database } from "../../../database";
-import { sequenceO } from "../../../fp/option";
+import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectHouseholdById } from "../../households/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
@@ -15,7 +15,7 @@ export const createCareForPlant = (profileId: string) => (todoId: string) => (
   plantId: string
 ) => (householdId: string): TE.TaskEither<IErr, CareModel> =>
   pipe(
-    sequenceO(
+    sequenceTO(
       selectTodoByHouseholdId(householdId, todoId),
       selectPlantByHouseholdId(householdId, plantId),
       selectProfileById2(profileId),

@@ -1,7 +1,7 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
-import { sequenceO } from "../../../fp/option";
+import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { normalizedStateFactory } from "../../../store/factory";
@@ -111,7 +111,7 @@ export const sortTodosByLocationAndPlant = (
   { title: titleB, plant: plantB }: TodoWithPlantModel
 ): number =>
   pipe(
-    sequenceO(plantA, plantB),
+    sequenceTO(plantA, plantB),
     O.fold(
       () => -1,
       ([

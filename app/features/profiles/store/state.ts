@@ -1,7 +1,7 @@
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { getFirstLetterFromOptionString } from "../../../fp/option";
+import { getFirstLetterFromOptionString } from "@urban-jungle/shared/fp/option";
 import { store } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
 

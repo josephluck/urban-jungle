@@ -1,10 +1,10 @@
+import { sequenceTE, validationTE } from "@urban-jungle/shared/fp/task-either";
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
-import { sequenceT } from "fp-ts/lib/Apply";
 import * as A from "fp-ts/lib/Array";
 import { array } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
@@ -18,7 +18,6 @@ import {
 import { getTodosDueToday as filterTodosDueToday } from "./state";
 
 const expo = new Expo();
-const TEValidation = TE.getTaskValidation(A.getMonoid<IErr>());
 
 export const handleSendPushNotifications = () =>
   pipe(
@@ -27,7 +26,7 @@ export const handleSendPushNotifications = () =>
       pipe(
         TE.right(households),
         TE.chain((households) =>
-          array.traverse(TEValidation)(
+          array.traverse(validationTE)(
             households.map(getPushNotificationsForHousehold(profiles)),
             TE.mapLeft(A.of)
           )
@@ -127,8 +126,6 @@ const getNotificationMessage = (plants: PlantModel[]): string => {
   }
   return "Your plants need your help";
 };
-
-const sequenceTE = sequenceT(TE.taskEither);
 
 type PushNotification = {
   profiles: ProfileModel[];

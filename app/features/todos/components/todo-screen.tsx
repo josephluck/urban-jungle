@@ -10,7 +10,7 @@ import { BackableScreenLayout } from "../../../components/layouts/backable-scree
 import { ListItem } from "../../../components/list-item";
 import { TodoOverview } from "../../../components/todo-overview";
 import { SubHeading } from "../../../components/typography";
-import { sequenceO } from "../../../fp/option";
+import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
@@ -105,7 +105,7 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
       }
     >
       {pipe(
-        sequenceO(plant, todo),
+        sequenceTO(plant, todo),
         O.fold(
           () => null,
           ([plant, todo]) => (

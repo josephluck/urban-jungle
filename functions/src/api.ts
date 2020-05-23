@@ -1,4 +1,5 @@
 import { database as makeDatabase } from "@urban-jungle/shared/database/database";
+import { sequenceSTE, traverseTE } from "@urban-jungle/shared/fp/task-either";
 import { CareModel } from "@urban-jungle/shared/models/care";
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
@@ -6,16 +7,10 @@ import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as admin from "firebase-admin";
-import { sequenceS } from "fp-ts/lib/Apply";
 import * as A from "fp-ts/lib/Array";
-import { array } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-
-const validationTE = TE.getTaskValidation(A.getMonoid<IErr>());
-const traverseTE = array.traverse(validationTE);
-const sequenceSTE = sequenceS(TE.taskEither);
 
 admin.initializeApp();
 export const database = makeDatabase(admin.firestore() as any);
@@ -97,10 +92,7 @@ export const getHouseholdWithPlantsAndTodos = (
   household: HouseholdModel
 ): TE.TaskEither<IErr, HouseholdWithPlantsAndTodos> =>
   sequenceSTE({
-    household: pipe(
-      O.fromNullable(household),
-      TE.fromOption(() => "NOT_FOUND")
-    ),
+    household: TE.right(household),
     plants: getHouseholdPlants(household.id),
     todos: getHouseholdTodos(household.id),
   });

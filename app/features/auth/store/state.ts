@@ -1,7 +1,7 @@
+import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import { every } from "../../../fp/option";
 import { store } from "../../../store/state";
 import { selectCurrentProfile } from "../../profiles/store/state";
 
@@ -24,7 +24,7 @@ export const selectCurrentUserId = (): O.Option<string> =>
   );
 
 export const selectHasAuthenticated = (): boolean =>
-  every([selectAuthUser(), selectCurrentProfile()]);
+  pipe(sequenceTO(selectAuthUser(), selectCurrentProfile()), O.isSome);
 
 /**
  * MUTATORS
