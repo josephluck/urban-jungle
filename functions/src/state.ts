@@ -4,14 +4,10 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 
-export const getTodosDueToday = (
-  householdId: string,
-  todos: TodoModel[],
-  cares: CareModel[]
-) =>
+export const getTodosDueToday = (todos: TodoModel[]): TodoModel[] =>
   todos
     .map((todo) => {
-      const nextDue = selectTodoNextDue(householdId, cares)(todo);
+      const nextDue = selectTodoNextDue(todo);
       return {
         ...todo,
         nextDue,
@@ -23,13 +19,11 @@ export const getTodosDueToday = (
  * Returns the date that the todo is due for. If it's overdue,
  * it'll return today. If it's never been done, it'll also return today.
  */
-export const selectTodoNextDue = (householdId: string, cares: CareModel[]) => (
-  todo: TodoModel
-): moment.Moment =>
+export const selectTodoNextDue = (todo: TodoModel): moment.Moment =>
   pipe(
-    selectMostRecentCareForTodo(householdId, cares)(todo.id),
+    O.fromNullable(todo.dateLastDone),
     O.map((lastCare) =>
-      moment(lastCare.dateCreated.toDate()).add(
+      moment(lastCare.toDate()).add(
         todo.recurrenceCount,
         todo.recurrenceInterval
       )

@@ -5,61 +5,47 @@ import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import { Expo, ExpoPushMessage, ExpoPushTicket } from "expo-server-sdk";
 import { sequenceT } from "fp-ts/lib/Apply";
-import * as E from "fp-ts/lib/Either";
+import * as A from "fp-ts/lib/Array";
+import { array } from "fp-ts/lib/Array";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import {
-  getHouseholdData,
-  getHouseholds,
+  getHouseholdsWithPlantsAndTodos,
   getProfiles,
-  HouseholdData,
+  HouseholdWithPlantsAndTodos,
 } from "./api";
-import { getTodosDueToday } from "./state";
+import { getTodosDueToday as filterTodosDueToday } from "./state";
 
 const expo = new Expo();
+const TEValidation = TE.getTaskValidation(A.getMonoid<IErr>());
 
 export const handleSendPushNotifications = () =>
   pipe(
-    sequenceTE(getHouseholds(), getProfiles()),
+    sequenceTE(getHouseholdsWithPlantsAndTodos(), getProfiles()),
     TE.chain(([households, profiles]) =>
-      TE.tryCatch(
-        async () => {
-          const data = households.map((household) =>
-            getHouseholdData(household.id)
-          );
-          // TODO: this is horrible. Surely we can do this through sequence?
-          const tasks = await Promise.all(
-            data.map((household) =>
-              pipe(
-                household,
-                TE.chain(getPushNotificationsForHousehold(profiles))
-              )()
-            )
-          );
-          // TODO: this is horrible. Surely we can do this through sequence?
-          return tasks
-            .map((task) =>
-              pipe(
-                task,
-                E.getOrElse(() => (null as any) as PushNotification)
-              )
-            )
-            .filter(Boolean);
-        },
-        () => "BAD_REQUEST" as IErr
+      pipe(
+        TE.right(households),
+        TE.chain((households) =>
+          array.traverse(TEValidation)(
+            households.map(getPushNotificationsForHousehold(profiles)),
+            TE.mapLeft(A.of)
+          )
+        ),
+        TE.mapLeft((errs) => errs[0] || "UNKNOWN")
       )
     ),
     TE.chain(sendPushNotifications)
   );
 
 const getPushNotificationsForHousehold = (profiles: ProfileModel[]) => (
-  household: HouseholdData
+  household: HouseholdWithPlantsAndTodos
 ): TE.TaskEither<IErr, PushNotification> =>
   pipe(
-    filterHouseholdsDueToday()(TE.right(household)),
+    TE.right(household),
     TE.map((household) => ({
       ...household,
+      todos: filterTodosDueToday(household.todos),
       profiles: getNotifiableProfilesForHousehold(profiles)(
         household.household
       ),
@@ -76,26 +62,6 @@ const getPushNotificationsForHousehold = (profiles: ProfileModel[]) => (
         ),
       })),
     }))
-  );
-
-/**
- * TODO: this implementation is a bit odd..
- */
-const filterHouseholdsDueToday = () => (
-  task: TE.TaskEither<IErr, HouseholdData>
-): TE.TaskEither<IErr, HouseholdData> =>
-  pipe(
-    task,
-    TE.map(({ household, todos, cares, plants }) => ({
-      household,
-      cares,
-      plants,
-      todos: getTodosDueToday(household.id, todos, cares),
-    })),
-    TE.filterOrElse(
-      ({ todos }) => todos.length > 0,
-      () => "NOT_FOUND" as IErr
-    )
   );
 
 const getNotifiableProfilesForHousehold = (profiles: ProfileModel[]) => (

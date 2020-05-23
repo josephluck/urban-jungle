@@ -1,25 +1,18 @@
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as A from "fp-ts/lib/Array";
-import { array } from "fp-ts/lib/Array";
+import { array, flatten } from "fp-ts/lib/Array";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import { getHouseholdData, getHouseholds, database } from "./api";
+import { database, getHouseholdsWithPlantsTodosAndCares } from "./api";
 import { selectMostRecentCareForTodo } from "./state";
 
 /**
  * Migrates todos to include the last care that was done, and who it was done by
  */
-export const handleMigrateTodoLastDone = (): TE.TaskEither<IErr, any> =>
+export const handleMigrateTodoLastDone = (): TE.TaskEither<IErr, void[]> =>
   pipe(
-    getHouseholds(),
+    getHouseholdsWithPlantsTodosAndCares(),
     TE.mapLeft((err) => [err]),
-    TE.map((households) => households.map((household) => household.id)),
-    TE.chain((householdIds) =>
-      array.traverse(TEValidation)(
-        householdIds.map(getHouseholdData),
-        TE.mapLeft(A.of)
-      )
-    ),
     TE.map((householdsData) =>
       householdsData.map((householdData) =>
         householdData.todos.map((todo) => ({
@@ -31,7 +24,7 @@ export const handleMigrateTodoLastDone = (): TE.TaskEither<IErr, any> =>
         }))
       )
     ),
-    TE.map(A.flatten),
+    TE.map(flatten),
     TE.chain((todos) =>
       array.traverse(TEValidation)(
         todos.map((todo) =>
