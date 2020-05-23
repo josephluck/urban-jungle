@@ -42,6 +42,10 @@ const borderRadius = {
 };
 
 const font = {
+  _8: {
+    size: baseFontSize * 0.6,
+    lineHeight: baseFontSize * 0.6 * 1.2,
+  },
   _12: {
     size: baseFontSize * 0.8,
     lineHeight: baseFontSize * 0.8 * 1.2,

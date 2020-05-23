@@ -8,6 +8,7 @@ import { selectCurrentUserId } from "../../auth/store/state";
 import { selectHouseholdById } from "../../households/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
 import { selectProfileById2 } from "../../profiles/store/state";
+import { updateTodoLastDone } from "../../todos/store/effects";
 import { selectTodoByHouseholdId } from "../../todos/store/state";
 
 export const createCareForPlant = (profileId: string) => (todoId: string) => (
@@ -41,6 +42,9 @@ export const createCareForPlant = (profileId: string) => (todoId: string) => (
         },
         () => "BAD_REQUEST" as IErr
       )
+    ),
+    TE.chainFirst((care) =>
+      updateTodoLastDone(householdId, profileId, care)(todoId)
     )
   );
 

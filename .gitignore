@@ -17,4 +17,7 @@ __generated__/
 web-build/
 web-report/
 
+# App specific 
+
 env.*.json
+release-date.json

@@ -9,16 +9,16 @@
     "web": "expo start --web",
     "test": "jest",
     "eject": "expo eject",
-    "deploy": "expo publish",
+    "deploy": "yarn deploy:prepare && expo publish",
     "postinstall": "expo-yarn-workspaces postinstall",
     "tsc": "tsc --noEmit",
-    "format": "prettier --write \"./**/*.*\""
+    "format": "prettier --write \"./**/*.*\"",
+    "deploy:prepare": "ts-node ./make-release-date.ts"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@urban-jungle/shared": "*",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/pro-light-svg-icons": "^5.13.0",
@@ -33,6 +33,7 @@
     "@types/jest": "^25.2.1",
     "@types/react-native-collapsible": "^0.11.0",
     "@types/uuid": "^3.4.7",
+    "@urban-jungle/shared": "*",
     "aws4-react-native": "^0.0.2",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
@@ -80,6 +81,7 @@
     "jest-expo": "^37.0.0",
     "mockdate": "^2.0.5",
     "reactotron-react-native": "^5.0.0",
+    "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
   },
   "private": true
