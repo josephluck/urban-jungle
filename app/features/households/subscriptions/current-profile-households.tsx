@@ -4,10 +4,10 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useEffect } from "react";
+import { database } from "../../../database";
 import { useStore } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { removeHouseholdFromProfile } from "../../profiles/store/effects";
-import { database } from "../store/database";
 import { storeSelectedHouseholdIdToStorageIfNotPresent } from "../store/effects";
 import { deleteHousehold, upsertHousehold } from "../store/state";
 
@@ -23,7 +23,7 @@ export const CurrentProfileHouseholdsSubscription = () => {
 
   useEffect(() => {
     if (profileId) {
-      const unsubscribe = database()
+      const unsubscribe = database.households.database
         .where("profileIds", "array-contains", profileId)
         .onSnapshot(handleHouseholdSnapshot);
       return unsubscribe;

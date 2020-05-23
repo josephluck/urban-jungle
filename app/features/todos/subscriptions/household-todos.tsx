@@ -1,6 +1,6 @@
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { useEffect } from "react";
-import { database } from "../store/database";
+import { database } from "../../../database";
 import { removeTodos, upsertTodos } from "../store/state";
 
 /**
@@ -12,7 +12,8 @@ export const HouseholdTodosSubscription = ({
   householdId: string;
 }) => {
   useEffect(() => {
-    const unsubscribe = database(householdId)
+    const unsubscribe = database.todos
+      .database(householdId)
       .where("householdId", "==", householdId)
       .onSnapshot(handleTodoSnapshot(householdId));
     return unsubscribe;

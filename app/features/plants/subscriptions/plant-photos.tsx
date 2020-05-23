@@ -1,7 +1,7 @@
 import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import firebase from "firebase";
 import { useEffect } from "react";
-import { photosDatabase } from "../../photos/store/database";
+import { database } from "../../../database";
 import { removePhotos, upsertPhotos } from "../../photos/store/state";
 
 /**
@@ -14,7 +14,8 @@ export const HouseholdPhotosSubscription = ({
   householdId: string;
 }) => {
   useEffect(() => {
-    const unsubscribe = photosDatabase(householdId)
+    const unsubscribe = database.photos
+      .database(householdId)
       .where("householdId", "==", householdId)
       .onSnapshot(handlePlantPhotoSnapshot(householdId));
     return unsubscribe;

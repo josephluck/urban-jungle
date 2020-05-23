@@ -1,14 +1,14 @@
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { AsyncStorage, Share } from "react-native";
 import uuid from "uuid";
+import { database } from "../../../database";
 import { makeHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
-import { IErr } from "@urban-jungle/shared/utils/err";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { addHouseholdToCurrentProfile } from "../../profiles/store/effects";
-import { database } from "./database";
 import { setSelectedHouseholdId } from "./state";
 
 /**
@@ -23,14 +23,12 @@ export const createHouseholdForProfile = (
     TE.tryCatch(
       async () => {
         const id = uuid();
-        await database()
-          .doc(id)
-          .set({
-            ...defaultHousehold,
-            ...household,
-            id,
-            dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-          });
+        await database.households.database.doc(id).set({
+          ...defaultHousehold,
+          ...household,
+          id,
+          dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+        });
         return id;
       },
       () => "BAD_REQUEST" as IErr
@@ -56,7 +54,7 @@ export const fetchHousehold = (
 ): TE.TaskEither<IErr, HouseholdModel> =>
   TE.tryCatch(
     async () => {
-      const response = await database().doc(id).get();
+      const response = await database.households.database.doc(id).get();
       if (!response.exists) {
         throw new Error();
       }
@@ -89,11 +87,9 @@ const addProfileToHousehold = (profileId: string) => (
 ): TE.TaskEither<IErr, string> =>
   TE.tryCatch(
     async () => {
-      await database()
-        .doc(householdId)
-        .update({
-          profileIds: firebase.firestore.FieldValue.arrayUnion(profileId),
-        });
+      await database.households.database.doc(householdId).update({
+        profileIds: firebase.firestore.FieldValue.arrayUnion(profileId),
+      });
       return householdId;
     },
     () => "BAD_REQUEST" as IErr
@@ -104,11 +100,9 @@ export const removeProfileFromHousehold = (profileId: string) => (
 ): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     async () => {
-      await database()
-        .doc(householdId)
-        .update({
-          profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
-        });
+      await database.households.database.doc(householdId).update({
+        profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
+      });
     },
     () => "BAD_REQUEST" as IErr
   );
@@ -118,7 +112,7 @@ export const removeProfileFromHousehold = (profileId: string) => (
  */
 export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
-    async () => await database().doc(id).delete(),
+    async () => await database.households.database.doc(id).delete(),
     () => "BAD_REQUEST" as IErr
   );
 

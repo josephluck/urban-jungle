@@ -2,16 +2,15 @@ import { BaseModel } from "@urban-jungle/shared/models/base";
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import { makePhotoModel, PhotoModel } from "@urban-jungle/shared/models/photo";
 import { makePlantModel, PlantModel } from "@urban-jungle/shared/models/plant";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import { IErr } from "@urban-jungle/shared/utils/err";
+import { database } from "../../../database";
 import { selectHouseholdById } from "../../households/store/state";
-import { photosDatabase } from "../../photos/store/database";
 import { selectMostRecentPlantPhoto } from "../../photos/store/state";
 import { deleteTodosByPlant } from "../../todos/store/effects";
-import { database } from "./database";
 import { isPlantAvatarThisPhoto, selectPlantByHouseholdId } from "./state";
 
 type Fields = Omit<PlantModel, keyof BaseModel | "householdId" | "avatar"> & {
@@ -38,7 +37,10 @@ export const upsertPlantForHousehold = (
             ...fields,
             householdId,
           };
-          await database(householdId).doc(plantToSave.id).set(plantToSave);
+          await database.plants
+            .database(householdId)
+            .doc(plantToSave.id)
+            .set(plantToSave);
           return plantToSave;
         },
         () => "BAD_REQUEST" as IErr
@@ -84,7 +86,8 @@ export const savePlantImage = (
             householdId,
             associatedId: plantId,
           });
-          await photosDatabase(householdId)
+          await database.photos
+            .database(householdId)
             .doc(photoToSave.id)
             .set(photoToSave);
           return photoToSave;
@@ -100,7 +103,8 @@ export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
 ) =>
   TE.tryCatch(
     async () => {
-      await database(householdId)
+      await database.plants
+        .database(householdId)
         .doc(plantId)
         .set({ avatar: photo }, { merge: true });
     },
@@ -121,7 +125,7 @@ export const deletePlantPhoto = (householdId: string, plantId: string) => (
   pipe(
     TE.tryCatch(
       async () => {
-        await photosDatabase(householdId).doc(photoId).delete();
+        await database.photos.database(householdId).doc(photoId).delete();
       },
       () => "BAD_REQUEST" as IErr
     ),
@@ -165,7 +169,8 @@ export const setMostRecentPlantPhotoAsPrimary = (
 export const deletePlantAvatar = (householdId: string, plantId: string) => () =>
   TE.tryCatch(
     async () => {
-      await database(householdId)
+      await database.plants
+        .database(householdId)
         .doc(plantId)
         .set(
           { avatar: firebase.firestore.FieldValue.delete() },
@@ -181,7 +186,7 @@ export const deletePlantByHouseholdId = (householdId: string) => (
   pipe(
     TE.tryCatch(
       async () => {
-        await database(householdId).doc(plantId).delete();
+        await database.plants.database(householdId).doc(plantId).delete();
         return householdId;
       },
       () => "BAD_REQUEST" as IErr

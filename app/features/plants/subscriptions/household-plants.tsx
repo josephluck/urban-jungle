@@ -1,6 +1,6 @@
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { useEffect } from "react";
-import { database } from "../store/database";
+import { database } from "../../../database";
 import { removePlants, upsertPlants } from "../store/state";
 
 /**
@@ -12,7 +12,8 @@ export const HouseholdPlantsSubscription = ({
   householdId: string;
 }) => {
   useEffect(() => {
-    const unsubscribe = database(householdId)
+    const unsubscribe = database.plants
+      .database(householdId)
       .where("householdId", "==", householdId)
       .onSnapshot(handlePlantSnapshot(householdId));
     return unsubscribe;

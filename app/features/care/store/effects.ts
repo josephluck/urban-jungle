@@ -2,13 +2,13 @@ import { CareModel, makeCareModel } from "@urban-jungle/shared/models/care";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { database } from "../../../database";
 import { sequenceO } from "../../../fp/option";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectHouseholdById } from "../../households/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
 import { selectProfileById2 } from "../../profiles/store/state";
 import { selectTodoByHouseholdId } from "../../todos/store/state";
-import { database } from "./database";
 
 export const createCareForPlant = (profileId: string) => (todoId: string) => (
   plantId: string
@@ -33,7 +33,10 @@ export const createCareForPlant = (profileId: string) => (todoId: string) => (
             plant,
             profile,
           });
-          await database(householdId).doc(careToSave.id).set(careToSave);
+          await database.cares
+            .database(householdId)
+            .doc(careToSave.id)
+            .set(careToSave);
           return careToSave;
         },
         () => "BAD_REQUEST" as IErr

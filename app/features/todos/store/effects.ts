@@ -4,8 +4,8 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { database } from "../../../database";
 import { selectHouseholdById } from "../../households/store/state";
-import { database } from "./database";
 import {
   selectTodoByHouseholdId,
   selectTodosByHouseholdIdAndPlantId,
@@ -31,7 +31,8 @@ export const upsertTodoForPlant = (plantId: string, todoId?: string) => (
             plantId,
             householdId,
           };
-          await database(householdId)
+          await database.todos
+            .database(householdId)
             .doc(todoToSave.id)
             .set({
               ...todoToSave,

@@ -1,6 +1,6 @@
 import { CareModel } from "@urban-jungle/shared/models/care";
 import { useEffect } from "react";
-import { database } from "../store/database";
+import { database } from "../../../database";
 import { removeCares, upsertCares } from "../store/state";
 
 /**
@@ -12,7 +12,8 @@ export const HouseholdCaresSubscription = ({
   householdId: string;
 }) => {
   useEffect(() => {
-    const unsubscribe = database(householdId)
+    const unsubscribe = database.cares
+      .database(householdId)
       .where("householdId", "==", householdId)
       .onSnapshot(handleCareSnapshot(householdId));
     return unsubscribe;
