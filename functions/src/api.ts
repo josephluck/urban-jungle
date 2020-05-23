@@ -15,7 +15,8 @@ export type HouseholdData = {
   plants: PlantModel[];
 };
 
-const database = makeDatabase(admin.firestore() as any);
+admin.initializeApp();
+export const database = makeDatabase(admin.firestore() as any);
 
 export const getHouseholdData = (
   householdId: string

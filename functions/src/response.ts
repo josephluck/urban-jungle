@@ -1,5 +1,7 @@
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as functions from "firebase-functions";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 
 type ResponseError = {
   status: number;
@@ -63,3 +65,16 @@ const errToStatus: Record<IErr, number> = {
   UNAUTHENTICATED: 403,
   UNKNOWN: 500,
 };
+
+export const callWithLogging = (fn: TE.TaskEither<IErr, any>) =>
+  pipe(fn, TE.mapLeft(logError()), TE.map(logSuccess()))();
+
+export const callWithResponse = (
+  fn: TE.TaskEither<IErr, any>,
+  response: functions.Response
+) =>
+  pipe(
+    fn,
+    TE.mapLeft(responseError(response)),
+    TE.map(responseSuccess(response))
+  )();
