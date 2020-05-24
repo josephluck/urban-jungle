@@ -11,5 +11,5 @@ export const getInitialDeepLink = (): TE.TaskEither<IErr, string> =>
       }
       return response as string;
     },
-    () => "NOT_FOUND" as IErr
+    () => "NOT_FOUND"
   );

@@ -17,7 +17,7 @@ export const takePicture: TE.TaskEither<IErr, ImageInfo> = TE.tryCatch(
       return result;
     }
   },
-  () => "BAD_REQUEST" as IErr
+  () => "BAD_REQUEST"
 );
 
 /**

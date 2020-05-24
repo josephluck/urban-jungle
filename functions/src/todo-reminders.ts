@@ -1,4 +1,4 @@
-import { sequenceTE, validationTE } from "@urban-jungle/shared/fp/task-either";
+import { sequenceTTE, validationTE } from "@urban-jungle/shared/fp/task-either";
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
@@ -21,7 +21,7 @@ const expo = new Expo();
 
 export const handleSendPushNotifications = () =>
   pipe(
-    sequenceTE(getHouseholdsWithPlantsAndTodos(), getProfiles()),
+    sequenceTTE(getHouseholdsWithPlantsAndTodos(), getProfiles()),
     TE.chain(([households, profiles]) =>
       pipe(
         TE.right(households),

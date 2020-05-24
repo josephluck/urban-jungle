@@ -76,7 +76,7 @@ export const validateSignUp = (
   pipe(
     O.fromNullable(credentials.user),
     O.map((user) => user.uid),
-    TE.fromOption(() => "BAD_REQUEST" as IErr)
+    TE.fromOption(() => "BAD_REQUEST")
   );
 
 /**

@@ -23,26 +23,17 @@ export const upsertTodoForPlant = (plantId: string, todoId?: string) => (
         : O.fromNullable(makeTodoModel())
     ),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.chain((todo) =>
+    TE.map((todo) => ({ ...todo, ...fields, plantId, householdId })),
+    TE.chainFirst((todo) =>
       TE.tryCatch(
-        async () => {
-          const todoToSave = {
-            ...todo,
-            ...fields,
-            plantId,
-            householdId,
-          };
-          await database.todos
+        () =>
+          database.todos
             .database(householdId)
-            .doc(todoToSave.id)
+            .doc(todo.id)
             .set({
-              ...todoToSave,
-              activeInMonths: [...todoToSave.activeInMonths].sort(
-                (a, b) => a - b
-              ),
-            });
-          return todoToSave;
-        },
+              ...todo,
+              activeInMonths: [...todo.activeInMonths].sort((a, b) => a - b),
+            }),
         () => "BAD_REQUEST" as IErr
       )
     )
@@ -79,14 +70,13 @@ export const updateTodoLastDone = (
   care: CareModel
 ) => (todoId: string): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
-    async () => {
-      await database.todos
+    () =>
+      database.todos
         .database(householdId)
         .doc(todoId)
         .update({
           lastDoneBy: profileId,
           dateLastDone: care.dateCreated,
-        } as Partial<TodoModel>);
-    },
+        } as Partial<TodoModel>),
     () => "BAD_REQUEST" as IErr
   );

@@ -20,19 +20,19 @@ export const createHouseholdForProfile = (
   > = defaultHousehold
 ) => (profileId: string): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
-    TE.tryCatch(
-      async () => {
-        const id = uuid();
-        await database.households.database.doc(id).set({
-          ...defaultHousehold,
-          ...household,
-          id,
-          dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-        });
-        return id;
-      },
-      () => "BAD_REQUEST" as IErr
+    TE.right({
+      ...defaultHousehold,
+      ...household,
+      id: uuid(),
+      dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+    }),
+    TE.chainFirst((household) =>
+      TE.tryCatch(
+        () => database.households.database.doc(household.id).set(household),
+        () => "BAD_REQUEST" as IErr
+      )
     ),
+    TE.map((household) => household.id),
     TE.chainFirst((id) => storeSelectedHouseholdIdToStorage(id)),
     TE.chain(createProfileHouseholdRelation(profileId)),
     TE.chain(fetchHousehold)
@@ -60,7 +60,7 @@ export const fetchHousehold = (
       }
       return (response.data() as unknown) as HouseholdModel;
     },
-    () => "NOT_FOUND" as IErr
+    () => "NOT_FOUND"
   );
 
 /**
@@ -92,19 +92,18 @@ const addProfileToHousehold = (profileId: string) => (
       });
       return householdId;
     },
-    () => "BAD_REQUEST" as IErr
+    () => "BAD_REQUEST"
   );
 
 export const removeProfileFromHousehold = (profileId: string) => (
   householdId: string
 ): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
-    async () => {
-      await database.households.database.doc(householdId).update({
+    () =>
+      database.households.database.doc(householdId).update({
         profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
-      });
-    },
-    () => "BAD_REQUEST" as IErr
+      }),
+    () => "BAD_REQUEST"
   );
 
 /**
@@ -113,7 +112,7 @@ export const removeProfileFromHousehold = (profileId: string) => (
 export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     async () => await database.households.database.doc(id).delete(),
-    () => "BAD_REQUEST" as IErr
+    () => "BAD_REQUEST"
   );
 
 export const shareHouseholdInvitation = (
@@ -141,7 +140,7 @@ export const shareHouseholdInvitation = (
         // TODO: handle
       }
     },
-    () => "BAD_REQUEST" as IErr
+    () => "BAD_REQUEST"
   );
 
 /**
@@ -173,7 +172,7 @@ export const storeSelectedHouseholdIdToStorage = (
       await AsyncStorage.setItem(SELECTED_HOUSEHOLD_ID_KEY, id);
       return id;
     },
-    () => "BAD_REQUEST" as IErr
+    () => "BAD_REQUEST"
   );
 
 /**
@@ -191,7 +190,7 @@ export const retrieveSelectedHouseholdIdFromStorage = (): TE.TaskEither<
       }
       return id;
     },
-    () => "BAD_REQUEST" as IErr
+    () => "BAD_REQUEST"
   );
 
 /**

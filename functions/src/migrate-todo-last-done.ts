@@ -33,15 +33,14 @@ export const handleMigrateTodoLastDone = (): TE.TaskEither<IErr, void[]> =>
             TE.fromOption(() => "NOT_FOUND" as IErr),
             TE.chain((care) =>
               TE.tryCatch(
-                async () => {
-                  return await database.todos
+                () =>
+                  database.todos
                     .database(todo.todo.householdId)
                     .doc(todo.todo.id)
                     .update({
                       dateLastDone: care.dateCreated,
                       lastDoneBy: care.profileId,
-                    });
-                },
+                    }),
                 () => "UNKNOWN" as IErr
               )
             )

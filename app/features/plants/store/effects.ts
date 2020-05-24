@@ -29,20 +29,14 @@ export const upsertPlantForHousehold = (
         : O.fromNullable(makePlantModel())
     ),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.chain((plant) =>
+    TE.map((plant) => ({
+      ...plant,
+      ...fields,
+      householdId,
+    })),
+    TE.chainFirst((plant) =>
       TE.tryCatch(
-        async () => {
-          const plantToSave: PlantModel = {
-            ...plant,
-            ...fields,
-            householdId,
-          };
-          await database.plants
-            .database(householdId)
-            .doc(plantToSave.id)
-            .set(plantToSave);
-          return plantToSave;
-        },
+        () => database.plants.database(householdId).doc(plant.id).set(plant),
         () => "BAD_REQUEST" as IErr
       )
     ),
@@ -77,21 +71,17 @@ export const savePlantImage = (
   pipe(
     image,
     TE.fromOption(() => "BAD_REQUEST" as IErr),
-    TE.chain((img) =>
+    TE.map((img) =>
+      makePhotoModel({
+        ...img,
+        type: "plant",
+        householdId,
+        associatedId: plantId,
+      })
+    ),
+    TE.chainFirst((photo) =>
       TE.tryCatch(
-        async () => {
-          const photoToSave = makePhotoModel({
-            ...img,
-            type: "plant",
-            householdId,
-            associatedId: plantId,
-          });
-          await database.photos
-            .database(householdId)
-            .doc(photoToSave.id)
-            .set(photoToSave);
-          return photoToSave;
-        },
+        () => database.photos.database(householdId).doc(photo.id).set(photo),
         () => "BAD_REQUEST" as IErr
       )
     ),
@@ -100,14 +90,13 @@ export const savePlantImage = (
 
 export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
   photo: PhotoModel
-) =>
+): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
-    async () => {
-      await database.plants
+    () =>
+      database.plants
         .database(householdId)
         .doc(plantId)
-        .set({ avatar: photo }, { merge: true });
-    },
+        .update({ avatar: photo }),
     () => "BAD_REQUEST" as IErr
   );
 
@@ -166,17 +155,19 @@ export const setMostRecentPlantPhotoAsPrimary = (
  * NB: does not remove from the plant's photos subcollection, nor does it
  * actually remove the photo from firebase storage
  */
-export const deletePlantAvatar = (householdId: string, plantId: string) => () =>
+export const deletePlantAvatar = (
+  householdId: string,
+  plantId: string
+) => (): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
-    async () => {
-      await database.plants
+    async () =>
+      database.plants
         .database(householdId)
         .doc(plantId)
         .set(
           { avatar: firebase.firestore.FieldValue.delete() },
           { merge: true }
-        );
-    },
+        ),
     () => "BAD_REQUEST" as IErr
   );
 

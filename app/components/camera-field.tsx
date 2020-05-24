@@ -96,7 +96,7 @@ const obtainCameraPermissions: TE.TaskEither<IErr, void> = TE.tryCatch(
       throw new Error();
     }
   },
-  () => "BAD_REQUEST" as IErr
+  () => "BAD_REQUEST"
 );
 
 const ContainerButton = styled.TouchableOpacity`

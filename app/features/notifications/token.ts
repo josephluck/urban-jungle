@@ -21,7 +21,7 @@ export const enablePushNotifications = (): TE.TaskEither<IErr, string> =>
         TE.chainFirst(setupAndroidChannels),
         TE.chainFirst(saveExpoPushTokenToProfile)
       )
-    : TE.left("BAD_REQUEST" as IErr);
+    : TE.left("BAD_REQUEST");
 
 export const getPushNotificationPermissions = (): TE.TaskEither<
   IErr,
@@ -41,7 +41,7 @@ export const getPushNotificationPermissions = (): TE.TaskEither<
       }
       return status;
     },
-    () => "UNAUTHENTICATED" as IErr
+    () => "UNAUTHENTICATED"
   );
 
 export const getExpoPushToken = (): TE.TaskEither<IErr, string> =>
@@ -50,7 +50,7 @@ export const getExpoPushToken = (): TE.TaskEither<IErr, string> =>
       const token = await Notifications.getExpoPushTokenAsync();
       return token;
     },
-    () => "NOT_FOUND" as IErr
+    () => "NOT_FOUND"
   );
 
 const setupAndroidChannels = (): TE.TaskEither<IErr, void> =>
@@ -65,5 +65,5 @@ const setupAndroidChannels = (): TE.TaskEither<IErr, void> =>
         });
       }
     },
-    () => "UNKNOWN" as IErr
+    () => "UNKNOWN"
   );

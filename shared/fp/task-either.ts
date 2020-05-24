@@ -10,4 +10,4 @@ export const traverseTE = array.traverse(validationTE);
 
 export const sequenceSTE = sequenceS(TE.taskEither);
 
-export const sequenceTE = sequenceT(TE.taskEither);
+export const sequenceTTE = sequenceT(TE.taskEither);

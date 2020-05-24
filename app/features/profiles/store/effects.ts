@@ -15,18 +15,20 @@ import { selectProfileById, selectProfiles, upsertProfile } from "./state";
 export const createProfileForUser = (
   user: firebase.User
 ): TE.TaskEither<IErr, ProfileModel> =>
-  TE.tryCatch(
-    async () => {
-      const profile: ProfileModel = {
-        ...makeProfileModel({
-          id: user.uid,
-          email: user.email!,
-        }),
-      };
-      await database.profiles.database.doc(profile.id).set(profile);
-      return profile;
-    },
-    () => "BAD_REQUEST" as IErr
+  pipe(
+    TE.right(user),
+    TE.map((user) =>
+      makeProfileModel({
+        id: user.uid,
+        email: user.email!,
+      })
+    ),
+    TE.chainFirst((profile) =>
+      TE.tryCatch(
+        () => database.profiles.database.doc(profile.id).set(profile),
+        () => "BAD_REQUEST" as IErr
+      )
+    )
   );
 
 export const fetchProfileIfNotFetched = (
@@ -61,11 +63,10 @@ export const addHouseholdToCurrentProfile = (
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain((id) =>
       TE.tryCatch(
-        async () => {
-          await database.profiles.database.doc(id).update({
+        () =>
+          database.profiles.database.doc(id).update({
             householdIds: firebase.firestore.FieldValue.arrayUnion(householdId),
-          });
-        },
+          }),
         () => "BAD_REQUEST" as IErr
       )
     ),
@@ -90,13 +91,12 @@ export const removeHouseholdFromProfile = (
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain((id) =>
       TE.tryCatch(
-        async () => {
-          await database.profiles.database.doc(id).update({
+        () =>
+          database.profiles.database.doc(id).update({
             householdIds: firebase.firestore.FieldValue.arrayRemove(
               householdId
             ),
-          });
-        },
+          }),
         () => "BAD_REQUEST" as IErr
       )
     ),
@@ -111,11 +111,10 @@ export const saveExpoPushTokenToProfile = (
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain((id) =>
       TE.tryCatch(
-        async () => {
-          await database.profiles.database.doc(id).update({
+        () =>
+          database.profiles.database.doc(id).update({
             pushToken,
-          });
-        },
+          }),
         () => "BAD_REQUEST" as IErr
       )
     )
@@ -127,14 +126,13 @@ export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain((id) =>
       TE.tryCatch(
-        async () => {
-          await database.profiles.database
+        () =>
+          database.profiles.database
             .doc(id)
             .set(
               { pushToken: firebase.firestore.FieldValue.delete() },
               { merge: true }
-            );
-        },
+            ),
         () => "BAD_REQUEST" as IErr
       )
     )
