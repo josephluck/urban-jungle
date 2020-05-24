@@ -8,6 +8,9 @@ export interface Env {
     messagingSenderId: string;
     appId: string;
   };
+  plantId: {
+    apiKey: string;
+  };
 }
 
 export const env: Env = !__DEV__
