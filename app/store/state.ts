@@ -16,6 +16,11 @@ import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { PhotoModel } from "@urban-jungle/shared/models/photo";
+import {
+  IdentificationResult,
+  IdentificationSuggestion,
+} from "../features/identify/types";
+import { PlantFields } from "../features/plants/store/effects";
 
 interface AuthState {
   initializing: boolean;
@@ -47,6 +52,12 @@ interface PhotosState {
   byHouseholdId: Record<HouseholdId, Record<PhotoId, PhotoModel>>;
 }
 
+interface NewPlantWorkflowState {
+  identificationResult: O.Option<IdentificationResult>;
+  selectedIdentificationSuggestion: O.Option<IdentificationSuggestion>;
+  plant: Partial<PlantFields>;
+}
+
 export interface State {
   auth: AuthState;
   profiles: ProfilesState;
@@ -55,6 +66,7 @@ export interface State {
   cares: CaresState;
   todos: TodosState;
   photos: PhotosState;
+  newPlantWorkflow: NewPlantWorkflowState;
   ui: {
     loading: boolean;
   };
@@ -83,6 +95,11 @@ export const defaultState: State = {
   },
   photos: {
     byHouseholdId: {},
+  },
+  newPlantWorkflow: {
+    identificationResult: O.none,
+    selectedIdentificationSuggestion: O.none,
+    plant: {},
   },
   ui: {
     loading: false,

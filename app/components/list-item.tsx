@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
+import { CircleImage } from "./circle-image";
 import { BodyText, SubHeading } from "./typography";
-import { Image } from "react-native";
 
 export const ListItem = ({
   title,
@@ -16,17 +16,7 @@ export const ListItem = ({
   showImageFallback?: boolean;
 }) => (
   <Container>
-    {image ? (
-      <Circle>
-        <Image
-          width={circleSize}
-          style={{ aspectRatio: 1, borderRadius: circleSize }}
-          source={{ uri: image }}
-        />
-      </Circle>
-    ) : showImageFallback ? (
-      <Circle />
-    ) : null}
+    {image ? <CircleImg uri={image} /> : showImageFallback ? <Circle /> : null}
     <Detail>
       {title ? <Title>{title}</Title> : null}
       {detail ? <DetailText>{detail}</DetailText> : null}
@@ -40,14 +30,15 @@ const Container = styled.View`
   align-items: center;
 `;
 
-const circleSize = 66;
+const CircleImg = styled(CircleImage)`
+  margin-right: ${symbols.spacing._12}px;
+`;
 
 const Circle = styled.View`
-  width: ${circleSize}px;
-  height: ${circleSize}px;
+  height: 66px;
+  width: 66px;
+  border-radius: 66px;
   background-color: ${symbols.colors.nearWhite};
-  border-radius: ${circleSize / 2}px;
-  margin-right: ${symbols.spacing._12}px;
 `;
 
 const Detail = styled.View`

@@ -13,12 +13,16 @@ import { selectMostRecentPlantPhoto } from "../../photos/store/state";
 import { deleteTodosByPlant } from "../../todos/store/effects";
 import { isPlantAvatarThisPhoto, selectPlantByHouseholdId } from "./state";
 
-type Fields = Omit<PlantModel, keyof BaseModel | "householdId" | "avatar"> & {
+// TODO: move this as an export in top level state as it's shared?
+export type PlantFields = Omit<
+  PlantModel,
+  keyof BaseModel | "householdId" | "avatar"
+> & {
   avatar: ImageModel;
 };
 
 export const upsertPlantForHousehold = (
-  { avatar, ...fields }: Partial<Fields> = {},
+  { avatar, ...fields }: Partial<PlantFields> = {},
   plantId: string
 ) => (householdId: string): TE.TaskEither<IErr, PlantModel> =>
   pipe(

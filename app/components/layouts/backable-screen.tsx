@@ -10,24 +10,32 @@ export const BackableScreenLayout = ({
   onBack,
   footer,
   headerRightButton,
+  scrollView = true,
 }: {
   stickyHeaderIndices?: number[];
   children: React.ReactNode;
   onBack: () => void;
   footer?: React.ReactNode;
   headerRightButton?: React.ReactNode;
-}) => (
-  <ScreenLayout>
-    <ControlsContainer>
-      <BackButton onPress={onBack} icon="arrow-left" />
-      {headerRightButton}
-    </ControlsContainer>
-    <ContentContainer stickyHeaderIndices={stickyHeaderIndices}>
-      {children}
-    </ContentContainer>
-    {footer}
-  </ScreenLayout>
-);
+  scrollView?: boolean;
+}) => {
+  return (
+    <ScreenLayout>
+      <ControlsContainer>
+        <BackButton onPress={onBack} icon="arrow-left" />
+        {headerRightButton}
+      </ControlsContainer>
+      {scrollView ? (
+        <ContentContainerScroll stickyHeaderIndices={stickyHeaderIndices}>
+          {children}
+        </ContentContainerScroll>
+      ) : (
+        <ContentContainerView>{children}</ContentContainerView>
+      )}
+      {footer}
+    </ScreenLayout>
+  );
+};
 
 const ControlsContainer = styled.View`
   flex-direction: row;
@@ -40,6 +48,10 @@ const BackButton = styled(TouchableIcon)`
   padding-vertical: ${symbols.spacing._20}px;
 `;
 
-const ContentContainer = styled.ScrollView`
+const ContentContainerScroll = styled.ScrollView`
+  flex: 1;
+`;
+
+const ContentContainerView = styled.View`
   flex: 1;
 `;
