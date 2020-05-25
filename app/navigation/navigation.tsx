@@ -14,12 +14,13 @@ import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { manageRoute } from "../features/manage/components/manage-screen";
 import { managePlantRoute } from "../features/plants/components/manage-plant-screen";
+import { newPlantPictureRoute } from "../features/plants/components/new-plant/new-plant-picture-screen";
 import { plantRoute } from "../features/plants/components/plant-screen";
 import { plantsRoute } from "../features/plants/components/plants-screen";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { todoRoute } from "../features/todos/components/todo-screen";
-import { symbols } from "../theme";
 import { logGlobalState } from "../store/state";
+import { symbols } from "../theme";
 
 const CareStack = createStackNavigator(
   {
@@ -42,6 +43,7 @@ const PlantsStack = createStackNavigator(
     [managePlantRoute.routeName]: managePlantRoute.screen,
     [todoRoute.routeName]: todoRoute.screen,
     [manageTodoRoute.routeName]: manageTodoRoute.screen,
+    [newPlantPictureRoute.routeName]: newPlantPictureRoute.screen,
   },
   {
     initialRouteName: plantsRoute.routeName,

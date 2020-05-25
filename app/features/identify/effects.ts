@@ -4,6 +4,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { env } from "../../env";
+import { exampleIdentificationResponse } from "./state";
 import { IdentificationResult } from "./types";
 
 export const identify = (
@@ -32,17 +33,32 @@ export const identify = (
         ],
       }),
     })),
-    TE.chain((request) =>
+    // TODO: this is the real request, but the API is limited to 200 uses. Uncomment this when the implementation is finished.
+    // TE.chain((request) =>
+    //   TE.tryCatch(
+    //     async () => {
+    //       const response = await fetch(
+    //         "https://api.plant.id/v2/identify",
+    //         request
+    //       );
+    //       const data = await response.json();
+    //       console.log(data);
+    //       return data;
+    //     },
+    //     () => "BAD_REQUEST" as IErr
+    //   )
+    // ),
+    // TODO: this is an example response as the API is limited to 200 uses. Uncomment this when the implementation is finished.
+    TE.chain(() =>
       TE.tryCatch(
         async () => {
-          const response = await fetch(
-            "https://api.plant.id/v2/identify",
-            request
-          );
-          const data = await response.json();
-          console.log(data);
+          await sleep(1000);
+          return exampleIdentificationResponse;
         },
         () => "BAD_REQUEST" as IErr
       )
     )
   );
+
+const sleep = (duration: number = 1000) =>
+  new Promise((resolve) => setTimeout(resolve, duration));

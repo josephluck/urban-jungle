@@ -194,7 +194,6 @@ export const careSessionRoute = makeNavigationRoute<{
 });
 
 const deserializeStringArray = (monthsStr: string) => {
-  console.log({ monthsStr });
   try {
     if (monthsStr) {
       const parsed = JSON.parse(monthsStr);

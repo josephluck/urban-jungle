@@ -22,7 +22,7 @@ import { symbols } from "../../../theme";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { takePicture } from "../../photos/camera";
-import { uploadFile } from "../../photos/storage";
+import { uploadPhoto } from "../../photos/storage";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { todoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
@@ -103,9 +103,9 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
 
   const handleTakePicture = useCallback(() => {
     pipe(
-      takePicture,
+      takePicture(),
       TE.map(UIEffect.start),
-      TE.chainFirst((imageInfo) => uploadFile("plant")(imageInfo.uri)),
+      TE.chain(uploadPhoto("plant")),
       TE.chain((imageInfo) =>
         savePlantImage(selectedHouseholdId, plantId, O.some(imageInfo))
       ),

@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components/native";
 import { CAROS_BOLD, CAROS_SEMIBOLD, CAROS_REGULAR } from "../hooks/fonts";
 import { symbols } from "../theme";
@@ -41,4 +42,33 @@ export const Heading = styled.Text<{ weight?: FontWeight }>`
   font-size: ${symbols.font._28.size}px;
   line-height: ${symbols.font._28.lineHeight}px;
   font-family: ${(props) => getFontFromWeight(props.weight || "bold")};
+`;
+
+export const ScreenTitle = ({
+  title,
+  description,
+}: {
+  title?: string;
+  description?: string;
+}) => (
+  <ScreenTitleContainer>
+    {title ? <ScreenTitleHeading>{title}</ScreenTitleHeading> : null}
+    {description ? (
+      <ScreenTitleDescription>{description}</ScreenTitleDescription>
+    ) : null}
+  </ScreenTitleContainer>
+);
+
+const ScreenTitleContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  padding-horizontal: ${symbols.spacing.appHorizontal};
+`;
+
+const ScreenTitleHeading = styled(SubHeading)`
+  margin-bottom: ${symbols.spacing._16};
+`;
+
+const ScreenTitleDescription = styled(Paragraph)`
+  text-align: center;
 `;

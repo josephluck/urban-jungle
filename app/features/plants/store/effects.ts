@@ -70,6 +70,7 @@ export const savePlantImage = (
 ): TE.TaskEither<IErr, PhotoModel> =>
   pipe(
     image,
+    O.map(trimBase64FromImage),
     TE.fromOption(() => "BAD_REQUEST" as IErr),
     TE.map((img) =>
       makePhotoModel({
@@ -91,14 +92,25 @@ export const savePlantImage = (
 export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
   photo: PhotoModel
 ): TE.TaskEither<IErr, void> =>
-  TE.tryCatch(
-    () =>
-      database.plants
-        .database(householdId)
-        .doc(plantId)
-        .update({ avatar: photo }),
-    () => "BAD_REQUEST" as IErr
+  pipe(
+    TE.right(photo),
+    TE.map(trimBase64FromImage),
+    TE.chain(() =>
+      TE.tryCatch(
+        () =>
+          database.plants
+            .database(householdId)
+            .doc(plantId)
+            .update({ avatar: photo }),
+        () => "BAD_REQUEST" as IErr
+      )
+    )
   );
+
+const trimBase64FromImage = <V extends { base64?: string }>({
+  base64,
+  ...value
+}: V): Omit<V, "base64"> => value;
 
 /**
  * Deletes a plant's image from the database.

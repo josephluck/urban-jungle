@@ -14,7 +14,7 @@ import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { selectPlantsByHouseholdId } from "../store/state";
-import { managePlantRoute } from "./manage-plant-screen";
+import { newPlantPictureRoute } from "./new-plant/new-plant-picture-screen";
 import { plantRoute } from "./plant-screen";
 
 export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
@@ -32,7 +32,7 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
   );
 
   const handleAddNew = useCallback(
-    () => managePlantRoute.navigateTo(navigation, {}),
+    () => newPlantPictureRoute.navigateTo(navigation, {}),
     []
   );
 
