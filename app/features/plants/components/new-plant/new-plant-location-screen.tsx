@@ -2,12 +2,13 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
 import { PickerField } from "../../../../components/picker-field";
+import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
 import { useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
@@ -19,17 +20,23 @@ import { PlantFields, upsertPlantForHousehold } from "../../store/effects";
 import { selectUniqueLocations } from "../../store/state";
 import { selectPlantFields } from "./state";
 
-type Fields = Pick<Required<PlantFields>, "location">;
+type Fields = Pick<Required<PlantFields>, "location"> & { newLocation: string };
 
 export const NewPlantLocationScreen = ({
   navigation,
 }: NavigationStackScreenProps) => {
-  const { submit, registerSinglePickerInput } = useForm<Fields>(
+  const [newLocationFieldVisible, setNewLocationFieldVisible] = useState(false);
+
+  const { submit, registerSinglePickerInput, registerTextInput } = useForm<
+    Fields
+  >(
     {
       location: "",
+      newLocation: "",
     },
     {
       location: [],
+      newLocation: [],
     }
   );
 
@@ -68,9 +75,12 @@ export const NewPlantLocationScreen = ({
     [selectedHouseholdId, submit, plantFields]
   );
 
-  const handleSkip = useCallback(() => {}, []); // TODO: implement
+  const handleSkip = useCallback(() => {}, []);
 
-  const handleShowNewLocationDrawer = useCallback(() => {}, []);
+  const handleShowNewLocationField = useCallback(
+    () => setNewLocationFieldVisible(true),
+    []
+  );
 
   // TODO: support progress bar
   return (
@@ -89,17 +99,21 @@ export const NewPlantLocationScreen = ({
     >
       <ScreenContent>
         <ScreenTitle title="Set a location" />
-        <PickerField
-          multiValue={false}
-          centered
-          options={locations.map((location) => ({
-            value: location,
-            label: location,
-          }))}
-          newValueLabel="Somewhere else"
-          onNewValuePress={handleShowNewLocationDrawer}
-          {...registerSinglePickerInput("location")}
-        />
+        {newLocationFieldVisible ? (
+          <TextField {...registerTextInput("location")} autoFocus />
+        ) : (
+          <PickerField
+            multiValue={false}
+            centered
+            options={locations.map((location) => ({
+              value: location,
+              label: location,
+            }))}
+            newValueLabel="Somewhere else"
+            onNewValuePress={handleShowNewLocationField}
+            {...registerSinglePickerInput("location")}
+          />
+        )}
       </ScreenContent>
     </BackableScreenLayout>
   );
