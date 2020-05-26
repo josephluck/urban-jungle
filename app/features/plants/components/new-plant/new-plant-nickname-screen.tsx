@@ -11,7 +11,7 @@ import { useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { symbols } from "../../../../theme";
 import { PlantFields } from "../../store/effects";
-import { managePlantRoute } from "../manage-plant-screen";
+import { newPlantLocationRoute } from "./new-plant-location-screen";
 import { setPlantFields } from "./state";
 
 type Fields = Pick<Required<PlantFields>, "nickname">;
@@ -42,7 +42,7 @@ export const NewPlantNicknameScreen = ({
           return nickname;
         }),
         E.map(() => {
-          managePlantRoute.navigateTo(navigation, {});
+          newPlantLocationRoute.navigateTo(navigation, {});
         })
       ),
     [submit]
@@ -60,11 +60,11 @@ export const NewPlantNicknameScreen = ({
         </Footer>
       }
     >
-      <ScreenTitle
-        title="Set a nickname"
-        description="Something you'll remember easily."
-      />
       <ScreenContent>
+        <ScreenTitle
+          title="Set a name"
+          description="Try something you'll remember easily."
+        />
         <TextField {...registerTextInput("nickname")} autoFocus />
       </ScreenContent>
     </BackableScreenLayout>

@@ -30,7 +30,6 @@ export const NewPlantSuggestionScreen = ({
   const suggestions = useStore(selectIdentificationSuggestions);
 
   const handleGoBack = useCallback(() => {
-    // TODO: this should reset the state of the new plant workflow
     navigation.goBack();
   }, []);
 
@@ -49,8 +48,8 @@ export const NewPlantSuggestionScreen = ({
           newPlantNicknameRoute.navigateTo(navigation, {});
         })
       ),
-    []
-  ); // TODO: implement
+    [selectedSuggestion]
+  );
 
   // TODO: support progress bar
   return (

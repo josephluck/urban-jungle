@@ -18,6 +18,9 @@ type BasePickerProps<Pv extends PickerValue> = {
   error?: string;
   style?: StyleProp<ViewProps>;
   touched?: boolean;
+  centered?: boolean;
+  newValueLabel?: string;
+  onNewValuePress?: () => void;
 };
 
 export type SinglePickerFieldProps<Pv extends PickerValue> = BasePickerProps<
@@ -68,8 +71,13 @@ export function PickerField<Pv extends PickerValue>(
   };
 
   return (
-    <FormField label={props.label} error={props.error} touched={props.touched}>
-      <OptionsContainer>
+    <FormField
+      label={props.label}
+      error={props.error}
+      touched={props.touched}
+      style={props.style}
+    >
+      <OptionsContainer centered={props.centered}>
         {props.options.map((option) => (
           <Option
             key={option.value}
@@ -88,14 +96,26 @@ export function PickerField<Pv extends PickerValue>(
             </OptionLabel>
           </Option>
         ))}
+        {props.newValueLabel && props.onNewValuePress ? (
+          <Option
+            key="new-value"
+            onPress={props.onNewValuePress}
+            activeOpacity={0.8}
+          >
+            <OptionLabel large selected={false}>
+              {props.newValueLabel}
+            </OptionLabel>
+          </Option>
+        ) : null}
       </OptionsContainer>
     </FormField>
   );
 }
 
-const OptionsContainer = styled.View`
+const OptionsContainer = styled.View<{ centered?: boolean }>`
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: ${(props) => (props.centered ? "center" : "flex-start")};
 `;
 
 const Option = styled.TouchableOpacity`
@@ -103,7 +123,10 @@ const Option = styled.TouchableOpacity`
   margin-right: ${symbols.spacing._4};
 `;
 
-const OptionLabel = styled(Label)<{ selected: boolean }>`
+const OptionLabel = styled(Label)<{
+  selected: boolean;
+  selectionColor?: string;
+}>`
   background-color: ${(props) =>
     props.selected ? symbols.colors.pureWhite : symbols.colors.nearWhite};
   border-width: 2;

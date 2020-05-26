@@ -37,3 +37,7 @@ export const setPlantFields = store.createMutator(
     s.newPlantWorkflow.plant = { ...s.newPlantWorkflow.plant, ...plant };
   }
 );
+
+export const selectPlantFields = store.createSelector(
+  (s) => s.newPlantWorkflow.plant
+);

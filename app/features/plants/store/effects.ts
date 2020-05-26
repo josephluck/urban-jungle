@@ -23,7 +23,7 @@ export type PlantFields = Omit<
 
 export const upsertPlantForHousehold = (
   { avatar, ...fields }: Partial<PlantFields> = {},
-  plantId: string
+  plantId?: string
 ) => (householdId: string): TE.TaskEither<IErr, PlantModel> =>
   pipe(
     selectHouseholdById(householdId),
