@@ -21,7 +21,7 @@ import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/
 import { upsertPlantForHousehold } from "../store/effects";
 import { selectUniqueLocations } from "../store/state";
 
-type Fields = Required<Pick<PlantModel, "name" | "location">> & {
+type Fields = Required<Pick<PlantModel, "name" | "nickname" | "location">> & {
   avatar: ImageModel;
 };
 
@@ -38,10 +38,11 @@ export const ManagePlantScreen = ({
   } = useForm<Fields>(
     {
       name: params.name || "",
+      nickname: params.nickname || "",
       location: params.location || "",
       avatar: params.avatar || makeImageModel(),
     },
-    { name: [constraints.isRequired], location: [], avatar: [] }
+    { name: [constraints.isRequired], nickname: [], location: [], avatar: [] }
   );
 
   const selectedHouseholdId_ = useStore(
@@ -90,6 +91,7 @@ export const ManagePlantScreen = ({
     >
       <ContentContainer>
         <TextField label="Name" {...registerTextInput("name")} />
+        <TextField label="Nickname" {...registerTextInput("nickname")} />
         <PickerField
           label="Location"
           multiValue={false}
@@ -123,6 +125,7 @@ const Footer = styled.View`
 type ManagePlantRouteParams = {
   plantId?: string;
   name?: string;
+  nickname?: string;
   location?: string;
   avatar?: ImageModel;
 };
@@ -134,6 +137,7 @@ export const managePlantRoute = makeNavigationRoute<ManagePlantRouteParams>({
   defaultParams: {
     plantId: "",
     name: "",
+    nickname: "",
     location: "",
     avatar: makeImageModel(),
   },
@@ -144,6 +148,7 @@ export const managePlantRoute = makeNavigationRoute<ManagePlantRouteParams>({
   deserializeParams: (params) => ({
     plantId: params.plantId,
     name: params.name,
+    nickname: params.nickname,
     location: params.location,
     avatar: pipe(
       O.fromNullable(params.avatar),

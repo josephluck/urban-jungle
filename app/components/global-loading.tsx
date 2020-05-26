@@ -7,7 +7,6 @@ import { selectLoading } from "../store/ui";
 
 export const GlobalLoading = () => {
   const visible = useStore(selectLoading);
-  console.log("GlobalLoading rerendering", { visible });
 
   return (
     <Modal

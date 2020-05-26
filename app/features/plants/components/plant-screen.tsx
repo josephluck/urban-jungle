@@ -79,6 +79,11 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
         O.map((plant) => plant.name),
         O.getOrElse(() => "")
       ),
+      nickname: pipe(
+        plant,
+        O.map((plant) => plant.nickname),
+        O.getOrElse(() => "")
+      ),
       location: pipe(
         plant,
         O.chain((plant) => O.fromNullable(plant.location)),
