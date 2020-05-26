@@ -54,6 +54,7 @@ export const NewPlantPictureScreen = ({
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
+      progress={20}
       footer={
         <Footer>
           <SkipButton type="plain" onPress={handleSkip}>

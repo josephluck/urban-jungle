@@ -68,6 +68,7 @@ export const NewPlantNicknameScreen = ({
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
+      progress={60}
       footer={
         <Footer>
           {isNickname ? (

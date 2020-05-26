@@ -86,6 +86,7 @@ export const NewPlantLocationScreen = ({
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
+      progress={90}
       footer={
         <Footer>
           <SkipButton type="plain" onPress={handleSkip}>

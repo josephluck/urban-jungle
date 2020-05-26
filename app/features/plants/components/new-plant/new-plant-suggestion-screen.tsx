@@ -1,6 +1,6 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { FlatList, TouchableOpacity } from "react-native";
 import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
@@ -12,14 +12,12 @@ import { makeNavigationRoute } from "../../../../navigation/make-navigation-rout
 import { useStore } from "../../../../store/state";
 import { symbols } from "../../../../theme";
 import { IdentificationSuggestion } from "../../../identify/types";
-import { managePlantRoute } from "../manage-plant-screen";
 import { newPlantNicknameRoute } from "./new-plant-nickname-screen";
 import {
   selectIdentificationSuggestions,
   setIdentificationSuggestion,
   setPlantFields,
 } from "./state";
-import { useState } from "react";
 
 export const NewPlantSuggestionScreen = ({
   navigation,
@@ -27,16 +25,12 @@ export const NewPlantSuggestionScreen = ({
   const [selectedSuggestion, setSelectedSuggestion] = useState<
     O.Option<IdentificationSuggestion>
   >(O.none);
+
   const suggestions = useStore(selectIdentificationSuggestions);
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
   }, []);
-
-  const handleSkip = useCallback(
-    () => managePlantRoute.navigateTo(navigation, {}),
-    []
-  );
 
   const handleSubmit = useCallback(
     () =>
@@ -50,12 +44,17 @@ export const NewPlantSuggestionScreen = ({
       ),
     [selectedSuggestion]
   );
+  const handleSkip = useCallback(
+    () => newPlantNicknameRoute.navigateTo(navigation, {}),
+    []
+  );
 
   // TODO: support progress bar
   return (
     <BackableScreenLayout
       onBack={handleGoBack}
       scrollView={false}
+      progress={40}
       footer={
         <Footer>
           <SkipButton type="plain" onPress={handleSkip}>
@@ -71,8 +70,8 @@ export const NewPlantSuggestionScreen = ({
         </Footer>
       }
     >
-      <ScreenTitle title="Which is yours?" />
       <FlatList
+        ListHeaderComponent={<ScreenTitle title="Which is yours?" />}
         style={{
           paddingHorizontal: symbols.spacing.appHorizontal,
           paddingVertical: symbols.spacing._20,

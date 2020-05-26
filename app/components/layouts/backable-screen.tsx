@@ -3,6 +3,7 @@ import styled from "styled-components/native";
 import { symbols } from "../../theme";
 import { TouchableIcon } from "../touchable-icon";
 import { ScreenLayout } from "./screen-layout";
+import { ProgressBar } from "../progress-bar";
 
 export const BackableScreenLayout = ({
   stickyHeaderIndices,
@@ -11,6 +12,7 @@ export const BackableScreenLayout = ({
   footer,
   headerRightButton,
   scrollView = true,
+  progress,
 }: {
   stickyHeaderIndices?: number[];
   children: React.ReactNode;
@@ -18,6 +20,7 @@ export const BackableScreenLayout = ({
   footer?: React.ReactNode;
   headerRightButton?: React.ReactNode;
   scrollView?: boolean;
+  progress?: number;
 }) => {
   return (
     <ScreenLayout>
@@ -25,6 +28,9 @@ export const BackableScreenLayout = ({
         <BackButton onPress={onBack} icon="arrow-left" />
         {headerRightButton}
       </ControlsContainer>
+      {typeof progress === "number" ? (
+        <ProgressBar progress={progress} />
+      ) : null}
       {scrollView ? (
         <ContentContainerScroll stickyHeaderIndices={stickyHeaderIndices}>
           {children}
