@@ -65,13 +65,21 @@ export const NewPlantPictureScreen = ({
         </Footer>
       }
     >
-      <ScreenTitle
-        title="Grab a picture!"
-        description="Snap a picture of your plant, we'll scan it and automatically add it to your collection."
-      />
+      <ScreenContent>
+        <ScreenTitle
+          title="Grab a picture"
+          description="Snap a picture of your plant, we'll scan it and automatically add it to your collection."
+        />
+      </ScreenContent>
     </BackableScreenLayout>
   );
 };
+
+const ScreenContent = styled.View`
+  flex: 1;
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-vertical: ${symbols.spacing._20}px;
+`;
 
 const Footer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;

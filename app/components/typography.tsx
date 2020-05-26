@@ -62,11 +62,10 @@ export const ScreenTitle = ({
 const ScreenTitleContainer = styled.View`
   justify-content: center;
   align-items: center;
-`;
-
-const ScreenTitleHeading = styled(SubHeading)`
   margin-bottom: ${symbols.spacing.appVertical};
 `;
+
+const ScreenTitleHeading = styled(SubHeading)``;
 
 const ScreenTitleDescription = styled(Paragraph)`
   margin-top: ${symbols.spacing._16};
