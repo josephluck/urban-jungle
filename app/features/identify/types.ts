@@ -29,9 +29,9 @@ export type IdentificationSuggestion = {
       genus: string;
       species?: string;
     };
-    common_names: string[];
-    url: string;
-    name_authority: string | null;
+    common_names?: string[];
+    url?: string;
+    name_authority?: string | null;
     wiki_description: {
       value: string;
       citation: string;

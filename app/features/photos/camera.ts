@@ -40,3 +40,10 @@ export const takeAndUploadPicture = (
   }
 ): TE.TaskEither<IErr, ImageInfo> =>
   pipe(takePicture(options), TE.chain(uploadPhoto(reference)));
+
+export const IMAGE_QUALITY = {
+  low: 0.3,
+  mid: 0.6,
+  high: 0.8,
+  max: 1,
+};

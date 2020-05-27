@@ -49,6 +49,8 @@ export const NewPlantSuggestionScreen = ({
     []
   );
 
+  suggestions.forEach((item) => console.log(item));
+
   // TODO: support progress bar
   return (
     <BackableScreenLayout
@@ -97,11 +99,15 @@ export const NewPlantSuggestionScreen = ({
                   O.map((image) => image.url),
                   O.getOrElse(() => "")
                 )}
-                ticked={isSelected}
+                withTickBadge={isSelected}
               />
               <SuggestionName weight="semibold">
                 {pipe(
-                  O.fromNullable(item.plant_details.common_names[0]),
+                  O.fromNullable(item.plant_details),
+                  O.filterMap((details) =>
+                    O.fromNullable(details.common_names)
+                  ),
+                  O.filterMap((names) => O.fromNullable(names[0])),
                   O.getOrElse(() => item.plant_name)
                 )}
               </SuggestionName>
