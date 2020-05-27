@@ -123,7 +123,7 @@ export const NewPlantPictureScreen = ({
           title={requiredImages > 1 ? "Grab some pictures" : "Grab a picture"}
           description={
             requiredImages > 1
-              ? "Snap some pictures of your plant, we'll scan them and fill in the details."
+              ? `Snap ${requiredImages} pictures of your plant, we'll scan them and fill in the details.`
               : "Let's start with a picture of your plant. We'll scan it and fill in the details."
           }
         />
