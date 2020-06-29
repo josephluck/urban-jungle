@@ -46,10 +46,30 @@ const PlantsStack = createStackNavigator(
     [managePlantRoute.routeName]: managePlantRoute.screen,
     [todoRoute.routeName]: todoRoute.screen,
     [manageTodoRoute.routeName]: manageTodoRoute.screen,
-    [newPlantPictureRoute.routeName]: newPlantPictureRoute.screen,
-    [newPlantNicknameRoute.routeName]: newPlantNicknameRoute.screen,
-    [newPlantSuggestionRoute.routeName]: newPlantSuggestionRoute.screen,
-    [newPlantLocationRoute.routeName]: newPlantLocationRoute.screen,
+    [newPlantPictureRoute.routeName]: {
+      screen: newPlantPictureRoute.screen,
+      navigationOptions: {
+        tabBarVisible: false,
+      },
+    },
+    [newPlantNicknameRoute.routeName]: {
+      screen: newPlantNicknameRoute.screen,
+      navigationOptions: {
+        tabBarVisible: false,
+      },
+    },
+    [newPlantSuggestionRoute.routeName]: {
+      screen: newPlantSuggestionRoute.screen,
+      navigationOptions: {
+        tabBarVisible: false,
+      },
+    },
+    [newPlantLocationRoute.routeName]: {
+      screen: newPlantLocationRoute.screen,
+      navigationOptions: {
+        tabBarVisible: false,
+      },
+    },
   },
   {
     initialRouteName: plantsRoute.routeName,

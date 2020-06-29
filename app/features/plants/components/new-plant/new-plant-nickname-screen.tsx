@@ -84,7 +84,7 @@ export const NewPlantNicknameScreen = ({
     >
       <ScreenContent>
         <ScreenTitle
-          title="Set a name"
+          title="Give it a name"
           description="Try something you'll remember easily."
         />
         <TextField {...registerTextInput("nickname")} autoFocus />

@@ -24,6 +24,7 @@ export const selectHouseholdById = (id: string): O.Option<HouseholdModel> =>
 export const selectedSelectedOrMostRecentHouseholdId = (): O.Option<string> =>
   pipe(
     selectSelectedHouseholdId(),
+    O.filter((id) => Boolean(selectHouseholdById(id))),
     O.fold(selectMostRecentlyAddedHouseholdId, O.some)
   );
 
