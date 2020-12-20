@@ -13,6 +13,6 @@
 export const log = (message: string = new Date().toString()) => <V>(
   val: V
 ): V => {
-  console.log(message, val);
+  // console.log(message, val);
   return val;
 };

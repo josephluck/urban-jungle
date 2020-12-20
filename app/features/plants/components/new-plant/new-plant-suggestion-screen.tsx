@@ -49,8 +49,6 @@ export const NewPlantSuggestionScreen = ({
     []
   );
 
-  suggestions.forEach((item) => console.log(item));
-
   // TODO: support progress bar
   return (
     <BackableScreenLayout

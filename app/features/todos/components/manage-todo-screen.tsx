@@ -66,8 +66,6 @@ export const ManageTodoScreen = ({
     navigation
   );
 
-  console.log({ initialFields });
-
   const {
     submit,
     registerTextInput,
