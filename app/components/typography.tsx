@@ -34,7 +34,7 @@ export const SubHeading = styled.Text<{ weight?: FontWeight }>`
   color: ${(props) => props.theme.defaultTextColor};
   font-size: ${symbols.font._20.size}px;
   line-height: ${symbols.font._20.lineHeight}px;
-  font-family: ${(props) => getFontFromWeight(props.weight || "semibold")};
+  font-family: ${(props) => getFontFromWeight(props.weight || "regular")};
 `;
 
 export const Heading = styled.Text<{ weight?: FontWeight }>`
