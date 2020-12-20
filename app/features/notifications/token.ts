@@ -11,7 +11,9 @@ import {
 } from "../profiles/store/effects";
 
 export const disablePushNotifications = (): TE.TaskEither<IErr, void> =>
-  removeExpoPushTokenFromProfile();
+  Constants.isDevice
+    ? removeExpoPushTokenFromProfile()
+    : TE.left("BAD_REQUEST");
 
 export const enablePushNotifications = (): TE.TaskEither<IErr, string> =>
   Constants.isDevice
