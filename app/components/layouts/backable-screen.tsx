@@ -47,12 +47,12 @@ const ControlsContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding-horizontal: ${symbols.spacing.appHorizontal};
+  padding-top: 0px;
+  padding-bottom: ${symbols.spacing._16}px;
 `;
 
-const BackButton = styled(TouchableIcon)`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
-`;
+const BackButton = styled(TouchableIcon)``;
 
 const ContentContainerScroll = styled.ScrollView`
   flex: 1;

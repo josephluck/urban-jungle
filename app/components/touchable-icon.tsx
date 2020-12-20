@@ -22,6 +22,7 @@ export const TouchableIcon = ({
     style={style}
     onPress={onPress}
     activeOpacity={0.6}
+    hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
   >
     <Icon icon={icon} size={size} />
   </IconButtonContainer>
