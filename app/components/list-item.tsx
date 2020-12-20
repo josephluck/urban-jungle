@@ -9,18 +9,27 @@ export const ListItem = ({
   detail,
   image,
   showImageFallback = true,
+  right,
 }: {
   title?: React.ReactNode;
   detail?: React.ReactNode;
   image?: string;
   showImageFallback?: boolean;
+  right?: React.ReactNode;
 }) => (
   <Container>
-    {image ? <CircleImg uri={image} /> : showImageFallback ? <Circle /> : null}
+    {typeof image !== "undefined" ? (
+      image ? (
+        <CircleImg uri={image} />
+      ) : showImageFallback ? (
+        <Circle />
+      ) : null
+    ) : null}
     <Detail>
       {title ? <Title>{title}</Title> : null}
       {detail ? <DetailText>{detail}</DetailText> : null}
     </Detail>
+    {right ? <Right>{right}</Right> : null}
   </Container>
 );
 
@@ -39,6 +48,7 @@ const Circle = styled.View`
   width: 66px;
   border-radius: 66px;
   background-color: ${symbols.colors.nearWhite};
+  margin-right: ${symbols.spacing._12}px;
 `;
 
 const Detail = styled.View`
@@ -51,4 +61,8 @@ const Title = styled(SubHeading)`
 
 const DetailText = styled(BodyText)`
   color: ${symbols.colors.midOffGray};
+`;
+
+const Right = styled.View`
+  margin-left: ${symbols.spacing._12}px;
 `;

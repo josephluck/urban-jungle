@@ -1,9 +1,11 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
-import { FlatList, Switch } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { FlatList, Switch, View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { Heading, TertiaryText } from "../../../components/typography";
@@ -56,11 +58,27 @@ export const ManageScreen = () => {
     <ScreenLayout>
       {selectedHouseholdId ? (
         <ScreenContainer>
-          <WelcomeMessageContainer>
-            <Switch
-              value={pushNotificationsEnabled}
-              onValueChange={handleTogglePushNotifications}
+          <WelcomeMessageContainer first>
+            <Heading>Settings</Heading>
+          </WelcomeMessageContainer>
+          <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
+            <TouchableOpacity>
+              <ListItem
+                title="Appearance"
+                right={<Icon icon="chevron-right" />}
+              />
+            </TouchableOpacity>
+            <ListItem
+              title="Push notifications"
+              right={
+                <Switch
+                  value={pushNotificationsEnabled}
+                  onValueChange={handleTogglePushNotifications}
+                />
+              }
             />
+          </View>
+          <WelcomeMessageContainer>
             <Heading>Your network</Heading>
             <Button onPress={shareHouseholdInvitation(selectedHouseholdId)}>
               Invite
@@ -122,9 +140,10 @@ const ReleaseDateText = styled(TertiaryText)`
   font-size: ${symbols.font._8.size};
 `;
 
-const WelcomeMessageContainer = styled.View`
+const WelcomeMessageContainer = styled.View<{ first?: boolean }>`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  margin-bottom: ${symbols.spacing.appHorizontal * 2}px;
+  margin-top: ${(props) => (props.first ? 0 : symbols.spacing._16)}px;
+  margin-bottom: ${symbols.spacing._20}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
