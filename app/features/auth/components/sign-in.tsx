@@ -1,16 +1,14 @@
-import React, { useCallback, useContext, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Heading } from "../../../components/typography";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { selectHasAuthenticated } from "../store/state";
 import { signIn } from "../store/effects";
 import { Button, TextInput, Text } from "react-native";
-import { NavigationContext } from "react-navigation";
 import { useStore } from "../../../store/state";
-import { createCareRoute } from "../../care/components/care-screen";
+import { careRoute } from "../../care/components/care-screen";
+import { NavigationStackScreenProps } from "react-navigation-stack";
 
-export const SignIn = () => {
-  const { navigate } = useContext(NavigationContext);
-
+export const SignIn = ({ navigation }: NavigationStackScreenProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +16,7 @@ export const SignIn = () => {
 
   useEffect(() => {
     if (hasAuthenticated) {
-      navigate(createCareRoute());
+      careRoute.navigateTo(navigation, {});
     }
   }, [hasAuthenticated]);
 
@@ -30,11 +28,22 @@ export const SignIn = () => {
     <ScreenLayout>
       <Heading>Sign in</Heading>
 
-      <Text style={{ color: "white" }}>Email</Text>
-      <TextInput style={{ color: "white" }} onChangeText={setEmail} />
+      <Text style={{ color: "black" }}>Email</Text>
+      <TextInput
+        style={{ color: "black" }}
+        textContentType="emailAddress"
+        autoCapitalize="none"
+        onChangeText={setEmail}
+      />
 
-      <Text style={{ color: "white" }}>Password</Text>
-      <TextInput style={{ color: "white" }} onChangeText={setPassword} />
+      <Text style={{ color: "black" }}>Password</Text>
+      <TextInput
+        style={{ color: "black" }}
+        textContentType="password"
+        secureTextEntry
+        autoCapitalize="none"
+        onChangeText={setPassword}
+      />
 
       <Button title="Sign in" onPress={handleSignIn} />
     </ScreenLayout>

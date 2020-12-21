@@ -165,7 +165,6 @@ const SectionHeading = styled.View`
   align-items: center;
   justify-content: space-between;
   padding-vertical: ${symbols.spacing._16}px;
-  background-color: ${symbols.colors.appBackground};
 `;
 
 const ContentContainer = styled.View`

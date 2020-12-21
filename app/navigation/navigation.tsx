@@ -22,7 +22,7 @@ import { plantRoute } from "../features/plants/components/plant-screen";
 import { plantsRoute } from "../features/plants/components/plants-screen";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { todoRoute } from "../features/todos/components/todo-screen";
-import { logGlobalState } from "../store/state";
+// import { logGlobalState } from "../store/state";
 import { symbols } from "../theme";
 
 const CareStack = createStackNavigator(

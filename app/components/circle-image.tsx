@@ -93,7 +93,7 @@ const badgeIconSize = 16;
 const badgeSize = badgeIconSize + symbols.spacing._4 * 2;
 
 const Circle = styled.View`
-  background-color: ${symbols.colors.nearWhite};
+  background-color: ${(props) => props.theme.avatarBackground};
   align-items: center;
   justify-content: center;
 `;

@@ -37,8 +37,8 @@ const Day = styled.TouchableOpacity<{ isToday: boolean }>`
   width: ${daySize}px;
   height: ${daySize}px;
   background-color: ${(props) =>
-    props.isToday ? "transparent" : symbols.colors.nearWhite};
-  border-color: ${symbols.colors.solidBlue};
+    props.isToday ? "transparent" : props.theme.calendarDayBackground};
+  border-color: ${(props) => props.theme.calendarDayActive};
   border-width: ${(props) => (props.isToday ? 2 : 0)}px;
   justify-content: center;
   align-items: center;
@@ -47,5 +47,7 @@ const Day = styled.TouchableOpacity<{ isToday: boolean }>`
 
 const DayText = styled(BodyText)<{ isToday: boolean }>`
   color: ${(props) =>
-    props.isToday ? symbols.colors.solidBlue : symbols.colors.offBlack};
+    props.isToday
+      ? props.theme.calendarDayActive
+      : props.theme.defaultTextColor};
 `;

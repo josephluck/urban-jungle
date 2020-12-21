@@ -48,8 +48,7 @@ const ControlsContainer = styled.View`
   align-items: center;
   justify-content: space-between;
   padding-horizontal: ${symbols.spacing.appHorizontal};
-  padding-top: 0px;
-  padding-bottom: ${symbols.spacing._16}px;
+  padding-vertical: ${symbols.spacing._8}px;
 `;
 
 const BackButton = styled(TouchableIcon)``;

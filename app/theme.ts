@@ -131,6 +131,7 @@ const colors = {
   paleGreen: "rgba(5, 194, 125, 0.05)",
   darkGreen: "rgba(5, 194, 125, 1)",
   solidBlue: "#0909F9",
+  lightBlue: "#7979F9",
   appBackground: "rgba(255, 255, 255, 1)",
   transparent: "transparent",
 };
@@ -150,7 +151,7 @@ export const symbols = {
 };
 
 export const darkTheme = {
-  type: "dark-content" as StatusBarStyle,
+  type: "light-content" as StatusBarStyle,
   appBackground: colors.offBlack,
   avatarBorder: colors.midOffGray,
   avatarBackground: colors.deepGray,
@@ -164,11 +165,15 @@ export const darkTheme = {
   bottomSheetBackground: colors.pureWhite,
   bottomSheetExpander: colors.lightOffGray,
   bottomSheetBackdrop: colors.offBlack,
-  calendarDayBackground: colors.offBlack,
+  calendarDayBackground: colors.midOffGray,
+  calendarDayActive: colors.lightBlue,
+  buttonBackground: symbols.colors.midOffGray,
+  progressBackground: symbols.colors.midOffGray,
+  progressActive: symbols.colors.pureWhite,
 };
 
 export const lightTheme: Theme = {
-  type: "light-content" as StatusBarStyle,
+  type: "dark-content" as StatusBarStyle,
   appBackground: colors.pureWhite,
   avatarBorder: colors.offWhite,
   avatarBackground: colors.nearWhite,
@@ -183,6 +188,10 @@ export const lightTheme: Theme = {
   bottomSheetExpander: colors.lightOffGray,
   bottomSheetBackdrop: colors.offBlack,
   calendarDayBackground: colors.nearWhite,
+  calendarDayActive: colors.solidBlue,
+  buttonBackground: symbols.colors.nearBlack,
+  progressBackground: symbols.colors.nearWhite,
+  progressActive: symbols.colors.solidBlue,
 };
 
 export const useTheme = () => {

@@ -147,7 +147,6 @@ export const Schedule = ({
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             paddingRight: windowWidth - dayOverallSize,
-            backgroundColor: symbols.colors.appBackground,
           }}
           ref={scrollViewRef}
           removeClippedSubviews
@@ -196,7 +195,7 @@ const MonthText = styled(BodyText)`
 const DaysContainer = styled.ScrollView`
   flex-grow: 0;
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  background-color: ${symbols.colors.appBackground};
+  background-color: ${(props) => props.theme.appBackground};
   margin-bottom: ${symbols.spacing._20}px;
 `;
 

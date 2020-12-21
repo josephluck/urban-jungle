@@ -50,13 +50,13 @@ const PlainButtonContainer = styled.TouchableOpacity<{
 
 const PrimaryButtonContainer = styled(PlainButtonContainer)`
   border-radius: ${symbols.borderRadius.pill}px;
-  background-color: ${symbols.colors.nearBlack};
+  background-color: ${(props) => props.theme.buttonBackground};
 `;
 
 const PlainButtonText = styled(BodyText)`
   margin-left: ${symbols.spacing._4}px;
   margin-right: ${symbols.spacing._4}px;
-  color: ${symbols.colors.nearBlack};
+  color: ${(props) => props.theme.secondaryTextColor};
 `;
 
 const PrimaryButtonText = styled(PlainButtonText)`

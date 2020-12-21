@@ -7,6 +7,7 @@ import {
 } from "reanimated-bottom-sheet";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
+import { Heading, SubHeading } from "./typography";
 
 export const BottomDrawer = ({
   children,
@@ -106,6 +107,12 @@ const BottomSheetContainer = styled.View`
   background-color: ${symbols.colors.appBackground};
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
   padding-vertical: ${symbols.spacing._16}px;
+  ${Heading} {
+    color: ${symbols.colors.nearBlack};
+  }
+  ${SubHeading} {
+    color: ${symbols.colors.nearBlack};
+  }
 `;
 
 /**

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { AppNavigation } from "./navigation/navigation";
 import { createAppContainer } from "react-navigation";
 import { ThemeProvider } from "styled-components";
-import { lightTheme } from "./theme";
+import { darkTheme, lightTheme } from "./theme";
 import styled from "styled-components/native";
 import { useFonts } from "./hooks/fonts";
 // import * as reactotron from "./reactotron";
@@ -21,12 +21,14 @@ import { HouseholdTodosSubscription } from "./features/todos/subscriptions/house
 import { ContextMenuProvider, ContextMenu } from "./components/context-menu";
 import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
 import { GlobalLoading } from "./components/global-loading";
+import { selectCurrentProfileThemeIsDark } from "./features/profiles/store/state";
 
 // reactotron.configure();
 
 const AppContainer = createAppContainer(AppNavigation);
 
 export default () => {
+  const isDarkTheme = useStore(selectCurrentProfileThemeIsDark);
   const fontsLoading = useFonts();
   const authInitializing = useStore(selectInitializing);
 
@@ -45,9 +47,9 @@ export default () => {
   );
 
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
       <ContextMenuProvider>
-        <StatusBar barStyle={lightTheme.type} />
+        <StatusBar barStyle={isDarkTheme ? darkTheme.type : lightTheme.type} />
         <AppWrapper>
           {loading ? (
             <LoadingContainer>

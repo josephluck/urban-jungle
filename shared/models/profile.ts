@@ -1,5 +1,7 @@
 import { BaseModel, makeBaseModel } from "./base";
 
+export type ThemeSetting = "light" | "dark" | "system";
+
 export interface ProfileModel extends BaseModel {
   /**
    * Profile's first name.
@@ -25,6 +27,10 @@ export interface ProfileModel extends BaseModel {
    * The Expo Push token for the user's device
    */
   pushToken?: string;
+  /**
+   * The theme, when not present, will use the device setting
+   */
+  theme?: ThemeSetting;
 }
 
 export const makeProfileModel = (

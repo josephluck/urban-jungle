@@ -121,12 +121,10 @@ export const manageRoute = makeNavigationRoute({
 const ScreenContainer = styled.View`
   padding-top: ${symbols.spacing.appVertical}px;
   flex: 1;
-  background-color: ${symbols.colors.appBackground};
 `;
 
 const ManageList = styled(FlatList as new () => FlatList<MiniProfile>)`
   flex: 1;
-  background-color: ${symbols.colors.appBackground};
 `;
 
 const ReleaseDateContainer = styled.View`

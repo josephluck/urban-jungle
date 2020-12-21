@@ -48,7 +48,6 @@ const WelcomeMessage = styled(Heading)`
 const CareScreenContainer = styled.View`
   padding-top: ${symbols.spacing.appVertical}px;
   flex-grow: 1;
-  background-color: ${symbols.colors.appBackground};
 `;
 
 export const careRoute = makeNavigationRoute({

@@ -1,8 +1,12 @@
-import { ProfileModel } from "@urban-jungle/shared/models/profile";
+import {
+  ProfileModel,
+  ThemeSetting,
+} from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { getFirstLetterFromOptionString } from "@urban-jungle/shared/fp/option";
 import { store } from "../../../store/state";
+import { Appearance } from "react-native-appearance";
 import { selectCurrentUserId } from "../../auth/store/state";
 
 /**
@@ -27,8 +31,30 @@ export const selectCurrentProfileEmail = (): O.Option<string> =>
 export const selectCurrentProfileAvatar = (): O.Option<string> =>
   pipe(
     selectCurrentProfile(),
-    O.map((p) => O.fromNullable(p.avatar)),
-    O.flatten
+    O.filterMap((p) => O.fromNullable(p.avatar))
+  );
+
+export const selectCurrentProfileThemeSetting = (): ThemeSetting =>
+  pipe(
+    selectCurrentProfile(),
+    O.filterMap((p) => O.fromNullable(p.theme)),
+    O.getOrElse(() => "system" as ThemeSetting)
+  );
+
+export const getThemeFromDevicePreference = (): ThemeSetting => {
+  switch (Appearance.getColorScheme()) {
+    case "dark":
+      return "dark";
+    default:
+      return "light";
+  }
+};
+
+export const selectCurrentProfileThemeIsDark = (): boolean =>
+  pipe(
+    selectCurrentProfileThemeSetting(),
+    (theme) => (theme === "system" ? getThemeFromDevicePreference() : theme),
+    (theme) => theme === "dark"
   );
 
 export const selectCurrentProfileName = (): O.Option<string> =>

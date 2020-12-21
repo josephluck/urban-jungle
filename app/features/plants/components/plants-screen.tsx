@@ -82,12 +82,10 @@ export const plantsRoute = makeNavigationRoute({
 const ScreenContainer = styled.View`
   padding-top: ${symbols.spacing.appVertical}px;
   flex-grow: 1;
-  background-color: ${symbols.colors.appBackground};
 `;
 
 const PlantsList = styled.ScrollView`
   flex: 1;
-  background-color: ${symbols.colors.appBackground};
   padding-bottom: ${symbols.spacing.appVertical}px;
 `;
 
