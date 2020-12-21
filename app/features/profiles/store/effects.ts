@@ -1,6 +1,7 @@
 import {
   makeProfileModel,
   ProfileModel,
+  ThemeSetting,
 } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
@@ -10,7 +11,12 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { database } from "../../../database";
 import { fetchCurrentProfileIfNotFetched } from "../../auth/store/effects";
 import { selectCurrentUserId } from "../../auth/store/state";
-import { selectProfileById, selectProfiles, upsertProfile } from "./state";
+import {
+  selectProfileById,
+  selectProfiles,
+  setProfileTheme,
+  upsertProfile,
+} from "./state";
 
 export const createProfileForUser = (
   user: firebase.User
@@ -118,6 +124,24 @@ export const saveExpoPushTokenToProfile = (
         () => "BAD_REQUEST" as IErr
       )
     )
+  );
+
+export const saveThemeSettingForProfile = (
+  theme: ThemeSetting
+): TE.TaskEither<IErr, void> =>
+  pipe(
+    selectCurrentUserId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain((id) => {
+      setProfileTheme(id, theme);
+      return TE.tryCatch(
+        () =>
+          database.profiles.database.doc(id).update({
+            theme,
+          }),
+        () => "BAD_REQUEST" as IErr
+      );
+    })
   );
 
 export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>

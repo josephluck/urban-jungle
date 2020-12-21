@@ -137,6 +137,12 @@ export const upsertProfile = store.createMutator((s, profile: ProfileModel) => {
   s.profiles.profiles[profile.id] = profile;
 });
 
+export const setProfileTheme = store.createMutator(
+  (s, profileId: string, theme: ThemeSetting) => {
+    s.profiles.profiles[profileId].theme = theme;
+  }
+);
+
 export const upsertProfiles = store.createMutator(
   (s, profiles: ProfileModel[]) => {
     profiles.forEach((profile) => {

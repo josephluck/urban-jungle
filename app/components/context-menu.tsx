@@ -1,7 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useCallback, useContext, useMemo, useState } from "react";
-import { StyleProp, ViewProps } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { StyleProp, View, ViewProps, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
 import { BottomDrawer } from "./bottom-drawer";
@@ -10,7 +9,7 @@ import { SubHeading } from "./typography";
 
 type ContextMenuButtonType = {
   label: string;
-  icon: string;
+  icon?: string;
   onPress: () => void;
 };
 
@@ -57,6 +56,7 @@ export const ContextMenu = () => {
 
   const handleButtonPress = useCallback(
     (callback: () => void) => {
+      console.log("Button pressed");
       handleClose(); // TODO: maybe this should use a forwarded imperative handle?
       callback();
     },
@@ -67,11 +67,15 @@ export const ContextMenu = () => {
     <BottomDrawer height={height} onClose={handleClose} visible={visible}>
       {buttons.map((button) => (
         <ContextMenuButtonItem
-          key={button.icon}
+          key={button.label}
           onPress={() => handleButtonPress(button.onPress)}
         >
-          <ContextMenuButtonIcon name={button.icon} size={ICON_SIZE} />
-          <SubHeading>{button.label}</SubHeading>
+          {button.icon ? (
+            <ContextMenuButtonIcon name={button.icon} size={ICON_SIZE} />
+          ) : (
+            <View style={{ width: ICON_SIZE, height: ICON_SIZE }} />
+          )}
+          <ContextMenuSubHeading>{button.label}</ContextMenuSubHeading>
         </ContextMenuButtonItem>
       ))}
     </BottomDrawer>
@@ -82,13 +86,18 @@ export const ContextMenu = () => {
 const ICON_SIZE = 28;
 const BUTTON_MARGIN = symbols.spacing._16;
 const BUTTON_HEIGHT = ICON_SIZE + BUTTON_MARGIN * 2;
+
 const ContextMenuButtonItem = styled(TouchableOpacity as any)`
   flex-direction: row;
   align-items: center;
   height: ${BUTTON_HEIGHT}px;
 `;
-const ContextMenuButtonIcon = styled(Feather)`
-  margin-right: ${symbols.spacing._12}px;
+
+const ContextMenuButtonIcon = styled(Feather)``;
+
+const ContextMenuSubHeading = styled(SubHeading)`
+  margin-left: ${symbols.spacing._12}px;
+  color: ${symbols.colors.offBlack};
 `;
 
 export const ContextMenuButton = ({
@@ -111,6 +120,27 @@ export const ContextMenuButton = ({
       onPress={handleShowContextMenu}
       icon="more-vertical"
     />
+  );
+};
+
+export const ContextMenuTouchable = ({
+  buttons,
+  children,
+}: {
+  buttons: ContextMenuButtonType[];
+  children: React.ReactNode;
+}) => {
+  const { setVisible, setButtons } = useContext(ContextMenuContext);
+
+  const handleShowContextMenu = useCallback(() => {
+    setButtons(buttons);
+    setVisible(true);
+  }, [setVisible, setButtons]);
+
+  return (
+    <TouchableOpacity onPress={handleShowContextMenu}>
+      {children}
+    </TouchableOpacity>
   );
 };
 

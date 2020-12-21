@@ -8,8 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Dimensions, ScrollView } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Dimensions, ScrollView, TouchableOpacity } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
 import { CalendarDay, daySize } from "../../../components/calendar-day";

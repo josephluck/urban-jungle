@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { ContextMenuTouchable } from "../../../components/context-menu";
 import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
@@ -22,8 +23,10 @@ import {
   disablePushNotifications,
   enablePushNotifications,
 } from "../../notifications/token";
+import { saveThemeSettingForProfile } from "../../profiles/store/effects";
 import {
   MiniProfile,
+  selectCurrentProfileThemeSetting,
   selectPushNotificationsEnabled,
 } from "../../profiles/store/state";
 
@@ -55,6 +58,8 @@ export const ManageScreen = () => {
     }
   }, [pushNotificationsEnabled]);
 
+  const themeSetting = useStore(selectCurrentProfileThemeSetting);
+
   return (
     <ScreenLayout isRootScreen>
       {selectedHouseholdId ? (
@@ -63,12 +68,31 @@ export const ManageScreen = () => {
             <Heading>Settings</Heading>
           </WelcomeMessageContainer>
           <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
-            <TouchableOpacity>
+            <ContextMenuTouchable
+              buttons={[
+                {
+                  icon: themeSetting === "light" ? "check" : undefined,
+                  label: "Light",
+                  onPress: saveThemeSettingForProfile("light"),
+                },
+                {
+                  icon: themeSetting === "dark" ? "check" : undefined,
+                  label: "Dark",
+                  onPress: saveThemeSettingForProfile("dark"),
+                },
+                {
+                  icon: themeSetting === "system" ? "check" : undefined,
+                  label: "Device",
+                  onPress: saveThemeSettingForProfile("system"),
+                },
+              ]}
+            >
               <ListItem
                 title="Appearance"
                 right={<Icon icon="chevron-right" />}
               />
-            </TouchableOpacity>
+            </ContextMenuTouchable>
+            <TouchableOpacity></TouchableOpacity>
             <ListItem
               title="Push notifications"
               right={
