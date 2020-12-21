@@ -1,10 +1,10 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { DualNumberPickerField } from "../../../components/dual-number-picker-field";
@@ -61,9 +61,10 @@ const recurrenceOptions: RecurrenceOption[] = [
 
 export const ManageTodoScreen = ({
   navigation,
-}: NavigationStackScreenProps) => {
+  route,
+}: StackScreenProps<Record<keyof ManageTodoParams, undefined>>) => {
   const { plantId, todoId, ...initialFields } = manageTodoRoute.getParams(
-    navigation
+    route
   );
 
   const {

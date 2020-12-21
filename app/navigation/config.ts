@@ -2,12 +2,12 @@ import {
   NavigationStackConfig,
   NavigationStackOptions,
   NavigationStackProp,
-} from "react-navigation-stack";
+} from "@react-navigation/stack";
 import {
   CreateNavigatorConfig,
   NavigationStackRouterConfig,
   NavigationRoute,
-} from "react-navigation";
+} from "@react-navigation/native";
 
 export const defaultStackConfig: CreateNavigatorConfig<
   NavigationStackConfig,

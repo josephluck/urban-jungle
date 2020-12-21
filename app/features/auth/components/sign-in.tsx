@@ -6,9 +6,9 @@ import { signIn } from "../store/effects";
 import { Button, TextInput, Text } from "react-native";
 import { useStore } from "../../../store/state";
 import { careRoute } from "../../care/components/care-screen";
-import { NavigationStackScreenProps } from "react-navigation-stack";
+import { StackScreenProps } from "@react-navigation/stack";
 
-export const SignIn = ({ navigation }: NavigationStackScreenProps) => {
+export const SignIn = ({ navigation }: StackScreenProps<{}>) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

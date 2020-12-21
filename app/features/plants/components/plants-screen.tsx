@@ -1,9 +1,9 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
@@ -17,7 +17,7 @@ import { selectPlantsByHouseholdId } from "../store/state";
 import { newPlantPictureRoute } from "./new-plant/new-plant-picture-screen";
 import { plantRoute } from "./plant-screen";
 
-export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
+export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
@@ -37,7 +37,7 @@ export const PlantsScreen = ({ navigation }: NavigationStackScreenProps) => {
   );
 
   return (
-    <ScreenLayout>
+    <ScreenLayout isRootScreen>
       {selectedHouseholdId ? (
         <ScreenContainer>
           <WelcomeMessageContainer>

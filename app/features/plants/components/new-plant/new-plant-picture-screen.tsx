@@ -1,8 +1,8 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
 import { CircleButton, CircleImage } from "../../../../components/circle-image";
@@ -18,9 +18,7 @@ import { newPlantNicknameRoute } from "./new-plant-nickname-screen";
 import { newPlantSuggestionRoute } from "./new-plant-suggestion-screen";
 import { setIdentificationResult } from "./state";
 
-export const NewPlantPictureScreen = ({
-  navigation,
-}: NavigationStackScreenProps) => {
+export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
   const requiredImages: number = 1; // TODO: tweak this depending on the quality of Plant.id. The more images, the better.
   const [images, setImages] = useState<ImageInfo[]>([]);
 

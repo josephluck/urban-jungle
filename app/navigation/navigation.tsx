@@ -5,9 +5,16 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React from "react";
-import { createSwitchNavigator } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
-import { createBottomTabNavigator } from "react-navigation-tabs";
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import {
+  BottomTabBarOptions,
+  BottomTabBarProps,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import { SignIn, SIGN_IN_SCREEN } from "../features/auth/components/sign-in";
 import { SignUp, SIGN_UP_SCREEN } from "../features/auth/components/sign-up";
 import { careRoute } from "../features/care/components/care-screen";
@@ -23,159 +30,207 @@ import { plantsRoute } from "../features/plants/components/plants-screen";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { todoRoute } from "../features/todos/components/todo-screen";
 // import { logGlobalState } from "../store/state";
-import { symbols } from "../theme";
+import { symbols, Theme } from "../theme";
+import { useStore } from "../store/state";
+import { selectHasAuthenticated } from "../features/auth/store/state";
+import { Animated, Easing } from "react-native";
+import styled, { withTheme } from "styled-components/native";
+import { useRef } from "react";
 
-const CareStack = createStackNavigator(
-  {
-    [careRoute.routeName]: careRoute.screen,
-    [careSessionRoute.routeName]: careSessionRoute.screen,
-  },
-  {
-    initialRouteName: careRoute.routeName,
-    headerMode: "none",
-    navigationOptions: {
-      headerShown: false,
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+// used to hide the tab bar on child routes
+const rootScreens = [
+  careRoute.routeName,
+  plantsRoute.routeName,
+  manageRoute.routeName,
+];
+
+const makeEmitter = <T extends any>() => {
+  type Subscriber = (data: T) => void;
+  let subs: Subscriber[] = [];
+  return {
+    emit: (data: T) => subs.forEach((fn) => fn(data)),
+    subscribe: (fn: Subscriber) => {
+      subs.push(fn);
+      return () => subs.filter((fn) => fn !== fn);
     },
+  };
+};
+
+const navigateEmitter = makeEmitter<boolean>();
+
+class TabBarComponent extends React.Component<
+  BottomTabBarProps<BottomTabBarOptions> & { theme: Theme }
+> {
+  transformValue = new Animated.Value(0);
+  unsubscribe: (() => void) | null = null;
+
+  componentDidMount() {
+    this.unsubscribe = navigateEmitter.subscribe((isAtRoot) => {
+      Animated.timing(this.transformValue, {
+        toValue: isAtRoot ? 0 : 1,
+        duration: 120,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      }).start();
+    });
   }
+
+  componentWillUnmount() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
+
+  render() {
+    const tabIconSize = 28;
+
+    const { name: currentScreenName } = this.props.state.routes[
+      this.props.state.index
+    ];
+
+    return (
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            bottom: 0,
+            width: "100%",
+            backgroundColor: this.props.theme.appBackground,
+          },
+          {
+            opacity: this.transformValue.interpolate({
+              inputRange: [0, 1],
+              outputRange: [1, 0],
+            }),
+            transform: [
+              {
+                translateY: this.transformValue.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, symbols.spacing.tabBarHeight],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <TabBarContainer>
+          {[careRoute, plantsRoute, manageRoute].map((route) => (
+            <TabIcon
+              key={route.routeName}
+              onPress={() => route.navigateTo(this.props.navigation, {})}
+            >
+              <FontAwesomeIcon
+                icon={
+                  route === careRoute
+                    ? faHandHoldingWater
+                    : route === plantsRoute
+                    ? faSeedling
+                    : faUserCircle
+                }
+                size={tabIconSize}
+                color={
+                  currentScreenName === route.routeName
+                    ? this.props.theme.tabBarActive
+                    : this.props.theme.tabBarInactive
+                }
+              />
+            </TabIcon>
+          ))}
+        </TabBarContainer>
+      </Animated.View>
+    );
+  }
+}
+
+const TabBar = withTheme(TabBarComponent);
+
+const TabBarContainer = styled.SafeAreaView`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+`;
+
+const TabIcon = styled.TouchableOpacity`
+  flex: 1;
+  align-items: center;
+  justify-content: space-evenly;
+  height: ${symbols.spacing.tabBarHeight};
+`;
+
+const PlantStack = () => (
+  <Stack.Navigator headerMode="none">
+    <Stack.Screen name={plantsRoute.routeName} component={plantsRoute.screen} />
+    <Stack.Screen name={plantRoute.routeName} component={plantRoute.screen} />
+    <Stack.Screen
+      name={managePlantRoute.routeName}
+      component={managePlantRoute.screen}
+    />
+    <Stack.Screen name={todoRoute.routeName} component={todoRoute.screen} />
+    <Stack.Screen
+      name={manageTodoRoute.routeName}
+      component={manageTodoRoute.screen}
+    />
+    <Stack.Screen
+      name={newPlantPictureRoute.routeName}
+      component={newPlantPictureRoute.screen}
+    />
+    <Stack.Screen
+      name={newPlantNicknameRoute.routeName}
+      component={newPlantNicknameRoute.screen}
+    />
+    <Stack.Screen
+      name={newPlantSuggestionRoute.routeName}
+      component={newPlantSuggestionRoute.screen}
+    />
+    <Stack.Screen
+      name={newPlantLocationRoute.routeName}
+      component={newPlantLocationRoute.screen}
+    />
+  </Stack.Navigator>
 );
 
-const PlantsStack = createStackNavigator(
-  {
-    [plantsRoute.routeName]: plantsRoute.screen,
-    [plantRoute.routeName]: plantRoute.screen,
-    [managePlantRoute.routeName]: managePlantRoute.screen,
-    [todoRoute.routeName]: todoRoute.screen,
-    [manageTodoRoute.routeName]: manageTodoRoute.screen,
-    [newPlantPictureRoute.routeName]: {
-      screen: newPlantPictureRoute.screen,
-      navigationOptions: {
-        tabBarVisible: false,
-      },
-    },
-    [newPlantNicknameRoute.routeName]: {
-      screen: newPlantNicknameRoute.screen,
-      navigationOptions: {
-        tabBarVisible: false,
-      },
-    },
-    [newPlantSuggestionRoute.routeName]: {
-      screen: newPlantSuggestionRoute.screen,
-      navigationOptions: {
-        tabBarVisible: false,
-      },
-    },
-    [newPlantLocationRoute.routeName]: {
-      screen: newPlantLocationRoute.screen,
-      navigationOptions: {
-        tabBarVisible: false,
-      },
-    },
-  },
-  {
-    initialRouteName: plantsRoute.routeName,
-    headerMode: "none",
-    navigationOptions: {
-      headerShown: false,
-    },
-  }
+const CareStack = () => (
+  <Stack.Navigator headerMode="none">
+    <Stack.Screen name={careRoute.routeName} component={careRoute.screen} />
+    <Stack.Screen
+      name={careSessionRoute.routeName}
+      component={careSessionRoute.screen}
+    />
+  </Stack.Navigator>
 );
 
-const ManageStack = createStackNavigator(
-  {
-    [manageRoute.routeName]: manageRoute.screen,
-  },
-  {
-    initialRouteName: manageRoute.routeName,
-    headerMode: "none",
-    navigationOptions: {
-      headerShown: false,
-    },
-  }
-);
-
-const tabIconSize = 28;
-const tabBarPadding = symbols.spacing._12;
-
-const PrivateTabs = createBottomTabNavigator(
-  {
-    [careRoute.routeName]: CareStack,
-    [plantsRoute.routeName]: PlantsStack,
-    [manageRoute.routeName]: ManageStack,
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarOnPress: ({ navigation, defaultHandler }: any) => {
-        // logGlobalState();
-        navigation.popToTop();
-        defaultHandler();
-      },
-
-      tabBarOptions: {
-        showLabel: false,
-        style: {
-          backgroundColor: symbols.colors.appBackground,
-          borderTopWidth: 0,
-          height: tabIconSize + tabBarPadding * 2,
-        },
-      },
-
-      tabBarIcon: ({ focused }) => {
-        const { routeName } = navigation.state;
-        const icon =
-          routeName === careRoute.routeName
-            ? faHandHoldingWater
-            : routeName === plantsRoute.routeName
-            ? faSeedling
-            : faUserCircle;
-        return (
-          <FontAwesomeIcon
-            icon={icon}
-            size={tabIconSize}
-            color={focused ? symbols.colors.solidBlue : symbols.colors.offWhite}
+export const AppNavigation = () => {
+  const isLoggedIn = useStore(selectHasAuthenticated);
+  const navigationRef = useRef<NavigationContainerRef>(null);
+  return (
+    <NavigationContainer
+      ref={navigationRef}
+      onStateChange={(state) => {
+        const indexes =
+          state?.routes.map((route) => route.state?.index ?? 0) ?? [];
+        console.log({ indexes });
+        const isAtRoot = indexes.every((index) => index === 0);
+        navigateEmitter.emit(typeof isAtRoot === "undefined" || isAtRoot);
+      }}
+    >
+      {isLoggedIn ? (
+        <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
+          <Tab.Screen name={careRoute.routeName} component={CareStack} />
+          <Tab.Screen name={plantsRoute.routeName} component={PlantStack} />
+          <Tab.Screen
+            name={manageRoute.routeName}
+            component={manageRoute.screen}
           />
-        );
-      },
-    }),
-  }
-);
-
-const PRIVATE_STACK = "PRIVATE_STACK";
-
-const AuthNavigator = createStackNavigator(
-  {
-    [SIGN_IN_SCREEN]: {
-      screen: SignIn,
-      navigationOptions: {
-        title: "Sign in",
-      },
-    },
-    [SIGN_UP_SCREEN]: {
-      screen: SignUp,
-      navigationOptions: {
-        title: "Sign up",
-      },
-    },
-  },
-  {
-    headerMode: "none",
-    navigationOptions: {
-      headerShown: false,
-    },
-  }
-);
-
-const AUTH_STACK = "AUTH_STACK";
-
-export const AppNavigation = createSwitchNavigator(
-  {
-    [AUTH_STACK]: {
-      screen: AuthNavigator,
-    },
-    [PRIVATE_STACK]: {
-      screen: PrivateTabs,
-    },
-  },
-  {
-    initialRouteName: PRIVATE_STACK,
-  }
-);
+        </Tab.Navigator>
+      ) : (
+        <Stack.Navigator headerMode="none">
+          <Stack.Screen name={SIGN_IN_SCREEN} component={SignIn} />
+          <Stack.Screen name={SIGN_UP_SCREEN} component={SignUp} />
+        </Stack.Navigator>
+      )}
+    </NavigationContainer>
+  );
+};

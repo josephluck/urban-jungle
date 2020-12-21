@@ -1,3 +1,4 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { IErr } from "@urban-jungle/shared/utils/err";
@@ -5,7 +6,6 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { CameraField } from "../../../components/camera-field";
@@ -27,8 +27,9 @@ type Fields = Required<Pick<PlantModel, "name" | "nickname" | "location">> & {
 
 export const ManagePlantScreen = ({
   navigation,
-}: NavigationStackScreenProps) => {
-  const { plantId = "", ...params } = managePlantRoute.getParams(navigation);
+  route,
+}: StackScreenProps<Record<keyof ManagePlantRouteParams, undefined>>) => {
+  const { plantId = "", ...params } = managePlantRoute.getParams(route);
 
   const {
     submit,

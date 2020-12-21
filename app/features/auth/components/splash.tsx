@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 import { Button } from "react-native";
-import { NavigationContext } from "react-navigation";
+import { NavigationContext } from "@react-navigation/native";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { Heading } from "../../../components/typography";
 import { createLoginRoute } from "./sign-in";

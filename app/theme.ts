@@ -111,6 +111,7 @@ const spacing = {
   _32: baseSize * 8,
   appHorizontal: baseSize * 5,
   appVertical: baseSize * 8,
+  tabBarHeight: 64,
 };
 
 const colors = {
@@ -170,6 +171,11 @@ export const darkTheme = {
   buttonBackground: symbols.colors.midOffGray,
   progressBackground: symbols.colors.midOffGray,
   progressActive: symbols.colors.pureWhite,
+  switchThumb: symbols.colors.nearWhite,
+  switchBackgroundFalse: symbols.colors.deepGray,
+  switchBackgroundTrue: symbols.colors.paleGreen,
+  tabBarActive: symbols.colors.lightBlue,
+  tabBarInactive: symbols.colors.midOffGray,
 };
 
 export const lightTheme: Theme = {
@@ -192,6 +198,11 @@ export const lightTheme: Theme = {
   buttonBackground: symbols.colors.nearBlack,
   progressBackground: symbols.colors.nearWhite,
   progressActive: symbols.colors.solidBlue,
+  switchThumb: symbols.colors.pureWhite,
+  switchBackgroundFalse: symbols.colors.nearWhite,
+  switchBackgroundTrue: symbols.colors.paleGreen,
+  tabBarActive: symbols.colors.solidBlue,
+  tabBarInactive: symbols.colors.midOffGray,
 };
 
 export const useTheme = () => {

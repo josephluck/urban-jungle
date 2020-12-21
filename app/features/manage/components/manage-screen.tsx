@@ -2,12 +2,13 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import { TouchableOpacity } from "react-native";
-import { FlatList, Switch, View } from "react-native";
+import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
+import { Switch } from "../../../components/switch";
 import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
@@ -55,7 +56,7 @@ export const ManageScreen = () => {
   }, [pushNotificationsEnabled]);
 
   return (
-    <ScreenLayout>
+    <ScreenLayout isRootScreen>
       {selectedHouseholdId ? (
         <ScreenContainer>
           <WelcomeMessageContainer first>

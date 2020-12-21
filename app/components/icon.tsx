@@ -1,13 +1,17 @@
 import React from "react";
 import { Feather } from "@expo/vector-icons";
-import { symbols } from "../theme";
+import { useTheme } from "styled-components";
 
 export const Icon = ({
   icon,
   size = 28,
-  color = symbols.colors.nearBlack,
+  color,
 }: {
   icon: string;
   size?: number;
   color?: string;
-}) => <Feather name={icon} size={size} color={color} />;
+}) => {
+  const theme = useTheme();
+  const _color = color || theme.defaultTextColor;
+  return <Feather name={icon} size={size} color={_color} />;
+};

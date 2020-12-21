@@ -4,7 +4,7 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { selectHasAuthenticated } from "../store/state";
 import { signUp } from "../store/effects";
 import { Button, TextInput, Text } from "react-native";
-import { NavigationContext } from "react-navigation";
+import { NavigationContext } from "@react-navigation/native";
 import { useStore } from "../../../store/state";
 import { createCareRoute } from "../../care/components/care-screen";
 

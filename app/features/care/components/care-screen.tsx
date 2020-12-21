@@ -1,7 +1,6 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { Heading } from "../../../components/typography";
@@ -11,8 +10,9 @@ import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/
 import { careSessionRoute } from "./care-session-screen";
 import { Schedule } from "./schedule";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { StackScreenProps } from "@react-navigation/stack";
 
-export const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
+export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
   );
@@ -29,7 +29,7 @@ export const CareScreen = ({ navigation }: NavigationStackScreenProps) => {
   );
 
   return (
-    <ScreenLayout>
+    <ScreenLayout isRootScreen>
       {selectedHouseholdId ? (
         <CareScreenContainer>
           <WelcomeMessage>👋 You have a few things to do today.</WelcomeMessage>

@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import { AppNavigation } from "./navigation/navigation";
-import { createAppContainer } from "react-navigation";
 import { ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "./theme";
 import styled from "styled-components/native";
@@ -22,10 +20,9 @@ import { ContextMenuProvider, ContextMenu } from "./components/context-menu";
 import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
 import { GlobalLoading } from "./components/global-loading";
 import { selectCurrentProfileThemeIsDark } from "./features/profiles/store/state";
+import { AppNavigation } from "./navigation/navigation";
 
 // reactotron.configure();
-
-const AppContainer = createAppContainer(AppNavigation);
 
 export default () => {
   const isDarkTheme = useStore(selectCurrentProfileThemeIsDark);
@@ -74,7 +71,7 @@ export default () => {
                   />
                 </>
               ) : null}
-              <AppContainer />
+              <AppNavigation />
             </>
           )}
         </AppWrapper>

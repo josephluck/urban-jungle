@@ -1,7 +1,6 @@
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
@@ -19,7 +18,7 @@ type Fields = Pick<Required<PlantFields>, "nickname">;
 
 export const NewPlantNicknameScreen = ({
   navigation,
-}: NavigationStackScreenProps) => {
+}: StackScreenProps<{}>) => {
   const plantFields = useStore(selectPlantFields);
   /**
    * If there's a name it means the user's chosen to use identification and has

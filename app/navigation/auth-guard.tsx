@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationComponent } from "react-navigation";
+import { NavigationComponent } from "@react-navigation/native";
 import { SplashScreen } from "../features/auth/components/splash";
 import { selectHasAuthenticated } from "../features/auth/store/state";
 import { useStore } from "../store/state";

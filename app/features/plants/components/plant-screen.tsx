@@ -1,3 +1,4 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { makeImageModel } from "@urban-jungle/shared/models/image";
 import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
@@ -6,7 +7,6 @@ import * as TE from "fp-ts/lib/TaskEither";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { ContextMenuButton } from "../../../components/context-menu";
@@ -33,8 +33,11 @@ import {
 } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
 
-export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
-  const { plantId } = plantRoute.getParams(navigation);
+export const PlantScreen = ({
+  navigation,
+  route,
+}: StackScreenProps<Record<keyof PlantRouteParams, undefined>>) => {
+  const { plantId } = plantRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
@@ -228,9 +231,11 @@ export const PlantScreen = ({ navigation }: NavigationStackScreenProps) => {
   );
 };
 
-export const plantRoute = makeNavigationRoute<{
+type PlantRouteParams = {
   plantId: string;
-}>({
+};
+
+export const plantRoute = makeNavigationRoute<PlantRouteParams>({
   screen: PlantScreen,
   routeName: "PLANT_SCREEN",
   authenticated: true,

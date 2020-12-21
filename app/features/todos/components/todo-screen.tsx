@@ -3,7 +3,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
-import { NavigationStackScreenProps } from "react-navigation-stack";
+import { StackScreenProps } from "@react-navigation/stack";
 import styled from "styled-components/native";
 import { ContextMenuButton } from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -25,8 +25,11 @@ import {
 import { manageTodoRoute } from "./manage-todo-screen";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
-export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
-  const { todoId, plantId } = todoRoute.getParams(navigation);
+export const TodoScreen = ({
+  navigation,
+  route,
+}: StackScreenProps<Record<keyof TodoParams, undefined>>) => {
+  const { todoId, plantId } = todoRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId
@@ -147,10 +150,12 @@ export const TodoScreen = ({ navigation }: NavigationStackScreenProps) => {
   );
 };
 
-export const todoRoute = makeNavigationRoute<{
+type TodoParams = {
   todoId: string;
   plantId: string;
-}>({
+};
+
+export const todoRoute = makeNavigationRoute<TodoParams>({
   screen: TodoScreen,
   routeName: "TODO_SCREEN",
   authenticated: true,

@@ -1,15 +1,10 @@
 import {
-  NavigationComponent,
-  NavigationParams,
-  NavigationRoute,
-} from "react-navigation";
-import { StackNavigationProp } from "react-navigation-stack/lib/typescript/src/vendor/types";
+  CommonActions,
+  NavigationProp,
+  RouteProp,
+} from "@react-navigation/native";
+import { StackScreenProps } from "@react-navigation/stack";
 import { authGuard } from "./auth-guard";
-
-type NavigationSingleton = StackNavigationProp<
-  NavigationRoute<NavigationParams>,
-  NavigationParams
->;
 
 type SerializeParams<Params extends Record<string, any>> = (
   params: Params
@@ -28,7 +23,7 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
   authenticated = false,
 }: {
   routeName: string;
-  screen: NavigationComponent<any, any>;
+  screen: React.ComponentType<StackScreenProps<Params>>;
   defaultParams?: Required<Params>;
   serializeParams?: SerializeParams<Params>;
   deserializeParams?: DeserializeParams<Params>;
@@ -36,18 +31,35 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
 }) => ({
   routeName,
   screen: authenticated ? authGuard(screen) : screen,
-  getParams: ({ getParam }: NavigationSingleton) => {
+  getParams: (route: RouteProp<Params, string>) => {
     const params = Object.keys(defaultParams).reduce(
       (acc, key) => ({
         ...acc,
-        [key]: getParam(key),
+        [key]: route.params ? route.params[key] : undefined,
       }),
       defaultParams
     );
     return deserializeParams(params);
   },
-  navigateTo: ({ navigate }: NavigationSingleton, params: Params) => {
-    navigate({ routeName, params: serializeParams(params) });
+  navigateTo: (navigation: NavigationProp<any>, params: Params) => {
+    // if (reset) {
+    //   navigation.dispatch(
+    //     CommonActions.reset({
+    //       index: 0,
+    //       routes: [
+    //         {
+    //           name: routeName,
+    //           params: serializeParams(params),
+    //         },
+    //       ],
+    //     })
+    //   );
+    //   return;
+    // }
+    navigation.navigate({
+      name: routeName,
+      params: serializeParams(params),
+    });
   },
 });
 

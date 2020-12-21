@@ -1,3 +1,4 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
@@ -10,7 +11,6 @@ import React, {
 } from "react";
 import { Dimensions, ScrollView } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -29,8 +29,9 @@ import { careRoute } from "./care-screen";
 
 export const CareSessionScreen = ({
   navigation,
-}: NavigationStackScreenProps) => {
-  const { todoIds = [] } = careSessionRoute.getParams(navigation);
+  route,
+}: StackScreenProps<Record<keyof CareSessionParams, undefined>>) => {
+  const { todoIds = [] } = careSessionRoute.getParams(route);
 
   const [doneTodoIds, setDoneTodos] = useState<string[]>([]);
 
@@ -174,9 +175,11 @@ export const CareSessionScreen = ({
   );
 };
 
-export const careSessionRoute = makeNavigationRoute<{
+type CareSessionParams = {
   todoIds: string[];
-}>({
+};
+
+export const careSessionRoute = makeNavigationRoute<CareSessionParams>({
   screen: CareSessionScreen,
   routeName: "CARE_SESSION_SCREEN",
   authenticated: true,

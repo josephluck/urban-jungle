@@ -2,7 +2,6 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useState } from "react";
 import { FlatList, TouchableOpacity } from "react-native";
-import { NavigationStackScreenProps } from "react-navigation-stack";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
 import { CircleImage } from "../../../../components/circle-image";
@@ -21,7 +20,7 @@ import {
 
 export const NewPlantSuggestionScreen = ({
   navigation,
-}: NavigationStackScreenProps) => {
+}: StackScreenProps<{}>) => {
   const [selectedSuggestion, setSelectedSuggestion] = useState<
     O.Option<IdentificationSuggestion>
   >(O.none);
