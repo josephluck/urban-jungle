@@ -123,8 +123,6 @@ export const CareSessionScreen = ({
   return (
     <BackableScreenLayout onBack={() => navigation.goBack()}>
       <Carousel
-        style={{ flex: 1 }}
-        containerCustomStyle={{ flex: 1 }}
         data={todos}
         removeClippedSubviews
         sliderWidth={windowWidth}
@@ -204,9 +202,8 @@ const deserializeStringArray = (monthsStr: string) => {
         parsed.every((item) => typeof item === "string")
         ? parsed
         : [];
-    } else {
-      return [];
     }
+    return [];
   } catch (err) {
     return [];
   }

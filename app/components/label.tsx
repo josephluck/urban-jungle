@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
 import { BodyText } from "./typography";
-import { StyleProp } from "react-native";
+import { StyleProp, TextStyle } from "react-native";
 import { ViewStyle } from "react-native";
 
 export const Label = ({
@@ -31,7 +31,7 @@ const LabelContainer = styled.View<{ large: boolean }>`
   background-color: ${(props) => props.theme.labelBackground};
 `;
 
-const LabelText = styled(BodyText)<{ large: boolean }>`
+export const LabelText = styled(BodyText)<{ large: boolean }>`
   font-size: ${(props) =>
     props.large ? symbols.font._16.size : symbols.font._12.size}px;
   color: ${(props) => props.theme.labelText};

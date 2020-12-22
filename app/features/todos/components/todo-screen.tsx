@@ -5,7 +5,10 @@ import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import styled from "styled-components/native";
-import { ContextMenuButton } from "../../../components/context-menu";
+import {
+  ContextMenuDotsButton,
+  ContextMenuIconButton,
+} from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
 import { TodoOverview } from "../../../components/todo-overview";
@@ -94,16 +97,16 @@ export const TodoScreen = ({
     <BackableScreenLayout
       onBack={handleGoBack}
       headerRightButton={
-        <ContextMenuButton
-          buttons={[
-            {
-              icon: "trash",
-              label: `Delete ${todoName}`,
-              onPress: handleDelete,
-            },
-            { icon: "edit-3", label: `Edit ${todoName}`, onPress: handleEdit },
+        <ContextMenuDotsButton>
+          {[
+            <ContextMenuIconButton icon="trash" onPress={handleDelete}>
+              Delete {todoName}
+            </ContextMenuIconButton>,
+            <ContextMenuIconButton icon="edit-3" onPress={handleEdit}>
+              Edit {todoName}
+            </ContextMenuIconButton>,
           ]}
-        />
+        </ContextMenuDotsButton>
       }
     >
       {pipe(

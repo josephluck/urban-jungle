@@ -5,7 +5,10 @@ import { TouchableOpacity } from "react-native";
 import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { ContextMenuTouchable } from "../../../components/context-menu";
+import {
+  ContextMenuIconButton,
+  ContextMenuTouchable,
+} from "../../../components/context-menu";
 import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
@@ -70,21 +73,24 @@ export const ManageScreen = () => {
           <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
             <ContextMenuTouchable
               buttons={[
-                {
-                  icon: themeSetting === "light" ? "check" : undefined,
-                  label: "Light",
-                  onPress: saveThemeSettingForProfile("light"),
-                },
-                {
-                  icon: themeSetting === "dark" ? "check" : undefined,
-                  label: "Dark",
-                  onPress: saveThemeSettingForProfile("dark"),
-                },
-                {
-                  icon: themeSetting === "system" ? "check" : undefined,
-                  label: "Device",
-                  onPress: saveThemeSettingForProfile("system"),
-                },
+                <ContextMenuIconButton
+                  icon={themeSetting === "light" ? "check" : undefined}
+                  onPress={saveThemeSettingForProfile("light")}
+                >
+                  Light
+                </ContextMenuIconButton>,
+                <ContextMenuIconButton
+                  icon={themeSetting === "dark" ? "check" : undefined}
+                  onPress={saveThemeSettingForProfile("dark")}
+                >
+                  Dark
+                </ContextMenuIconButton>,
+                <ContextMenuIconButton
+                  icon={themeSetting === "system" ? "check" : undefined}
+                  onPress={saveThemeSettingForProfile("system")}
+                >
+                  Device
+                </ContextMenuIconButton>,
               ]}
             >
               <ListItem

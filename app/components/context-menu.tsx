@@ -7,6 +7,9 @@ import { BottomDrawer } from "./bottom-drawer";
 import { TouchableIcon } from "./touchable-icon";
 import { SubHeading } from "./typography";
 import { Gateway } from "@chardskarth/react-gateway";
+import { useIsFocused } from "@react-navigation/native";
+import { useEffect } from "react";
+import { navigationDidNavigateBeacon } from "../navigation/navigation";
 
 export const contextMenuGatewayId = "GATEWAY_CONTEXT_MENU";
 
@@ -24,6 +27,8 @@ export const ContextMenuContext = React.createContext<ContextMenuContextType>({
   setVisible: () => void null,
 });
 
+export const useContextMenu = () => useContext(ContextMenuContext);
+
 export const ContextMenuProvider = ({
   children,
 }: {
@@ -32,6 +37,11 @@ export const ContextMenuProvider = ({
   const [visible, setVisible] = useState<boolean>(false);
   const show = useCallback(() => setVisible(true), []);
   const hide = useCallback(() => setVisible(false), []);
+
+  useEffect(() => {
+    const unsubscribe = navigationDidNavigateBeacon.subscribe(hide);
+    return unsubscribe;
+  }, [hide]);
 
   return (
     <ContextMenuContext.Provider value={{ show, hide, visible, setVisible }}>
@@ -59,33 +69,23 @@ const ContextMenuSubHeading = styled(SubHeading)`
 `;
 
 type ContextMenuButtonType = {
-  label: string;
+  children: React.ReactNode;
   icon?: string;
   onPress: () => void;
 };
 
-export const ContextMenuButton = ({
+export const ContextMenuDotsButton = ({
   style,
-  buttons = [],
   children,
 }: {
   style?: StyleProp<ViewProps>;
-  buttons?: ContextMenuButtonType[];
-  children?: React.ReactNode;
+  children: React.ReactNode[];
 }) => {
   const { visible, show, hide } = useContext(ContextMenuContext);
 
   const height = useMemo(
-    () => BUTTON_MARGIN * 2 + buttons.length * BUTTON_HEIGHT,
-    [buttons.length]
-  );
-
-  const handleButtonPress = useCallback(
-    (callback: () => void) => {
-      hide();
-      callback();
-    },
-    [hide]
+    () => BUTTON_MARGIN * 2 + children.length * BUTTON_HEIGHT,
+    [children.length]
   );
 
   return (
@@ -93,32 +93,34 @@ export const ContextMenuButton = ({
       <ContextButton style={style} onPress={show} icon="more-vertical" />
       <Gateway into={contextMenuGatewayId}>
         <BottomDrawer height={height} onClose={hide} visible={visible}>
-          {children ||
-            buttons.map((button) => (
-              <ContextMenuButtonItem
-                key={button.label}
-                onPress={() => handleButtonPress(button.onPress)}
-              >
-                {button.icon ? (
-                  <ContextMenuButtonIcon name={button.icon} size={ICON_SIZE} />
-                ) : (
-                  <View style={{ width: ICON_SIZE, height: ICON_SIZE }} />
-                )}
-                <ContextMenuSubHeading>{button.label}</ContextMenuSubHeading>
-              </ContextMenuButtonItem>
-            ))}
+          {children}
         </BottomDrawer>
       </Gateway>
     </>
   );
 };
 
-export const ContextMenuTouchable = ({
-  buttons,
+export const ContextMenuIconButton = ({
+  onPress,
+  icon,
   children,
+}: ContextMenuButtonType) => (
+  <ContextMenuButtonItem onPress={onPress}>
+    {icon ? (
+      <ContextMenuButtonIcon name={icon} size={ICON_SIZE} />
+    ) : (
+      <View style={{ width: ICON_SIZE, height: ICON_SIZE }} />
+    )}
+    <ContextMenuSubHeading>{children}</ContextMenuSubHeading>
+  </ContextMenuButtonItem>
+);
+
+export const ContextMenuTouchable = ({
+  children,
+  buttons,
 }: {
-  buttons: ContextMenuButtonType[];
   children: React.ReactNode;
+  buttons: React.ReactNode[];
 }) => {
   const { hide, show, visible } = useContext(ContextMenuContext);
 
@@ -127,32 +129,18 @@ export const ContextMenuTouchable = ({
     [buttons.length]
   );
 
-  const handleButtonPress = useCallback(
-    (callback: () => void) => {
-      hide(); // TODO: maybe this should use a forwarded imperative handle?
-      callback();
-    },
-    [hide]
-  );
+  const isFocused = useIsFocused();
 
   return (
     <>
       <TouchableOpacity onPress={show}>{children}</TouchableOpacity>
       <Gateway into={contextMenuGatewayId}>
-        <BottomDrawer height={height} onClose={hide} visible={visible}>
-          {buttons.map((button) => (
-            <ContextMenuButtonItem
-              key={button.label}
-              onPress={() => handleButtonPress(button.onPress)}
-            >
-              {button.icon ? (
-                <ContextMenuButtonIcon name={button.icon} size={ICON_SIZE} />
-              ) : (
-                <View style={{ width: ICON_SIZE, height: ICON_SIZE }} />
-              )}
-              <ContextMenuSubHeading>{button.label}</ContextMenuSubHeading>
-            </ContextMenuButtonItem>
-          ))}
+        <BottomDrawer
+          height={height}
+          onClose={hide}
+          visible={visible && isFocused}
+        >
+          {buttons}
         </BottomDrawer>
       </Gateway>
     </>

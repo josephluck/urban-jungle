@@ -9,7 +9,11 @@ import React, { useCallback, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { ContextMenuButton } from "../../../components/context-menu";
+import {
+  ContextMenuDotsButton,
+  ContextMenuIconButton,
+  useContextMenu,
+} from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
 import { PlantImageCarousel } from "../../../components/plant-image-carousel";
@@ -27,16 +31,14 @@ import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { todoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
 import { deletePlantByHouseholdId, savePlantImage } from "../store/effects";
-import {
-  selectMostLovedByForPlant,
-  selectPlantByHouseholdId,
-} from "../store/state";
+import { selectPlantByHouseholdId } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
 
 export const PlantScreen = ({
   navigation,
   route,
 }: StackScreenProps<Record<keyof PlantRouteParams, undefined>>) => {
+  const { hide: hideContextMenu } = useContextMenu();
   const { plantId } = plantRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
@@ -63,12 +65,7 @@ export const PlantScreen = ({
     [plantId, selectedHouseholdId]
   );
 
-  const mostLovedBy = useStore(
-    () => selectMostLovedByForPlant(selectedHouseholdId)(plantId),
-    [plantId, selectedHouseholdId]
-  );
-
-  const stickyHeaderIndices = O.isSome(mostLovedBy) ? [1, 3, 5] : [1, 3];
+  const stickyHeaderIndices = [1, 3];
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
@@ -110,6 +107,7 @@ export const PlantScreen = ({
   }, [plantId, selectedHouseholdId]);
 
   const handleTakePicture = useCallback(() => {
+    hideContextMenu();
     pipe(
       takePicture(),
       TE.map(UIEffect.start),
@@ -137,21 +135,19 @@ export const PlantScreen = ({
       onBack={handleGoBack}
       stickyHeaderIndices={stickyHeaderIndices}
       headerRightButton={
-        <ContextMenuButton
-          buttons={[
-            {
-              icon: "camera",
-              label: `Snap ${plantName}`,
-              onPress: handleTakePicture,
-            },
-            {
-              icon: "trash",
-              label: `Delete ${plantName}`,
-              onPress: handleDelete,
-            },
-            { icon: "edit-3", label: `Edit ${plantName}`, onPress: handleEdit },
+        <ContextMenuDotsButton>
+          {[
+            <ContextMenuIconButton icon="camera" onPress={handleTakePicture}>
+              Snap {plantName}
+            </ContextMenuIconButton>,
+            <ContextMenuIconButton icon="trash" onPress={handleDelete}>
+              Delete {plantName}
+            </ContextMenuIconButton>,
+            <ContextMenuIconButton icon="edit-3" onPress={handleEdit}>
+              Edit {plantName}
+            </ContextMenuIconButton>,
           ]}
-        />
+        </ContextMenuDotsButton>
       }
     >
       {pipe(
@@ -194,20 +190,6 @@ export const PlantScreen = ({
                   </TouchableOpacity>
                 ))}
               </SectionContent>
-              {pipe(
-                mostLovedBy,
-                O.fold(
-                  () => null,
-                  (profile) => [
-                    <SectionHeading key="most-loved-by-heading">
-                      <SubHeading weight="bold">Most loved by</SubHeading>
-                    </SectionHeading>,
-                    <SectionContent key="most-loved-by">
-                      <ListItem title={profile.name} image={profile.avatar} />
-                    </SectionContent>,
-                  ]
-                )
-              )}
               <SectionHeading>
                 <SubHeading weight="bold">History</SubHeading>
               </SectionHeading>

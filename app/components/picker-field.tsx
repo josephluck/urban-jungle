@@ -3,7 +3,7 @@ import { StyleProp, ViewProps } from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
-import { Label } from "./label";
+import { Label, LabelText } from "./label";
 
 export type PickerValue = string | number | undefined;
 
@@ -136,4 +136,5 @@ const OptionLabel = styled(Label)<{
     props.selected
       ? props.theme.optionBorderSelected
       : props.theme.optionBorder};
+  }
 `;

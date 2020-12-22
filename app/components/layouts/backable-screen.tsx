@@ -25,7 +25,7 @@ export const BackableScreenLayout = ({
   return (
     <ScreenLayout>
       <ControlsContainer progress={progress}>
-        <BackButton onPress={onBack} icon="arrow-left" />
+        <TouchableIcon onPress={onBack} icon="arrow-left" />
         {headerRightButton}
       </ControlsContainer>
       {typeof progress === "number" ? (
@@ -53,12 +53,11 @@ const ControlsContainer = styled.View<{ progress?: number }>`
     typeof props.progress === "undefined" ? symbols.spacing._16 : 0}px;
 `;
 
-const BackButton = styled(TouchableIcon)``;
-
 const ContentContainerScroll = styled.ScrollView`
   flex: 1;
 `;
 
 const ContentContainerView = styled.View`
   flex: 1;
+  background-color: green'
 `;

@@ -40,13 +40,6 @@ import { useRef } from "react";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// used to hide the tab bar on child routes
-const rootScreens = [
-  careRoute.routeName,
-  plantsRoute.routeName,
-  manageRoute.routeName,
-];
-
 const makeEmitter = <T extends any>() => {
   type Subscriber = (data: T) => void;
   let subs: Subscriber[] = [];
@@ -59,7 +52,8 @@ const makeEmitter = <T extends any>() => {
   };
 };
 
-const navigateEmitter = makeEmitter<boolean>();
+const navigationIsAtRootBeacon = makeEmitter<boolean>();
+export const navigationDidNavigateBeacon = makeEmitter<void>();
 
 class TabBarComponent extends React.Component<
   BottomTabBarProps<BottomTabBarOptions> & { theme: Theme }
@@ -68,7 +62,7 @@ class TabBarComponent extends React.Component<
   unsubscribe: (() => void) | null = null;
 
   componentDidMount() {
-    this.unsubscribe = navigateEmitter.subscribe((isAtRoot) => {
+    this.unsubscribe = navigationIsAtRootBeacon.subscribe((isAtRoot) => {
       Animated.timing(this.transformValue, {
         toValue: isAtRoot ? 0 : 1,
         duration: 120,
@@ -212,7 +206,10 @@ export const AppNavigation = () => {
         const indexes =
           state?.routes.map((route) => route.state?.index ?? 0) ?? [];
         const isAtRoot = indexes.every((index) => index === 0);
-        navigateEmitter.emit(typeof isAtRoot === "undefined" || isAtRoot);
+        navigationIsAtRootBeacon.emit(
+          typeof isAtRoot === "undefined" || isAtRoot
+        );
+        navigationDidNavigateBeacon.emit();
       }}
     >
       {isLoggedIn ? (
