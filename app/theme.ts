@@ -132,7 +132,7 @@ const colors = {
   paleGreen: "rgba(5, 194, 125, 0.05)",
   darkGreen: "rgba(5, 194, 125, 1)",
   solidBlue: "#0909F9",
-  lightBlue: "#7979F9",
+  lightBlue: "#8989F9",
   appBackground: "rgba(255, 255, 255, 1)",
   transparent: "transparent",
 };
@@ -166,8 +166,9 @@ export const darkTheme = {
   bottomSheetBackground: colors.pureWhite,
   bottomSheetExpander: colors.lightOffGray,
   bottomSheetBackdrop: colors.offBlack,
-  calendarDayBackground: colors.midOffGray,
+  calendarDayBackground: colors.deepGray,
   calendarDayActive: colors.lightBlue,
+  calendarDayText: colors.offWhite,
   buttonBackground: symbols.colors.midOffGray,
   progressBackground: symbols.colors.midOffGray,
   progressActive: symbols.colors.pureWhite,
@@ -178,6 +179,11 @@ export const darkTheme = {
   tabBarInactive: symbols.colors.midOffGray,
   labelBackground: symbols.colors.nearBlack,
   labelText: symbols.colors.lightOffGray,
+  fieldBackground: symbols.colors.nearBlack,
+  optionBackgroundSelected: symbols.colors.pureWhite,
+  optionBackground: symbols.colors.nearBlack,
+  optionBorderSelected: symbols.colors.deepGray,
+  optionBorder: "transparent",
 };
 
 export const lightTheme: Theme = {
@@ -197,6 +203,7 @@ export const lightTheme: Theme = {
   bottomSheetBackdrop: colors.offBlack,
   calendarDayBackground: colors.nearWhite,
   calendarDayActive: colors.solidBlue,
+  calendarDayText: colors.pureWhite,
   buttonBackground: symbols.colors.nearBlack,
   progressBackground: symbols.colors.nearWhite,
   progressActive: symbols.colors.solidBlue,
@@ -207,6 +214,11 @@ export const lightTheme: Theme = {
   tabBarInactive: symbols.colors.midOffGray,
   labelBackground: symbols.colors.nearWhite,
   labelText: symbols.colors.deepGray,
+  fieldBackground: symbols.colors.nearWhite,
+  optionBackgroundSelected: symbols.colors.pureWhite,
+  optionBackground: symbols.colors.nearWhite,
+  optionBorderSelected: symbols.colors.darkGreen,
+  optionBorder: symbols.colors.nearWhite,
 };
 
 export const useTheme = () => {

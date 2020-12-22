@@ -102,7 +102,7 @@ const obtainCameraPermissions: TE.TaskEither<IErr, void> = TE.tryCatch(
 const ContainerButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
-  background-color: ${symbols.colors.nearWhite};
+  background-color: ${(props) => props.theme.fieldBackground};
   border-radius: ${symbols.borderRadius.small}px;
   width: 100%;
   aspect-ratio: ${symbols.aspectRatio.plantImage};

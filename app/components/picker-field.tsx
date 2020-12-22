@@ -128,8 +128,12 @@ const OptionLabel = styled(Label)<{
   selectionColor?: string;
 }>`
   background-color: ${(props) =>
-    props.selected ? symbols.colors.pureWhite : symbols.colors.nearWhite};
+    props.selected
+      ? props.theme.optionBackgroundSelected
+      : props.theme.optionBackground};
   border-width: 2;
   border-color: ${(props) =>
-    props.selected ? symbols.colors.darkGreen : symbols.colors.nearWhite};
+    props.selected
+      ? props.theme.optionBorderSelected
+      : props.theme.optionBorder};
 `;

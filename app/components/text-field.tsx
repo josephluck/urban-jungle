@@ -29,6 +29,7 @@ const Input = styled.TextInput`
   border-radius: ${symbols.borderRadius.small};
   padding-horizontal: ${symbols.spacing._8};
   padding-vertical: ${symbols.spacing._8};
-  background-color: ${symbols.colors.nearWhite};
+  background-color: ${(props) => props.theme.fieldBackground};
+  color: ${(props) => props.theme.defaultTextColor};
   border-width: 0;
 `;

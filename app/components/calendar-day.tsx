@@ -49,5 +49,5 @@ const DayText = styled(BodyText)<{ isToday: boolean }>`
   color: ${(props) =>
     props.isToday
       ? props.theme.calendarDayActive
-      : props.theme.defaultTextColor};
+      : props.theme.calendarDayText};
 `;
