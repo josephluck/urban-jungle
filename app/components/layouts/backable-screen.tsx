@@ -24,7 +24,7 @@ export const BackableScreenLayout = ({
 }) => {
   return (
     <ScreenLayout>
-      <ControlsContainer>
+      <ControlsContainer progress={progress}>
         <BackButton onPress={onBack} icon="arrow-left" />
         {headerRightButton}
       </ControlsContainer>
@@ -43,12 +43,14 @@ export const BackableScreenLayout = ({
   );
 };
 
-const ControlsContainer = styled.View`
+const ControlsContainer = styled.View<{ progress?: number }>`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding-horizontal: ${symbols.spacing.appHorizontal};
   padding-vertical: ${symbols.spacing._8}px;
+  margin-bottom: ${(props) =>
+    typeof props.progress === "undefined" ? symbols.spacing._16 : 0}px;
 `;
 
 const BackButton = styled(TouchableIcon)``;

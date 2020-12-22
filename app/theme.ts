@@ -176,6 +176,8 @@ export const darkTheme = {
   switchBackgroundTrue: symbols.colors.paleGreen,
   tabBarActive: symbols.colors.lightBlue,
   tabBarInactive: symbols.colors.midOffGray,
+  labelBackground: symbols.colors.nearBlack,
+  labelText: symbols.colors.lightOffGray,
 };
 
 export const lightTheme: Theme = {
@@ -203,6 +205,8 @@ export const lightTheme: Theme = {
   switchBackgroundTrue: symbols.colors.paleGreen,
   tabBarActive: symbols.colors.solidBlue,
   tabBarInactive: symbols.colors.midOffGray,
+  labelBackground: symbols.colors.nearWhite,
+  labelText: symbols.colors.deepGray,
 };
 
 export const useTheme = () => {

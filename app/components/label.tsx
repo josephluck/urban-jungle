@@ -28,11 +28,11 @@ const LabelContainer = styled.View<{ large: boolean }>`
     props.large ? symbols.spacing._6 : symbols.spacing._2}px;
   border-radius: ${(props) =>
     props.large ? symbols.borderRadius.small : symbols.borderRadius.tiny}px;
-  background-color: ${symbols.colors.nearWhite};
+  background-color: ${(props) => props.theme.labelBackground};
 `;
 
 const LabelText = styled(BodyText)<{ large: boolean }>`
   font-size: ${(props) =>
     props.large ? symbols.font._16.size : symbols.font._12.size}px;
-  color: ${symbols.colors.deepGray};
+  color: ${(props) => props.theme.labelText};
 `;

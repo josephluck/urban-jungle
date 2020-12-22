@@ -211,7 +211,6 @@ export const AppNavigation = () => {
       onStateChange={(state) => {
         const indexes =
           state?.routes.map((route) => route.state?.index ?? 0) ?? [];
-        console.log({ indexes });
         const isAtRoot = indexes.every((index) => index === 0);
         navigateEmitter.emit(typeof isAtRoot === "undefined" || isAtRoot);
       }}

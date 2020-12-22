@@ -28,17 +28,17 @@ export const SignIn = ({ navigation }: StackScreenProps<{}>) => {
     <ScreenLayout>
       <Heading>Sign in</Heading>
 
-      <Text style={{ color: "black" }}>Email</Text>
+      <Text style={{ color: "grey" }}>Email</Text>
       <TextInput
-        style={{ color: "black" }}
+        style={{ color: "grey" }}
         textContentType="emailAddress"
         autoCapitalize="none"
         onChangeText={setEmail}
       />
 
-      <Text style={{ color: "black" }}>Password</Text>
+      <Text style={{ color: "grey" }}>Password</Text>
       <TextInput
-        style={{ color: "black" }}
+        style={{ color: "grey" }}
         textContentType="password"
         secureTextEntry
         autoCapitalize="none"

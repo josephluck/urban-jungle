@@ -56,7 +56,6 @@ export const ContextMenu = () => {
 
   const handleButtonPress = useCallback(
     (callback: () => void) => {
-      console.log("Button pressed");
       handleClose(); // TODO: maybe this should use a forwarded imperative handle?
       callback();
     },
@@ -145,6 +144,5 @@ export const ContextMenuTouchable = ({
 };
 
 const ContextButton = styled(TouchableIcon)`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
+  padding-left: ${symbols.spacing.appHorizontal}px;
 `;
