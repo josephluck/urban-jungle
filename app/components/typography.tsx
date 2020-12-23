@@ -26,6 +26,12 @@ export const TertiaryText = styled.Text`
   font-family: ${CAROS_SEMIBOLD};
 `;
 
+export const SubScriptText = styled(TertiaryText)`
+  color: ${(props) => props.theme.secondaryTextColor};
+  font-size: ${symbols.font._8.size}px;
+  line-height: ${symbols.font._8.lineHeight}px;
+`;
+
 export const Paragraph = styled(BodyText)`
   line-height: ${symbols.font._16.lineHeight * 1.2}px;
 `;
@@ -34,7 +40,7 @@ export const SubHeading = styled.Text<{ weight?: FontWeight }>`
   color: ${(props) => props.theme.defaultTextColor};
   font-size: ${symbols.font._20.size}px;
   line-height: ${symbols.font._20.lineHeight}px;
-  font-family: ${(props) => getFontFromWeight(props.weight || "regular")};
+  font-family: ${(props) => getFontFromWeight(props.weight || "semibold")};
 `;
 
 export const Heading = styled.Text<{ weight?: FontWeight }>`
@@ -65,7 +71,7 @@ const ScreenTitleContainer = styled.View`
   margin-bottom: ${symbols.spacing.appVertical};
 `;
 
-const ScreenTitleHeading = styled(SubHeading)``;
+const ScreenTitleHeading = styled(Heading)``;
 
 const ScreenTitleDescription = styled(Paragraph)`
   margin-top: ${symbols.spacing._16};

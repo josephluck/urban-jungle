@@ -26,7 +26,7 @@ export const ListItem = ({
       ) : null
     ) : null}
     <Detail>
-      {title ? <Title>{title}</Title> : null}
+      {title ? <Title weight="regular">{title}</Title> : null}
       {detail ? <DetailText>{detail}</DetailText> : null}
     </Detail>
     {right ? <Right>{right}</Right> : null}
