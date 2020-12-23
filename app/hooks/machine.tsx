@@ -22,6 +22,7 @@ export const makeMachineHooks = <
 }) => {
   const useMakeMachine = () => {
     const [context, setContext] = useState<Context>(initialContext);
+    const [currentEntryId, setCurrentEntryId] = useState<string>();
     const getNextState = makeMachine<Context, AdditionalEntryData, Conditions>(
       states,
       conditions
@@ -33,17 +34,17 @@ export const makeMachineHooks = <
       async (producer: (draft: Context) => void, shouldNavigate = true) => {
         const ctx = produce(context, producer);
         setContext(ctx);
-        const currentRouteName = getCurrentRoute();
-        const result = getNextState(ctx);
-        console.log({ ctx, currentRouteName, result });
+        const result = getNextState(ctx, currentEntryId);
         if (!result) {
           console.warn("Next state in machine not found - reached the end.");
+          // TODO: create or update account
         } else if (shouldNavigate) {
+          setCurrentEntryId(result.entry.id);
           navigate(result.entry.routeName);
         }
         return result;
       },
-      [context, navigate, getNextState]
+      [context, currentEntryId, navigate, getNextState]
     );
 
     return { context, setContext, clearContext, execute, getNextState };

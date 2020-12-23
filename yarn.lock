@@ -1867,10 +1867,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@josephluck/machi@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@josephluck/machi/-/machi-0.0.4.tgz#f7025d8fdf30b8c00e4dc7a8c7a00f59f81d103d"
-  integrity sha512-NzBkbpZYGNGhvScMrWmdpWYm+RALy1Cz9pNVr4KQuVHxPZgqNHZjEkiZrsdGfX87sAy51Coa4CQWcnTnq6O1Sg==
+"@josephluck/machi@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@josephluck/machi/-/machi-0.0.5.tgz#c60afd4b06eef1081310aab2d7eada4e2a0b0575"
+  integrity sha512-RHlmg+5f77Mc06EITzIAk2495Pbj5MqhAJwPDDdmIDO/CJMbIgSoH6cvr9T6HtfgLBaaZAygHP5/Cf+hGehRSw==
   dependencies:
     execa "^4.1.0"
     ora "^5.1.0"

@@ -46,6 +46,7 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
                 recaptchaVerifier.current!
               );
               execute((ctx) => {
+                ctx.phoneNumber = fields.phone;
                 ctx.verificationId = verificationId;
               });
             },

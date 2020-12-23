@@ -22,7 +22,7 @@ import { BackableScreenLayout } from "../../../components/layouts/backable-scree
 const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
   const {
     execute,
-    context: { verificationId },
+    context: { verificationId, phoneNumber },
   } = useMachine();
   const runWithUIState = useRunWithUIState();
   const recaptchaVerifier = useRef<FirebaseRecaptchaVerifierModal>(null);
@@ -67,7 +67,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
       <SplashContainer>
         <ScreenTitle
           title="🌱 Urban Jungle"
-          description="Please enter the code we sent you"
+          description={`Please enter the code we sent to ${phoneNumber}`}
         />
 
         <TextField
