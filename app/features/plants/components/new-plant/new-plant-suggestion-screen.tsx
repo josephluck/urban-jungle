@@ -144,5 +144,4 @@ const SuggestionName = styled(BodyText)`
 export const newPlantSuggestionRoute = makeNavigationRoute({
   screen: NewPlantSuggestionScreen,
   routeName: "NEW_PLANT_SUGGESTION_SCREEN",
-  authenticated: true,
 });

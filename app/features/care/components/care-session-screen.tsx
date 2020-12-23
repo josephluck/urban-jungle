@@ -180,7 +180,6 @@ type CareSessionParams = {
 export const careSessionRoute = makeNavigationRoute<CareSessionParams>({
   screen: CareSessionScreen,
   routeName: "CARE_SESSION_SCREEN",
-  authenticated: true,
   defaultParams: {
     todoIds: [],
   },

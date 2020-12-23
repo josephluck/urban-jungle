@@ -179,5 +179,4 @@ const SkipButton = styled(Button)`
 export const newPlantPictureRoute = makeNavigationRoute({
   screen: NewPlantPictureScreen,
   routeName: "NEW_PLANT_PICTURE_SCREEN",
-  authenticated: true,
 });

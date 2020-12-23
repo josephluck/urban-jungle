@@ -159,7 +159,6 @@ type ManageTodoParams = {
 export const manageTodoRoute = makeNavigationRoute<ManageTodoParams>({
   screen: ManageTodoScreen,
   routeName: "MANAGE_TODO_SCREEN",
-  authenticated: true,
   defaultParams: {
     plantId: "",
     todoId: "",

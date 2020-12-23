@@ -220,7 +220,6 @@ type PlantRouteParams = {
 export const plantRoute = makeNavigationRoute<PlantRouteParams>({
   screen: PlantScreen,
   routeName: "PLANT_SCREEN",
-  authenticated: true,
   defaultParams: {
     plantId: "",
   },

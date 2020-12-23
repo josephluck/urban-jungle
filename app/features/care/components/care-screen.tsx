@@ -53,5 +53,4 @@ const CareScreenContainer = styled.View`
 export const careRoute = makeNavigationRoute({
   screen: CareScreen,
   routeName: "CARE_SCREEN",
-  authenticated: true,
 });

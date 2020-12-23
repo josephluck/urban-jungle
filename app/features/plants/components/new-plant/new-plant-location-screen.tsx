@@ -138,5 +138,4 @@ const Footer = styled.View`
 export const newPlantLocationRoute = makeNavigationRoute({
   screen: NewPlantLocationScreen,
   routeName: "NEW_PLANT_LOCATION_SCREEN",
-  authenticated: true,
 });

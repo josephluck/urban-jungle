@@ -161,7 +161,6 @@ type TodoParams = {
 export const todoRoute = makeNavigationRoute<TodoParams>({
   screen: TodoScreen,
   routeName: "TODO_SCREEN",
-  authenticated: true,
   defaultParams: {
     todoId: "",
     plantId: "",

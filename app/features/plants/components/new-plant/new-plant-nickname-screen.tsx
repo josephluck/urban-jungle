@@ -110,5 +110,4 @@ const Footer = styled.View`
 export const newPlantNicknameRoute = makeNavigationRoute({
   screen: NewPlantNicknameScreen,
   routeName: "NEW_PLANT_NICKNAME_SCREEN",
-  authenticated: true,
 });

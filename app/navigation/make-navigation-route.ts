@@ -1,10 +1,5 @@
-import {
-  CommonActions,
-  NavigationProp,
-  RouteProp,
-} from "@react-navigation/native";
+import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
-import { authGuard } from "./auth-guard";
 
 type SerializeParams<Params extends Record<string, any>> = (
   params: Params
@@ -20,42 +15,30 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
   defaultParams = {} as Required<Params>,
   serializeParams = id as SerializeParams<Params>,
   deserializeParams = id as DeserializeParams<Params>,
-  authenticated = false,
 }: {
   routeName: string;
   screen: React.ComponentType<StackScreenProps<Params>>;
   defaultParams?: Required<Params>;
   serializeParams?: SerializeParams<Params>;
   deserializeParams?: DeserializeParams<Params>;
-  authenticated?: boolean;
 }) => ({
   routeName,
-  screen: authenticated ? authGuard(screen) : screen,
+  screen,
   getParams: (route: RouteProp<Params, string>) => {
-    const params = Object.keys(defaultParams).reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: route.params ? route.params[key] : undefined,
-      }),
-      defaultParams
+    const paramKeys = Object.keys(defaultParams);
+    return deserializeParams(
+      paramKeys.length
+        ? paramKeys.reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: route.params ? route.params[key] : undefined,
+            }),
+            defaultParams
+          )
+        : route.params!
     );
-    return deserializeParams(params);
   },
   navigateTo: (navigation: NavigationProp<any>, params: Params) => {
-    // if (reset) {
-    //   navigation.dispatch(
-    //     CommonActions.reset({
-    //       index: 0,
-    //       routes: [
-    //         {
-    //           name: routeName,
-    //           params: serializeParams(params),
-    //         },
-    //       ],
-    //     })
-    //   );
-    //   return;
-    // }
     navigation.navigate({
       name: routeName,
       params: serializeParams(params),
