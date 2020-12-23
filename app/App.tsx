@@ -27,6 +27,7 @@ import { selectCurrentProfileThemeIsDark } from "./features/profiles/store/state
 import { AppNavigation } from "./navigation/navigation";
 import { GatewayDest, GatewayProvider } from "@chardskarth/react-gateway";
 import { useRef } from "react";
+import { GlobalErrorProvider } from "./store/ui";
 
 // reactotron.configure();
 
@@ -52,45 +53,47 @@ export default () => {
   return (
     <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
       <ContextMenuProvider>
-        <GatewayProvider>
-          <StatusBar
-            barStyle={isDarkTheme ? darkTheme.type : lightTheme.type}
-          />
-          <AppWrapper>
-            {loading ? (
-              <LoadingContainer>
-                <ActivityIndicator size="large" />
-              </LoadingContainer>
-            ) : (
-              <>
-                <CurrentProfileHouseholdsSubscription />
-                {selectedHouseholdId ? (
-                  <>
-                    <HouseholdPlantsSubscription
-                      householdId={selectedHouseholdId}
-                    />
-                    <HouseholdCaresSubscription
-                      householdId={selectedHouseholdId}
-                    />
-                    <HouseholdTodosSubscription
-                      householdId={selectedHouseholdId}
-                    />
-                    <HouseholdPhotosSubscription
-                      householdId={selectedHouseholdId}
-                    />
-                  </>
-                ) : null}
-                <AppNavigation />
-              </>
-            )}
-          </AppWrapper>
-          <ProfilesSubscription />
-          <GlobalLoading />
-          <GatewayDest
-            name={contextMenuGatewayId}
-            component={BottomSheetGatewayContainer}
-          />
-        </GatewayProvider>
+        <GlobalErrorProvider loading={loading}>
+          <GatewayProvider>
+            <StatusBar
+              barStyle={isDarkTheme ? darkTheme.type : lightTheme.type}
+            />
+            <AppWrapper>
+              {loading ? (
+                <LoadingContainer>
+                  <ActivityIndicator size="large" />
+                </LoadingContainer>
+              ) : (
+                <>
+                  <CurrentProfileHouseholdsSubscription />
+                  {selectedHouseholdId ? (
+                    <>
+                      <HouseholdPlantsSubscription
+                        householdId={selectedHouseholdId}
+                      />
+                      <HouseholdCaresSubscription
+                        householdId={selectedHouseholdId}
+                      />
+                      <HouseholdTodosSubscription
+                        householdId={selectedHouseholdId}
+                      />
+                      <HouseholdPhotosSubscription
+                        householdId={selectedHouseholdId}
+                      />
+                    </>
+                  ) : null}
+                  <AppNavigation />
+                </>
+              )}
+            </AppWrapper>
+            <ProfilesSubscription />
+            <GlobalLoading />
+            <GatewayDest
+              name={contextMenuGatewayId}
+              component={BottomSheetGatewayContainer}
+            />
+          </GatewayProvider>
+        </GlobalErrorProvider>
       </ContextMenuProvider>
     </ThemeProvider>
   );
