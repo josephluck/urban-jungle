@@ -17,6 +17,7 @@ import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
+import { signOut } from "../../auth/store/effects";
 import { shareHouseholdInvitation } from "../../households/store/effects";
 import {
   selectedSelectedOrMostRecentHouseholdId,
@@ -98,7 +99,6 @@ export const ManageScreen = () => {
                 right={<Icon icon="chevron-right" />}
               />
             </ContextMenuTouchable>
-            <TouchableOpacity></TouchableOpacity>
             <ListItem
               title="Push notifications"
               right={
@@ -108,6 +108,12 @@ export const ManageScreen = () => {
                 />
               }
             />
+            <TouchableOpacity onPress={signOut}>
+              <ListItem
+                title="Sign out"
+                right={<Icon icon="chevron-right" />}
+              />
+            </TouchableOpacity>
           </View>
           <WelcomeMessageContainer>
             <Heading>Your network</Heading>
@@ -146,7 +152,6 @@ export const ManageScreen = () => {
 export const manageRoute = makeNavigationRoute({
   screen: ManageScreen,
   routeName: "MANAGE_SCREEN",
-  authenticated: true,
 });
 
 const ScreenContainer = styled.View`
