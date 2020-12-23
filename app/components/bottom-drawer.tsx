@@ -5,9 +5,9 @@ import {
   default as BottomSheet,
   default as BottomSheetBehavior,
 } from "reanimated-bottom-sheet";
-import styled from "styled-components/native";
-import { symbols } from "../theme";
-import { Heading, SubHeading } from "./typography";
+import styled, { ThemeProvider } from "styled-components/native";
+import { lightTheme, symbols } from "../theme";
+import { BodyText, Heading, SubHeading } from "./typography";
 
 export const BottomDrawer = ({
   children,
@@ -83,7 +83,7 @@ export const BottomDrawer = ({
   const expansionProportion = useRef(new Reanimated.Value(1));
 
   return (
-    <>
+    <ThemeProvider theme={lightTheme}>
       <Overlay
         visible={visible}
         onPress={handleCloseIfVisible}
@@ -96,21 +96,41 @@ export const BottomDrawer = ({
         onCloseEnd={handleCloseEnd}
         enabledContentTapInteraction
         renderContent={() => (
-          <BottomSheetContainer>{children}</BottomSheetContainer>
+          <BottomSheetWrapper style={{ height }}>
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={handleCloseIfVisible}
+              activeOpacity={1}
+            />
+            <BottomSheetSafeArea>
+              <BottomSheetContainer>{children}</BottomSheetContainer>
+            </BottomSheetSafeArea>
+          </BottomSheetWrapper>
         )}
       />
-    </>
+    </ThemeProvider>
   );
 };
 
-const BottomSheetContainer = styled.View`
+const BottomSheetWrapper = styled.View`
+  justify-content: flex-end;
+  flex-direction: column;
+`;
+
+const BottomSheetSafeArea = styled.SafeAreaView`
   background-color: ${symbols.colors.appBackground};
+`;
+
+const BottomSheetContainer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
   padding-vertical: ${symbols.spacing._16}px;
   ${Heading} {
     color: ${symbols.colors.nearBlack};
   }
   ${SubHeading} {
+    color: ${symbols.colors.nearBlack};
+  }
+  ${BodyText} {
     color: ${symbols.colors.nearBlack};
   }
 `;
