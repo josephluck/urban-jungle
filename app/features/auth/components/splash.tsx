@@ -1,27 +1,58 @@
-import React, { useCallback, useContext } from "react";
-import { Button } from "react-native";
-import { NavigationContext } from "@react-navigation/native";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
-import { Heading } from "../../../components/typography";
-import { createLoginRoute } from "./sign-in";
-import { createSignUpRoute } from "./sign-up";
+import React, { useCallback } from "react";
+import { ScreenTitle } from "../../../components/typography";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "../../../components/button";
+import { symbols } from "../../../theme";
+import { useMachine } from "../machine/machine";
+import { View } from "react-native";
+import { routeNames } from "./route-names";
+import styled from "styled-components/native";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 
-export const SplashScreen = () => {
-  const { navigate } = useContext(NavigationContext);
+const SplashScreen = ({}: StackScreenProps<{}>) => {
+  const { execute } = useMachine();
 
   const handleSignUp = useCallback(() => {
-    navigate(createSignUpRoute());
+    execute((ctx) => {
+      ctx.authenticationFlow = "signUp";
+    });
   }, []);
 
   const handleSignIn = useCallback(() => {
-    navigate(createLoginRoute());
+    execute((ctx) => {
+      ctx.authenticationFlow = "signIn";
+    });
   }, []);
 
   return (
-    <ScreenLayout>
-      <Heading>Urban Jungle</Heading>
-      <Button title="Create account" onPress={handleSignUp} />
-      <Button title="Sign in" onPress={handleSignIn} />
-    </ScreenLayout>
+    <BackableScreenLayout scrollView={false}>
+      <SplashContainer>
+        <ScreenTitle title="🌱 Urban Jungle" />
+        <View style={{ flex: 1 }} />
+        <Button
+          onPress={handleSignIn}
+          style={{ marginBottom: symbols.spacing._8 }}
+          type="plain"
+        >
+          Sign in
+        </Button>
+        <Button onPress={handleSignUp} large>
+          Create account
+        </Button>
+      </SplashContainer>
+    </BackableScreenLayout>
   );
 };
+
+export const splashRoute = makeNavigationRoute({
+  routeName: routeNames.splashRoute,
+  screen: SplashScreen,
+});
+
+export const SplashContainer = styled.View`
+  flex: 1;
+  justify-content: space-between;
+  padding-horizontal: ${symbols.spacing.appHorizontal};
+  padding-bottom: ${symbols.spacing._16};
+`;

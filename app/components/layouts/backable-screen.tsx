@@ -16,7 +16,7 @@ export const BackableScreenLayout = ({
 }: {
   stickyHeaderIndices?: number[];
   children: React.ReactNode;
-  onBack: () => void;
+  onBack?: () => void;
   footer?: React.ReactNode;
   headerRightButton?: React.ReactNode;
   scrollView?: boolean;
@@ -25,7 +25,11 @@ export const BackableScreenLayout = ({
   return (
     <ScreenLayout>
       <ControlsContainer progress={progress}>
-        <TouchableIcon onPress={onBack} icon="arrow-left" />
+        <TouchableIcon
+          onPress={onBack || (() => undefined)}
+          icon="arrow-left"
+          style={{ opacity: onBack ? 1 : 0 }}
+        />
         {headerRightButton}
       </ControlsContainer>
       {typeof progress === "number" ? (
@@ -59,5 +63,4 @@ const ContentContainerScroll = styled.ScrollView`
 
 const ContentContainerView = styled.View`
   flex: 1;
-  background-color: green'
 `;

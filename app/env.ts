@@ -1,13 +1,7 @@
+import { IFirebaseOptions } from "expo-firebase-core/src/FirebaseOptions";
+
 export interface Env {
-  firebase: {
-    apiKey: string;
-    authDomain: string;
-    databaseURL: string;
-    projectId: string;
-    storageBucket: string;
-    messagingSenderId: string;
-    appId: string;
-  };
+  firebase: IFirebaseOptions;
   plantId: {
     apiKey: string;
   };

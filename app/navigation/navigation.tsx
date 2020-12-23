@@ -5,18 +5,14 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import React from "react";
-import {
-  NavigationContainer,
-  NavigationContainerRef,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
   BottomTabBarOptions,
   BottomTabBarProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
-import { SignIn, SIGN_IN_SCREEN } from "../features/auth/components/sign-in";
-import { SignUp, SIGN_UP_SCREEN } from "../features/auth/components/sign-up";
+import { signUpPhoneRoute } from "../features/auth/components/sign-up-phone";
 import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { manageRoute } from "../features/manage/components/manage-screen";
@@ -35,7 +31,11 @@ import { useStore } from "../store/state";
 import { selectHasAuthenticated } from "../features/auth/store/state";
 import { Animated, Easing } from "react-native";
 import styled, { withTheme } from "styled-components/native";
-import { useRef } from "react";
+import { signUpPhoneVerifyRoute } from "../features/auth/components/sign-up-phone-verify";
+import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
+import { splashRoute } from "../features/auth/components/splash";
+import { navigationRef } from "./navigation-imperative";
+import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -198,7 +198,6 @@ const CareStack = () => (
 
 export const AppNavigation = () => {
   const isLoggedIn = useStore(selectHasAuthenticated);
-  const navigationRef = useRef<NavigationContainerRef>(null);
   return (
     <NavigationContainer
       ref={navigationRef}
@@ -223,8 +222,26 @@ export const AppNavigation = () => {
         </Tab.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">
-          <Stack.Screen name={SIGN_IN_SCREEN} component={SignIn} />
-          <Stack.Screen name={SIGN_UP_SCREEN} component={SignUp} />
+          <Stack.Screen
+            name={splashRoute.routeName}
+            component={splashRoute.screen}
+          />
+          <Stack.Screen
+            name={signUpPhoneRoute.routeName}
+            component={signUpPhoneRoute.screen}
+          />
+          <Stack.Screen
+            name={signUpPhoneVerifyRoute.routeName}
+            component={signUpPhoneVerifyRoute.screen}
+          />
+          <Stack.Screen
+            name={signUpEmailRoute.routeName}
+            component={signUpEmailRoute.screen}
+          />
+          <Stack.Screen
+            name={signUpPasswordRoute.routeName}
+            component={signUpPasswordRoute.screen}
+          />
         </Stack.Navigator>
       )}
     </NavigationContainer>

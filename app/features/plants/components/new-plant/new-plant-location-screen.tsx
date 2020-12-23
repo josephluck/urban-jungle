@@ -64,7 +64,7 @@ export const NewPlantLocationScreen = ({
       runWithUIState(
         pipe(
           TE.fromEither(submit()),
-          TE.mapLeft(() => "BAD_REQUEST" as IErr),
+          TE.mapLeft(() => "VALIDATION" as IErr),
           TE.map(({ location }) => ({ ...plantFields, location })),
           TE.chain((plant) =>
             upsertPlantForHousehold(plant)(selectedHouseholdId)

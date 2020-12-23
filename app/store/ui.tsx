@@ -106,7 +106,15 @@ export const useRunWithUIState = <V extends TE.TaskEither<IErr, any>>() => {
   return useCallback((task: V) => {
     startLoading(void null);
     setError(undefined);
-    return pipe(pipeWithUILoading(task), TE.mapLeft(setError))();
+    return pipe(
+      pipeWithUILoading(task),
+      TE.mapLeft((err) => {
+        if (err !== "VALIDATION") {
+          setError(err);
+        }
+        return err;
+      })
+    )();
   }, []);
 };
 

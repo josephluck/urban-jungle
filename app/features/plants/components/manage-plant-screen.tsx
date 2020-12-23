@@ -67,9 +67,8 @@ export const ManagePlantScreen = ({
     () =>
       runWithUIState(
         pipe(
-          // TODO: extract these two since it'll be a common pattern?
           TE.fromEither(submit()),
-          TE.mapLeft(() => "BAD_REQUEST" as IErr),
+          TE.mapLeft(() => "VALIDATION" as IErr),
           TE.chain((plant) =>
             upsertPlantForHousehold(plant, plantId)(selectedHouseholdId)
           ),

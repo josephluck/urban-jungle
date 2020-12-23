@@ -105,9 +105,8 @@ export const ManageTodoScreen = ({
   const handleSubmit = useCallback(
     () =>
       pipe(
-        // TODO: extract these two since it'll be a common pattern?
         TE.fromEither(submit()),
-        TE.mapLeft(() => "BAD_REQUEST" as IErr),
+        TE.mapLeft(() => "VALIDATION" as IErr),
         TE.chain((todo) =>
           upsertTodoForPlant(plantId, todoId)(selectedHouseholdId)(todo)
         ),
