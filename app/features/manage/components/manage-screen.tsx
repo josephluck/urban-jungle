@@ -1,3 +1,4 @@
+import { ThemeSetting } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
@@ -12,7 +13,6 @@ import {
 import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
-import { Switch } from "../../../components/switch";
 import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
@@ -73,24 +73,33 @@ export const ManageScreen = () => {
           </WelcomeMessageContainer>
           <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
             <ContextMenuTouchable
+              buttons={themeSettingOptions.map(([setting, label]) => (
+                <ContextMenuIconButton
+                  icon={themeSetting === setting ? "check" : undefined}
+                  onPress={saveThemeSettingForProfile(setting)}
+                >
+                  {label}
+                </ContextMenuIconButton>
+              ))}
+            >
+              <ListItem
+                title="Push notifications"
+                right={<Icon icon="chevron-right" />}
+              />
+            </ContextMenuTouchable>
+            <ContextMenuTouchable
               buttons={[
                 <ContextMenuIconButton
-                  icon={themeSetting === "light" ? "check" : undefined}
-                  onPress={saveThemeSettingForProfile("light")}
+                  icon={pushNotificationsEnabled ? "check" : undefined}
+                  onPress={handleTogglePushNotifications}
                 >
-                  Light
+                  Enabled
                 </ContextMenuIconButton>,
                 <ContextMenuIconButton
-                  icon={themeSetting === "dark" ? "check" : undefined}
-                  onPress={saveThemeSettingForProfile("dark")}
+                  icon={!pushNotificationsEnabled ? "check" : undefined}
+                  onPress={handleTogglePushNotifications}
                 >
-                  Dark
-                </ContextMenuIconButton>,
-                <ContextMenuIconButton
-                  icon={themeSetting === "system" ? "check" : undefined}
-                  onPress={saveThemeSettingForProfile("system")}
-                >
-                  Device
+                  Disabled
                 </ContextMenuIconButton>,
               ]}
             >
@@ -99,15 +108,6 @@ export const ManageScreen = () => {
                 right={<Icon icon="chevron-right" />}
               />
             </ContextMenuTouchable>
-            <ListItem
-              title="Push notifications"
-              right={
-                <Switch
-                  value={pushNotificationsEnabled}
-                  onValueChange={handleTogglePushNotifications}
-                />
-              }
-            />
             <TouchableOpacity onPress={signOut}>
               <ListItem
                 title="Sign out"
@@ -148,6 +148,12 @@ export const ManageScreen = () => {
     </ScreenLayout>
   );
 };
+
+const themeSettingOptions: [ThemeSetting, string][] = [
+  ["light", "Light"],
+  ["dark", "Dark"],
+  ["system", "Device"],
+];
 
 export const manageRoute = makeNavigationRoute({
   screen: ManageScreen,
