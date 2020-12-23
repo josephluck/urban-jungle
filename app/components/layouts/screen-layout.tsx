@@ -10,13 +10,19 @@ export const ScreenLayout = ({
   isRootScreen?: boolean;
 }) => (
   <Container>
-    <InnerContainer isRootScreen={isRootScreen}>{children}</InnerContainer>
+    <AvoidingView behavior="padding">
+      <InnerContainer isRootScreen={isRootScreen}>{children}</InnerContainer>
+    </AvoidingView>
   </Container>
 );
 
 const Container = styled.SafeAreaView`
   flex: 1;
   background-color: ${(props) => props.theme.appBackground};
+`;
+
+const AvoidingView = styled.KeyboardAvoidingView`
+  flex: 1;
 `;
 
 const InnerContainer = styled.View<{ isRootScreen: boolean }>`
