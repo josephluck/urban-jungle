@@ -1,3 +1,5 @@
+import { cleanObj } from "./base";
+
 export interface ImageModel {
   /**
    * The downloadable URI.
@@ -24,5 +26,5 @@ export const makeImageModel = (
   uri: "",
   width: 0,
   height: 0,
-  ...model,
+  ...cleanObj(model),
 });

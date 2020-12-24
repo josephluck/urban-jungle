@@ -1,4 +1,4 @@
-import { BaseModel, makeBaseModel } from "./base";
+import { BaseModel, cleanObj, makeBaseModel } from "./base";
 import { PhotoModel } from "./photo";
 
 export interface PlantModel extends BaseModel {
@@ -31,5 +31,5 @@ export const makePlantModel = (
   ...makeBaseModel(model, id),
   name: "",
   householdId: "",
-  ...model,
+  ...cleanObj(model),
 });

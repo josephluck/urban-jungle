@@ -19,5 +19,15 @@ export const makeBaseModel = (
 ): BaseModel => ({
   id: id || uuid(),
   dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-  ...model,
+  ...cleanObj(model),
 });
+
+/**
+ * Removes undefined values from an object (shallow only)
+ */
+export const cleanObj = <T extends Record<string, unknown>>(obj: T): T =>
+  Object.entries(obj).reduce(
+    (acc, [key, value]) =>
+      typeof value === "undefined" ? acc : { ...acc, [key]: value },
+    {} as T
+  );

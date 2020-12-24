@@ -1,4 +1,4 @@
-import { BaseModel, makeBaseModel } from "./base";
+import { BaseModel, cleanObj, makeBaseModel } from "./base";
 
 export type ThemeSetting = "light" | "dark" | "system";
 
@@ -8,13 +8,13 @@ export interface ProfileModel extends BaseModel {
    */
   name: string;
   /**
-   * Profile's last name.
+   * Profile's email (for authentication).
    */
-  lastName: string;
+  email?: string;
   /**
-   * profile's email (for authentication).
+   * profile's phone number (for authentication).
    */
-  email: string;
+  phoneNumber?: string;
   /**
    * Which Households the profile can manage.
    */
@@ -38,8 +38,7 @@ export const makeProfileModel = (
 ): ProfileModel => ({
   ...makeBaseModel(model),
   name: "",
-  lastName: "",
   email: "",
   householdIds: [],
-  ...model,
+  ...cleanObj(model),
 });

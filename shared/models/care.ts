@@ -1,4 +1,4 @@
-import { makeBaseModel, BaseModel } from "./base";
+import { makeBaseModel, BaseModel, cleanObj } from "./base";
 import { TodoModel, makeTodoModel } from "./todo";
 import { ProfileModel, makeProfileModel } from "./profile";
 import { PlantModel, makePlantModel } from "./plant";
@@ -46,5 +46,5 @@ export const makeCareModel = (model: Partial<CareModel> = {}): CareModel => ({
   todo: makeTodoModel(),
   profile: makeProfileModel(),
   plant: makePlantModel(),
-  ...model,
+  ...cleanObj(model),
 });

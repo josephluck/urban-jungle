@@ -1,4 +1,4 @@
-import { BaseModel, makeBaseModel } from "./base";
+import { BaseModel, cleanObj, makeBaseModel } from "./base";
 
 export interface TodoModel extends BaseModel {
   /**
@@ -55,5 +55,5 @@ export const makeTodoModel = (
   activeInMonths: [0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11],
   title: "",
   detail: "",
-  ...model,
+  ...cleanObj(model),
 });

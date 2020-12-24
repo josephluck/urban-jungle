@@ -1,4 +1,4 @@
-import { BaseModel, makeBaseModel } from "./base";
+import { BaseModel, cleanObj, makeBaseModel } from "./base";
 import { ImageModel, makeImageModel } from "./image";
 import { StorageEntityType } from "./storage";
 
@@ -25,5 +25,5 @@ export const makePhotoModel = (
   type: "default",
   associatedId: "",
   householdId: "",
-  ...model,
+  ...cleanObj(model),
 });
