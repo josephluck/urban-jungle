@@ -108,7 +108,7 @@ const BottomSheetGatewayContainer = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { visible } = useContext(ContextMenuContext);
+  const { visibleMenuId: visible } = useContext(ContextMenuContext);
 
   const opacity = useRef(new Animated.Value(0));
 

@@ -99,7 +99,7 @@ export const TodoScreen = ({
     <BackableScreenLayout
       onBack={handleGoBack}
       headerRightButton={
-        <ContextMenuDotsButton>
+        <ContextMenuDotsButton menuId="todo-screen">
           {[
             <ContextMenuIconButton icon="trash" onPress={handleDelete}>
               Delete {todoName}

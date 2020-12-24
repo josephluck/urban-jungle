@@ -15,17 +15,17 @@ import { SubHeading } from "./typography";
 export const contextMenuGatewayId = "GATEWAY_CONTEXT_MENU";
 
 type ContextMenuContextType = {
-  visible: boolean;
-  show: () => void;
+  visibleMenuId?: string;
+  show: (menuId: string) => void;
   hide: () => void;
-  setVisible: (visible: boolean) => void;
+  setVisibleMenuId: (visibleMenuId: string) => void;
 };
 
 export const ContextMenuContext = React.createContext<ContextMenuContextType>({
-  visible: false,
+  visibleMenuId: undefined,
   show: () => void null,
   hide: () => void null,
-  setVisible: () => void null,
+  setVisibleMenuId: () => void null,
 });
 
 export const useContextMenu = () => useContext(ContextMenuContext);
@@ -35,17 +35,21 @@ export const ContextMenuProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [visible, setVisible] = useState<boolean>(false);
-  const show = useCallback(() => setVisible(true), []);
-  const hide = useCallback(() => setVisible(false), []);
+  const [visibleMenuId, setVisibleMenuId] = useState<string>();
+  const show = useCallback((menuId: string) => setVisibleMenuId(menuId), []);
+  const hide = useCallback(() => setVisibleMenuId(undefined), []);
 
   useEffect(() => {
     const unsubscribe = navigationDidNavigateBeacon.subscribe(hide);
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+    };
   }, [hide]);
 
   return (
-    <ContextMenuContext.Provider value={{ show, hide, visible, setVisible }}>
+    <ContextMenuContext.Provider
+      value={{ show, hide, visibleMenuId, setVisibleMenuId }}
+    >
       {children}
     </ContextMenuContext.Provider>
   );
@@ -78,22 +82,36 @@ type ContextMenuButtonType = {
 export const ContextMenuDotsButton = ({
   style,
   children,
+  menuId,
 }: {
   style?: StyleProp<ViewProps>;
   children: React.ReactNode[];
+  menuId: string;
 }) => {
-  const { visible, show, hide } = useContext(ContextMenuContext);
+  const { visibleMenuId: visibleMenuId, show, hide } = useContext(
+    ContextMenuContext,
+  );
+
+  const handleShow = useCallback(() => {
+    show(menuId);
+  }, [show, menuId]);
 
   const height = useMemo(
     () => BUTTON_MARGIN * 2 + children.length * BUTTON_HEIGHT,
     [children.length],
   );
 
+  const isFocused = useIsFocused();
+
   return (
     <>
-      <ContextButton style={style} onPress={show} icon="more-vertical" />
+      <ContextButton style={style} onPress={handleShow} icon="more-vertical" />
       <Gateway into={contextMenuGatewayId}>
-        <BottomDrawer height={height} onClose={hide} visible={visible}>
+        <BottomDrawer
+          height={height}
+          onClose={hide}
+          visible={visibleMenuId === menuId && isFocused}
+        >
           {children}
         </BottomDrawer>
       </Gateway>
@@ -119,11 +137,13 @@ export const ContextMenuIconButton = ({
 export const ContextMenuTouchable = ({
   children,
   buttons,
+  menuId,
 }: {
   children: React.ReactNode;
   buttons: React.ReactNode[];
+  menuId: string;
 }) => {
-  const { hide, show, visible } = useContext(ContextMenuContext);
+  const { hide, show, visibleMenuId } = useContext(ContextMenuContext);
 
   const height = useMemo(
     () => BUTTON_MARGIN * 2 + buttons.length * BUTTON_HEIGHT,
@@ -132,14 +152,18 @@ export const ContextMenuTouchable = ({
 
   const isFocused = useIsFocused();
 
+  const handleShow = useCallback(() => {
+    show(menuId);
+  }, [show, menuId]);
+
   return (
     <>
-      <TouchableOpacity onPress={show}>{children}</TouchableOpacity>
+      <TouchableOpacity onPress={handleShow}>{children}</TouchableOpacity>
       <Gateway into={contextMenuGatewayId}>
         <BottomDrawer
           height={height}
           onClose={hide}
-          visible={visible && isFocused}
+          visible={visibleMenuId === menuId && isFocused}
         >
           {buttons}
         </BottomDrawer>

@@ -75,6 +75,7 @@ export const ManageScreen = () => {
           </WelcomeMessageContainer>
           <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
             <ContextMenuTouchable
+              menuId="theme"
               buttons={themeSettingOptions.map(([setting, label]) => (
                 <ContextMenuIconButton
                   icon={themeSetting === setting ? "check" : undefined}
@@ -85,11 +86,12 @@ export const ManageScreen = () => {
               ))}
             >
               <ListItem
-                title="Push notifications"
+                title="Appearance"
                 right={<Icon icon="chevron-right" />}
               />
             </ContextMenuTouchable>
             <ContextMenuTouchable
+              menuId="push-notifications"
               buttons={[
                 <ContextMenuIconButton
                   icon={pushNotificationsEnabled ? "check" : undefined}
@@ -106,7 +108,7 @@ export const ManageScreen = () => {
               ]}
             >
               <ListItem
-                title="Appearance"
+                title="Push notifications"
                 right={<Icon icon="chevron-right" />}
               />
             </ContextMenuTouchable>

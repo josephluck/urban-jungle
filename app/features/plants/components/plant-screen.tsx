@@ -137,7 +137,7 @@ export const PlantScreen = ({
       onBack={handleGoBack}
       stickyHeaderIndices={stickyHeaderIndices}
       headerRightButton={
-        <ContextMenuDotsButton>
+        <ContextMenuDotsButton menuId="plant-screen">
           {[
             <ContextMenuIconButton icon="camera" onPress={handleTakePicture}>
               Snap {plantName}
