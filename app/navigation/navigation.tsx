@@ -33,9 +33,11 @@ import { Animated, Easing } from "react-native";
 import styled, { withTheme } from "styled-components/native";
 import { signUpPhoneVerifyRoute } from "../features/auth/components/sign-up-phone-verify";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
+import { signUpNameRoute } from "../features/auth/components/sign-up-name";
 import { splashRoute } from "../features/auth/components/splash";
 import { navigationRef } from "./navigation-imperative";
 import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
+import { signUpCaptureEmailRoute } from "../features/auth/components/sign-up-capture-email";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -237,6 +239,14 @@ export const AppNavigation = () => {
           <Stack.Screen
             name={signUpEmailRoute.routeName}
             component={signUpEmailRoute.screen}
+          />
+          <Stack.Screen
+            name={signUpNameRoute.routeName}
+            component={signUpNameRoute.screen}
+          />
+          <Stack.Screen
+            name={signUpCaptureEmailRoute.routeName}
+            component={signUpCaptureEmailRoute.screen}
           />
           <Stack.Screen
             name={signUpPasswordRoute.routeName}

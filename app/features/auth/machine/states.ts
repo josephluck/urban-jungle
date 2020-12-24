@@ -93,7 +93,7 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
     states: [
       {
         id: "Capture email address",
-        routeName: routeNames.signUpEmailRoute,
+        routeName: routeNames.signUpCaptureEmailRoute,
         isDone: [
           function hasProvidedEmail(context) {
             return !!context.emailAddress;
@@ -102,13 +102,13 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
       },
     ],
   },
-  {
-    id: "Capture avatar",
-    routeName: routeNames.signUpAvatarRoute,
-    isDone: [
-      function hasProvidedOrSkippedAvatar(context) {
-        return !!context.avatar || context.skipAvatar;
-      },
-    ],
-  },
+  // {
+  //   id: "Capture avatar",
+  //   routeName: routeNames.signUpAvatarRoute,
+  //   isDone: [
+  //     function hasProvidedOrSkippedAvatar(context) {
+  //       return !!context.avatar || context.skipAvatar;
+  //     },
+  //   ],
+  // },
 ];

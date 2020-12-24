@@ -80,7 +80,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
         />
 
         <Button onPress={handleVerify} large>
-          Sign up
+          Next
         </Button>
       </SplashContainer>
 
