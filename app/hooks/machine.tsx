@@ -2,7 +2,9 @@ import React, { useState, useContext, useCallback } from "react";
 import { makeMachine, State, Condition } from "@josephluck/machi/src/machine";
 import produce from "immer";
 
-import { getCurrentRoute, navigate } from "../navigation/navigation-imperative";
+import { navigate } from "../navigation/navigation-imperative";
+import { useRunWithUIState } from "../store/ui";
+import { fetchOrCreateProfile } from "../features/auth/store/effects";
 
 export const makeMachineHooks = <
   Context extends any = void,
@@ -21,6 +23,7 @@ export const makeMachineHooks = <
   initialContext: Context;
 }) => {
   const useMakeMachine = () => {
+    const runWithUIState = useRunWithUIState();
     const [context, setContext] = useState<Context>(initialContext);
     const [currentEntryId, setCurrentEntryId] = useState<string>();
     const getNextState = makeMachine<Context, AdditionalEntryData, Conditions>(
@@ -37,7 +40,7 @@ export const makeMachineHooks = <
         const result = getNextState(ctx, currentEntryId);
         if (!result) {
           console.warn("Next state in machine not found - reached the end.");
-          // TODO: create or update account
+          runWithUIState(fetchOrCreateProfile(ctx));
         } else if (shouldNavigate) {
           setCurrentEntryId(result.entry.id);
           navigate(result.entry.routeName);

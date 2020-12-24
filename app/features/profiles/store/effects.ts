@@ -9,6 +9,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { database } from "../../../database";
+import { Context } from "../../auth/machine/types";
 import { fetchCurrentProfileIfNotFetched } from "../../auth/store/effects";
 import { selectCurrentUserId } from "../../auth/store/state";
 import {
@@ -18,7 +19,7 @@ import {
   upsertProfile,
 } from "./state";
 
-export const createProfileForUser = (
+export const createProfileForUser = (signUpContext: Context) => (
   user: firebase.User
 ): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
@@ -26,7 +27,10 @@ export const createProfileForUser = (
     TE.map((user) =>
       makeProfileModel({
         id: user.uid,
-        email: user.email!,
+        email: user.email || signUpContext.emailAddress,
+        phoneNumber: user.phoneNumber || signUpContext.phoneNumber,
+        name: signUpContext.name,
+        avatar: signUpContext.avatar,
       })
     ),
     TE.chainFirst((profile) =>

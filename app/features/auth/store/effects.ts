@@ -15,6 +15,7 @@ import {
   createProfileForUser,
   fetchProfileIfNotFetched,
 } from "../../profiles/store/effects";
+import { Context } from "../machine/types";
 import {
   selectAuthUser,
   selectCurrentUserId,
@@ -26,7 +27,7 @@ export const initialize = store.createEffect(() => {
   firebase.auth().onAuthStateChanged(async (user) => {
     setUser(O.fromNullable(user)); // NB: this deals with sign out as well
     if (user) {
-      await fetchOrCreateProfile()();
+      await fetchCurrentProfileIfNotFetched()();
     } else {
       resetGlobalState();
     }
@@ -99,8 +100,13 @@ export const signOut = store.createEffect(async () => {
   await firebase.auth().signOut();
 });
 
-export const fetchOrCreateProfile = (): TE.TaskEither<IErr, ProfileModel> =>
-  pipe(fetchCurrentProfileIfNotFetched(), TE.orElse(createAndSeedProfile));
+export const fetchOrCreateProfile = (
+  signUpContext: Context
+): TE.TaskEither<IErr, ProfileModel> =>
+  pipe(
+    fetchCurrentProfileIfNotFetched(),
+    TE.orElse(createAndSeedProfile(signUpContext))
+  );
 
 export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
   IErr,
@@ -112,11 +118,13 @@ export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
     TE.chain(fetchProfileIfNotFetched)
   );
 
-export const createAndSeedProfile = (): TE.TaskEither<IErr, ProfileModel> =>
+export const createAndSeedProfile = (
+  signUpContext: Context
+) => (): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectAuthUser(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(createProfileForUser),
+    TE.chain(createProfileForUser(signUpContext)),
     TE.map((profile) => profile.id),
     // TODO: check initial deep link, and skip creating a household if there's a householdId in the deep link?
     TE.chain(createHouseholdForProfile()),
