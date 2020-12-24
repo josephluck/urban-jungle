@@ -24,7 +24,7 @@ export const useFiltersState = (groups: FilterGroup[] = []) => {
         setActiveFilters((af) => [...af, id]);
       }
     },
-    [activeFilters.length]
+    [activeFilters.length],
   );
 
   const clearAllFilters = useCallback(() => {

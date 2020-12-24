@@ -1,10 +1,12 @@
-import { IErr } from "@urban-jungle/shared/utils/err";
 import { Notifications } from "expo";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import { Platform } from "react-native";
+
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import {
   removeExpoPushTokenFromProfile,
   saveExpoPushTokenToProfile,
@@ -21,7 +23,7 @@ export const enablePushNotifications = (): TE.TaskEither<IErr, string> =>
         getPushNotificationPermissions(),
         TE.chain(getExpoPushToken),
         TE.chainFirst(setupAndroidChannels),
-        TE.chainFirst(saveExpoPushTokenToProfile)
+        TE.chainFirst(saveExpoPushTokenToProfile),
       )
     : TE.left("BAD_REQUEST");
 
@@ -32,7 +34,7 @@ export const getPushNotificationPermissions = (): TE.TaskEither<
   TE.tryCatch(
     async () => {
       const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
+        Permissions.NOTIFICATIONS,
       );
       if (existingStatus === "granted") {
         return existingStatus;
@@ -43,7 +45,7 @@ export const getPushNotificationPermissions = (): TE.TaskEither<
       }
       return status;
     },
-    () => "UNAUTHENTICATED"
+    () => "UNAUTHENTICATED",
   );
 
 export const getExpoPushToken = (): TE.TaskEither<IErr, string> =>
@@ -52,7 +54,7 @@ export const getExpoPushToken = (): TE.TaskEither<IErr, string> =>
       const token = await Notifications.getExpoPushTokenAsync();
       return token;
     },
-    () => "NOT_FOUND"
+    () => "NOT_FOUND",
   );
 
 const setupAndroidChannels = (): TE.TaskEither<IErr, void> =>
@@ -67,5 +69,5 @@ const setupAndroidChannels = (): TE.TaskEither<IErr, void> =>
         });
       }
     },
-    () => "UNKNOWN"
+    () => "UNKNOWN",
   );

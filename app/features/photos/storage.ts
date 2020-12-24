@@ -1,10 +1,11 @@
+import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
+import firebase from "firebase";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+import uuid from "uuid";
+
 import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
-import uuid from "uuid";
-import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 
 // NB: see https://github.com/expo/expo/issues/2402#issuecomment-443726662
 const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
@@ -22,11 +23,11 @@ const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
         xhr.open("GET", uri, true);
         xhr.send(null);
       }),
-    () => "BAD_REQUEST" as IErr
+    () => "BAD_REQUEST" as IErr,
   );
 
 export const uploadPhoto = (reference: StorageEntityType = "default") => (
-  image: ImageInfo
+  image: ImageInfo,
 ): TE.TaskEither<IErr, ImageInfo> =>
   pipe(
     getFileFromUri(image.uri),
@@ -39,7 +40,7 @@ export const uploadPhoto = (reference: StorageEntityType = "default") => (
           const uri = await snapshot.ref.getDownloadURL();
           return { ...image, uri };
         },
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
   );

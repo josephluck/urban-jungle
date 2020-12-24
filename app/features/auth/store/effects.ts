@@ -1,9 +1,11 @@
-import { ProfileModel } from "@urban-jungle/shared/models/profile";
-import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+
+import { ProfileModel } from "@urban-jungle/shared/models/profile";
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 import { resetGlobalState, store } from "../../../store/state";
 import {
@@ -41,7 +43,7 @@ export const signIn = store.createEffect(
       .auth()
       .signInWithEmailAndPassword(email, password);
     return response;
-  }
+  },
 );
 
 /**
@@ -52,7 +54,7 @@ export const signIn = store.createEffect(
  */
 export const signUp = (
   email: string,
-  password: string
+  password: string,
 ): TE.TaskEither<IErr, string> =>
   pipe(
     TE.tryCatch(
@@ -62,22 +64,22 @@ export const signUp = (
           .createUserWithEmailAndPassword(email, password);
         return response;
       },
-      () => "BAD_REQUEST" as IErr
+      () => "BAD_REQUEST" as IErr,
     ),
     TE.chain(validateSignUp),
-    TE.chainFirst(handleInitialHouseholdInvitationLink)
+    TE.chainFirst(handleInitialHouseholdInvitationLink),
   );
 
 /**
  * Validates a user was correctly created
  */
 export const validateSignUp = (
-  credentials: firebase.auth.UserCredential
+  credentials: firebase.auth.UserCredential,
 ): TE.TaskEither<IErr, string> =>
   pipe(
     O.fromNullable(credentials.user),
     O.map((user) => user.uid),
-    TE.fromOption(() => "BAD_REQUEST")
+    TE.fromOption(() => "BAD_REQUEST"),
   );
 
 /**
@@ -87,13 +89,13 @@ export const validateSignUp = (
  * Returns the householdId
  */
 export const handleInitialHouseholdInvitationLink = (
-  profileId: string
+  profileId: string,
 ): TE.TaskEither<IErr, string> =>
   pipe(
     getAndParseInitialHouseholdInvitationDeepLink(),
     TE.map((params) => params.householdId),
     TE.chainFirst(createProfileHouseholdRelation(profileId)),
-    TE.chain(storeSelectedHouseholdIdToStorage) // TODO: the redirection happens before this is fired
+    TE.chain(storeSelectedHouseholdIdToStorage), // TODO: the redirection happens before this is fired
   );
 
 export const signOut = store.createEffect(async () => {
@@ -101,11 +103,11 @@ export const signOut = store.createEffect(async () => {
 });
 
 export const fetchOrCreateProfile = (
-  signUpContext: Context
+  signUpContext: Context,
 ): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     fetchCurrentProfileIfNotFetched(),
-    TE.orElse(createAndSeedProfile(signUpContext))
+    TE.orElse(createAndSeedProfile(signUpContext)),
   );
 
 export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
@@ -115,11 +117,11 @@ export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(fetchProfileIfNotFetched)
+    TE.chain(fetchProfileIfNotFetched),
   );
 
 export const createAndSeedProfile = (
-  signUpContext: Context
+  signUpContext: Context,
 ) => (): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectAuthUser(),
@@ -128,5 +130,5 @@ export const createAndSeedProfile = (
     TE.map((profile) => profile.id),
     // TODO: check initial deep link, and skip creating a household if there's a householdId in the deep link?
     TE.chain(createHouseholdForProfile()),
-    TE.chain(fetchCurrentProfileIfNotFetched)
+    TE.chain(fetchCurrentProfileIfNotFetched),
   );

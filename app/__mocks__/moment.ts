@@ -1,6 +1,6 @@
-const moment = require.requireActual("moment");
-
 import MockDate from "mockdate";
+
+const moment = require.requireActual("moment");
 
 export const defaultDate = "2020-01-01";
 

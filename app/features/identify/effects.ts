@@ -1,20 +1,22 @@
-import { IErr } from "@urban-jungle/shared/utils/err";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { env } from "../../env";
 // import { exampleIdentificationResponse } from "./state";
 import { IdentificationResult } from "./types";
 
 export const identify = (
-  images: ImageInfo[]
+  images: ImageInfo[],
 ): TE.TaskEither<IErr, IdentificationResult> =>
   pipe(
     O.fromNullable(images),
     O.filter(
       (images) =>
-        images.length >= 3 && images.every((image) => Boolean(image.base64))
+        images.length >= 3 && images.every((image) => Boolean(image.base64)),
     ),
     O.map((images) => images.map((image) => image.base64 || "")),
     TE.fromOption(() => "NOT_FOUND" as IErr),
@@ -37,14 +39,14 @@ export const identify = (
         async () => {
           const response = await fetch(
             "https://api.plant.id/v2/identify",
-            request
+            request,
           );
           const data = await response.json();
           return data;
         },
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
     // TODO: this is an example response as the API is limited to 200 uses. Uncomment this when the implementation is finished.
     // TE.chain(() =>
     //   TE.tryCatch(

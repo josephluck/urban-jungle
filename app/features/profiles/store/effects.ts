@@ -1,13 +1,15 @@
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+
 import {
   makeProfileModel,
   ProfileModel,
   ThemeSetting,
 } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
+
 import { database } from "../../../database";
 import { Context } from "../../auth/machine/types";
 import { fetchCurrentProfileIfNotFetched } from "../../auth/store/effects";
@@ -20,7 +22,7 @@ import {
 } from "./state";
 
 export const createProfileForUser = (signUpContext: Context) => (
-  user: firebase.User
+  user: firebase.User,
 ): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     TE.right(user),
@@ -31,24 +33,24 @@ export const createProfileForUser = (signUpContext: Context) => (
         phoneNumber: user.phoneNumber || signUpContext.phoneNumber,
         name: signUpContext.name,
         avatar: signUpContext.avatar,
-      })
+      }),
     ),
     TE.chainFirst((profile) =>
       TE.tryCatch(
         () => database.profiles.database.doc(profile.id).set(profile),
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
   );
 
 export const fetchProfileIfNotFetched = (
-  id: string
+  id: string,
 ): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectProfiles(),
     selectProfileById(O.fromNullable(id)),
     TE.fromOption(() => id),
-    TE.orElse(fetchProfile)
+    TE.orElse(fetchProfile),
   );
 
 export const fetchProfile = (id: string): TE.TaskEither<IErr, ProfileModel> =>
@@ -62,11 +64,11 @@ export const fetchProfile = (id: string): TE.TaskEither<IErr, ProfileModel> =>
       upsertProfile(profile);
       return profile;
     },
-    () => "NOT_FOUND" as IErr
+    () => "NOT_FOUND" as IErr,
   );
 
 export const addHouseholdToCurrentProfile = (
-  householdId: string
+  householdId: string,
 ): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectCurrentUserId(),
@@ -77,10 +79,10 @@ export const addHouseholdToCurrentProfile = (
           database.profiles.database.doc(id).update({
             householdIds: firebase.firestore.FieldValue.arrayUnion(householdId),
           }),
-        () => "BAD_REQUEST" as IErr
-      )
+        () => "BAD_REQUEST" as IErr,
+      ),
     ),
-    TE.chain(fetchCurrentProfileIfNotFetched)
+    TE.chain(fetchCurrentProfileIfNotFetched),
   );
 
 /**
@@ -94,7 +96,7 @@ export const addHouseholdToCurrentProfile = (
  * profiles associated to it.
  */
 export const removeHouseholdFromProfile = (
-  householdId: string
+  householdId: string,
 ): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectCurrentUserId(),
@@ -104,17 +106,17 @@ export const removeHouseholdFromProfile = (
         () =>
           database.profiles.database.doc(id).update({
             householdIds: firebase.firestore.FieldValue.arrayRemove(
-              householdId
+              householdId,
             ),
           }),
-        () => "BAD_REQUEST" as IErr
-      )
+        () => "BAD_REQUEST" as IErr,
+      ),
     ),
-    TE.chain(fetchCurrentProfileIfNotFetched)
+    TE.chain(fetchCurrentProfileIfNotFetched),
   );
 
 export const saveExpoPushTokenToProfile = (
-  pushToken: string
+  pushToken: string,
 ): TE.TaskEither<IErr, void> =>
   pipe(
     selectCurrentUserId(),
@@ -125,13 +127,13 @@ export const saveExpoPushTokenToProfile = (
           database.profiles.database.doc(id).update({
             pushToken,
           }),
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
   );
 
 export const saveThemeSettingForProfile = (
-  theme: ThemeSetting
+  theme: ThemeSetting,
 ): TE.TaskEither<IErr, void> =>
   pipe(
     selectCurrentUserId(),
@@ -143,9 +145,9 @@ export const saveThemeSettingForProfile = (
           database.profiles.database.doc(id).update({
             theme,
           }),
-        () => "BAD_REQUEST" as IErr
+        () => "BAD_REQUEST" as IErr,
       );
-    })
+    }),
   );
 
 export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>
@@ -159,9 +161,9 @@ export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>
             .doc(id)
             .set(
               { pushToken: firebase.firestore.FieldValue.delete() },
-              { merge: true }
+              { merge: true },
             ),
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
   );

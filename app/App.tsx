@@ -1,34 +1,35 @@
-import React, { useContext, useEffect } from "react";
-import { ThemeProvider } from "styled-components";
-import { darkTheme, lightTheme } from "./theme";
-import styled from "styled-components/native";
-import { useFonts } from "./hooks/fonts";
-// import * as reactotron from "./reactotron";
-import { initialize } from "./features/auth/store/effects";
-import { ActivityIndicator, Animated, Easing, StatusBar } from "react-native";
-import { selectInitializing } from "./features/auth/store/state";
-import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
-import { useStore } from "./store/state";
-import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
-import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
-import { HouseholdPlantsSubscription } from "./features/plants/subscriptions/household-plants";
-import { HouseholdCaresSubscription } from "./features/care/subscriptions/household-cares";
-import { pipe } from "fp-ts/lib/pipeable";
+import { GatewayDest, GatewayProvider } from "@chardskarth/react-gateway";
 import * as O from "fp-ts/lib/Option";
-import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useContext, useEffect } from "react";
+import { useRef } from "react";
+import { ActivityIndicator, Animated, Easing, StatusBar } from "react-native";
+import { ThemeProvider } from "styled-components";
+import styled from "styled-components/native";
+
 import {
   ContextMenuContext,
   contextMenuGatewayId,
   ContextMenuProvider,
 } from "./components/context-menu";
-import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
 import { GlobalLoading } from "./components/global-loading";
-import { selectCurrentProfileThemeIsDark } from "./features/profiles/store/state";
-import { AppNavigation } from "./navigation/navigation";
-import { GatewayDest, GatewayProvider } from "@chardskarth/react-gateway";
-import { useRef } from "react";
-import { GlobalErrorProvider } from "./store/ui";
 import { MachineProvider } from "./features/auth/machine/machine";
+// import * as reactotron from "./reactotron";
+import { initialize } from "./features/auth/store/effects";
+import { selectInitializing } from "./features/auth/store/state";
+import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
+import { HouseholdCaresSubscription } from "./features/care/subscriptions/household-cares";
+import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
+import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
+import { HouseholdPlantsSubscription } from "./features/plants/subscriptions/household-plants";
+import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
+import { selectCurrentProfileThemeIsDark } from "./features/profiles/store/state";
+import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
+import { useFonts } from "./hooks/fonts";
+import { AppNavigation } from "./navigation/navigation";
+import { useStore } from "./store/state";
+import { GlobalErrorProvider } from "./store/ui";
+import { darkTheme, lightTheme } from "./theme";
 
 // reactotron.configure();
 
@@ -44,11 +45,11 @@ export default () => {
   const loading = fontsLoading || authInitializing;
 
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   return (

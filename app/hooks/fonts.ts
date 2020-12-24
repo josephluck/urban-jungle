@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import * as Font from "expo-font";
+import { useState, useEffect } from "react";
 
 // export const SOURCE_SANS_BLACK = "SOURCE_SANS_BLACK";
 // export const SOURCE_SANS_BLACK_ITALIC = "SOURCE_SANS_BLACK_ITALIC";

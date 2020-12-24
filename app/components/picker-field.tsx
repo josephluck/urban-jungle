@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, ViewProps } from "react-native";
 import styled from "styled-components/native";
+
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
 import { Label, LabelText } from "./label";
@@ -23,17 +24,17 @@ type BasePickerProps<Pv extends PickerValue> = {
   onNewValuePress?: () => void;
 };
 
-export type SinglePickerFieldProps<Pv extends PickerValue> = BasePickerProps<
-  Pv
-> & {
+export type SinglePickerFieldProps<
+  Pv extends PickerValue
+> = BasePickerProps<Pv> & {
   value: Pv;
   onChange: (value: Pv) => void;
   multiValue: false;
 };
 
-export type MultiPickerFieldProps<Pv extends PickerValue> = BasePickerProps<
-  Pv
-> & {
+export type MultiPickerFieldProps<
+  Pv extends PickerValue
+> = BasePickerProps<Pv> & {
   value: Pv[];
   onChange: (value: Pv[]) => void;
   multiValue: true;
@@ -44,21 +45,21 @@ export type PickerFieldProps<Pv extends PickerValue> =
   | MultiPickerFieldProps<Pv>;
 
 function isMultiValue<Pv extends PickerValue>(
-  props: any
+  props: any,
 ): props is MultiPickerFieldProps<Pv> {
   return props.multiValue;
 }
 
 export function PickerField<Pv extends PickerValue>(
-  props: SinglePickerFieldProps<Pv>
+  props: SinglePickerFieldProps<Pv>,
 ): React.ReactElement;
 
 export function PickerField<Pv extends PickerValue>(
-  props: MultiPickerFieldProps<Pv>
+  props: MultiPickerFieldProps<Pv>,
 ): React.ReactElement;
 
 export function PickerField<Pv extends PickerValue>(
-  props: PickerFieldProps<Pv>
+  props: PickerFieldProps<Pv>,
 ) {
   const handleChange = (value: Pv) => {
     if (isMultiValue<Pv>(props)) {

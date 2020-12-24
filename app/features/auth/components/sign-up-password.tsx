@@ -1,19 +1,20 @@
-import React, { useCallback } from "react";
-import { pipe } from "fp-ts/lib/pipeable";
+import { StackScreenProps } from "@react-navigation/stack";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useCallback } from "react";
 
+import { IErr } from "@urban-jungle/shared/utils/err";
+
+import { Button } from "../../../components/button";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
-import { TextField } from "../../../components/text-field";
-import { useRunWithUIState } from "../../../store/ui";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { Button } from "../../../components/button";
-import { IErr } from "@urban-jungle/shared/utils/err";
-import { StackScreenProps } from "@react-navigation/stack";
-import { routeNames } from "./route-names";
+import { useRunWithUIState } from "../../../store/ui";
 import { useMachine } from "../machine/machine";
+import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 
 const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
   const { execute } = useMachine();
@@ -21,7 +22,7 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
 
   const { registerTextInput, submit } = useForm<{ password: string }>(
     { password: "" },
-    { password: [constraints.isRequired, constraints.isString] }
+    { password: [constraints.isRequired, constraints.isString] },
   );
 
   const handleSignUp = useCallback(async () => {
@@ -33,8 +34,8 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
           execute((ctx) => {
             ctx.password = fields.password;
           });
-        })
-      )
+        }),
+      ),
     );
   }, [submit, execute]);
 

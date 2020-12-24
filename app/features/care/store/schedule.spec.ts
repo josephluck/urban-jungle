@@ -1,12 +1,14 @@
-import { makeCareModel } from "@urban-jungle/shared/models/care";
-import { makeTodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
 import moment from "moment";
+
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makeTodoModel } from "@urban-jungle/shared/models/todo";
+
 import { defaultState, store } from "../../../store/state";
 import { selectSchedule } from "./schedule";
 
 const makeFirebaseDate = (
-  daysAdjustment: number = 0
+  daysAdjustment: number = 0,
 ): firebase.firestore.Timestamp => {
   const date =
     daysAdjustment === 0

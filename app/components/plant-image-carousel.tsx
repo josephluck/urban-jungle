@@ -1,8 +1,10 @@
-import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import React, { useCallback, useEffect, useRef } from "react";
 import { Dimensions } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
+
+import { PhotoModel } from "@urban-jungle/shared/models/photo";
+
 import { selectPhotosForPlant } from "../features/photos/store/state";
 import { deletePlantPhoto } from "../features/plants/store/effects";
 import { useStore } from "../store/state";
@@ -55,7 +57,7 @@ export const PlantImageCarousel = ({
     (photoId: string) => {
       deletePlantPhoto(householdId, plantId)(photoId)();
     },
-    [householdId, plantId]
+    [householdId, plantId],
   );
 
   return (

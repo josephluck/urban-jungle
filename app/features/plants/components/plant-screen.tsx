@@ -1,13 +1,15 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { makeImageModel } from "@urban-jungle/shared/models/image";
-import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+
+import { makeImageModel } from "@urban-jungle/shared/models/image";
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
+
 import { Button } from "../../../components/button";
 import {
   ContextMenuDotsButton,
@@ -42,27 +44,27 @@ export const PlantScreen = ({
   const { plantId } = plantRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
 
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const plant = useStore(() =>
-    selectPlantByHouseholdId(selectedHouseholdId, plantId)
+    selectPlantByHouseholdId(selectedHouseholdId, plantId),
   );
 
   const todos = useStore(
     () => selectTodosForPlant(plantId)(selectedHouseholdId),
-    [plantId, selectedHouseholdId]
+    [plantId, selectedHouseholdId],
   );
 
   const cares = useStore(
     () =>
       selectCaresForPlant(selectedHouseholdId)(plantId).sort(sortByMostRecent),
-    [plantId, selectedHouseholdId]
+    [plantId, selectedHouseholdId],
   );
 
   const stickyHeaderIndices = [1, 3];
@@ -77,22 +79,22 @@ export const PlantScreen = ({
       name: pipe(
         plant,
         O.map((plant) => plant.name),
-        O.getOrElse(() => "")
+        O.getOrElse(() => ""),
       ),
       nickname: pipe(
         plant,
         O.map((plant) => plant.nickname),
-        O.getOrElse(() => "")
+        O.getOrElse(() => ""),
       ),
       location: pipe(
         plant,
         O.chain((plant) => O.fromNullable(plant.location)),
-        O.getOrElse(() => "")
+        O.getOrElse(() => ""),
       ),
       avatar: pipe(
         plant,
         O.chain((plant) => O.fromNullable(plant.avatar)),
-        O.getOrElse(() => makeImageModel())
+        O.getOrElse(() => makeImageModel()),
       ),
     });
   }, [plantId, plant]);
@@ -113,10 +115,10 @@ export const PlantScreen = ({
       TE.map(UIEffect.start),
       TE.chain(uploadPhoto("plant")),
       TE.chain((imageInfo) =>
-        savePlantImage(selectedHouseholdId, plantId, O.some(imageInfo))
+        savePlantImage(selectedHouseholdId, plantId, O.some(imageInfo)),
       ),
       TE.map(UIEffect.right),
-      TE.mapLeft(UIEffect.left)
+      TE.mapLeft(UIEffect.left),
     )();
   }, [plantId, selectedHouseholdId]);
 
@@ -125,9 +127,9 @@ export const PlantScreen = ({
       pipe(
         plant,
         O.map((p) => p.name),
-        O.getOrElse(() => "plant")
+        O.getOrElse(() => "plant"),
       ),
-    [plant]
+    [plant],
   );
 
   return (
@@ -200,14 +202,14 @@ export const PlantScreen = ({
                     image={care.profile.avatar}
                     title={care.todo.title}
                     detail={`By ${care.profile.name} on ${moment(
-                      care.dateCreated.toDate()
+                      care.dateCreated.toDate(),
                     ).format("Do MMM YY")}`}
                   />
                 ))}
               </SectionContent>
             </>
-          )
-        )
+          ),
+        ),
       )}
     </BackableScreenLayout>
   );

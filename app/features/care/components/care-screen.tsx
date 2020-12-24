@@ -1,31 +1,32 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
+
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { Heading } from "../../../components/typography";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { careSessionRoute } from "./care-session-screen";
 import { Schedule } from "./schedule";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { StackScreenProps } from "@react-navigation/stack";
 
 export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const handleNavigateToCareSession = useCallback(
     (todoIds: string[]) => {
       careSessionRoute.navigateTo(navigation, { todoIds });
     },
-    [navigation.navigate]
+    [navigation.navigate],
   );
 
   return (

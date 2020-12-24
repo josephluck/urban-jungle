@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
+
 import { symbols } from "../theme";
 import { BodyText } from "./typography";
 
@@ -28,7 +29,7 @@ export const CalendarDay = React.memo(
         </DayText>
       </Day>
     );
-  }
+  },
 );
 
 export const daySize = 50;

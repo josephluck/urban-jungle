@@ -186,7 +186,7 @@ function shortcutExists(shortcuts: Shortcut[], shortcut: Shortcut): boolean {
  */
 function sortShortcuts(
   { priority: priorityA = 1, description: descriptionA }: Shortcut,
-  { priority: priorityB = 1, description: descriptionB }: Shortcut
+  { priority: priorityB = 1, description: descriptionB }: Shortcut,
 ): number {
   if (priorityB === priorityA) {
     // Sort alphabetically on description at equal priority
@@ -214,13 +214,13 @@ function shouldEventTriggerShortcut(event: any, shortcut: Shortcut): boolean {
  */
 export function shortcutWillBePrevented(
   shortcut: Shortcut,
-  shortcuts: Shortcut[]
+  shortcuts: Shortcut[],
 ): boolean {
   const index = shortcuts.findIndex((s) => s.id === shortcut.id);
   return shortcuts.some(
     (s, i) =>
       s.preventOtherShortcuts &&
       i < index &&
-      anyOverlappingStrOccurrences(shortcut.keyCombo, s.keyCombo)
+      anyOverlappingStrOccurrences(shortcut.keyCombo, s.keyCombo),
   );
 }

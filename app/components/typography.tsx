@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
+
 import { CAROS_BOLD, CAROS_SEMIBOLD, CAROS_REGULAR } from "../hooks/fonts";
 import { symbols } from "../theme";
 

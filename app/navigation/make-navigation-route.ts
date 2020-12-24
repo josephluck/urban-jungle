@@ -2,11 +2,11 @@ import { NavigationProp, RouteProp } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 
 type SerializeParams<Params extends Record<string, any>> = (
-  params: Params
+  params: Params,
 ) => Partial<Record<keyof Params, string>>;
 
 type DeserializeParams<Params extends Record<string, any>> = (
-  params: Record<keyof Params, string>
+  params: Record<keyof Params, string>,
 ) => Params;
 
 export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
@@ -33,9 +33,9 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
               ...acc,
               [key]: route.params ? route.params[key] : undefined,
             }),
-            defaultParams
+            defaultParams,
           )
-        : route.params!
+        : route.params!,
     );
   },
   navigateTo: (navigation: NavigationProp<any>, params: Params) => {

@@ -1,9 +1,11 @@
-import { PlantModel } from "@urban-jungle/shared/models/plant";
-import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import styled from "styled-components/native";
+
+import { PlantModel } from "@urban-jungle/shared/models/plant";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
+
 import { symbols } from "../theme";
 import { PlantImage } from "./plant-image";
 import { PlantNameAndLocation } from "./plant-name-and-location";
@@ -22,7 +24,7 @@ export const TodoOverview = ({
       uri={pipe(
         O.fromNullable(plant.avatar),
         O.map((avatar) => avatar.uri),
-        O.getOrElse(() => undefined as string | undefined)
+        O.getOrElse(() => undefined as string | undefined),
       )}
     />
     <Title>{todo.title}</Title>

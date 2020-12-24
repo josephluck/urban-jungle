@@ -1,6 +1,5 @@
 import React from "react";
 import { SwitchProps } from "react-native";
-
 import { Switch as RNSwitch } from "react-native";
 import { useTheme } from "styled-components";
 

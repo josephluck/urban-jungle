@@ -1,13 +1,13 @@
 import {
-  NavigationStackConfig,
-  NavigationStackOptions,
-  NavigationStackProp,
-} from "@react-navigation/stack";
-import {
   CreateNavigatorConfig,
   NavigationStackRouterConfig,
   NavigationRoute,
 } from "@react-navigation/native";
+import {
+  NavigationStackConfig,
+  NavigationStackOptions,
+  NavigationStackProp,
+} from "@react-navigation/stack";
 
 export const defaultStackConfig: CreateNavigatorConfig<
   NavigationStackConfig,

@@ -1,12 +1,14 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useCallback } from "react";
+import styled from "styled-components/native";
+
 import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
-import React, { useCallback } from "react";
-import styled from "styled-components/native";
+
 import { Button } from "../../../components/button";
 import { CameraField } from "../../../components/camera-field";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -43,16 +45,16 @@ export const ManagePlantScreen = ({
       location: params.location || "",
       avatar: params.avatar || makeImageModel(),
     },
-    { name: [constraints.isRequired], nickname: [], location: [], avatar: [] }
+    { name: [constraints.isRequired], nickname: [], location: [], avatar: [] },
   );
 
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
 
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const locations = useStore(() => selectUniqueLocations(selectedHouseholdId), [
@@ -70,12 +72,12 @@ export const ManagePlantScreen = ({
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
           TE.chain((plant) =>
-            upsertPlantForHousehold(plant, plantId)(selectedHouseholdId)
+            upsertPlantForHousehold(plant, plantId)(selectedHouseholdId),
           ),
-          TE.map(() => navigation.goBack())
-        )
+          TE.map(() => navigation.goBack()),
+        ),
       ),
-    [selectedHouseholdId, submit]
+    [selectedHouseholdId, submit],
   );
 
   return (
@@ -152,7 +154,7 @@ export const managePlantRoute = makeNavigationRoute<ManagePlantRouteParams>({
     avatar: pipe(
       O.fromNullable(params.avatar),
       O.map(JSON.parse),
-      O.getOrElse(() => makeImageModel())
+      O.getOrElse(() => makeImageModel()),
     ),
   }),
 });

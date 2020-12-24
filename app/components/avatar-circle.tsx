@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+
 import { AvatarSize, avatarSizeToValue } from "../theme";
 
 export const AvatarCircle = styled.View<{ size: AvatarSize }>`

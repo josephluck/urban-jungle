@@ -1,10 +1,10 @@
-import React, { useState, useContext, useCallback } from "react";
 import { makeMachine, State, Condition } from "@josephluck/machi/src/machine";
 import produce from "immer";
+import React, { useState, useContext, useCallback } from "react";
 
+import { fetchOrCreateProfile } from "../features/auth/store/effects";
 import { navigate } from "../navigation/navigation-imperative";
 import { useRunWithUIState } from "../store/ui";
-import { fetchOrCreateProfile } from "../features/auth/store/effects";
 
 export const makeMachineHooks = <
   Context extends any = void,
@@ -28,7 +28,7 @@ export const makeMachineHooks = <
     const [currentEntryId, setCurrentEntryId] = useState<string>();
     const getNextState = makeMachine<Context, AdditionalEntryData, Conditions>(
       states,
-      conditions
+      conditions,
     );
 
     const clearContext = useCallback(() => setContext(initialContext), []);
@@ -47,7 +47,7 @@ export const makeMachineHooks = <
         }
         return result;
       },
-      [context, currentEntryId, navigate, getNextState]
+      [context, currentEntryId, navigate, getNextState],
     );
 
     return { context, setContext, clearContext, execute, getNextState };
@@ -60,7 +60,7 @@ export const makeMachineHooks = <
       clearContext: async () => undefined,
       execute: async () => undefined,
       getNextState: () => void null,
-    }
+    },
   );
 
   const MachineProvider = ({ children }: { children: React.ReactNode }) => (

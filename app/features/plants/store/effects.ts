@@ -1,12 +1,14 @@
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+
 import { BaseModel } from "@urban-jungle/shared/models/base";
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import { makePhotoModel, PhotoModel } from "@urban-jungle/shared/models/photo";
 import { makePlantModel, PlantModel } from "@urban-jungle/shared/models/plant";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
+
 import { database } from "../../../database";
 import { selectHouseholdById } from "../../households/store/state";
 import { selectMostRecentPlantPhoto } from "../../photos/store/state";
@@ -23,14 +25,14 @@ export type PlantFields = Omit<
 
 export const upsertPlantForHousehold = (
   { avatar, ...fields }: Partial<PlantFields> = {},
-  plantId?: string
+  plantId?: string,
 ) => (householdId: string): TE.TaskEither<IErr, PlantModel> =>
   pipe(
     selectHouseholdById(householdId),
     O.chain(() =>
       plantId
         ? selectPlantByHouseholdId(householdId, plantId)
-        : O.fromNullable(makePlantModel())
+        : O.fromNullable(makePlantModel()),
     ),
     TE.fromOption(() => "NOT_FOUND" as IErr),
     TE.map((plant) => ({
@@ -41,12 +43,12 @@ export const upsertPlantForHousehold = (
     TE.chainFirst((plant) =>
       TE.tryCatch(
         () => database.plants.database(householdId).doc(plant.id).set(plant),
-        () => "BAD_REQUEST" as IErr
-      )
+        () => "BAD_REQUEST" as IErr,
+      ),
     ),
     TE.chainFirst((plant) =>
-      savePlantImage(householdId, plant.id, O.fromNullable(avatar))
-    )
+      savePlantImage(householdId, plant.id, O.fromNullable(avatar)),
+    ),
   );
 
 /**
@@ -70,7 +72,7 @@ export const upsertPlantForHousehold = (
 export const savePlantImage = (
   householdId: string,
   plantId: string,
-  image: O.Option<ImageModel>
+  image: O.Option<ImageModel>,
 ): TE.TaskEither<IErr, PhotoModel> =>
   pipe(
     image,
@@ -82,19 +84,19 @@ export const savePlantImage = (
         type: "plant",
         householdId,
         associatedId: plantId,
-      })
+      }),
     ),
     TE.chainFirst((photo) =>
       TE.tryCatch(
         () => database.photos.database(householdId).doc(photo.id).set(photo),
-        () => "BAD_REQUEST" as IErr
-      )
+        () => "BAD_REQUEST" as IErr,
+      ),
     ),
-    TE.chainFirst(setPhotoAsPlantAvatar(householdId, plantId))
+    TE.chainFirst(setPhotoAsPlantAvatar(householdId, plantId)),
   );
 
 export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
-  photo: PhotoModel
+  photo: PhotoModel,
 ): TE.TaskEither<IErr, void> =>
   pipe(
     TE.right(photo),
@@ -106,9 +108,9 @@ export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
             .database(householdId)
             .doc(plantId)
             .update({ avatar: photo }),
-        () => "BAD_REQUEST" as IErr
-      )
-    )
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
   );
 
 const trimBase64FromImage = <V extends { base64?: string }>({
@@ -125,26 +127,26 @@ const trimBase64FromImage = <V extends { base64?: string }>({
  * NB: doesn't remove the image from firebase storage.. should probably do that.
  */
 export const deletePlantPhoto = (householdId: string, plantId: string) => (
-  photoId: string
+  photoId: string,
 ): TE.TaskEither<IErr, void> =>
   pipe(
     TE.tryCatch(
       async () => {
         await database.photos.database(householdId).doc(photoId).delete();
       },
-      () => "BAD_REQUEST" as IErr
+      () => "BAD_REQUEST" as IErr,
     ),
     TE.chain(() => {
       if (isPlantAvatarThisPhoto(householdId, plantId)(photoId)) {
         return pipe(
           deletePlantAvatar(householdId, plantId)(),
           TE.chain(() =>
-            setMostRecentPlantPhotoAsPrimary(householdId, plantId, photoId)
-          )
+            setMostRecentPlantPhotoAsPrimary(householdId, plantId, photoId),
+          ),
         );
       }
       return TE.right(void null); // no-op if the deleted photo isn't the primary
-    })
+    }),
   );
 
 /**
@@ -158,12 +160,12 @@ export const deletePlantPhoto = (householdId: string, plantId: string) => (
 export const setMostRecentPlantPhotoAsPrimary = (
   householdId: string,
   plantId: string,
-  excludePhotoId?: string
+  excludePhotoId?: string,
 ): TE.TaskEither<IErr, void> =>
   pipe(
     selectMostRecentPlantPhoto(householdId, plantId, excludePhotoId),
     TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.chain(setPhotoAsPlantAvatar(householdId, plantId))
+    TE.chain(setPhotoAsPlantAvatar(householdId, plantId)),
   );
 
 /**
@@ -173,7 +175,7 @@ export const setMostRecentPlantPhotoAsPrimary = (
  */
 export const deletePlantAvatar = (
   householdId: string,
-  plantId: string
+  plantId: string,
 ) => (): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     async () =>
@@ -182,13 +184,13 @@ export const deletePlantAvatar = (
         .doc(plantId)
         .set(
           { avatar: firebase.firestore.FieldValue.delete() },
-          { merge: true }
+          { merge: true },
         ),
-    () => "BAD_REQUEST" as IErr
+    () => "BAD_REQUEST" as IErr,
   );
 
 export const deletePlantByHouseholdId = (householdId: string) => (
-  plantId: string
+  plantId: string,
 ): TE.TaskEither<IErr, string> =>
   pipe(
     TE.tryCatch(
@@ -196,7 +198,7 @@ export const deletePlantByHouseholdId = (householdId: string) => (
         await database.plants.database(householdId).doc(plantId).delete();
         return householdId;
       },
-      () => "BAD_REQUEST" as IErr
+      () => "BAD_REQUEST" as IErr,
     ),
-    TE.chainFirst(() => deleteTodosByPlant(plantId)(householdId))
+    TE.chainFirst(() => deleteTodosByPlant(plantId)(householdId)),
   );

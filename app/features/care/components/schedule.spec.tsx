@@ -1,16 +1,18 @@
 import { act, render, wait } from "@testing-library/react-native";
-import { makeCareModel } from "@urban-jungle/shared/models/care";
-import { makeTodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
 import moment from "moment";
 import React from "react";
 import { View } from "react-native";
+
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makeTodoModel } from "@urban-jungle/shared/models/todo";
+
 import { defaultState, store, useStore } from "../../../store/state";
 import { selectTodosSchedule, upsertTodo } from "../../todos/store/state";
 import { selectCaresByHouseholdId, upsertCare } from "../store/state";
 
 const makeFirebaseDate = (
-  daysAdjustment: number = 0
+  daysAdjustment: number = 0,
 ): firebase.firestore.Timestamp => {
   const date =
     daysAdjustment === 0
@@ -44,11 +46,11 @@ describe.skip("schedule rendering", () => {
             todo1,
           },
         };
-      })()
+      })(),
     );
 
     const { container, queryByTestId, queryAllByTestId } = render(
-      <Schedule householdId="household1" />
+      <Schedule householdId="household1" />,
     );
     expect(container).toBeDefined();
     expect(queryByTestId(moment().toISOString())).toBeDefined();
@@ -74,7 +76,7 @@ describe.skip("schedule rendering", () => {
             todo1,
           },
         };
-      })()
+      })(),
     );
 
     const { queryAllByTestId } = render(<Schedule householdId="household1" />);
@@ -106,7 +108,7 @@ describe.skip("schedule rendering", () => {
             todo1,
           },
         };
-      })()
+      })(),
     );
 
     const { queryAllByTestId } = render(<Schedule householdId="household1" />);
@@ -144,11 +146,11 @@ describe.skip("schedule rendering", () => {
             care1,
           },
         };
-      })()
+      })(),
     );
 
     const { queryAllByTestId, queryByTestId } = render(
-      <Schedule householdId="household1" />
+      <Schedule householdId="household1" />,
     );
 
     expect(queryByTestId(care1.id)).toBeDefined();
@@ -175,11 +177,11 @@ describe.skip("schedule rendering", () => {
             todo1,
           },
         };
-      })()
+      })(),
     );
 
     const { queryAllByTestId, queryByTestId } = render(
-      <Schedule householdId="household1" />
+      <Schedule householdId="household1" />,
     );
     expect(queryAllByTestId(todo1.id)).toHaveLength(7);
     expect(queryByTestId(care1.id)).toBeNull();
@@ -217,11 +219,11 @@ describe.skip("schedule rendering", () => {
             todo2,
           },
         };
-      })()
+      })(),
     );
 
     const { queryAllByTestId, queryByTestId } = render(
-      <Schedule householdId="household1" />
+      <Schedule householdId="household1" />,
     );
     expect(queryAllByTestId(todo1.id)).toHaveLength(7);
     expect(queryAllByTestId(todo2.id)).toHaveLength(4);
@@ -282,11 +284,11 @@ describe.skip("schedule rendering", () => {
             care1,
           },
         };
-      })()
+      })(),
     );
 
     const { queryAllByTestId, queryByTestId } = render(
-      <Schedule householdId="household1" />
+      <Schedule householdId="household1" />,
     );
 
     expect(queryAllByTestId(todo1.id)).toHaveLength(3);
@@ -367,7 +369,7 @@ const Schedule = ({
 }) => {
   const schedule = useStore(
     () => selectTodosSchedule(householdId)(numberOfDaysToRender),
-    [householdId, numberOfDaysToRender]
+    [householdId, numberOfDaysToRender],
   );
   const cares = useStore(() => selectCaresByHouseholdId(householdId), [
     householdId,

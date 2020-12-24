@@ -1,8 +1,9 @@
-import React from "react";
-import { useForm, constraints } from "./use-form";
-import { Text, TextInput } from "react-native";
 import { render, fireEvent } from "@testing-library/react-native";
+import React from "react";
+import { Text, TextInput } from "react-native";
 import { View } from "react-native";
+
+import { useForm, constraints } from "./use-form";
 
 describe("useForm", () => {
   type Fields = {
@@ -41,7 +42,7 @@ describe("useForm", () => {
           (value, _key, fields) =>
             constraints.isEqualTo(fields.password)(value),
         ],
-      }
+      },
     );
 
     const keys = Object.keys(values) as Array<keyof Fields>;
@@ -82,7 +83,7 @@ describe("useForm", () => {
 
   it("shows errors for all initially invalid values", () => {
     const { queryAllByText } = render(
-      <Form showErrorsOnlyWhenTouched={false} />
+      <Form showErrorsOnlyWhenTouched={false} />,
     );
     expect(queryAllByText("Required")).toHaveLength(3);
   });
@@ -101,7 +102,7 @@ describe("useForm", () => {
           password: "P4ssword",
           confirmPassword: "P4ssword",
         }}
-      />
+      />,
     );
     const emailError = queryByTestId("email-error");
     const passwordError = queryByTestId("password-error");
@@ -113,7 +114,7 @@ describe("useForm", () => {
 
   it("tracks errors for only touched fields", () => {
     const { getByTestId, queryByText } = render(
-      <Form showErrorsOnlyWhenTouched />
+      <Form showErrorsOnlyWhenTouched />,
     );
     const emailInput = getByTestId("email-input");
     expect(emailInput).toBeDefined();
@@ -127,7 +128,7 @@ describe("useForm", () => {
 
   it("tracks all errors", () => {
     const { getByTestId, queryByText } = render(
-      <Form showErrorsOnlyWhenTouched={false} />
+      <Form showErrorsOnlyWhenTouched={false} />,
     );
     const emailInput = getByTestId("email-input");
     const passwordInput = getByTestId("password-input");

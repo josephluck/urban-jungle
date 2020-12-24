@@ -1,7 +1,9 @@
-import { database as makeDatabase } from "@urban-jungle/shared/database/database";
 import { decode, encode } from "base-64";
 import firebase from "firebase";
 import "firebase/firestore";
+
+import { database as makeDatabase } from "@urban-jungle/shared/database/database";
+
 import { env } from "./env";
 
 firebase.initializeApp(env.firebase);

@@ -1,15 +1,16 @@
+import { Gateway } from "@chardskarth/react-gateway";
 import { Feather } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useContext, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { StyleProp, View, ViewProps, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+
+import { navigationDidNavigateBeacon } from "../navigation/navigation";
 import { symbols } from "../theme";
 import { BottomDrawer } from "./bottom-drawer";
 import { TouchableIcon } from "./touchable-icon";
 import { SubHeading } from "./typography";
-import { Gateway } from "@chardskarth/react-gateway";
-import { useIsFocused } from "@react-navigation/native";
-import { useEffect } from "react";
-import { navigationDidNavigateBeacon } from "../navigation/navigation";
 
 export const contextMenuGatewayId = "GATEWAY_CONTEXT_MENU";
 
@@ -85,7 +86,7 @@ export const ContextMenuDotsButton = ({
 
   const height = useMemo(
     () => BUTTON_MARGIN * 2 + children.length * BUTTON_HEIGHT,
-    [children.length]
+    [children.length],
   );
 
   return (
@@ -126,7 +127,7 @@ export const ContextMenuTouchable = ({
 
   const height = useMemo(
     () => BUTTON_MARGIN * 2 + buttons.length * BUTTON_HEIGHT,
-    [buttons.length]
+    [buttons.length],
   );
 
   const isFocused = useIsFocused();

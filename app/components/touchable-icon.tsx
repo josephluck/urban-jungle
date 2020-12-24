@@ -1,7 +1,8 @@
 import React from "react";
-import styled, { useTheme } from "styled-components/native";
-import { symbols } from "../theme";
 import { StyleProp, ViewStyle } from "react-native";
+import styled, { useTheme } from "styled-components/native";
+
+import { symbols } from "../theme";
 import { Icon } from "./icon";
 
 export const TouchableIcon = ({

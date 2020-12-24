@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 type Paginated = any;
 
 export const useFetcher = <F extends (...args: any[]) => Promise<any>>(
-  fetch: F
+  fetch: F,
 ) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -23,7 +23,7 @@ export const useFetcher = <F extends (...args: any[]) => Promise<any>>(
         setLoading(false);
       }
     },
-    [fetch]
+    [fetch],
   ) as typeof fetch;
 
   const fetchInitial = useCallback(
@@ -31,7 +31,7 @@ export const useFetcher = <F extends (...args: any[]) => Promise<any>>(
       setLoaded(false);
       return await fetchData(...args);
     },
-    [fetchData]
+    [fetchData],
   ) as typeof fetch;
 
   const refresh = useCallback(
@@ -43,7 +43,7 @@ export const useFetcher = <F extends (...args: any[]) => Promise<any>>(
         setRefreshing(false);
       }
     },
-    [fetchData]
+    [fetchData],
   ) as typeof fetch;
 
   return {
@@ -62,13 +62,13 @@ export const useFetcher = <F extends (...args: any[]) => Promise<any>>(
 
 type Fetcher = (
   from: number,
-  size: number
+  size: number,
 ) => (...args: any[]) => Promise<Paginated<any>>;
 
 export const usePaginatedFetcher = <Fn extends Fetcher>(
   fetch: Fn,
   idKeyName: string,
-  size = 30
+  size = 30,
 ) => {
   type Return = ReturnType<typeof fetch>;
 
@@ -96,7 +96,7 @@ export const usePaginatedFetcher = <Fn extends Fetcher>(
         setErrored(true);
       }
     },
-    [fetch, ids.length, idKeyName]
+    [fetch, ids.length, idKeyName],
   );
 
   const fetchInitial = useCallback(
@@ -111,7 +111,7 @@ export const usePaginatedFetcher = <Fn extends Fetcher>(
         }
       }
     },
-    [fetchData, loadingInitial]
+    [fetchData, loadingInitial],
   ) as Return;
 
   const refresh = useCallback(
@@ -125,7 +125,7 @@ export const usePaginatedFetcher = <Fn extends Fetcher>(
         }
       }
     },
-    [fetchData, refreshing]
+    [fetchData, refreshing],
   ) as Return;
 
   const fetchNextPage = useCallback(
@@ -139,7 +139,7 @@ export const usePaginatedFetcher = <Fn extends Fetcher>(
         }
       }
     },
-    [fetchData, loadingNextPage, endReached]
+    [fetchData, loadingNextPage, endReached],
   ) as Return;
 
   return {

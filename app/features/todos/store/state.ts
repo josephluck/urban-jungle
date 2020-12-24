@@ -1,9 +1,11 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
+
 import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
+
 import { normalizedStateFactory } from "../../../store/factory";
 import {
   selectMostRecentCareForTodo,
@@ -26,10 +28,10 @@ export const removeTodos = methods.removeMany;
 
 export const selectTodosByHouseholdIdAndPlantId = (
   householdId: string,
-  plantId: string
+  plantId: string,
 ): TodoModel[] =>
   selectTodosByHouseholdId(householdId).filter(
-    (todo) => todo.plantId === plantId
+    (todo) => todo.plantId === plantId,
   );
 
 /**
@@ -37,22 +39,22 @@ export const selectTodosByHouseholdIdAndPlantId = (
  * it'll return today. If it's never been done, it'll also return today.
  */
 export const selectTodoNextDue = (householdId: string) => (
-  todo: TodoModel
+  todo: TodoModel,
 ): moment.Moment =>
   pipe(
     selectMostRecentCareForTodo(householdId)(todo.id),
     O.map((lastCare) =>
       moment(lastCare.dateCreated.toDate()).add(
         todo.recurrenceCount,
-        todo.recurrenceInterval
-      )
+        todo.recurrenceInterval,
+      ),
     ),
     O.filter((nextCare) => nextCare.isSameOrAfter(moment(), "day")),
-    O.getOrElse(() => moment())
+    O.getOrElse(() => moment()),
   );
 
 export const selectTodosSchedule = (householdId: string) => (
-  numberOfDays: number
+  numberOfDays: number,
 ) => {
   const currentDate = moment();
   const todos = selectTodosByHouseholdId(householdId);
@@ -65,7 +67,7 @@ export const selectTodosSchedule = (householdId: string) => (
           ? nextDue
           : nextDue
               .clone()
-              .add(todo.recurrenceCount * i, todo.recurrenceInterval)
+              .add(todo.recurrenceCount * i, todo.recurrenceInterval),
       ),
     };
   });
@@ -75,7 +77,7 @@ export const selectTodosSchedule = (householdId: string) => (
       date,
       todos: todosWithDueDates
         .filter((todo) =>
-          todo.dueDates.some((dueDate) => dueDate.isSame(date, "day"))
+          todo.dueDates.some((dueDate) => dueDate.isSame(date, "day")),
         )
         .map(({ dueDates, ...todo }) => ({
           ...todo,
@@ -86,10 +88,10 @@ export const selectTodosSchedule = (householdId: string) => (
 };
 
 export const selectTodosForPlant = (plantId: string) => (
-  householdId: string
+  householdId: string,
 ): TodoModel[] =>
   selectTodosByHouseholdId(householdId).filter(
-    (todo) => todo.plantId === plantId
+    (todo) => todo.plantId === plantId,
   );
 
 export type TodoWithPlantModel = TodoModel & {
@@ -97,7 +99,7 @@ export type TodoWithPlantModel = TodoModel & {
 };
 
 export const selectTodosAndPlantsByIds = (householdId: string) => (
-  todoIds: string[]
+  todoIds: string[],
 ): TodoWithPlantModel[] =>
   selectTodosByIds(householdId, todoIds)
     .map((todo) => ({
@@ -108,7 +110,7 @@ export const selectTodosAndPlantsByIds = (householdId: string) => (
 
 export const sortTodosByLocationAndPlant = (
   { title: titleA, plant: plantA }: TodoWithPlantModel,
-  { title: titleB, plant: plantB }: TodoWithPlantModel
+  { title: titleB, plant: plantB }: TodoWithPlantModel,
 ): number =>
   pipe(
     sequenceTO(plantA, plantB),
@@ -121,19 +123,19 @@ export const sortTodosByLocationAndPlant = (
         locationA.localeCompare(locationB) ||
         nameA.localeCompare(nameB) ||
         idA.localeCompare(idB) ||
-        titleA.localeCompare(titleB)
-    )
+        titleA.localeCompare(titleB),
+    ),
   );
 
 export const selectMostLovedByForTodo = (householdId: string) => (
-  todoId: string
+  todoId: string,
 ) => {
   const profileIdCareCount = selectCaresForTodo(householdId)(todoId).reduce(
     (acc, care) => ({
       ...acc,
       [care.profileId]: acc[care.profileId] ? acc[care.profileId] + 1 : 1,
     }),
-    {} as Record<string, number>
+    {} as Record<string, number>,
   );
   const profileIdWithMostCares = Object.keys(profileIdCareCount).reduce(
     (prevId, currId) =>
@@ -142,13 +144,13 @@ export const selectMostLovedByForTodo = (householdId: string) => (
         : profileIdCareCount[currId] > profileIdCareCount[prevId]
         ? currId
         : prevId,
-    ""
+    "",
   );
   return pipe(
     selectProfileById2(profileIdWithMostCares),
     O.map((profile) => ({
       ...profile,
       count: profileIdCareCount[profileIdWithMostCares],
-    }))
+    })),
   );
 };

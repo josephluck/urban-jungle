@@ -1,10 +1,14 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
-import { StackScreenProps } from "@react-navigation/stack";
 import styled from "styled-components/native";
+
+import { sequenceTO } from "@urban-jungle/shared/fp/option";
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
+
 import {
   ContextMenuDotsButton,
   ContextMenuIconButton,
@@ -13,10 +17,9 @@ import { BackableScreenLayout } from "../../../components/layouts/backable-scree
 import { ListItem } from "../../../components/list-item";
 import { TodoOverview } from "../../../components/todo-overview";
 import { SubHeading } from "../../../components/typography";
-import { sequenceTO } from "@urban-jungle/shared/fp/option";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
-import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import { selectCaresForTodo } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
@@ -26,7 +29,6 @@ import {
   selectTodoByHouseholdId,
 } from "../store/state";
 import { manageTodoRoute } from "./manage-todo-screen";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 
 export const TodoScreen = ({
   navigation,
@@ -35,31 +37,31 @@ export const TodoScreen = ({
   const { todoId, plantId } = todoRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
 
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const plant = useStore(() =>
-    selectPlantByHouseholdId(selectedHouseholdId, plantId)
+    selectPlantByHouseholdId(selectedHouseholdId, plantId),
   );
 
   const todo = useStore(() =>
-    selectTodoByHouseholdId(selectedHouseholdId, todoId)
+    selectTodoByHouseholdId(selectedHouseholdId, todoId),
   );
 
   const cares = useStore(
     () =>
       selectCaresForTodo(selectedHouseholdId)(todoId).sort(sortByMostRecent),
-    [todoId, selectedHouseholdId]
+    [todoId, selectedHouseholdId],
   );
 
   const mostLovedBy = useStore(
     () => selectMostLovedByForTodo(selectedHouseholdId)(todoId),
-    [todoId, selectedHouseholdId]
+    [todoId, selectedHouseholdId],
   );
 
   const handleGoBack = useCallback(() => {
@@ -75,7 +77,7 @@ export const TodoScreen = ({
           plantId: todoModel.plantId,
           todoId: todoModel.id,
         });
-      })
+      }),
     );
   }, [todoId, todo]);
 
@@ -88,9 +90,9 @@ export const TodoScreen = ({
       pipe(
         todo,
         O.map((t) => t.title),
-        O.getOrElse(() => "todo")
+        O.getOrElse(() => "todo"),
       ),
-    [todo]
+    [todo],
   );
 
   return (
@@ -127,8 +129,8 @@ export const TodoScreen = ({
                     <View key="most-done-by">
                       <ListItem title={profile.name} image={profile.avatar} />
                     </View>,
-                  ]
-                )
+                  ],
+                ),
               )}
               <SectionHeading>
                 <SubHeading weight="bold">History</SubHeading>
@@ -140,14 +142,14 @@ export const TodoScreen = ({
                     image={care.profile.avatar}
                     title={`By ${care.profile.name}`}
                     detail={`On ${moment(care.dateCreated.toDate()).format(
-                      "Do MMM YY"
+                      "Do MMM YY",
                     )}`}
                   />
                 ))}
               </View>
             </ContentContainer>
-          )
-        )
+          ),
+        ),
       )}
     </BackableScreenLayout>
   );

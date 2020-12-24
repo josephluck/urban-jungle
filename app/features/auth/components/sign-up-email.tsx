@@ -1,22 +1,23 @@
-import React, { useCallback } from "react";
-import { pipe } from "fp-ts/lib/pipeable";
+import { StackScreenProps } from "@react-navigation/stack";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useCallback } from "react";
+import { View } from "react-native";
+import styled from "styled-components/native";
 
+import { IErr } from "@urban-jungle/shared/utils/err";
+
+import { Button } from "../../../components/button";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
-import { TextField } from "../../../components/text-field";
-import { useRunWithUIState } from "../../../store/ui";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { Button } from "../../../components/button";
-import styled from "styled-components/native";
-import { IErr } from "@urban-jungle/shared/utils/err";
-import { StackScreenProps } from "@react-navigation/stack";
-import { routeNames } from "./route-names";
-import { useMachine } from "../machine/machine";
-import { SplashContainer } from "./splash";
-import { View } from "react-native";
+import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { useMachine } from "../machine/machine";
+import { routeNames } from "./route-names";
+import { SplashContainer } from "./splash";
 
 const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
   const { execute } = useMachine();
@@ -24,7 +25,7 @@ const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
 
   const { registerTextInput, submit } = useForm<{ email: string }>(
     { email: "" },
-    { email: [constraints.isRequired, constraints.isString] }
+    { email: [constraints.isRequired, constraints.isString] },
   );
 
   const handleSignUp = useCallback(async () => {
@@ -36,8 +37,8 @@ const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
           execute((ctx) => {
             ctx.emailAddress = fields.email;
           });
-        })
-      )
+        }),
+      ),
     );
   }, [submit, execute]);
 

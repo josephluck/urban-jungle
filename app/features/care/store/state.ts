@@ -1,6 +1,8 @@
-import { CareModel } from "@urban-jungle/shared/models/care";
 import * as O from "fp-ts/lib/Option";
 import moment from "moment";
+
+import { CareModel } from "@urban-jungle/shared/models/care";
+
 import { normalizedStateFactory } from "../../../store/factory";
 
 const methods = normalizedStateFactory<CareModel>("cares");
@@ -15,10 +17,10 @@ export const removeCares = methods.removeMany;
 
 export const selectCaresByHouseholdIdAndPlantId = (
   householdId: string,
-  plantId: string
+  plantId: string,
 ): CareModel[] =>
   selectCaresByHouseholdId(householdId).filter(
-    (care) => care.plantId === plantId
+    (care) => care.plantId === plantId,
   );
 
 export const sortCaresByMostRecent = (cares: CareModel[]): CareModel[] =>
@@ -26,33 +28,33 @@ export const sortCaresByMostRecent = (cares: CareModel[]): CareModel[] =>
 
 export const selectMostRecentCareByHouseholdIdAndPlantId = (
   householdId: string,
-  plantId: string
+  plantId: string,
 ): O.Option<CareModel> =>
   O.fromNullable(
     sortCaresByMostRecent(
-      selectCaresByHouseholdIdAndPlantId(householdId, plantId)
-    )[0]
+      selectCaresByHouseholdIdAndPlantId(householdId, plantId),
+    )[0],
   );
 
 export const selectCaresForTodo = (householdId: string) => (
-  todoId: string
+  todoId: string,
 ): CareModel[] =>
   selectCaresByHouseholdId(householdId).filter(
-    (care) => care.todoId === todoId
+    (care) => care.todoId === todoId,
   );
 
 export const selectCaresForPlant = (householdId: string) => (
-  plantId: string
+  plantId: string,
 ): CareModel[] =>
   selectCaresByHouseholdId(householdId).filter(
-    (care) => care.plantId === plantId
+    (care) => care.plantId === plantId,
   );
 
 export const selectMostRecentCareForTodo = (householdId: string) => (
-  todoId: string
+  todoId: string,
 ): O.Option<CareModel> =>
   O.fromNullable(
-    sortCaresByMostRecent(selectCaresForTodo(householdId)(todoId))[0]
+    sortCaresByMostRecent(selectCaresForTodo(householdId)(todoId))[0],
   );
 
 export const selectCareHistory = (householdId: string) => (days: number) => {
@@ -62,7 +64,7 @@ export const selectCareHistory = (householdId: string) => (days: number) => {
     return {
       date,
       cares: cares.filter((care) =>
-        moment(care.dateCreated.toDate()).isSame(date, "day")
+        moment(care.dateCreated.toDate()).isSame(date, "day"),
       ),
     };
   });

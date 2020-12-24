@@ -1,6 +1,8 @@
-import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import firebase from "firebase";
 import { useEffect } from "react";
+
+import { PhotoModel } from "@urban-jungle/shared/models/photo";
+
 import { database } from "../../../database";
 import { removePhotos, upsertPhotos } from "../../photos/store/state";
 
@@ -25,7 +27,7 @@ export const HouseholdPhotosSubscription = ({
 };
 
 const handlePlantPhotoSnapshot = (householdId: string) => async (
-  snapshot: Snapshot
+  snapshot: Snapshot,
 ) => {
   const addedOrModified: PhotoModel[] = snapshot
     .docChanges()
@@ -41,6 +43,4 @@ const handlePlantPhotoSnapshot = (householdId: string) => async (
   removePhotos(householdId, removed);
 };
 
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;
+type Snapshot = firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>;

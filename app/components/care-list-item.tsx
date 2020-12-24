@@ -1,7 +1,9 @@
-import { CareModel } from "@urban-jungle/shared/models/care";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useMemo } from "react";
+
+import { CareModel } from "@urban-jungle/shared/models/care";
+
 import { ListItem } from "./list-item";
 
 export const CareListItem = React.memo(
@@ -11,9 +13,9 @@ export const CareListItem = React.memo(
         pipe(
           O.fromNullable(care.plant.avatar),
           O.map((avatar) => avatar.uri),
-          O.getOrElse(() => "")
+          O.getOrElse(() => ""),
         ),
-      [care.id]
+      [care.id],
     );
     return (
       <ListItem
@@ -23,5 +25,5 @@ export const CareListItem = React.memo(
       />
     );
   },
-  (prev, next) => prev.care.id !== next.care.id
+  (prev, next) => prev.care.id !== next.care.id,
 );

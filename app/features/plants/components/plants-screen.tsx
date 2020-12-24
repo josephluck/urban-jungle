@@ -1,10 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
-import styled from "styled-components/native";
 import { TouchableOpacity } from "react-native";
+import styled from "styled-components/native";
+
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
+
 import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
@@ -19,21 +21,21 @@ import { plantRoute } from "./plant-screen";
 
 export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
 
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const plants = useStore(() =>
-    selectPlantsByHouseholdId(selectedHouseholdId).sort(sortByMostRecent)
+    selectPlantsByHouseholdId(selectedHouseholdId).sort(sortByMostRecent),
   );
 
   const handleAddNew = useCallback(
     () => newPlantPictureRoute.navigateTo(navigation, {}),
-    []
+    [],
   );
 
   return (
@@ -61,7 +63,7 @@ export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
                   image={pipe(
                     O.fromNullable(plant.avatar),
                     O.map((avatar) => avatar.uri),
-                    O.getOrElse(() => "")
+                    O.getOrElse(() => ""),
                   )}
                 />
               </TouchableOpacity>

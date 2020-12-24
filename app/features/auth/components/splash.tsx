@@ -1,14 +1,15 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import React, { useCallback } from "react";
+import { View } from "react-native";
+import styled from "styled-components/native";
+
+import { Button } from "../../../components/button";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ScreenTitle } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { StackScreenProps } from "@react-navigation/stack";
-import { Button } from "../../../components/button";
 import { symbols } from "../../../theme";
 import { useMachine } from "../machine/machine";
-import { View } from "react-native";
 import { routeNames } from "./route-names";
-import styled from "styled-components/native";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 
 const SplashScreen = ({}: StackScreenProps<{}>) => {
   const { execute } = useMachine();

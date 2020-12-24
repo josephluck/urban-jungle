@@ -1,9 +1,11 @@
+import * as O from "fp-ts/lib/Option";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useEffect } from "react";
+
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
-import React, { useEffect } from "react";
+
 import { database } from "../../../database";
 import { useStore } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
@@ -18,7 +20,7 @@ export const CurrentProfileHouseholdsSubscription = () => {
   const profileId_ = useStore(selectCurrentUserId);
   const profileId = pipe(
     profileId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   useEffect(() => {
@@ -51,7 +53,7 @@ const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
     O.fromNullable(addedOrModified[0]),
     TE.fromOption(() => "NOT_FOUND" as IErr),
     TE.map((household) => household.id),
-    TE.chain(storeSelectedHouseholdIdToStorageIfNotPresent)
+    TE.chain(storeSelectedHouseholdIdToStorageIfNotPresent),
   );
   await storeSelectedHouseholdIdIfNeeded();
 
@@ -60,10 +62,8 @@ const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
       deleteHousehold(household.id);
       // NB: this works because we do not fetch 3rd degree users' households.
       return removeHouseholdFromProfile(household.id)();
-    })
+    }),
   );
 };
 
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;
+type Snapshot = firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>;

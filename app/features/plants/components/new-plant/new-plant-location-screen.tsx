@@ -1,10 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
+
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { Button } from "../../../../components/button";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
 import { PickerField } from "../../../../components/picker-field";
@@ -27,9 +29,11 @@ export const NewPlantLocationScreen = ({
 }: StackScreenProps<{}>) => {
   const [newLocationFieldVisible, setNewLocationFieldVisible] = useState(false);
 
-  const { submit, registerSinglePickerInput, registerTextInput } = useForm<
-    Fields
-  >(
+  const {
+    submit,
+    registerSinglePickerInput,
+    registerTextInput,
+  } = useForm<Fields>(
     {
       location: "",
       newLocation: "",
@@ -37,18 +41,18 @@ export const NewPlantLocationScreen = ({
     {
       location: [],
       newLocation: [],
-    }
+    },
   );
 
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
 
   const plantFields = useStore(selectPlantFields);
 
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const locations = useStore(() => selectUniqueLocations(selectedHouseholdId), [
@@ -67,19 +71,19 @@ export const NewPlantLocationScreen = ({
           TE.mapLeft(() => "VALIDATION" as IErr),
           TE.map(({ location }) => ({ ...plantFields, location })),
           TE.chain((plant) =>
-            upsertPlantForHousehold(plant)(selectedHouseholdId)
+            upsertPlantForHousehold(plant)(selectedHouseholdId),
           ),
-          TE.map(() => navigation.goBack())
-        )
+          TE.map(() => navigation.goBack()),
+        ),
       ),
-    [selectedHouseholdId, submit, plantFields]
+    [selectedHouseholdId, submit, plantFields],
   );
 
   const handleSkip = useCallback(() => {}, []);
 
   const handleShowNewLocationField = useCallback(
     () => setNewLocationFieldVisible(true),
-    []
+    [],
   );
 
   // TODO: support progress bar

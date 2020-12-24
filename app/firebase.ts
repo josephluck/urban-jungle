@@ -1,8 +1,8 @@
-import { env } from "./env";
+import { decode, encode } from "base-64";
 import firebase from "firebase";
 import "firebase/firestore";
 
-import { decode, encode } from "base-64";
+import { env } from "./env";
 
 // @ts-ignore
 if (!global.btoa) {

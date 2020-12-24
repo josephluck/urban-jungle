@@ -1,9 +1,10 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
+
 import { Button } from "../../../../components/button";
 import { CircleButton, CircleImage } from "../../../../components/circle-image";
 import { Icon } from "../../../../components/icon";
@@ -36,8 +37,8 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
         }),
         TE.map((image) => {
           setImages((curr) => [...curr, image]);
-        })
-      )
+        }),
+      ),
     );
   }, []);
 
@@ -57,10 +58,10 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
           }),
           TE.map(() => {
             newPlantSuggestionRoute.navigateTo(navigation, {});
-          })
-        )
+          }),
+        ),
       ),
-    [images.length]
+    [images.length],
   );
 
   const handleTakePictureAndSubmit = useCallback(
@@ -79,15 +80,15 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
           }),
           TE.map(() => {
             newPlantSuggestionRoute.navigateTo(navigation, {});
-          })
-        )
+          }),
+        ),
       ),
-    []
+    [],
   );
 
   const handleSkip = useCallback(
     () => newPlantNicknameRoute.navigateTo(navigation, {}),
-    []
+    [],
   );
 
   // TODO: support progress bar

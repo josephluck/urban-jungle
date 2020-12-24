@@ -1,5 +1,7 @@
-import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { useEffect } from "react";
+
+import { TodoModel } from "@urban-jungle/shared/models/todo";
+
 import { database } from "../../../database";
 import { removeTodos, upsertTodos } from "../store/state";
 
@@ -23,7 +25,7 @@ export const HouseholdTodosSubscription = ({
 };
 
 const handleTodoSnapshot = (householdId: string) => async (
-  snapshot: Snapshot
+  snapshot: Snapshot,
 ) => {
   const addedOrModified: TodoModel[] = snapshot
     .docChanges()
@@ -39,6 +41,4 @@ const handleTodoSnapshot = (householdId: string) => async (
   removeTodos(householdId, removed);
 };
 
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;
+type Snapshot = firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>;

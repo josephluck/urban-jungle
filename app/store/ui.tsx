@@ -1,14 +1,16 @@
-import { IErr } from "@urban-jungle/shared/utils/err";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import { useContext } from "react";
 import React, { createContext, useCallback, useState } from "react";
 import { Keyboard, View } from "react-native";
-import { store } from "./state";
+
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { BottomDrawer } from "../components/bottom-drawer";
-import { BodyText, SubHeading, SubScriptText } from "../components/typography";
 import { Button } from "../components/button";
+import { BodyText, SubHeading, SubScriptText } from "../components/typography";
 import { symbols } from "../theme";
+import { store } from "./state";
 
 export const setLoadingOn = store.createMutator((s) => {
   s.ui.loading = true;
@@ -37,7 +39,7 @@ export const finishLoadingWithError = <V extends any>(error: V): V => {
 };
 
 export const pipeWithUILoading = <V extends TE.TaskEither<IErr, any>>(
-  task: V
+  task: V,
 ): V =>
   pipe(task, TE.map(finishLoading), TE.mapLeft(finishLoadingWithError)) as V;
 
@@ -113,7 +115,7 @@ export const useRunWithUIState = <V extends TE.TaskEither<IErr, any>>() => {
           setError(err);
         }
         return err;
-      })
+      }),
     )();
   }, []);
 };
@@ -129,7 +131,7 @@ export const UIEffect = {
 
 // TODO deprecate this
 export const runWithUIState = <V extends TE.TaskEither<IErr, any>>(
-  task: V
+  task: V,
 ): ReturnType<typeof task> => {
   startLoading(void null);
   return pipeWithUILoading(task)() as ReturnType<typeof task>;

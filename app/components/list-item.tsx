@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
+
 import { symbols } from "../theme";
 import { CircleImage } from "./circle-image";
 import { BodyText, SubHeading } from "./typography";

@@ -1,6 +1,6 @@
 import { Condition, State } from "@josephluck/machi/src/machine";
-import { routeNames } from "../components/route-names";
 
+import { routeNames } from "../components/route-names";
 import { AdditionalEntryData, Context } from "./types";
 
 type Conditions = Record<string, Condition<Context>>;

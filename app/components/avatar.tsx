@@ -1,9 +1,10 @@
-import React from "react";
 import * as O from "fp-ts/lib/Option";
-import styled from "styled-components/native";
 import { pipe } from "fp-ts/lib/pipeable";
-import { AvatarCircle } from "./avatar-circle";
+import React from "react";
+import styled from "styled-components/native";
+
 import { AvatarSize, avatarSizeToValue, symbols } from "../theme";
+import { AvatarCircle } from "./avatar-circle";
 
 export const Avatar = ({
   src,
@@ -22,7 +23,7 @@ export const Avatar = ({
           size={size}
           letter={pipe(
             letter,
-            O.getOrElse(() => "👋")
+            O.getOrElse(() => "👋"),
           )}
         />
       ),
@@ -30,8 +31,8 @@ export const Avatar = ({
         <AvatarCircle size={size}>
           <AvatarImage size={size} source={{ uri }} />
         </AvatarCircle>
-      )
-    )
+      ),
+    ),
   );
 
 export const AvatarPlaceholder = ({

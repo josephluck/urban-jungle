@@ -3,6 +3,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useState } from "react";
 import { FlatList, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+
 import { Button } from "../../../../components/button";
 import { CircleImage } from "../../../../components/circle-image";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
@@ -39,13 +40,13 @@ export const NewPlantSuggestionScreen = ({
           setPlantFields({ name: suggestion.plant_name });
           setIdentificationSuggestion(suggestion);
           newPlantNicknameRoute.navigateTo(navigation, {});
-        })
+        }),
       ),
-    [selectedSuggestion]
+    [selectedSuggestion],
   );
   const handleSkip = useCallback(
     () => newPlantNicknameRoute.navigateTo(navigation, {}),
-    []
+    [],
   );
 
   // TODO: support progress bar
@@ -83,7 +84,7 @@ export const NewPlantSuggestionScreen = ({
           const isSelected = pipe(
             selectedSuggestion,
             O.filter((suggestion) => suggestion.id === item.id),
-            O.isSome
+            O.isSome,
           );
           return (
             <SuggestionButton
@@ -94,7 +95,7 @@ export const NewPlantSuggestionScreen = ({
                 uri={pipe(
                   O.fromNullable(item.similar_images[0]),
                   O.map((image) => image.url),
-                  O.getOrElse(() => "")
+                  O.getOrElse(() => ""),
                 )}
                 withTickBadge={isSelected}
               />
@@ -102,10 +103,10 @@ export const NewPlantSuggestionScreen = ({
                 {pipe(
                   O.fromNullable(item.plant_details),
                   O.filterMap((details) =>
-                    O.fromNullable(details.common_names)
+                    O.fromNullable(details.common_names),
                   ),
                   O.filterMap((names) => O.fromNullable(names[0])),
-                  O.getOrElse(() => item.plant_name)
+                  O.getOrElse(() => item.plant_name),
                 )}
               </SuggestionName>
             </SuggestionButton>

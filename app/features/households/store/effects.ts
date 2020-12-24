@@ -1,10 +1,12 @@
-import { HouseholdModel } from "@urban-jungle/shared/models/household";
-import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import { AsyncStorage, Share } from "react-native";
 import uuid from "uuid";
+
+import { HouseholdModel } from "@urban-jungle/shared/models/household";
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { database } from "../../../database";
 import { makeHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 import { selectCurrentUserId } from "../../auth/store/state";
@@ -17,7 +19,7 @@ import { setSelectedHouseholdId } from "./state";
 export const createHouseholdForProfile = (
   household: Partial<
     Omit<HouseholdModel, "id" | "dateCreated">
-  > = defaultHousehold
+  > = defaultHousehold,
 ) => (profileId: string): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
     TE.right({
@@ -29,28 +31,28 @@ export const createHouseholdForProfile = (
     TE.chainFirst((household) =>
       TE.tryCatch(
         () => database.households.database.doc(household.id).set(household),
-        () => "BAD_REQUEST" as IErr
-      )
+        () => "BAD_REQUEST" as IErr,
+      ),
     ),
     TE.map((household) => household.id),
     TE.chainFirst((id) => storeSelectedHouseholdIdToStorage(id)),
     TE.chain(createProfileHouseholdRelation(profileId)),
-    TE.chain(fetchHousehold)
+    TE.chain(fetchHousehold),
   );
 
 export const createHouseholdForCurrentProfile = (
   household: Partial<
     Omit<HouseholdModel, "id" | "dateCreated">
-  > = defaultHousehold
+  > = defaultHousehold,
 ): TE.TaskEither<IErr, HouseholdModel> =>
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(createHouseholdForProfile(household))
+    TE.chain(createHouseholdForProfile(household)),
   );
 
 export const fetchHousehold = (
-  id: string
+  id: string,
 ): TE.TaskEither<IErr, HouseholdModel> =>
   TE.tryCatch(
     async () => {
@@ -60,7 +62,7 @@ export const fetchHousehold = (
       }
       return (response.data() as unknown) as HouseholdModel;
     },
-    () => "NOT_FOUND"
+    () => "NOT_FOUND",
   );
 
 /**
@@ -69,13 +71,13 @@ export const fetchHousehold = (
  * Returns the household ID
  */
 export const createProfileHouseholdRelation = (profileId: string) => (
-  householdId: string
+  householdId: string,
 ): TE.TaskEither<IErr, string> =>
   pipe(
     TE.right(householdId),
     TE.chain(addProfileToHousehold(profileId)),
     TE.chain(addHouseholdToCurrentProfile),
-    TE.map(() => householdId)
+    TE.map(() => householdId),
   );
 
 /**
@@ -83,7 +85,7 @@ export const createProfileHouseholdRelation = (profileId: string) => (
  * Returns the householdId.
  */
 const addProfileToHousehold = (profileId: string) => (
-  householdId: string
+  householdId: string,
 ): TE.TaskEither<IErr, string> =>
   TE.tryCatch(
     async () => {
@@ -92,18 +94,18 @@ const addProfileToHousehold = (profileId: string) => (
       });
       return householdId;
     },
-    () => "BAD_REQUEST"
+    () => "BAD_REQUEST",
   );
 
 export const removeProfileFromHousehold = (profileId: string) => (
-  householdId: string
+  householdId: string,
 ): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     () =>
       database.households.database.doc(householdId).update({
         profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
       }),
-    () => "BAD_REQUEST"
+    () => "BAD_REQUEST",
   );
 
 /**
@@ -112,11 +114,11 @@ export const removeProfileFromHousehold = (profileId: string) => (
 export const removeHousehold = (id: string): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     async () => await database.households.database.doc(id).delete(),
-    () => "BAD_REQUEST"
+    () => "BAD_REQUEST",
   );
 
 export const shareHouseholdInvitation = (
-  householdId: string
+  householdId: string,
 ): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     async () => {
@@ -140,7 +142,7 @@ export const shareHouseholdInvitation = (
         // TODO: handle
       }
     },
-    () => "BAD_REQUEST"
+    () => "BAD_REQUEST",
   );
 
 /**
@@ -149,11 +151,11 @@ export const shareHouseholdInvitation = (
  * Returns the value stored in AsyncStorage once completed.
  */
 export const storeSelectedHouseholdIdToStorageIfNotPresent = (
-  id: string
+  id: string,
 ): TE.TaskEither<IErr, string> => {
   return pipe(
     retrieveSelectedHouseholdIdFromStorage(),
-    TE.orElse(() => storeSelectedHouseholdIdToStorage(id))
+    TE.orElse(() => storeSelectedHouseholdIdToStorage(id)),
   );
 };
 
@@ -164,7 +166,7 @@ export const storeSelectedHouseholdIdToStorageIfNotPresent = (
  * Returns the household Id
  */
 export const storeSelectedHouseholdIdToStorage = (
-  id: string
+  id: string,
 ): TE.TaskEither<IErr, string> =>
   TE.tryCatch(
     async () => {
@@ -172,7 +174,7 @@ export const storeSelectedHouseholdIdToStorage = (
       await AsyncStorage.setItem(SELECTED_HOUSEHOLD_ID_KEY, id);
       return id;
     },
-    () => "BAD_REQUEST"
+    () => "BAD_REQUEST",
   );
 
 /**
@@ -190,7 +192,7 @@ export const retrieveSelectedHouseholdIdFromStorage = (): TE.TaskEither<
       }
       return id;
     },
-    () => "BAD_REQUEST"
+    () => "BAD_REQUEST",
   );
 
 /**

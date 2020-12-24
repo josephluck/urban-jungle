@@ -1,9 +1,10 @@
 import React from "react";
 import { Modal, ActivityIndicator } from "react-native";
 import styled from "styled-components/native";
-import { symbols } from "../theme";
+
 import { useStore } from "../store/state";
 import { selectLoading } from "../store/ui";
+import { symbols } from "../theme";
 
 export const GlobalLoading = () => {
   const visible = useStore(selectLoading);

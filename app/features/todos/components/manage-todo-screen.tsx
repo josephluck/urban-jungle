@@ -1,11 +1,13 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { TodoModel } from "@urban-jungle/shared/models/todo";
-import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
+
+import { TodoModel } from "@urban-jungle/shared/models/todo";
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { Button } from "../../../components/button";
 import { DualNumberPickerField } from "../../../components/dual-number-picker-field";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -64,7 +66,7 @@ export const ManageTodoScreen = ({
   route,
 }: StackScreenProps<Record<keyof ManageTodoParams, undefined>>) => {
   const { plantId, todoId, ...initialFields } = manageTodoRoute.getParams(
-    route
+    route,
   );
 
   const {
@@ -86,16 +88,16 @@ export const ManageTodoScreen = ({
       activeInMonths: [],
       recurrenceInterval: [constraints.isRequired],
       recurrenceCount: [constraints.isRequired],
-    }
+    },
   );
 
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
 
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const handleGoBack = useCallback(() => {
@@ -108,11 +110,11 @@ export const ManageTodoScreen = ({
         TE.fromEither(submit()),
         TE.mapLeft(() => "VALIDATION" as IErr),
         TE.chain((todo) =>
-          upsertTodoForPlant(plantId, todoId)(selectedHouseholdId)(todo)
+          upsertTodoForPlant(plantId, todoId)(selectedHouseholdId)(todo),
         ),
-        TE.map(() => navigation.goBack())
+        TE.map(() => navigation.goBack()),
       )(),
-    [selectedHouseholdId, plantId, submit]
+    [selectedHouseholdId, plantId, submit],
   );
 
   return (
@@ -134,7 +136,7 @@ export const ManageTodoScreen = ({
           options={recurrenceOptions}
           {...registerDualNumberPickerField(
             "recurrenceCount",
-            "recurrenceInterval"
+            "recurrenceInterval",
           )}
         />
         <PickerField
@@ -170,7 +172,7 @@ export const manageTodoRoute = makeNavigationRoute<ManageTodoParams>({
   serializeParams: ({ recurrenceCount, activeInMonths, ...params }) => ({
     recurrenceCount: recurrenceCount ? recurrenceCount.toString() : "1",
     activeInMonths: JSON.stringify(
-      activeInMonths ? activeInMonths : defaultMonths
+      activeInMonths ? activeInMonths : defaultMonths,
     ),
     ...params,
   }),
@@ -188,7 +190,7 @@ export const manageTodoRoute = makeNavigationRoute<ManageTodoParams>({
 });
 
 const deserializeRecurrenceInterval = (
-  recurrenceInterval: string
+  recurrenceInterval: string,
 ): TodoModel["recurrenceInterval"] =>
   recurrenceInterval &&
   recurrenceOptions.map((o) => o.value).includes(recurrenceInterval as any)

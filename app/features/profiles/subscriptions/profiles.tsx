@@ -1,7 +1,9 @@
-import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useEffect } from "react";
+
+import { ProfileModel } from "@urban-jungle/shared/models/profile";
+
 import { database } from "../../../database";
 import { useStore } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
@@ -22,7 +24,7 @@ export const ProfilesSubscription = () => {
   const currentProfileId_ = useStore(selectCurrentUserId);
   const currentProfileId = pipe(
     currentProfileId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
   const householdProfileIds = useStore(selectProfileIdsForHouseholds);
   const profileIds = [
@@ -55,6 +57,4 @@ const handleProfileSnapshot = async (snapshot: Snapshot) => {
   deleteProfiles(removed.map((profile) => profile.id));
 };
 
-type Snapshot = firebase.firestore.QuerySnapshot<
-  firebase.firestore.DocumentData
->;
+type Snapshot = firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>;

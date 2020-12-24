@@ -1,23 +1,24 @@
-import React, { useCallback } from "react";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
-import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-
-import { ScreenTitle } from "../../../components/typography";
-import { constraints, useForm } from "../../../hooks/use-form";
-import { TextField } from "../../../components/text-field";
-import { useRunWithUIState } from "../../../store/ui";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { Button } from "../../../components/button";
-import { useRef } from "react";
-import { env } from "../../../env";
-import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
 import { StackScreenProps } from "@react-navigation/stack";
+import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+import firebase from "firebase";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useCallback } from "react";
+import { useRef } from "react";
+
+import { IErr } from "@urban-jungle/shared/utils/err";
+
+import { Button } from "../../../components/button";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { TextField } from "../../../components/text-field";
+import { ScreenTitle } from "../../../components/typography";
+import { env } from "../../../env";
+import { constraints, useForm } from "../../../hooks/use-form";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { useRunWithUIState } from "../../../store/ui";
 import { useMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 
 const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
   const {
@@ -31,7 +32,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
     { verificationCode: "" },
     {
       verificationCode: [constraints.isString],
-    }
+    },
   );
 
   const handleVerify = useCallback(async () => {
@@ -45,7 +46,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
               console.log("Verifying", { verificationId, fields });
               const credential = firebase.auth.PhoneAuthProvider.credential(
                 verificationId!,
-                fields.verificationCode
+                fields.verificationCode,
               );
               await firebase.auth().signInWithCredential(credential);
               execute((ctx) => {
@@ -55,10 +56,10 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
             (err) => {
               console.log(err);
               return "BAD_REQUEST" as IErr;
-            }
-          )
-        )
-      )
+            },
+          ),
+        ),
+      ),
     );
   }, [submit, execute, verificationId]);
 

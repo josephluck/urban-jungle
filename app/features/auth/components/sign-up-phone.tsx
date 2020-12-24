@@ -1,26 +1,27 @@
-import React, { useCallback } from "react";
-import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
-import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-
-import { ScreenTitle } from "../../../components/typography";
-import { constraints, useForm } from "../../../hooks/use-form";
-import { TextField } from "../../../components/text-field";
-import { useRunWithUIState } from "../../../store/ui";
-import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { Button } from "../../../components/button";
-import styled from "styled-components/native";
-import { useRef } from "react";
-import { env } from "../../../env";
-import { IErr } from "@urban-jungle/shared/utils/err";
-import firebase from "firebase";
 import { StackScreenProps } from "@react-navigation/stack";
+import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
+import firebase from "firebase";
+import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useCallback } from "react";
+import { useRef } from "react";
+import { View } from "react-native";
+import styled from "styled-components/native";
+
+import { IErr } from "@urban-jungle/shared/utils/err";
+
+import { Button } from "../../../components/button";
+import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { TextField } from "../../../components/text-field";
+import { ScreenTitle } from "../../../components/typography";
+import { env } from "../../../env";
+import { constraints, useForm } from "../../../hooks/use-form";
+import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { useRunWithUIState } from "../../../store/ui";
+import { symbols } from "../../../theme";
 import { useMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
-import { View } from "react-native";
-import { symbols } from "../../../theme";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 
 const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
   const { execute } = useMachine();
@@ -29,7 +30,7 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
 
   const { registerTextInput, submit } = useForm<{ phone: string }>(
     { phone: "" },
-    { phone: [constraints.isString, constraints.isLengthAtLeast(11)] }
+    { phone: [constraints.isString, constraints.isLengthAtLeast(11)] },
   );
 
   const handleSignUp = useCallback(async () => {
@@ -43,7 +44,7 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
               const phoneProvider = new firebase.auth.PhoneAuthProvider();
               const verificationId = await phoneProvider.verifyPhoneNumber(
                 fields.phone,
-                recaptchaVerifier.current!
+                recaptchaVerifier.current!,
               );
               execute((ctx) => {
                 ctx.phoneNumber = fields.phone;
@@ -53,10 +54,10 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
             (err) => {
               console.log(err);
               return "BAD_REQUEST" as IErr;
-            }
-          )
-        )
-      )
+            },
+          ),
+        ),
+      ),
     );
   }, [submit, execute, navigation]);
 

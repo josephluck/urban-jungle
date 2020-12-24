@@ -1,6 +1,8 @@
+import * as O from "fp-ts/lib/Option";
+
 import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
-import * as O from "fp-ts/lib/Option";
+
 import { normalizedStateFactory } from "../../../store/factory";
 
 const methods = normalizedStateFactory<PhotoModel>("photos");
@@ -18,16 +20,16 @@ export const removePhotos = methods.removeMany;
 
 export const selectPhotosForPlant = (householdId: string, plantId: string) =>
   selectPhotosByHouseholdId(householdId).filter(
-    (photo) => photo.associatedId === plantId
+    (photo) => photo.associatedId === plantId,
   );
 
 export const selectMostRecentPlantPhoto = (
   householdId: string,
   plantId: string,
-  excludeId?: string
+  excludeId?: string,
 ): O.Option<PhotoModel> =>
   O.fromNullable(
     selectPhotosForPlant(householdId, plantId)
       .filter((photo) => photo.id !== excludeId)
-      .sort(sortByMostRecent)[0]
+      .sort(sortByMostRecent)[0],
   );

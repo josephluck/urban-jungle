@@ -2,17 +2,18 @@ import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
+
 import { Button } from "../../../../components/button";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
 import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
 import { useForm, constraints } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
+import { useStore } from "../../../../store/state";
 import { symbols } from "../../../../theme";
 import { PlantFields } from "../../store/effects";
 import { newPlantLocationRoute } from "./new-plant-location-screen";
 import { setPlantFields, selectPlantFields } from "./state";
-import { useStore } from "../../../../store/state";
 
 type Fields = Pick<Required<PlantFields>, "nickname">;
 
@@ -33,7 +34,7 @@ export const NewPlantNicknameScreen = ({
     },
     {
       nickname: isNickname ? [] : [constraints.isRequired],
-    }
+    },
   );
 
   const handleGoBack = useCallback(() => {
@@ -53,14 +54,14 @@ export const NewPlantNicknameScreen = ({
         }),
         E.map(() => {
           newPlantLocationRoute.navigateTo(navigation, {});
-        })
+        }),
       ),
-    [submit, isNickname]
+    [submit, isNickname],
   );
 
   const handleSkip = useCallback(
     () => newPlantLocationRoute.navigateTo(navigation, {}),
-    []
+    [],
   );
 
   // TODO: support progress bar

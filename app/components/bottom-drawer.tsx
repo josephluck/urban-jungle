@@ -6,6 +6,7 @@ import {
   default as BottomSheetBehavior,
 } from "reanimated-bottom-sheet";
 import styled, { ThemeProvider } from "styled-components/native";
+
 import { lightTheme, symbols } from "../theme";
 import { BodyText, Heading, SubHeading } from "./typography";
 
@@ -150,7 +151,7 @@ const Overlay = ({
   visible: boolean;
 }) => {
   const opacity = useRef(
-    useExpansionInterpolation(expansionProportion, [0, 1])
+    useExpansionInterpolation(expansionProportion, [0, 1]),
   );
   return (
     <BackdropOverlay
@@ -191,10 +192,10 @@ const useExpansionInterpolation = (
   /** The inverse of how much of the sheet has expanded */
   expansionProportion: Reanimated.Value<number>,
   /** The range to interpolate between i.e. 0 -> 1 for opacity */
-  outputRange: Reanimated.Adaptable<number>[]
+  outputRange: Reanimated.Adaptable<number>[],
 ) => {
   const invertedExpansionProportion = useRef(
-    Reanimated.sub(1, expansionProportion)
+    Reanimated.sub(1, expansionProportion),
   );
 
   return Reanimated.interpolate(invertedExpansionProportion.current, {

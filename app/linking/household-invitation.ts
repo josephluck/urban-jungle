@@ -1,8 +1,10 @@
-import { IErr } from "@urban-jungle/shared/utils/err";
 import { Linking } from "expo";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
+
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { getInitialDeepLink } from "./deep-linking";
 
 const HOUSEHOLD_INVITATION_LINK = "auth/to-household";
@@ -23,19 +25,21 @@ export const getAndParseInitialHouseholdInvitationDeepLink = (): TE.TaskEither<
     TE.map((link) =>
       pipe(
         parseHouseholdInvitationDeepLink(link),
-        TE.fromOption(() => "NOT_FOUND" as IErr)
-      )
+        TE.fromOption(() => "NOT_FOUND" as IErr),
+      ),
     ),
-    TE.flatten
+    TE.flatten,
   );
 
 export const parseHouseholdInvitationDeepLink = (
-  link: string
+  link: string,
 ): O.Option<HouseholdInvitationQueryParams> => {
   const { path, queryParams } = Linking.parse(link);
   return pipe(
     path,
     O.fromPredicate((p) => !!p && p.includes(HOUSEHOLD_INVITATION_LINK)), // NB: includes necessary since the link is prefixed with `--/`
-    O.chain(() => O.fromNullable(queryParams as HouseholdInvitationQueryParams))
+    O.chain(() =>
+      O.fromNullable(queryParams as HouseholdInvitationQueryParams),
+    ),
   );
 };

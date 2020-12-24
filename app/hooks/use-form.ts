@@ -1,9 +1,11 @@
 import { FieldConstraintsMap, makeValidator } from "@josephluck/valley/lib/fp";
-import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { useState } from "react";
+
+import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
+
 import { CameraFieldProps } from "../components/camera-field";
 import { DualNumberPickerFieldProps } from "../components/dual-number-picker-field";
 import { DualTextPickerFieldProps } from "../components/dual-text-picker-field";
@@ -23,7 +25,7 @@ type FilterTypeForKeys<O, T> = FilterType<O, T>[keyof O];
 
 export function useForm<Fs extends Fields>(
   initialValues: Fs,
-  constraints: FieldConstraintsMap<Fs>
+  constraints: FieldConstraintsMap<Fs>,
 ) {
   type StringKeys = FilterTypeForKeys<Fs, string>;
 
@@ -43,19 +45,19 @@ export function useForm<Fs extends Fields>(
   const [values, setValues] = useState(initialValues);
 
   const [touched, setTouched] = useState(() =>
-    getInitialTouched(initialValues)
+    getInitialTouched(initialValues),
   );
 
   const [errors, setErrors] = useState<Record<keyof Fs, string>>(() =>
     pipe(
       doValidate(initialValues),
       E.swap,
-      E.getOrElse(() => getInitialErrors(initialValues))
-    )
+      E.getOrElse(() => getInitialErrors(initialValues)),
+    ),
   );
 
   const validate = (
-    currentValues: Fs = values
+    currentValues: Fs = values,
   ): ReturnType<typeof doValidate> =>
     pipe(
       doValidate(currentValues),
@@ -66,15 +68,15 @@ export function useForm<Fs extends Fields>(
       E.map((v) => {
         setErrors(getInitialErrors(initialValues));
         return v;
-      })
+      }),
     );
 
   const setAllTouched = () => {
     setTouched(
       Object.keys(initialValues).reduce(
         (acc, key) => ({ ...acc, [key]: true }),
-        initialValues
-      )
+        initialValues,
+      ),
     );
   };
 
@@ -106,39 +108,39 @@ export function useForm<Fs extends Fields>(
   };
 
   const registerOnChangeText = <Fk extends keyof Fs>(fieldKey: Fk) => (
-    value: string
+    value: string,
   ) => {
     // @ts-ignore - Argument of type 'string' is not assignable to parameter of type 'Fs[Fk]'
     setValue(fieldKey, value);
   };
 
   const registerOnChangeNumber = <Fk extends keyof Fs>(fieldKey: Fk) => (
-    value: number
+    value: number,
   ) => {
     // @ts-ignore - Argument of type 'number' is not assignable to parameter of type 'Fs[Fk]'
     setValue(fieldKey, value);
   };
 
   const registerOnChangePickerMulti = <Fk extends MultiPickerKeys>(
-    fieldKey: Fk
+    fieldKey: Fk,
   ) => (value: PickerValue[]) => {
     setValue(fieldKey, value as Fs[Fk]);
   };
 
   const registerOnChangePickerSingle = <Fk extends SinglePickerKeys>(
-    fieldKey: Fk
+    fieldKey: Fk,
   ) => (value: Fs[Fk]) => {
     setValue(fieldKey, value);
   };
 
   const registerOnChangeCamera = <Fk extends CameraKeys>(fieldKey: Fk) => (
-    value: Fs[Fk]
+    value: Fs[Fk],
   ) => {
     setValue(fieldKey, value);
   };
 
   const registerTextInput = <Fk extends StringKeys>(
-    fieldKey: Fk
+    fieldKey: Fk,
   ): Partial<TextFieldProps> => ({
     value: values[fieldKey],
     error: errors[fieldKey],
@@ -148,7 +150,7 @@ export function useForm<Fs extends Fields>(
   });
 
   const registerNumberInput = <Fk extends NumberKeys>(
-    fieldKey: Fk
+    fieldKey: Fk,
   ): Partial<NumberFieldProps> => ({
     value: values[fieldKey],
     error: errors[fieldKey],
@@ -158,7 +160,7 @@ export function useForm<Fs extends Fields>(
   });
 
   const registerMultiPickerInput = <Fk extends MultiPickerKeys>(
-    fieldKey: Fk
+    fieldKey: Fk,
   ): Pick<
     MultiPickerFieldProps<PickerValue>,
     "value" | "error" | "onChange" | "touched"
@@ -170,7 +172,7 @@ export function useForm<Fs extends Fields>(
   });
 
   const registerSinglePickerInput = <Fk extends SinglePickerKeys>(
-    fieldKey: Fk
+    fieldKey: Fk,
   ): Pick<
     SinglePickerFieldProps<Fs[Fk]>,
     "value" | "error" | "onChange" | "touched"
@@ -182,12 +184,12 @@ export function useForm<Fs extends Fields>(
   });
 
   const registerCameraField = <Fk extends CameraKeys>(
-    fieldKey: Fk
+    fieldKey: Fk,
   ): Pick<CameraFieldProps, "value" | "error" | "touched" | "onChange"> => {
     const value: ImageModel = pipe(
       O.fromNullable(values[fieldKey] as ImageModel),
       O.filter((image) => Boolean(image) && Boolean(image.uri)),
-      O.getOrElse(() => makeImageModel())
+      O.getOrElse(() => makeImageModel()),
     );
     return {
       value,
@@ -202,7 +204,7 @@ export function useForm<Fs extends Fields>(
     Fk2 extends SinglePickerKeys
   >(
     textFieldKey: Fk,
-    pickerFieldKey: Fk2
+    pickerFieldKey: Fk2,
   ): Pick<
     DualTextPickerFieldProps<Fs[Fk2]>,
     | "textValue"
@@ -230,7 +232,7 @@ export function useForm<Fs extends Fields>(
     Fk2 extends SinglePickerKeys
   >(
     numberFieldKey: Fk,
-    pickerFieldKey: Fk2
+    pickerFieldKey: Fk2,
   ): Pick<
     DualNumberPickerFieldProps<Fs[Fk2]>,
     | "numberValue"
@@ -273,19 +275,19 @@ export function useForm<Fs extends Fields>(
 }
 
 const getInitialTouched = <Fs extends Record<string, any>>(
-  fields: Fs
+  fields: Fs,
 ): Record<keyof Fs, boolean> =>
   Object.keys(fields).reduce(
     (acc, fieldKey) => ({ ...acc, [fieldKey]: false }),
-    fields
+    fields,
   );
 
 const getInitialErrors = <Fs extends Record<string, any>>(
-  fields: Fs
+  fields: Fs,
 ): Record<keyof Fs, string> =>
   Object.keys(fields).reduce(
     (acc, fieldKey) => ({ ...acc, [fieldKey]: "" }),
-    fields
+    fields,
   );
 
 const isRequired = <T>(value: T): E.Either<string, T> =>
@@ -299,14 +301,14 @@ const isString = isOfType("string");
 const isNumber = isOfType("number");
 
 const isEqualTo = <T>(expected: T) => <V extends T>(
-  value: V
+  value: V,
 ): E.Either<string, V> =>
   value === expected
     ? E.right(value)
     : E.left(`Expected ${value} to equal ${expected}`);
 
 const isLengthAtLeast = (length: number) => (
-  value: string
+  value: string,
 ): E.Either<string, string> =>
   value.length >= length
     ? E.right(value)

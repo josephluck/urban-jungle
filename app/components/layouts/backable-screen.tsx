@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components/native";
+
 import { symbols } from "../../theme";
+import { ProgressBar } from "../progress-bar";
 import { TouchableIcon } from "../touchable-icon";
 import { ScreenLayout } from "./screen-layout";
-import { ProgressBar } from "../progress-bar";
 
 export const BackableScreenLayout = ({
   stickyHeaderIndices,

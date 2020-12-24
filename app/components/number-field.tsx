@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, TextInputProps, ViewProps } from "react-native";
 import styled from "styled-components/native";
+
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
 

@@ -1,30 +1,32 @@
-import { BaseModel } from "@urban-jungle/shared/models/base";
-import { store, State } from "./state";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+
+import { BaseModel } from "@urban-jungle/shared/models/base";
+
+import { store, State } from "./state";
 
 // TODO: keyof State should be replaced with a nicer type
 export const normalizedStateFactory = <Model extends BaseModel>(
-  stateKey: keyof State
+  stateKey: keyof State,
 ) => {
   const selectNormalized = store.createSelector(
     (s, normalizerKey: string): O.Option<Record<string, Model>> =>
       // @ts-ignore
-      O.fromNullable(s[stateKey].byHouseholdId[normalizerKey])
+      O.fromNullable(s[stateKey].byHouseholdId[normalizerKey]),
   );
 
   const selectMany = (normalizerKey: string): Model[] =>
     pipe(
       selectNormalized(normalizerKey),
       O.map(Object.values),
-      O.getOrElse(() => [] as Model[])
+      O.getOrElse(() => [] as Model[]),
     );
 
   const selectManyIds = (normalizerKey: string): string[] =>
     pipe(
       selectNormalized(normalizerKey),
       O.map(Object.keys),
-      O.getOrElse(() => [] as string[])
+      O.getOrElse(() => [] as string[]),
     );
 
   const selectManyByIds = (normalizerKey: string, ids: string[]): Model[] =>
@@ -33,7 +35,7 @@ export const normalizedStateFactory = <Model extends BaseModel>(
   const select = (normalizerKey: string, id: string): O.Option<Model> =>
     pipe(
       selectNormalized(normalizerKey),
-      O.chain((values) => O.fromNullable(values[id]))
+      O.chain((values) => O.fromNullable(values[id])),
     );
 
   const upsert = store.createMutator(
@@ -44,7 +46,7 @@ export const normalizedStateFactory = <Model extends BaseModel>(
         ...s[stateKey].byHouseholdId[normalizerKey],
         [entity.id]: entity,
       };
-    }
+    },
   );
 
   const upsertMany = store.createMutator(
@@ -57,14 +59,14 @@ export const normalizedStateFactory = <Model extends BaseModel>(
           [entity.id]: entity,
         };
       });
-    }
+    },
   );
 
   const remove = store.createMutator(
     (s, normalizerKey: string, entity: Model) => {
       // @ts-ignore
       delete s[stateKey].byHouseholdId[normalizerKey][entity.id];
-    }
+    },
   );
 
   const removeMany = store.createMutator(
@@ -73,7 +75,7 @@ export const normalizedStateFactory = <Model extends BaseModel>(
         // @ts-ignore
         delete s[stateKey].byHouseholdId[normalizerKey][entity.id];
       });
-    }
+    },
   );
 
   return {

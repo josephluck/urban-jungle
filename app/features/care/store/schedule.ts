@@ -1,8 +1,10 @@
+import * as O from "fp-ts/lib/Option";
+import { Moment } from "moment";
+
 import { CareModel } from "@urban-jungle/shared/models/care";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
-import * as O from "fp-ts/lib/Option";
-import { Moment } from "moment";
+
 import { selectTodosSchedule } from "../../todos/store/state";
 import { selectCareHistory } from "./state";
 
@@ -19,16 +21,16 @@ export type ScheduleItem = {
 
 export const selectSchedule = (
   householdId: string,
-  numberOfDaysEitherSide: number
+  numberOfDaysEitherSide: number,
 ): ScheduleItem[] => {
   const allCares = selectCareHistory(householdId)(
-    numberOfDaysEitherSide + 1 // NB: +1 to include today
+    numberOfDaysEitherSide + 1, // NB: +1 to include today
   ).map((item) => ({
     ...item,
     todos: [] as TodoWithPlant[],
   }));
   const allTodos = selectTodosSchedule(householdId)(
-    numberOfDaysEitherSide + 1 // NB: +1 to include today
+    numberOfDaysEitherSide + 1, // NB: +1 to include today
   ).map((item) => ({
     ...item,
     cares: [] as CareModel[],

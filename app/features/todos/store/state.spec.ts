@@ -1,12 +1,14 @@
-import { makeCareModel } from "@urban-jungle/shared/models/care";
-import { makePlantModel } from "@urban-jungle/shared/models/plant";
-import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
-import { defaultState, store } from "../../../store/state";
+
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makePlantModel } from "@urban-jungle/shared/models/plant";
+import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
+
 import { defaultDate } from "../../../__mocks__/moment";
+import { defaultState, store } from "../../../store/state";
 import {
   selectTodosSchedule,
   sortTodosByLocationAndPlant,
@@ -14,7 +16,7 @@ import {
 } from "./state";
 
 const makeFirebaseDate = (
-  daysAdjustment: number = 0
+  daysAdjustment: number = 0,
 ): firebase.firestore.Timestamp => {
   const date =
     daysAdjustment === 0
@@ -85,7 +87,7 @@ describe("store / todos", () => {
 
       expect(schedule).toHaveLength(1);
       expect(schedule[0].date.toDate().getTime()).toEqual(
-        new Date(defaultDate).getTime()
+        new Date(defaultDate).getTime(),
       );
       expect(schedule[0].todos).toHaveLength(1);
       expect(schedule[0].todos[0]).toEqual(withNonePlant(todo1));
@@ -109,23 +111,23 @@ describe("store / todos", () => {
 
       expect(schedule).toHaveLength(10);
       expect(schedule[0].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[1].todos).toEqual([]);
       expect(schedule[2].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[3].todos).toEqual([]);
       expect(schedule[4].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[5].todos).toEqual([]);
       expect(schedule[6].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[7].todos).toEqual([]);
       expect(schedule[8].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[9].todos).toEqual([]);
     });
@@ -160,7 +162,7 @@ describe("store / todos", () => {
 
       expect(schedule).toHaveLength(10);
       expect(schedule[0].todos).toEqual(
-        [todo1, todo2, todo3].map(withNonePlant)
+        [todo1, todo2, todo3].map(withNonePlant),
       );
       expect(schedule[1].todos).toEqual([]);
       expect(schedule[2].todos).toEqual([todo1].map(withNonePlant));
@@ -272,11 +274,11 @@ describe("store / todos", () => {
       expect(schedule[0].todos).toEqual([]);
       expect(schedule[1].todos).toEqual([]);
       expect(schedule[2].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[3].todos).toEqual([]);
       expect(schedule[4].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
     });
 
@@ -291,7 +293,7 @@ describe("store / todos", () => {
         householdId: "household1",
         todoId: "todo1",
         dateCreated: firebase.firestore.Timestamp.fromDate(
-          moment().add(2, "minutes").toDate()
+          moment().add(2, "minutes").toDate(),
         ),
       });
 
@@ -312,11 +314,11 @@ describe("store / todos", () => {
       expect(schedule[0].todos).toEqual([]);
       expect(schedule[1].todos).toEqual([]);
       expect(schedule[2].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[3].todos).toEqual([]);
       expect(schedule[4].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
     });
 
@@ -351,13 +353,13 @@ describe("store / todos", () => {
       expect(schedule[0].todos).toEqual([]);
       expect(schedule[1].todos).toEqual([]);
       expect(schedule[2].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[3].todos).toEqual([]);
       expect(schedule[4].todos).toEqual([]);
       expect(schedule[5].todos).toEqual([]);
       expect(schedule[6].todos).toEqual(
-        [todo1].map(withNonePlant).map(withNonePlant)
+        [todo1].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[7].todos).toEqual([]);
       expect(schedule[8].todos).toEqual([]);
@@ -425,43 +427,43 @@ describe("store / todos", () => {
 
       const schedule = selectTodosSchedule("household1")(20);
       expect(schedule[0].todos).toEqual(
-        [todo3].map(withNonePlant).map(withNonePlant)
+        [todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[1].todos).toEqual([]);
       expect(schedule[2].todos).toEqual(
-        [todo3].map(withNonePlant).map(withNonePlant)
+        [todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[3].todos).toEqual([]);
       expect(schedule[4].todos).toEqual(
-        [todo1, todo3].map(withNonePlant).map(withNonePlant)
+        [todo1, todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[5].todos).toEqual([]);
       expect(schedule[6].todos).toEqual(
-        [todo2, todo3].map(withNonePlant).map(withNonePlant)
+        [todo2, todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[7].todos).toEqual([]);
       expect(schedule[8].todos).toEqual(
-        [todo1, todo3].map(withNonePlant).map(withNonePlant)
+        [todo1, todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[9].todos).toEqual([]);
       expect(schedule[10].todos).toEqual(
-        [todo3].map(withNonePlant).map(withNonePlant)
+        [todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[11].todos).toEqual([]);
       expect(schedule[12].todos).toEqual(
-        [todo1, todo2, todo3].map(withNonePlant)
+        [todo1, todo2, todo3].map(withNonePlant),
       );
       expect(schedule[13].todos).toEqual([]);
       expect(schedule[14].todos).toEqual(
-        [todo3].map(withNonePlant).map(withNonePlant)
+        [todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[15].todos).toEqual([]);
       expect(schedule[16].todos).toEqual(
-        [todo1, todo3].map(withNonePlant).map(withNonePlant)
+        [todo1, todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[17].todos).toEqual([]);
       expect(schedule[18].todos).toEqual(
-        [todo2, todo3].map(withNonePlant).map(withNonePlant)
+        [todo2, todo3].map(withNonePlant).map(withNonePlant),
       );
       expect(schedule[19].todos).toEqual([]);
     });
@@ -479,8 +481,8 @@ describe("store / todos", () => {
           todo.plant,
           O.fold(
             () => "none",
-            (plant) => [plant.name, plant.location].join(" - ")
-          )
+            (plant) => [plant.name, plant.location].join(" - "),
+          ),
         ),
         todo.title,
       ].join(" - ");

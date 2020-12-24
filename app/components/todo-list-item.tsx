@@ -1,8 +1,9 @@
-import { ListItem } from "./list-item";
-import { TodoWithPlantModel } from "../features/todos/store/state";
-import React, { useMemo } from "react";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useMemo } from "react";
+
+import { TodoWithPlantModel } from "../features/todos/store/state";
+import { ListItem } from "./list-item";
 
 export const TodoListItem = React.memo(
   ({ todo }: { todo: TodoWithPlantModel }) => {
@@ -12,12 +13,12 @@ export const TodoListItem = React.memo(
           todo.plant,
           O.chain((plant) => O.fromNullable(plant.avatar)),
           O.map((avatar) => avatar.uri),
-          O.getOrElse(() => "")
+          O.getOrElse(() => ""),
         ),
-      [todo.id]
+      [todo.id],
     );
     return <ListItem title={todo.title} image={image} />;
   },
   (prev, next) =>
-    prev.todo.id !== next.todo.id || prev.todo.title !== next.todo.title
+    prev.todo.id !== next.todo.id || prev.todo.title !== next.todo.title,
 );

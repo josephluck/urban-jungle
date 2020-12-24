@@ -1,10 +1,12 @@
-import { ThemeSetting } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import { TouchableOpacity } from "react-native";
 import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
+
+import { ThemeSetting } from "@urban-jungle/shared/models/profile";
+
 import { Button } from "../../../components/button";
 import {
   ContextMenuIconButton,
@@ -42,16 +44,16 @@ const releaseDate = require("../../../release-date.json");
 
 export const ManageScreen = () => {
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
   const pushNotificationsEnabled = useStore(selectPushNotificationsEnabled);
   const people = useStore(
     () => selectProfilesForHousehold(selectedHouseholdId),
-    [selectedHouseholdId]
+    [selectedHouseholdId],
   );
 
   const handleTogglePushNotifications = useCallback(() => {
@@ -131,11 +133,11 @@ export const ManageScreen = () => {
               <ListItem
                 image={pipe(
                   item.avatar,
-                  O.getOrElse(() => "")
+                  O.getOrElse(() => ""),
                 )}
                 title={pipe(
                   item.name,
-                  O.getOrElse(() => "")
+                  O.getOrElse(() => ""),
                 )}
               />
             )}

@@ -1,13 +1,15 @@
-import { ImageModel } from "@urban-jungle/shared/models/image";
-import { StorageEntityType } from "@urban-jungle/shared/models/storage";
-import { IErr } from "@urban-jungle/shared/utils/err";
 import * as Permissions from "expo-permissions";
 import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
+
+import { ImageModel } from "@urban-jungle/shared/models/image";
+import { StorageEntityType } from "@urban-jungle/shared/models/storage";
+import { IErr } from "@urban-jungle/shared/utils/err";
+
 import { takeAndUploadPicture } from "../features/photos/camera";
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
@@ -55,14 +57,14 @@ export const CameraField = ({
         onChange(image);
         setSaving(false);
       }),
-      TE.mapLeft(() => setSaving(false))
+      TE.mapLeft(() => setSaving(false)),
     )();
   };
 
   const hasValue = pipe(
     O.fromNullable(value),
     O.filter((v) => Boolean(v.uri)),
-    O.isSome
+    O.isSome,
   );
 
   // TODO: progress bar / loading indicator...
@@ -96,7 +98,7 @@ const obtainCameraPermissions: TE.TaskEither<IErr, void> = TE.tryCatch(
       throw new Error();
     }
   },
-  () => "BAD_REQUEST"
+  () => "BAD_REQUEST",
 );
 
 const ContainerButton = styled.TouchableOpacity`

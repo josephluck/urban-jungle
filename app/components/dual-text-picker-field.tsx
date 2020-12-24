@@ -1,6 +1,7 @@
 import React from "react";
 import { Picker, StyleProp, ViewProps } from "react-native";
 import styled from "styled-components/native";
+
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
 import { Icon } from "./icon";

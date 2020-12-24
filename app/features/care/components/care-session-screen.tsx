@@ -1,5 +1,4 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, {
@@ -12,6 +11,9 @@ import React, {
 import { Dimensions, ScrollView } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
+
+import { TodoModel } from "@urban-jungle/shared/models/todo";
+
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TodoOverview } from "../../../components/todo-overview";
@@ -40,27 +42,27 @@ export const CareSessionScreen = ({
   const windowWidth = useMemo(() => Dimensions.get("window").width, []);
 
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
 
   const profileId_ = useStore(selectCurrentUserId);
 
   const profileId = pipe(
     profileId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
 
   const todos = useStore(
     () =>
       selectTodosAndPlantsByIds(selectedHouseholdId)(todoIds).sort(
-        sortTodosByLocationAndPlant
+        sortTodosByLocationAndPlant,
       ),
-    [selectedHouseholdId, todoIds.join("")]
+    [selectedHouseholdId, todoIds.join("")],
   );
 
   /**
@@ -83,7 +85,7 @@ export const CareSessionScreen = ({
    */
   useEffect(() => {
     const indexOfNextTodo = carouselTodoIdsRef.current.findIndex(
-      (todoId) => !doneTodoIdsRef.current.includes(todoId)
+      (todoId) => !doneTodoIdsRef.current.includes(todoId),
     );
     requestAnimationFrame(() => {
       if (indexOfNextTodo > -1) {
@@ -105,7 +107,7 @@ export const CareSessionScreen = ({
   const markTodoAsDone = useCallback(
     (todoId: string) =>
       setDoneTodos((current) => [...new Set([...current, todoId])]),
-    []
+    [],
   );
 
   const completeTodo = useCallback(
@@ -113,7 +115,7 @@ export const CareSessionScreen = ({
       markTodoAsDone(todo.id);
       createCareForPlant(profileId)(todo.id)(todo.plantId)(todo.householdId)();
     },
-    [markTodoAsDone, profileId]
+    [markTodoAsDone, profileId],
   );
 
   const skipTodo = useCallback((todo: TodoModel) => markTodoAsDone(todo.id), [
@@ -144,8 +146,8 @@ export const CareSessionScreen = ({
                   slide.item.plant,
                   O.fold(
                     () => null,
-                    (plant) => <TodoOverview plant={plant} todo={slide.item} />
-                  )
+                    (plant) => <TodoOverview plant={plant} todo={slide.item} />,
+                  ),
                 )}
               </ScrollView>
               <Footer>

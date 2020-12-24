@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import styled from "styled-components/native";
+
 import { symbols } from "../theme";
 import { Icon } from "./icon";
 

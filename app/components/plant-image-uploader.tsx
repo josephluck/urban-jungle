@@ -3,6 +3,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import styled from "styled-components/native";
+
 import { savePlantImage } from "../features/plants/store/effects";
 import { symbols } from "../theme";
 import { CameraField } from "./camera-field";

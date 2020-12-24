@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { ThemeContext } from "styled-components/native";
 import { StatusBarStyle } from "react-native";
 import { Dimensions } from "react-native";
+import { ThemeContext } from "styled-components/native";
 
 type ScreenSize = "small" | "normal" | "large" | "xlarge";
 

@@ -11,6 +11,7 @@ import React, {
 import { Dimensions, ScrollView, TouchableOpacity } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
+
 import { CalendarDay, daySize } from "../../../components/calendar-day";
 import { CareListItem } from "../../../components/care-list-item";
 import { TodoListItem } from "../../../components/todo-list-item";
@@ -27,11 +28,11 @@ export const Schedule = ({
 }) => {
   const today = useMemo(() => moment(), []);
   const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId
+    selectedSelectedOrMostRecentHouseholdId,
   );
   const selectedHouseholdId = pipe(
     selectedHouseholdId_,
-    O.getOrElse(() => "")
+    O.getOrElse(() => ""),
   );
   const schedule = useStore(() => selectSchedule(selectedHouseholdId, 7), [
     selectedHouseholdId,
@@ -54,7 +55,7 @@ export const Schedule = ({
         });
       }
     },
-    [scrollViewRef.current]
+    [scrollViewRef.current],
   );
 
   const snapCarouselToIndex = useCallback(
@@ -63,7 +64,7 @@ export const Schedule = ({
         carouselRef.current.snapToItem(index, true);
       }
     },
-    [carouselRef.current]
+    [carouselRef.current],
   );
 
   const handleDayPress = useCallback(
@@ -75,7 +76,7 @@ export const Schedule = ({
         setActiveMonth(month);
       }
     },
-    [snapCarouselToIndex, snapDaysToIndex, setActiveMonth, activeMonth]
+    [snapCarouselToIndex, snapDaysToIndex, setActiveMonth, activeMonth],
   );
 
   const handleCarouselIndexChange = useCallback(
@@ -87,7 +88,7 @@ export const Schedule = ({
         setActiveMonth(month);
       }
     },
-    [schedule, snapDaysToIndex, activeMonth]
+    [schedule, snapDaysToIndex, activeMonth],
   );
 
   const hasSnappedInitialDays = useRef(false);
@@ -134,7 +135,7 @@ export const Schedule = ({
         </TodosList>
       );
     },
-    [handleNavigateToCareSession]
+    [handleNavigateToCareSession],
   );
   if (todaysIndex === 7 && schedule.length === 15) {
     return (

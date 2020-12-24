@@ -1,9 +1,10 @@
 import React from "react";
-import styled from "styled-components/native";
-import { symbols } from "../theme";
-import { BodyText } from "./typography";
 import { StyleProp, TextStyle } from "react-native";
 import { ViewStyle } from "react-native";
+import styled from "styled-components/native";
+
+import { symbols } from "../theme";
+import { BodyText } from "./typography";
 
 export const Label = ({
   children,
