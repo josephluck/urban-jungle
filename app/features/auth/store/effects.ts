@@ -7,7 +7,7 @@ import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
 
 import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
-import { resetGlobalState, store } from "../../../store/state";
+import { store } from "../../../store/state";
 import {
   createHouseholdForProfile,
   createProfileHouseholdRelation,
@@ -18,24 +18,7 @@ import {
   fetchProfileIfNotFetched,
 } from "../../profiles/store/effects";
 import { Context } from "../machine/types";
-import {
-  selectAuthUser,
-  selectCurrentUserId,
-  setInitializing,
-  setUser,
-} from "./state";
-
-export const initialize = store.createEffect(() => {
-  firebase.auth().onAuthStateChanged(async (user) => {
-    setUser(O.fromNullable(user)); // NB: this deals with sign out as well
-    if (user) {
-      await fetchCurrentProfileIfNotFetched()();
-    } else {
-      resetGlobalState();
-    }
-    setInitializing(false);
-  });
-});
+import { selectAuthUser, selectCurrentUserId } from "./state";
 
 export const signIn = store.createEffect(
   async (_, email: string, password: string) => {
