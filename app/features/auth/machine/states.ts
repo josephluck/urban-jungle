@@ -16,59 +16,69 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
     ],
   },
   {
-    fork: "Which auth type has been chosen?",
+    fork: "Needs to authenticate?",
     requirements: [
-      function phoneAuth(context) {
-        return context.authType === "phone";
+      function needsToAuthenticate(context) {
+        return !context.isAuthenticated;
       },
     ],
     states: [
       {
-        id: "Enter phone number",
-        routeName: routeNames.signUpPhoneRoute,
-        isDone: [
-          function phoneNumberEntered(context) {
-            return !!context.phoneNumber;
+        fork: "Which auth type has been chosen?",
+        requirements: [
+          function phoneAuth(context) {
+            return context.authType === "phone";
           },
-          function otpSent(context) {
-            return !!context.verificationId;
+        ],
+        states: [
+          {
+            id: "Enter phone number",
+            routeName: routeNames.signUpPhoneRoute,
+            isDone: [
+              function phoneNumberEntered(context) {
+                return !!context.phoneNumber;
+              },
+              function otpSent(context) {
+                return !!context.verificationId;
+              },
+            ],
+          },
+          {
+            id: "Verify phone number with OTP",
+            routeName: routeNames.signUpPhoneVerifyRoute,
+            isDone: [
+              function verificationCodeEntered(context) {
+                return !!context.verificationCode;
+              },
+            ],
           },
         ],
       },
       {
-        id: "Verify phone number with OTP",
-        routeName: routeNames.signUpPhoneVerifyRoute,
-        isDone: [
-          function verificationCodeEntered(context) {
-            return !!context.verificationCode;
+        fork: "Which auth type has been chosen?",
+        requirements: [
+          function emailAuth(context) {
+            return context.authType === "email";
           },
         ],
-      },
-    ],
-  },
-  {
-    fork: "Which auth type has been chosen?",
-    requirements: [
-      function emailAuth(context) {
-        return context.authType === "email";
-      },
-    ],
-    states: [
-      {
-        id: "Enter email address",
-        routeName: routeNames.signUpEmailRoute,
-        isDone: [
-          function hasProvidedEmail(context) {
-            return !!context.emailAddress;
+        states: [
+          {
+            id: "Enter email address",
+            routeName: routeNames.signUpEmailRoute,
+            isDone: [
+              function hasProvidedEmail(context) {
+                return !!context.emailAddress;
+              },
+            ],
           },
-        ],
-      },
-      {
-        id: "Enter password",
-        routeName: routeNames.signUpPasswordRoute,
-        isDone: [
-          function hasProvidedPassword(context) {
-            return !!context.password;
+          {
+            id: "Enter password",
+            routeName: routeNames.signUpPasswordRoute,
+            isDone: [
+              function hasProvidedPassword(context) {
+                return !!context.password;
+              },
+            ],
           },
         ],
       },
