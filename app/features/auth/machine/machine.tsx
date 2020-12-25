@@ -10,6 +10,7 @@ const machineHooks = makeMachineHooks<Context, AdditionalEntryData>({
     authType: "phone",
     skipAvatar: false,
     isAuthenticated: false,
+    skipEmailAddress: false,
   },
 });
 

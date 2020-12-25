@@ -105,8 +105,8 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
         id: "Capture email address",
         routeName: routeNames.signUpCaptureEmailRoute,
         isDone: [
-          function hasProvidedEmail(context) {
-            return !!context.emailAddress;
+          function hasProvidedOrSkippedEmail(context) {
+            return !!context.emailAddress || !context.skipEmailAddress;
           },
         ],
       },

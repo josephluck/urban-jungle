@@ -10,6 +10,7 @@ export type Context = {
   avatar?: string;
   skipAvatar: boolean;
   isAuthenticated: boolean;
+  skipEmailAddress: boolean;
 };
 
 export type AdditionalEntryData = {
