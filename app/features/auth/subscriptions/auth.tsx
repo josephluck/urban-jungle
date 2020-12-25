@@ -25,13 +25,14 @@ export const AuthenticationSubscription = () => {
             pipe(
               fetchCurrentProfileIfNotFetched(),
               TE.mapLeft((err) => {
-                console.log("Mapping left", { err });
                 if (err === "UNAUTHENTICATED" || err === "NOT_FOUND") {
-                  // TODO: this navigates too early? The splash screen is still shown...
+                  const phoneProvider = user.providerData.find(
+                    (provider) => provider?.providerId === "phone",
+                  );
                   execute((ctx) => {
                     ctx.isAuthenticated = true;
                     ctx.authenticationFlow = "signUp";
-                    ctx.authType = "phone"; // TODO: is there a better way to determine the auth type so rehydration works? Maybe store something in the auth user record when the auth happens? There's a user.providerData.providerId === 'phone' that could be used, if email ends up in a different providerId
+                    ctx.authType = phoneProvider ? "phone" : "email";
                     ctx.emailAddress = user.email || ctx.emailAddress;
                     ctx.phoneNumber = user.phoneNumber || ctx.phoneNumber;
                   });
