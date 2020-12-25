@@ -12,21 +12,21 @@
     "deploy": "yarn deploy:prepare && expo publish",
     "postinstall": "expo-yarn-workspaces postinstall",
     "tsc": "tsc --noEmit",
-    "format": "prettier --write \"./**/*{.ts,.tsx,.js}\"",
+    "format": "prettier --write \"./**/*{.ts,.tsx,.js,.json}\"",
     "deploy:prepare": "ts-node ./make-release-date.ts",
     "generate-sign-up-flow-chart": "ts-node ../node_modules/@josephluck/machi/lib/graph/generate-chart.js -s features/auth/machine/states.ts -o ./sign-up-flow.png"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run generate-sign-up-flow-chart && git add ./sign-up-flow.png"
+    }
   },
   "jest": {
     "preset": "jest-expo"
   },
   "prettier": {
     "parser": "typescript",
-    "trailingComma": "all",
-    "importOrder": [
-      "^@urban-jungle/(.*)$",
-      "^[./]"
-    ],
-    "importOrderSeparation": true
+    "trailingComma": "all"
   },
   "dependencies": {
     "@chardskarth/react-gateway": "3.0.3",
@@ -63,12 +63,14 @@
     "expo-yarn-workspaces": "1.2.1",
     "firebase": "7.9.0",
     "fp-ts": "2.5.3",
+    "husky": "4.3.6",
     "immer": "^8.0.0",
     "jest": "25.4.0",
     "jest-expo": "^40.0.0",
     "mockdate": "2.0.5",
     "moment": "2.24.0",
     "prettier": "2.2.1",
+    "prettier-plugin-organize-imports": "1.1.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
@@ -93,7 +95,6 @@
   },
   "private": true,
   "devDependencies": {
-    "@mermaid-js/mermaid-cli": "^8.8.4",
-    "@trivago/prettier-plugin-sort-imports": "1.4.1"
+    "@mermaid-js/mermaid-cli": "^8.8.4"
   }
 }

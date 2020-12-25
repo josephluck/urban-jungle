@@ -44,7 +44,7 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
             ],
           },
           {
-            id: "Verify phone number with OTP",
+            id: "Verify phone number using OTP",
             routeName: routeNames.signUpPhoneVerifyRoute,
             isDone: [
               function verificationCodeEntered(context) {
