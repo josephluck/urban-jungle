@@ -105,13 +105,13 @@ export const useGlobalErrorContext = () => useContext(GlobalErrorContext);
 export const useRunWithUIState = <V extends TE.TaskEither<IErr, any>>() => {
   const { setError } = useGlobalErrorContext();
 
-  return useCallback((task: V) => {
+  return useCallback((task: V, handleErrors: boolean = true) => {
     startLoading(void null);
     setError(undefined);
     return pipe(
       pipeWithUILoading(task),
       TE.mapLeft((err) => {
-        if (err !== "VALIDATION") {
+        if (handleErrors && err !== "VALIDATION") {
           setError(err);
         }
         return err;
