@@ -1,5 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { BackHandler, Dimensions, TouchableOpacity } from "react-native";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import {
+  Animated,
+  BackHandler,
+  Dimensions,
+  TouchableOpacity,
+  Easing,
+} from "react-native";
 import Reanimated from "react-native-reanimated";
 import {
   default as BottomSheet,
@@ -8,6 +20,7 @@ import {
 import styled, { ThemeProvider } from "styled-components/native";
 
 import { lightTheme, symbols } from "../theme";
+import { ContextMenuContext } from "./context-menu";
 import { BodyText, Heading, SubHeading } from "./typography";
 
 export const BottomDrawer = ({
@@ -203,4 +216,45 @@ const useExpansionInterpolation = (
     outputRange,
     extrapolate: Reanimated.Extrapolate.CLAMP,
   });
+};
+
+export const BottomSheetGatewayContainer = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const { visibleMenuId: visible } = useContext(ContextMenuContext);
+
+  const opacity = useRef(new Animated.Value(0));
+
+  useEffect(() => {
+    Animated.timing(opacity.current, {
+      toValue: visible ? 1 : 0,
+      duration: 200,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  }, [visible]);
+
+  return (
+    <Animated.View
+      style={[
+        {
+          position: "absolute",
+          bottom: 0,
+          height: "100%",
+          width: "100%",
+        },
+        {
+          opacity: opacity.current.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+          }),
+        },
+      ]}
+      pointerEvents={visible ? "auto" : "none"}
+    >
+      {children}
+    </Animated.View>
+  );
 };

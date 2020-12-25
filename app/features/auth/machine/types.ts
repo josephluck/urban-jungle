@@ -9,6 +9,7 @@ export type Context = {
   name?: string;
   avatar?: string;
   skipAvatar: boolean;
+  isAuthenticated: boolean;
 };
 
 export type AdditionalEntryData = {

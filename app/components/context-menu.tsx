@@ -4,6 +4,7 @@ import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useEffect } from "react";
 import { StyleProp, View, ViewProps, TouchableOpacity } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 
 import { navigationDidNavigateBeacon } from "../navigation/navigation";
@@ -92,13 +93,15 @@ export const ContextMenuDotsButton = ({
     ContextMenuContext,
   );
 
+  const { bottom } = useSafeAreaInsets();
+
   const handleShow = useCallback(() => {
     show(menuId);
   }, [show, menuId]);
 
   const height = useMemo(
-    () => BUTTON_MARGIN * 2 + children.length * BUTTON_HEIGHT,
-    [children.length],
+    () => bottom + (BUTTON_MARGIN * 2 + children.length * BUTTON_HEIGHT),
+    [children.length, bottom],
   );
 
   const isFocused = useIsFocused();
@@ -144,13 +147,14 @@ export const ContextMenuTouchable = ({
   menuId: string;
 }) => {
   const { hide, show, visibleMenuId } = useContext(ContextMenuContext);
+  const isFocused = useIsFocused();
+
+  const { bottom } = useSafeAreaInsets();
 
   const height = useMemo(
-    () => BUTTON_MARGIN * 2 + buttons.length * BUTTON_HEIGHT,
-    [buttons.length],
+    () => bottom + (BUTTON_MARGIN * 2 + buttons.length * BUTTON_HEIGHT),
+    [buttons.length, bottom],
   );
-
-  const isFocused = useIsFocused();
 
   const handleShow = useCallback(() => {
     show(menuId);

@@ -9,6 +9,7 @@ const machineHooks = makeMachineHooks<Context, AdditionalEntryData>({
     authenticationFlow: "splash",
     authType: "phone",
     skipAvatar: false,
+    isAuthenticated: false,
   },
 });
 

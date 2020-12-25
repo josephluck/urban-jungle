@@ -1,22 +1,21 @@
 import { GatewayDest, GatewayProvider } from "@chardskarth/react-gateway";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import React, { useContext, useEffect } from "react";
-import { useRef } from "react";
-import { ActivityIndicator, Animated, Easing, StatusBar } from "react-native";
+import React from "react";
+import { ActivityIndicator, StatusBar } from "react-native";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components/native";
 
+import { BottomSheetGatewayContainer } from "./components/bottom-drawer";
 import {
-  ContextMenuContext,
   contextMenuGatewayId,
   ContextMenuProvider,
 } from "./components/context-menu";
 import { GlobalLoading } from "./components/global-loading";
 import { MachineProvider } from "./features/auth/machine/machine";
 // import * as reactotron from "./reactotron";
-import { initialize } from "./features/auth/store/effects";
 import { selectInitializing } from "./features/auth/store/state";
+import { AuthenticationSubscription } from "./features/auth/subscriptions/auth";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { HouseholdCaresSubscription } from "./features/care/subscriptions/household-cares";
 import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
@@ -37,10 +36,6 @@ export default () => {
   const isDarkTheme = useStore(selectCurrentProfileThemeIsDark);
   const fontsLoading = useFonts();
   const authInitializing = useStore(selectInitializing);
-
-  useEffect(() => {
-    initialize();
-  }, []);
 
   const loading = fontsLoading || authInitializing;
 
@@ -85,11 +80,12 @@ export default () => {
                         />
                       </>
                     ) : null}
-                    <AppNavigation />
                   </>
                 )}
+                <AppNavigation />
               </AppWrapper>
               <ProfilesSubscription />
+              <AuthenticationSubscription />
               <GlobalLoading />
               <GatewayDest
                 name={contextMenuGatewayId}
@@ -100,47 +96,6 @@ export default () => {
         </ContextMenuProvider>
       </ThemeProvider>
     </MachineProvider>
-  );
-};
-
-const BottomSheetGatewayContainer = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const { visibleMenuId: visible } = useContext(ContextMenuContext);
-
-  const opacity = useRef(new Animated.Value(0));
-
-  useEffect(() => {
-    Animated.timing(opacity.current, {
-      toValue: visible ? 1 : 0,
-      duration: 200,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
-  }, [visible]);
-
-  return (
-    <Animated.View
-      style={[
-        {
-          position: "absolute",
-          bottom: 0,
-          height: "100%",
-          width: "100%",
-        },
-        {
-          opacity: opacity.current.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-          }),
-        },
-      ]}
-      pointerEvents={visible ? "auto" : "none"}
-    >
-      {children}
-    </Animated.View>
   );
 };
 
