@@ -1,7 +1,6 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
-import { TouchableOpacity } from "react-native";
 import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
 
@@ -11,6 +10,7 @@ import { Button } from "../../../components/button";
 import {
   ContextMenuIconButton,
   ContextMenuTouchable,
+  useContextMenu,
 } from "../../../components/context-menu";
 import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
@@ -55,6 +55,7 @@ export const ManageScreen = () => {
     () => selectProfilesForHousehold(selectedHouseholdId),
     [selectedHouseholdId],
   );
+  const { hide: closeContextMenu } = useContextMenu();
 
   const handleTogglePushNotifications = useCallback(() => {
     if (pushNotificationsEnabled) {
@@ -112,12 +113,22 @@ export const ManageScreen = () => {
                 right={<Icon icon="chevron-right" />}
               />
             </ContextMenuTouchable>
-            <TouchableOpacity onPress={signOut}>
+            <ContextMenuTouchable
+              menuId="sign-out"
+              buttons={[
+                <ContextMenuIconButton icon="log-out" onPress={signOut}>
+                  Sign out
+                </ContextMenuIconButton>,
+                <ContextMenuIconButton onPress={closeContextMenu}>
+                  Cancel
+                </ContextMenuIconButton>,
+              ]}
+            >
               <ListItem
                 title="Sign out"
                 right={<Icon icon="chevron-right" />}
               />
-            </TouchableOpacity>
+            </ContextMenuTouchable>
           </View>
           <WelcomeMessageContainer>
             <Heading>Your network</Heading>
