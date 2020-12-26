@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "yarn workspace @urban-jungle/app run start",
     "clean": "find . -name \"node_modules\" -exec rm -rf '{}' + && find . -name \".build\" -exec rm -rf '{}' +"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn workspace @urban-jungle/app run generate-sign-up-flow-chart && git add ./app/sign-up-flow.png"
+    }
   },
   "workspaces": {
     "packages": [
@@ -12,7 +18,11 @@
       "functions"
     ],
     "nohoist": [
+      "**/prettier",
       "**/prettier-plugin-organize-imports"
     ]
+  },
+  "dependencies": {
+    "husky": "4.3.6"
   }
 }

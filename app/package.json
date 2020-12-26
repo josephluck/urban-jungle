@@ -79,7 +79,7 @@
     "react-native-modal": "11.5.6",
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",
-    "react-native-screens": "~2.15.0",
+    "react-native-screens": "2.16.1",
     "react-native-sideswipe": "1.5.0",
     "react-native-snap-carousel": "3.9.0",
     "react-native-svg": "12.1.0",
