@@ -2,7 +2,6 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { useCallback } from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
-
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ScreenTitle } from "../../../components/typography";
@@ -14,17 +13,21 @@ import { routeNames } from "./route-names";
 const SplashScreen = ({}: StackScreenProps<{}>) => {
   const { execute } = useMachine();
 
-  const handleSignUp = useCallback(() => {
-    execute((ctx) => {
-      ctx.authenticationFlow = "signUp";
-    });
-  }, []);
+  const handleSignUp = useCallback(
+    () =>
+      execute((ctx) => {
+        ctx.authenticationFlow = "signUp";
+      }),
+    [],
+  );
 
-  const handleSignIn = useCallback(() => {
-    execute((ctx) => {
-      ctx.authenticationFlow = "signIn";
-    });
-  }, []);
+  const handleSignIn = useCallback(
+    () =>
+      execute((ctx) => {
+        ctx.authenticationFlow = "signIn";
+      }),
+    [],
+  );
 
   return (
     <BackableScreenLayout scrollView={false}>
