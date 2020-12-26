@@ -20,7 +20,7 @@ import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 
 const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
-  const { execute } = useMachine();
+  const { execute, context } = useMachine();
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit } = useForm<{ email: string }>(
@@ -28,19 +28,21 @@ const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
     { email: [constraints.isRequired, constraints.isString] },
   );
 
-  const handleSignUp = useCallback(async () => {
-    runWithUIState(
-      pipe(
-        TE.fromEither(submit()),
-        TE.mapLeft(() => "VALIDATION" as IErr),
-        TE.map((fields) => {
-          execute((ctx) => {
-            ctx.emailAddress = fields.email;
-          });
-        }),
+  const handleSignUp = useCallback(
+    () =>
+      runWithUIState(
+        pipe(
+          TE.fromEither(submit()),
+          TE.mapLeft(() => "VALIDATION" as IErr),
+          TE.map((fields) => {
+            execute((ctx) => {
+              ctx.emailAddress = fields.email;
+            });
+          }),
+        ),
       ),
-    );
-  }, [submit, execute]);
+    [submit, execute],
+  );
 
   const handleUsePhone = useCallback(() => {
     execute((ctx) => {
@@ -70,7 +72,9 @@ const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
 
         <View>
           <EmailButton type="plain" onPress={handleUsePhone}>
-            Sign up with phone
+            {context.authenticationFlow === "signUp"
+              ? "Sign up with phone"
+              : "Sign in with phone"}
           </EmailButton>
 
           <Button onPress={handleSignUp} large>

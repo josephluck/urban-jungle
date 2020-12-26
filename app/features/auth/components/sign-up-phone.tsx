@@ -24,7 +24,7 @@ import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 
 const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
-  const { execute } = useMachine();
+  const { execute, context } = useMachine();
   const recaptchaVerifier = useRef<FirebaseRecaptchaVerifierModal>(null);
   const runWithUIState = useRunWithUIState();
 
@@ -33,33 +33,32 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
     { phone: [constraints.isString, constraints.isLengthAtLeast(11)] },
   );
 
-  const handleSignUp = useCallback(async () => {
-    runWithUIState(
-      pipe(
-        TE.fromEither(submit()),
-        TE.mapLeft(() => "VALIDATION" as IErr),
-        TE.chainFirst((fields) =>
-          TE.tryCatch(
-            async () => {
-              const phoneProvider = new firebase.auth.PhoneAuthProvider();
-              const verificationId = await phoneProvider.verifyPhoneNumber(
-                fields.phone,
-                recaptchaVerifier.current!,
-              );
-              execute((ctx) => {
-                ctx.phoneNumber = fields.phone;
-                ctx.verificationId = verificationId;
-              });
-            },
-            (err) => {
-              console.log(err);
-              return "BAD_REQUEST" as IErr;
-            },
+  const handleSignUp = useCallback(
+    () =>
+      runWithUIState(
+        pipe(
+          TE.fromEither(submit()),
+          TE.mapLeft(() => "VALIDATION" as IErr),
+          TE.chainFirst((fields) =>
+            TE.tryCatch(
+              async () => {
+                const phoneProvider = new firebase.auth.PhoneAuthProvider();
+                const verificationId = await phoneProvider.verifyPhoneNumber(
+                  fields.phone,
+                  recaptchaVerifier.current!,
+                );
+                execute((ctx) => {
+                  ctx.phoneNumber = fields.phone;
+                  ctx.verificationId = verificationId;
+                });
+              },
+              () => "BAD_REQUEST" as IErr,
+            ),
           ),
         ),
       ),
-    );
-  }, [submit, execute, navigation]);
+    [submit, execute, navigation],
+  );
 
   const handleUseEmail = useCallback(() => {
     execute((ctx) => {
@@ -89,7 +88,9 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
 
         <View>
           <EmailButton type="plain" onPress={handleUseEmail}>
-            Sign up with email
+            {context.authenticationFlow === "signUp"
+              ? "Sign up with email"
+              : "Sign in with email"}
           </EmailButton>
 
           <Button onPress={handleSignUp} large>

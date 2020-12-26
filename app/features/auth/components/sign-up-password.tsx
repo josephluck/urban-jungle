@@ -15,9 +15,11 @@ import { useRunWithUIState } from "../../../store/ui";
 import { useMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
+import styled from "styled-components/native";
+import { symbols } from "../../../theme";
 
 const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
-  const { execute } = useMachine();
+  const { execute, context } = useMachine();
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit } = useForm<{ password: string }>(
@@ -25,26 +27,32 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
     { password: [constraints.isRequired, constraints.isString] },
   );
 
-  const handleSignUp = useCallback(async () => {
-    runWithUIState(
-      pipe(
-        TE.fromEither(submit()),
-        TE.mapLeft(() => "VALIDATION" as IErr),
-        TE.map((fields) => {
-          execute((ctx) => {
-            ctx.password = fields.password;
-          });
-        }),
+  const handleSignUp = useCallback(
+    () =>
+      runWithUIState(
+        pipe(
+          TE.fromEither(submit()),
+          TE.mapLeft(() => "VALIDATION" as IErr),
+          TE.map((fields) => {
+            execute((ctx) => {
+              ctx.password = fields.password;
+            });
+          }),
+        ),
       ),
-    );
-  }, [submit, execute]);
+    [submit, execute],
+  );
 
   return (
     <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
       <SplashContainer>
         <ScreenTitle
           title="🌱 Urban Jungle"
-          description="Now choose a password"
+          description={
+            context.authenticationFlow === "signUp"
+              ? "Please create a password"
+              : "Please enter your password"
+          }
         />
 
         <TextField
@@ -58,6 +66,10 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
           autoCorrect={false}
         />
 
+        <EmailButton type="plain" onPress={() => console.log("TODO")}>
+          I've forgotten my password
+        </EmailButton>
+
         <Button onPress={handleSignUp} large>
           Next
         </Button>
@@ -65,6 +77,10 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
     </BackableScreenLayout>
   );
 };
+
+const EmailButton = styled(Button)`
+  margin-bottom: ${symbols.spacing._8};
+`;
 
 export const signUpPasswordRoute = makeNavigationRoute({
   screen: SignUpPassword,

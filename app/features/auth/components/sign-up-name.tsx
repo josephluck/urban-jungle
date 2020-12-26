@@ -1,10 +1,8 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback } from "react";
-
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback } from "react";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
@@ -25,19 +23,21 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
     { name: [constraints.isRequired, constraints.isString] },
   );
 
-  const handleSignUp = useCallback(async () => {
-    runWithUIState(
-      pipe(
-        TE.fromEither(submit()),
-        TE.mapLeft(() => "VALIDATION" as IErr),
-        TE.map((fields) => {
-          execute((ctx) => {
-            ctx.name = fields.name;
-          });
-        }),
+  const handleSignUp = useCallback(
+    () =>
+      runWithUIState(
+        pipe(
+          TE.fromEither(submit()),
+          TE.mapLeft(() => "VALIDATION" as IErr),
+          TE.map((fields) => {
+            execute((ctx) => {
+              ctx.name = fields.name;
+            });
+          }),
+        ),
       ),
-    );
-  }, [submit, execute]);
+    [submit, execute],
+  );
 
   return (
     <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>

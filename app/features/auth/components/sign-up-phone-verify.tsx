@@ -1,13 +1,10 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import firebase from "firebase";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback } from "react";
-import { useRef } from "react";
-
-import { IErr } from "@urban-jungle/shared/utils/err";
-
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback, useRef } from "react";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
@@ -35,33 +32,37 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
     },
   );
 
-  const handleVerify = useCallback(async () => {
-    runWithUIState(
-      pipe(
-        TE.fromEither(submit()),
-        TE.mapLeft(() => "VALIDATION" as IErr),
-        TE.chainFirst((fields) =>
-          TE.tryCatch(
-            async () => {
-              console.log("Verifying", { verificationId, fields });
-              const credential = firebase.auth.PhoneAuthProvider.credential(
-                verificationId!,
-                fields.verificationCode,
-              );
-              await firebase.auth().signInWithCredential(credential);
-              execute((ctx) => {
-                ctx.verificationCode = fields.verificationCode;
-              });
-            },
-            (err) => {
-              console.log(err);
-              return "BAD_REQUEST" as IErr;
-            },
+  const handleVerify = useCallback(
+    () =>
+      runWithUIState(
+        pipe(
+          TE.fromEither(submit()),
+          TE.mapLeft(() => "VALIDATION" as IErr),
+          TE.chainFirst((fields) =>
+            TE.tryCatch(
+              async () => {
+                await firebase
+                  .auth()
+                  .signInWithCredential(
+                    firebase.auth.PhoneAuthProvider.credential(
+                      verificationId!,
+                      fields.verificationCode,
+                    ),
+                  );
+                execute((ctx) => {
+                  ctx.verificationCode = fields.verificationCode;
+                });
+              },
+              (err) => {
+                console.log(err);
+                return "BAD_REQUEST" as IErr;
+              },
+            ),
           ),
         ),
       ),
-    );
-  }, [submit, execute, verificationId]);
+    [submit, execute, verificationId],
+  );
 
   return (
     <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
