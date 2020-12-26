@@ -24,27 +24,27 @@
 
 # Features
 
-## Plants
+### Plants
 
 Store your collection of plants in Urban Jungle, along with care instructions, photos and, of course, their names.
 
-## Plant identification
+### Plant identification
 
 Got a new plant? Snap a picture of it and Urban Jungle will fill in the rest using snazzy image recognition.
 
-## Reminders
+### Reminders
 
 Save reminders for your care instructions. Urban Jungle will ping you when you need to care for your plants.
 
-## Sharing
+### Sharing
 
 Make a household and invite others to care for your plants too. Sharing is caring.
 
-## Password-less login
+### Password-less login
 
 Hate passwords? Me too. Urban Jungle lets you sign in using your phone number (or e-mail address & password if you'd rather).
 
-## Dark mode
+### Dark mode
 
 Because, why not?
 
@@ -52,39 +52,39 @@ Because, why not?
 
 TypeScript
 
-## Front-end
+### Front-end
 
 Expo / React Native
 
-## Auth
+### Auth
 
 Firebase auth
 
-## Databse
+### Databse
 
 Firebase cloud firestore
 
-## Storage
+### Storage
 
 Firebase storage
 
-## Push notifications
+### Push notifications
 
 Expo push service
 
-## State management
+### State management
 
 Global state management is managed using [Stately](https://github.com/josephluck/machi), a state management library I wrote to provide simple fully-typesafe state management for React.
 
-## Form state management
+### Form state management
 
 Forms are managed using a custom hook specific for this library. You can [read all about it](https://josephluck.co.uk/blog/building-forms-and-validation/) if you want.
 
-## Styling
+### Styling
 
 Styled components
 
-## Sign up flow
+### Sign up flow
 
 The path through the sign up flow is managed by [Machi](https://github.com/josephluck/machi), a state machine library I wrote to manage complex data-driven flows through UI. It's perfect for sign-up / onboarding journeys like Urban Jungles.
 
