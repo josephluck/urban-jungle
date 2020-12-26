@@ -97,7 +97,7 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
     fork: "Needs to capture e-mail",
     requirements: [
       function hasntProvidedEmailYet(context) {
-        return typeof context.emailAddress === "undefined";
+        return typeof context.emailAddress !== "string";
       },
     ],
     states: [

@@ -2,15 +2,15 @@ import { GatewayDest, GatewayProvider } from "@chardskarth/react-gateway";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
-import { ActivityIndicator, StatusBar } from "react-native";
+import { ActivityIndicator, LogBox, StatusBar } from "react-native";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components/native";
-
-import { BottomSheetGatewayContainer } from "./components/bottom-drawer";
 import {
   contextMenuGatewayId,
   ContextMenuProvider,
 } from "./components/context-menu";
+
+import { BottomSheetGatewayContainer } from "./components/bottom-drawer";
 import { GlobalLoading } from "./components/global-loading";
 import { MachineProvider } from "./features/auth/machine/machine";
 // import * as reactotron from "./reactotron";
@@ -47,21 +47,17 @@ export default () => {
     O.getOrElse(() => ""),
   );
 
+  const theme = isDarkTheme ? darkTheme : lightTheme;
+
   return (
     <MachineProvider>
-      <ThemeProvider theme={isDarkTheme ? darkTheme : lightTheme}>
+      <ThemeProvider theme={theme}>
         <ContextMenuProvider>
           <GlobalErrorProvider loading={loading}>
             <GatewayProvider>
-              <StatusBar
-                barStyle={isDarkTheme ? darkTheme.type : lightTheme.type}
-              />
+              <StatusBar barStyle={theme.type} />
               <AppWrapper>
-                {loading ? (
-                  <LoadingContainer>
-                    <ActivityIndicator size="large" />
-                  </LoadingContainer>
-                ) : (
+                {loading ? null : (
                   <>
                     <CurrentProfileHouseholdsSubscription />
                     {selectedHouseholdId ? (
@@ -100,6 +96,7 @@ export default () => {
 };
 
 console.disableYellowBox = true;
+LogBox.ignoreAllLogs(true);
 
 const AppWrapper = styled.View`
   flex: 1;

@@ -208,7 +208,7 @@ export const AppNavigation = () => {
           state?.routes.map((route) => route.state?.index ?? 0) ?? [];
         const isAtRoot = indexes.every((index) => index === 0);
         navigationIsAtRootBeacon.emit(
-          typeof isAtRoot === "undefined" || isAtRoot
+          typeof isAtRoot === "undefined" || isAtRoot,
         );
         navigationDidNavigateBeacon.emit();
       }}

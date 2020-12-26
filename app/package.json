@@ -12,7 +12,7 @@
     "deploy": "yarn deploy:prepare && expo publish",
     "postinstall": "expo-yarn-workspaces postinstall",
     "tsc": "tsc --noEmit",
-    "format": "prettier --write \"./**/*{.ts,.tsx,.js,.json}\"",
+    "format": "prettier --write \"./**/*{.ts,.tsx,.js}\"",
     "deploy:prepare": "ts-node ./make-release-date.ts",
     "generate-sign-up-flow-chart": "ts-node ../node_modules/@josephluck/machi/lib/graph/generate-chart.js -s features/auth/machine/states.ts -o ./sign-up-flow.png"
   },
