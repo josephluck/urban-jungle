@@ -2,15 +2,14 @@ import { GatewayDest, GatewayProvider } from "@chardskarth/react-gateway";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
-import { ActivityIndicator, LogBox, StatusBar } from "react-native";
+import { LogBox, StatusBar } from "react-native";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components/native";
+import { BottomSheetGatewayContainer } from "./components/bottom-drawer";
 import {
   contextMenuGatewayId,
   ContextMenuProvider,
 } from "./components/context-menu";
-
-import { BottomSheetGatewayContainer } from "./components/bottom-drawer";
 import { GlobalLoading } from "./components/global-loading";
 import { MachineProvider } from "./features/auth/machine/machine";
 // import * as reactotron from "./reactotron";
@@ -78,10 +77,15 @@ export default () => {
                     ) : null}
                   </>
                 )}
-                <AppNavigation />
+                {fontsLoading ? null : (
+                  <>
+                    <AppNavigation />
+                    <AuthenticationSubscription />
+                    {/* Auth subscription navigates during onboarding rehydratioh, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
+                  </>
+                )}
               </AppWrapper>
               <ProfilesSubscription />
-              <AuthenticationSubscription />
               <GlobalLoading />
               <GatewayDest
                 name={contextMenuGatewayId}
@@ -101,10 +105,4 @@ LogBox.ignoreAllLogs(true);
 const AppWrapper = styled.View`
   flex: 1;
   background-color: ${(props) => props.theme.appBackground};
-`;
-
-const LoadingContainer = styled.View`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
 `;
