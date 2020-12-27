@@ -1,6 +1,5 @@
 import { useContext } from "react";
-import { StatusBarStyle } from "react-native";
-import { Dimensions } from "react-native";
+import { Dimensions, StatusBarStyle } from "react-native";
 import { ThemeContext } from "styled-components/native";
 
 type ScreenSize = "small" | "normal" | "large" | "xlarge";
@@ -184,6 +183,8 @@ export const darkTheme = {
   optionBackground: symbols.colors.nearBlack,
   optionBorderSelected: symbols.colors.deepGray,
   optionBorder: "transparent",
+  loadingOverlayBackground: symbols.colors.blackTint08,
+  loadingIndicator: symbols.colors.lightBlue,
 };
 
 export const lightTheme: Theme = {
@@ -219,6 +220,8 @@ export const lightTheme: Theme = {
   optionBackground: symbols.colors.nearWhite,
   optionBorderSelected: symbols.colors.darkGreen,
   optionBorder: symbols.colors.nearWhite,
+  loadingOverlayBackground: symbols.colors.whiteTint05,
+  loadingIndicator: symbols.colors.solidBlue,
 };
 
 export const useTheme = () => {
