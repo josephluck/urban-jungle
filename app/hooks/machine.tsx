@@ -1,7 +1,6 @@
-import { makeMachine, State, Condition } from "@josephluck/machi/src/machine";
+import { Condition, makeMachine, State } from "@josephluck/machi/src/machine";
 import produce from "immer";
-import React, { useState, useContext, useCallback } from "react";
-
+import React, { useCallback, useContext, useState } from "react";
 import { fetchOrCreateProfile } from "../features/auth/store/effects";
 import { navigate } from "../navigation/navigation-imperative";
 import { useRunWithUIState } from "../store/ui";
@@ -34,12 +33,15 @@ export const makeMachineHooks = <
     const clearContext = useCallback(() => setContext(initialContext), []);
 
     const execute = useCallback(
-      async (producer: (draft: Context) => void, shouldNavigate = true) => {
+      (producer: (draft: Context) => void, shouldNavigate = true) => {
         const ctx = produce(context, producer);
         setContext(ctx);
         const result = getNextState(ctx, currentEntryId);
         if (!result) {
-          console.warn("Next state in machine not found - reached the end.");
+          console.log(
+            "Next state in machine not found - reached the end.",
+            ctx,
+          );
           runWithUIState(fetchOrCreateProfile(ctx));
         } else if (shouldNavigate) {
           setCurrentEntryId(result.entry.id);
