@@ -67,6 +67,11 @@ export const ManageScreen = () => {
 
   const themeSetting = useStore(selectCurrentProfileThemeSetting);
 
+  const handleSignOut = useCallback(async () => {
+    closeContextMenu();
+    await signOut();
+  }, [closeContextMenu]);
+
   return (
     <ScreenLayout isRootScreen>
       {selectedHouseholdId ? (
@@ -116,7 +121,7 @@ export const ManageScreen = () => {
             <ContextMenuTouchable
               menuId="sign-out"
               buttons={[
-                <ContextMenuIconButton icon="log-out" onPress={signOut}>
+                <ContextMenuIconButton icon="log-out" onPress={handleSignOut}>
                   Sign out
                 </ContextMenuIconButton>,
                 <ContextMenuIconButton onPress={closeContextMenu}>
