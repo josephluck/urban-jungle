@@ -3,6 +3,7 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -67,13 +68,15 @@ const SignUpCaptureEmail = ({ navigation }: StackScreenProps<{}>) => {
           autoCorrect={false}
         />
 
-        <SkipButton type="plain" onPress={handleSkip}>
-          Skip
-        </SkipButton>
+        <View>
+          <SkipButton type="plain" onPress={handleSkip}>
+            Skip
+          </SkipButton>
 
-        <Button onPress={handleSignUp} large>
-          Next
-        </Button>
+          <Button onPress={handleSignUp} large>
+            Next
+          </Button>
+        </View>
       </SplashContainer>
     </BackableScreenLayout>
   );
