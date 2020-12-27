@@ -1,11 +1,9 @@
-import firebase from "firebase";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import { getAndParseInitialHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 import { store } from "../../../store/state";
 import {
@@ -20,14 +18,39 @@ import {
 import { Context } from "../machine/types";
 import { selectAuthUser, selectCurrentUserId } from "./state";
 
-export const signIn = store.createEffect(
-  async (_, email: string, password: string) => {
-    const response = await firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password);
-    return response;
-  },
-);
+export const signInWithEmail = (
+  email: string,
+  password: string,
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    TE.tryCatch(
+      () => firebase.auth().signInWithEmailAndPassword(email, password),
+      () => "UNAUTHENTICATED" as IErr,
+    ),
+    TE.chain((profile) => fetchProfileIfNotFetched(profile.user?.uid!)),
+    TE.map((profile) => profile.id),
+  );
+
+export const signInWithPhone = (
+  verificationId: string,
+  verificationCode: string,
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    TE.tryCatch(
+      () =>
+        firebase
+          .auth()
+          .signInWithCredential(
+            firebase.auth.PhoneAuthProvider.credential(
+              verificationId,
+              verificationCode,
+            ),
+          ),
+      () => "UNAUTHENTICATED" as IErr,
+    ),
+    TE.chain((profile) => fetchProfileIfNotFetched(profile.user?.uid!)),
+    TE.map((profile) => profile.id),
+  );
 
 /**
  * Signs up the user.
@@ -35,22 +58,16 @@ export const signIn = store.createEffect(
  *
  * Returns the created profileId
  */
-export const signUp = (
+export const signUpWithEmail = (
   email: string,
   password: string,
 ): TE.TaskEither<IErr, string> =>
   pipe(
     TE.tryCatch(
-      async () => {
-        const response = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(email, password);
-        return response;
-      },
+      () => firebase.auth().createUserWithEmailAndPassword(email, password),
       () => "BAD_REQUEST" as IErr,
     ),
     TE.chain(validateSignUp),
-    TE.chainFirst(handleInitialHouseholdInvitationLink),
   );
 
 /**
@@ -81,9 +98,7 @@ export const handleInitialHouseholdInvitationLink = (
     TE.chain(storeSelectedHouseholdIdToStorage), // TODO: the redirection happens before this is fired
   );
 
-export const signOut = store.createEffect(async () => {
-  await firebase.auth().signOut();
-});
+export const signOut = store.createEffect(() => firebase.auth().signOut());
 
 export const fetchOrCreateProfile = (
   signUpContext: Context,

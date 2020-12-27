@@ -1,14 +1,13 @@
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import React, { useEffect } from "react";
-
 import { resetGlobalState } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { useMachine } from "../machine/machine";
 import { fetchCurrentProfileIfNotFetched } from "../store/effects";
-import { setUser, setInitializing } from "../store/state";
+import { setInitializing, setUser } from "../store/state";
 
 export const AuthenticationSubscription = () => {
   const { execute } = useMachine();
@@ -25,6 +24,7 @@ export const AuthenticationSubscription = () => {
             pipe(
               fetchCurrentProfileIfNotFetched(),
               TE.mapLeft((err) => {
+                console.log("Could not fetch profile", { err });
                 if (err === "UNAUTHENTICATED" || err === "NOT_FOUND") {
                   const phoneProvider = user.providerData.find(
                     (provider) => provider?.providerId === "phone",

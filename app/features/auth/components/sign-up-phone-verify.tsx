@@ -1,7 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useRef } from "react";
@@ -14,6 +13,7 @@ import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
 import { useMachine } from "../machine/machine";
+import { signInWithPhone } from "../store/effects";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 
@@ -39,25 +39,12 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
           TE.chainFirst((fields) =>
-            TE.tryCatch(
-              async () => {
-                await firebase
-                  .auth()
-                  .signInWithCredential(
-                    firebase.auth.PhoneAuthProvider.credential(
-                      verificationId!,
-                      fields.verificationCode,
-                    ),
-                  );
-                execute((ctx) => {
-                  ctx.verificationCode = fields.verificationCode;
-                });
-              },
-              (err) => {
-                console.log(err);
-                return "BAD_REQUEST" as IErr;
-              },
-            ),
+            signInWithPhone(verificationId!, fields.verificationCode),
+          ),
+          TE.map((fields) =>
+            execute((ctx) => {
+              ctx.verificationCode = fields.verificationCode;
+            }),
           ),
         ),
       ),

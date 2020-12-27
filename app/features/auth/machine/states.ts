@@ -1,5 +1,4 @@
 import { Condition, State } from "@josephluck/machi/src/machine";
-
 import { routeNames } from "../components/route-names";
 import { AdditionalEntryData, Context } from "./types";
 
@@ -94,21 +93,11 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
     ],
   },
   {
-    fork: "Needs to capture e-mail",
-    requirements: [
-      function hasntProvidedEmailYet(context) {
-        return typeof context.emailAddress !== "string";
-      },
-    ],
-    states: [
-      {
-        id: "Capture email address",
-        routeName: routeNames.signUpCaptureEmailRoute,
-        isDone: [
-          function hasProvidedOrSkippedEmail(context) {
-            return !!context.emailAddress || !context.skipEmailAddress;
-          },
-        ],
+    id: "Catch-all capture email address",
+    routeName: routeNames.signUpCaptureEmailRoute,
+    isDone: [
+      function hasProvidedOrSkippedEmail(context) {
+        return !!context.emailAddress || context.skipEmailAddress;
       },
     ],
   },

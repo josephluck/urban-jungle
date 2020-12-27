@@ -17,12 +17,14 @@ import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
+import { signInWithEmail, signUpWithEmail } from "../store/effects";
+import { View } from "react-native";
 
 const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
   const { execute, context } = useMachine();
   const runWithUIState = useRunWithUIState();
 
-  const { registerTextInput, submit } = useForm<{ password: string }>(
+  const { registerTextInput, submit, values } = useForm<{ password: string }>(
     { password: "" },
     { password: [constraints.isRequired, constraints.isString] },
   );
@@ -33,14 +35,20 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
         pipe(
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
-          TE.map((fields) => {
+          TE.chain((fields) =>
+            context.authenticationFlow === "signIn"
+              ? signInWithEmail(context.emailAddress!, fields.password)
+              : signUpWithEmail(context.emailAddress!, fields.password),
+          ),
+          TE.mapLeft(() => {
             execute((ctx) => {
-              ctx.password = fields.password;
+              ctx.password = values.password;
             });
+            return "BAD_REQUEST" as IErr;
           }),
         ),
       ),
-    [submit, execute],
+    [submit, context, execute, values],
   );
 
   return (
@@ -66,13 +74,17 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
           autoCorrect={false}
         />
 
-        <EmailButton type="plain" onPress={() => console.log("TODO")}>
-          I've forgotten my password
-        </EmailButton>
+        <View>
+          {context.authenticationFlow === "signIn" ? (
+            <EmailButton type="plain" onPress={() => console.log("TODO")}>
+              I've forgotten my password
+            </EmailButton>
+          ) : null}
 
-        <Button onPress={handleSignUp} large>
-          Next
-        </Button>
+          <Button onPress={handleSignUp} large>
+            Next
+          </Button>
+        </View>
       </SplashContainer>
     </BackableScreenLayout>
   );
