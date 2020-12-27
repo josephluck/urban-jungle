@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
 import { CircleImage } from "./circle-image";
 import { BodyText, SubHeading } from "./typography";
@@ -48,7 +47,7 @@ const Circle = styled.View`
   height: 66px;
   width: 66px;
   border-radius: 66px;
-  background-color: ${symbols.colors.nearWhite};
+  background-color: ${(props) => props.theme.avatarBackground};
   margin-right: ${symbols.spacing._12}px;
 `;
 
