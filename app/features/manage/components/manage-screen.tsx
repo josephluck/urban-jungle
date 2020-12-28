@@ -1,7 +1,7 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
 
 import { ThemeSetting } from "@urban-jungle/shared/models/profile";
@@ -71,6 +71,10 @@ export const ManageScreen = () => {
     closeContextMenu();
     await signOut();
   }, [closeContextMenu]);
+
+  const handleEditProfile = useCallback(() => {
+    console.log("TODO");
+  }, []);
 
   return (
     <ScreenLayout isRootScreen>
@@ -148,16 +152,22 @@ export const ManageScreen = () => {
             data={people}
             keyExtractor={(person) => person.id}
             renderItem={({ item }) => (
-              <ListItem
-                image={pipe(
-                  item.avatar,
-                  O.getOrElse(() => ""),
-                )}
-                title={pipe(
-                  item.name,
-                  O.getOrElse(() => ""),
-                )}
-              />
+              <TouchableOpacity
+                onPress={handleEditProfile}
+                disabled={!item.isCurrentProfile}
+              >
+                <ListItem
+                  image={pipe(
+                    item.avatar,
+                    O.getOrElse(() => ""),
+                  )}
+                  title={pipe(
+                    item.name,
+                    O.getOrElse(() => ""),
+                  )}
+                  right={item.isCurrentProfile ? <Icon icon="edit-3" /> : null}
+                />
+              </TouchableOpacity>
             )}
           />
           <ReleaseDateContainer>

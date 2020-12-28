@@ -1,9 +1,7 @@
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { normalizeArrayById } from "@urban-jungle/shared/utils/normalize";
-
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
 import { store } from "../../../store/state";
 import {
   MiniProfile,
@@ -110,7 +108,9 @@ export const selectProfilesForHousehold = (id: string): MiniProfile[] =>
   pipe(
     selectProfileIdsForHousehold(id),
     O.getOrElse(() => [] as string[]),
-  ).map(selectMiniProfileById);
+  )
+    .map(selectMiniProfileById)
+    .sort((a) => (a.isCurrentProfile ? 1 : -1));
 
 export const setHouseholds = store.createMutator(
   (s, households: HouseholdModel[]) => {
