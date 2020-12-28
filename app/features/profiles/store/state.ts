@@ -1,13 +1,11 @@
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import { Appearance } from "react-native-appearance";
-
 import { getFirstLetterFromOptionString } from "@urban-jungle/shared/fp/option";
 import {
   ProfileModel,
   ThemeSetting,
 } from "@urban-jungle/shared/models/profile";
-
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import { Appearance } from "react-native-appearance";
 import { store } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
 
@@ -27,7 +25,7 @@ export const selectCurrentProfile = store.createSelector(
 export const selectCurrentProfileEmail = (): O.Option<string> =>
   pipe(
     selectCurrentProfile(),
-    O.map((p) => p.email),
+    O.filterMap((p) => O.fromNullable(p.email)),
   );
 
 export const selectCurrentProfileAvatar = (): O.Option<string> =>
@@ -100,6 +98,7 @@ export const selectProfileNameById = (id: string): O.Option<string> =>
   );
 
 export interface MiniProfile {
+  isCurrentProfile: boolean;
   id: string;
   name: O.Option<string>;
   letter: O.Option<string>;
@@ -109,6 +108,11 @@ export interface MiniProfile {
 export const selectMiniProfileById = (id: string): MiniProfile => {
   const name = selectProfileNameById(id);
   return {
+    isCurrentProfile: pipe(
+      selectCurrentUserId(),
+      O.filter((currId) => currId === id),
+      O.isSome,
+    ),
     id,
     name,
     letter: pipe(name, O.map(getFirstLetterFromOptionString), O.flatten),
@@ -123,6 +127,7 @@ export const selectCurrentMiniProfile = (): MiniProfile =>
     O.getOrElse(
       () =>
         ({
+          isCurrentProfile: false,
           id: "",
           avatar: O.none,
           letter: O.none,
