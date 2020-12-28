@@ -4,15 +4,24 @@ import {
   faUserCircle,
 } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import {
   BottomTabBarOptions,
   BottomTabBarProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
+import Animated, { Easing } from "react-native-reanimated";
+import styled, { withTheme } from "styled-components/native";
+import { signUpCaptureEmailRoute } from "../features/auth/components/sign-up-capture-email";
+import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
+import { signUpNameRoute } from "../features/auth/components/sign-up-name";
+import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
 import { signUpPhoneRoute } from "../features/auth/components/sign-up-phone";
+import { signUpPhoneVerifyRoute } from "../features/auth/components/sign-up-phone-verify";
+import { splashRoute } from "../features/auth/components/splash";
+import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { manageRoute } from "../features/manage/components/manage-screen";
@@ -25,19 +34,10 @@ import { plantRoute } from "../features/plants/components/plant-screen";
 import { plantsRoute } from "../features/plants/components/plants-screen";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { todoRoute } from "../features/todos/components/todo-screen";
+import { useStore } from "../store/state";
 // import { logGlobalState } from "../store/state";
 import { symbols, Theme } from "../theme";
-import { useStore } from "../store/state";
-import { selectHasAuthenticated } from "../features/auth/store/state";
-import { Animated, Easing } from "react-native";
-import styled, { withTheme } from "styled-components/native";
-import { signUpPhoneVerifyRoute } from "../features/auth/components/sign-up-phone-verify";
-import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
-import { signUpNameRoute } from "../features/auth/components/sign-up-name";
-import { splashRoute } from "../features/auth/components/splash";
 import { navigationRef } from "./navigation-imperative";
-import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
-import { signUpCaptureEmailRoute } from "../features/auth/components/sign-up-capture-email";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,7 +69,6 @@ class TabBarComponent extends React.Component<
         toValue: isAtRoot ? 0 : 1,
         duration: 120,
         easing: Easing.inOut(Easing.ease),
-        useNativeDriver: true,
       }).start();
     });
   }
@@ -85,7 +84,7 @@ class TabBarComponent extends React.Component<
 
     const { name: currentScreenName } = this.props.state.routes[
       this.props.state.index
-    ];
+    ] || { name: "unknown" };
 
     return (
       <Animated.View
@@ -94,6 +93,8 @@ class TabBarComponent extends React.Component<
             position: "absolute",
             bottom: 0,
             width: "100%",
+            height: symbols.spacing.tabBarHeight,
+            alignItems: "center",
             backgroundColor: this.props.theme.appBackground,
           },
           {
