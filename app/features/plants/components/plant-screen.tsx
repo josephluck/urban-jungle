@@ -1,15 +1,13 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { makeImageModel } from "@urban-jungle/shared/models/image";
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
-
-import { makeImageModel } from "@urban-jungle/shared/models/image";
-import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
-
 import { Button } from "../../../components/button";
 import {
   ContextMenuDotsButton,
@@ -68,10 +66,6 @@ export const PlantScreen = ({
   );
 
   const stickyHeaderIndices = [1, 3];
-
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, []);
 
   const handleEdit = useCallback(() => {
     managePlantRoute.navigateTo(navigation, {
@@ -134,7 +128,7 @@ export const PlantScreen = ({
 
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       stickyHeaderIndices={stickyHeaderIndices}
       headerRightButton={
         <ContextMenuDotsButton menuId="plant-screen">

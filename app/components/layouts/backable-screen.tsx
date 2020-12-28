@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components/native";
-
 import { symbols } from "../../theme";
 import { ProgressBar } from "../progress-bar";
 import { TouchableIcon } from "../touchable-icon";

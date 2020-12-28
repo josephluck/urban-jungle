@@ -1,17 +1,16 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
-
 import { Button } from "../../../../components/button";
 import { CircleButton, CircleImage } from "../../../../components/circle-image";
 import { Icon } from "../../../../components/icon";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
 import { ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
-import { runWithUIState } from "../../../../store/ui";
+import { useRunWithUIState } from "../../../../store/ui";
 import { symbols } from "../../../../theme";
 import { identify } from "../../../identify/effects";
 import { IMAGE_QUALITY, takeAndUploadPicture } from "../../../photos/camera";
@@ -20,13 +19,9 @@ import { newPlantSuggestionRoute } from "./new-plant-suggestion-screen";
 import { setIdentificationResult } from "./state";
 
 export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
+  const runWithUIState = useRunWithUIState();
   const requiredImages: number = 1; // TODO: tweak this depending on the quality of Plant.id. The more images, the better.
   const [images, setImages] = useState<ImageInfo[]>([]);
-
-  const handleGoBack = useCallback(() => {
-    // TODO: this should reset the state of the new plant workflow
-    navigation.goBack();
-  }, []);
 
   const handleTakePicture = useCallback(() => {
     runWithUIState(
@@ -94,7 +89,7 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
   // TODO: support progress bar
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       progress={20}
       footer={
         <Footer>

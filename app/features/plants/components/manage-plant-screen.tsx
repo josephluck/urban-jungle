@@ -1,14 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback } from "react";
-import styled from "styled-components/native";
-
 import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback } from "react";
+import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { CameraField } from "../../../components/camera-field";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -17,7 +15,7 @@ import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
-import { runWithUIState } from "../../../store/ui";
+import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertPlantForHousehold } from "../store/effects";
@@ -31,6 +29,7 @@ export const ManagePlantScreen = ({
   navigation,
   route,
 }: StackScreenProps<Record<keyof ManagePlantRouteParams, undefined>>) => {
+  const runWithUIState = useRunWithUIState();
   const { plantId = "", ...params } = managePlantRoute.getParams(route);
 
   const {
@@ -61,10 +60,6 @@ export const ManagePlantScreen = ({
     selectedHouseholdId,
   ]);
 
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, []);
-
   const handleSubmit = useCallback(
     () =>
       runWithUIState(
@@ -82,7 +77,7 @@ export const ManagePlantScreen = ({
 
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       footer={
         <Footer>
           <Button large onPress={handleSubmit}>

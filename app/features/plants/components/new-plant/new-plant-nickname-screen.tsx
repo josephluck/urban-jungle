@@ -1,19 +1,19 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
-
 import { Button } from "../../../../components/button";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
 import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
-import { useForm, constraints } from "../../../../hooks/use-form";
+import { constraints, useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { useStore } from "../../../../store/state";
 import { symbols } from "../../../../theme";
 import { PlantFields } from "../../store/effects";
 import { newPlantLocationRoute } from "./new-plant-location-screen";
-import { setPlantFields, selectPlantFields } from "./state";
+import { selectPlantFields, setPlantFields } from "./state";
 
 type Fields = Pick<Required<PlantFields>, "nickname">;
 
@@ -36,10 +36,6 @@ export const NewPlantNicknameScreen = ({
       nickname: isNickname ? [] : [constraints.isRequired],
     },
   );
-
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, []);
 
   const handleSubmit = useCallback(
     () =>
@@ -64,10 +60,9 @@ export const NewPlantNicknameScreen = ({
     [],
   );
 
-  // TODO: support progress bar
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       progress={60}
       footer={
         <Footer>

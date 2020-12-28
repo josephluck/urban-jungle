@@ -1,9 +1,9 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useState } from "react";
 import { FlatList, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
-
 import { Button } from "../../../../components/button";
 import { CircleImage } from "../../../../components/circle-image";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
@@ -28,10 +28,6 @@ export const NewPlantSuggestionScreen = ({
 
   const suggestions = useStore(selectIdentificationSuggestions);
 
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, []);
-
   const handleSubmit = useCallback(
     () =>
       pipe(
@@ -49,10 +45,9 @@ export const NewPlantSuggestionScreen = ({
     [],
   );
 
-  // TODO: support progress bar
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       scrollView={false}
       progress={40}
       footer={

@@ -1,13 +1,11 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback } from "react";
-import styled from "styled-components/native";
-
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback } from "react";
+import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { DualNumberPickerField } from "../../../components/dual-number-picker-field";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -100,10 +98,6 @@ export const ManageTodoScreen = ({
     O.getOrElse(() => ""),
   );
 
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, []);
-
   const handleSubmit = useCallback(
     () =>
       pipe(
@@ -119,7 +113,7 @@ export const ManageTodoScreen = ({
 
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       footer={
         <Footer>
           <Button large onPress={handleSubmit}>

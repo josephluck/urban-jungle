@@ -1,12 +1,10 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
-
-import { IErr } from "@urban-jungle/shared/utils/err";
-
 import { Button } from "../../../../components/button";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
 import { PickerField } from "../../../../components/picker-field";
@@ -15,7 +13,7 @@ import { ScreenTitle } from "../../../../components/typography";
 import { useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { useStore } from "../../../../store/state";
-import { runWithUIState } from "../../../../store/ui";
+import { useRunWithUIState } from "../../../../store/ui";
 import { symbols } from "../../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../../households/store/state";
 import { PlantFields, upsertPlantForHousehold } from "../../store/effects";
@@ -27,7 +25,23 @@ type Fields = Pick<Required<PlantFields>, "location"> & { newLocation: string };
 export const NewPlantLocationScreen = ({
   navigation,
 }: StackScreenProps<{}>) => {
-  const [newLocationFieldVisible, setNewLocationFieldVisible] = useState(false);
+  const runWithUIState = useRunWithUIState();
+  const selectedHouseholdId_ = useStore(
+    selectedSelectedOrMostRecentHouseholdId,
+  );
+
+  const selectedHouseholdId = pipe(
+    selectedHouseholdId_,
+    O.getOrElse(() => ""),
+  );
+
+  const locations = useStore(() => selectUniqueLocations(selectedHouseholdId), [
+    selectedHouseholdId,
+  ]);
+
+  const [newLocationFieldVisible, setNewLocationFieldVisible] = useState(
+    locations.length === 0,
+  );
 
   const {
     submit,
@@ -44,24 +58,7 @@ export const NewPlantLocationScreen = ({
     },
   );
 
-  const selectedHouseholdId_ = useStore(
-    selectedSelectedOrMostRecentHouseholdId,
-  );
-
   const plantFields = useStore(selectPlantFields);
-
-  const selectedHouseholdId = pipe(
-    selectedHouseholdId_,
-    O.getOrElse(() => ""),
-  );
-
-  const locations = useStore(() => selectUniqueLocations(selectedHouseholdId), [
-    selectedHouseholdId,
-  ]);
-
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, []);
 
   const handleSubmit = useCallback(
     () =>
@@ -86,10 +83,9 @@ export const NewPlantLocationScreen = ({
     [],
   );
 
-  // TODO: support progress bar
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       progress={90}
       footer={
         <Footer>

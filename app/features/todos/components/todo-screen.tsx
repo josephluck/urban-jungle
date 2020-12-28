@@ -1,14 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { sequenceTO } from "@urban-jungle/shared/fp/option";
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
-
-import { sequenceTO } from "@urban-jungle/shared/fp/option";
-import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
-
 import {
   ContextMenuDotsButton,
   ContextMenuIconButton,
@@ -64,10 +62,6 @@ export const TodoScreen = ({
     [todoId, selectedHouseholdId],
   );
 
-  const handleGoBack = useCallback(() => {
-    navigation.goBack();
-  }, []);
-
   const handleEdit = useCallback(() => {
     pipe(
       todo,
@@ -97,7 +91,7 @@ export const TodoScreen = ({
 
   return (
     <BackableScreenLayout
-      onBack={handleGoBack}
+      onBack={navigation.goBack}
       headerRightButton={
         <ContextMenuDotsButton menuId="todo-screen">
           {[

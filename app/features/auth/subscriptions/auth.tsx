@@ -15,7 +15,6 @@ export const AuthenticationSubscription = () => {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
-      // TODO: TaskEither pipe all of this, with global error handling
       try {
         setUser(O.fromNullable(user));
 
