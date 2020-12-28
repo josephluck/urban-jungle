@@ -12,7 +12,9 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
+import { Insets } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
+import { withSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { withTheme } from "styled-components/native";
 import { signUpCaptureEmailRoute } from "../features/auth/components/sign-up-capture-email";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
@@ -58,7 +60,9 @@ const navigationIsAtRootBeacon = makeEmitter<boolean>();
 export const navigationDidNavigateBeacon = makeEmitter<void>();
 
 class TabBarComponent extends React.Component<
-  BottomTabBarProps<BottomTabBarOptions> & { theme: Theme }
+  BottomTabBarProps<BottomTabBarOptions> & { theme: Theme } & {
+    insets?: Insets;
+  }
 > {
   transformValue = new Animated.Value(0);
   unsubscribe: (() => void) | null = null;
@@ -86,6 +90,8 @@ class TabBarComponent extends React.Component<
       this.props.state.index
     ] || { name: "unknown" };
 
+    const { bottom: safeAreaBottom = 0 } = this.props.insets || {};
+
     return (
       <Animated.View
         style={[
@@ -93,7 +99,6 @@ class TabBarComponent extends React.Component<
             position: "absolute",
             bottom: 0,
             width: "100%",
-            height: symbols.spacing.tabBarHeight,
             alignItems: "center",
             backgroundColor: this.props.theme.appBackground,
           },
@@ -106,7 +111,10 @@ class TabBarComponent extends React.Component<
               {
                 translateY: this.transformValue.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, symbols.spacing.tabBarHeight],
+                  outputRange: [
+                    -safeAreaBottom,
+                    symbols.spacing.tabBarHeight + safeAreaBottom,
+                  ],
                 }),
               },
             ],
@@ -142,9 +150,9 @@ class TabBarComponent extends React.Component<
   }
 }
 
-const TabBar = withTheme(TabBarComponent);
+const TabBar = withSafeAreaInsets(withTheme(TabBarComponent));
 
-const TabBarContainer = styled.SafeAreaView`
+const TabBarContainer = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
