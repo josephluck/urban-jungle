@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-
-import { CAROS_BOLD, CAROS_SEMIBOLD, CAROS_REGULAR } from "../hooks/fonts";
+import { CAROS_BOLD, CAROS_REGULAR, CAROS_SEMIBOLD } from "../hooks/fonts";
 import { symbols } from "../theme";
 
 type FontWeight = "regular" | "semibold" | "bold";
@@ -72,7 +71,9 @@ const ScreenTitleContainer = styled.View`
   margin-bottom: ${symbols.spacing.appVertical};
 `;
 
-const ScreenTitleHeading = styled(Heading)``;
+const ScreenTitleHeading = styled(Heading)`
+  text-align: center;
+`;
 
 const ScreenTitleDescription = styled(Paragraph)`
   margin-top: ${symbols.spacing._16};
