@@ -31,6 +31,7 @@ import { addProfilePassword } from "../features/manage/components/add-profile-pa
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
 import { manageProfileEmailVerifyPassword } from "../features/manage/components/manage-profile-email-verify-password";
 import { manageProfilePassword } from "../features/manage/components/manage-profile-password";
+import { manageProfilePasswordVerify } from "../features/manage/components/manage-profile-password-verify";
 import { manageProfilePhone } from "../features/manage/components/manage-profile-phone";
 import { manageProfilePhoneVerify } from "../features/manage/components/manage-profile-phone-verify";
 import { manageProfileRoute } from "../features/manage/components/manage-profile-screen";
@@ -225,6 +226,7 @@ const ManageStack = () => (
       manageProfileEmail,
       manageProfileEmailVerifyPassword,
       manageProfilePassword,
+      manageProfilePasswordVerify,
       manageProfilePhone,
       manageProfilePhoneVerify,
     ].map((route) => (
