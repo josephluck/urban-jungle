@@ -28,6 +28,7 @@ import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { addProfileEmail } from "../features/manage/components/add-profile-email";
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
+import { manageProfileEmailVerifyPassword } from "../features/manage/components/manage-profile-email-verify-password";
 import { manageProfilePassword } from "../features/manage/components/manage-profile-password";
 import { manageProfilePhone } from "../features/manage/components/manage-profile-phone";
 import { manageProfilePhoneVerify } from "../features/manage/components/manage-profile-phone-verify";
@@ -220,6 +221,7 @@ const ManageStack = () => (
       manageProfileRoute,
       addProfileEmail,
       manageProfileEmail,
+      manageProfileEmailVerifyPassword,
       manageProfilePassword,
       manageProfilePhone,
       manageProfilePhoneVerify,

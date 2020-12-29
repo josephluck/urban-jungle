@@ -3,27 +3,36 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
+import { InteractionManager } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
+import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { manageProfileEmailVerifyPassword } from "./manage-profile-email-verify-password";
+import { updateUserEmail } from "../../auth/store/effects";
+import { manageRoute } from "./manage-screen";
 
-const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
+const ManageProfileEmailVerifyPassword = ({
+  navigation,
+  route,
+}: StackScreenProps<
+  Record<keyof ManageProfileEmailVerifyPasswordParams, never>
+>) => {
+  const { email } = manageProfileEmailVerifyPassword.getParams(route);
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit } = useForm<{
-    email: string;
+    currentPassword: string;
   }>(
     {
-      email: "",
+      currentPassword: "",
     },
     {
-      email: [constraints.isRequired, constraints.isString],
+      currentPassword: [constraints.isRequired, constraints.isString],
     },
   );
 
@@ -34,29 +43,39 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
           TE.map((fields) => {
-            manageProfileEmailVerifyPassword.navigateTo(navigation, {
-              email: fields.email,
-            });
+            runWithUIState(
+              pipe(
+                updateUserEmail(fields.currentPassword, email),
+                TE.map(() =>
+                  InteractionManager.runAfterInteractions(() =>
+                    manageRoute.navigateTo(navigation, {}),
+                  ),
+                ),
+              ),
+            );
           }),
         ),
       ),
-    [submit],
+    [submit, email],
   );
 
   return (
     <BackableScreenLayout onBack={navigation.goBack}>
       <ContentContainer>
+        <ScreenTitle
+          title="Change email address"
+          description="Please verify your password"
+        />
+
         <TextField
-          {...registerTextInput("email")}
-          label="New email address"
-          textContentType="emailAddress"
-          autoCompleteType="email"
-          keyboardType="email-address"
-          autoFocus
-          autoCapitalize="none"
-          autoCorrect={false}
+          {...registerTextInput("currentPassword")}
+          label="Current password"
+          textContentType="password"
+          secureTextEntry
           returnKeyType="send"
+          autoCapitalize="none"
           onSubmitEditing={handleSubmit}
+          autoCorrect={false}
         />
 
         <Button onPress={handleSubmit} large>
@@ -73,7 +92,13 @@ const ContentContainer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;
 
-export const manageProfileEmail = makeNavigationRoute({
-  screen: ManageProfileEmail,
-  routeName: "MANAGE_PROFILE_EMAIL",
-});
+type ManageProfileEmailVerifyPasswordParams = {
+  email: string;
+};
+
+export const manageProfileEmailVerifyPassword = makeNavigationRoute<ManageProfileEmailVerifyPasswordParams>(
+  {
+    screen: ManageProfileEmailVerifyPassword,
+    routeName: "MANAGE_PROFILE_EMAIL_VERIFY_PASSWORD",
+  },
+);
