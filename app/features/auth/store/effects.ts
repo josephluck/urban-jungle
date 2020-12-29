@@ -15,26 +15,32 @@ import {
   createProfileForUser,
   fetchProfileIfNotFetched,
 } from "../../profiles/store/effects";
+import { selectCurrentProfileEmail } from "../../profiles/store/state";
 import { Context } from "../machine/types";
 import { selectAuthUser, selectCurrentUserId } from "./state";
 
-export const signInWithEmail = (
-  email: string,
-  password: string,
-): TE.TaskEither<IErr, string> =>
+const authenticateWithEmailAndPassword = (
+  currentEmail: string,
+  currentPassword: string,
+) =>
   pipe(
     TE.tryCatch(
-      () => firebase.auth().signInWithEmailAndPassword(email, password),
+      async () =>
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(currentEmail, currentPassword),
       () => "UNAUTHENTICATED" as IErr,
     ),
-    TE.chain((profile) => fetchProfileIfNotFetched(profile.user?.uid!)),
-    TE.map((profile) => profile.id),
+    TE.filterOrElse(
+      (user) => Boolean(user.user),
+      () => "UNAUTHENTICATED" as IErr,
+    ),
   );
 
-export const signInWithPhone = (
+const authenticateWithPhone = (
   verificationId: string,
   verificationCode: string,
-): TE.TaskEither<IErr, string> =>
+) =>
   pipe(
     TE.tryCatch(
       () =>
@@ -48,16 +54,28 @@ export const signInWithPhone = (
           ),
       () => "UNAUTHENTICATED" as IErr,
     ),
+  );
+
+export const signInWithEmail = (
+  email: string,
+  password: string,
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    authenticateWithEmailAndPassword(email, password),
     TE.chain((profile) => fetchProfileIfNotFetched(profile.user?.uid!)),
     TE.map((profile) => profile.id),
   );
 
-/**
- * Signs up the user.
- * Optionally handles household invitation deep links.
- *
- * Returns the created profileId
- */
+export const signInWithPhone = (
+  verificationId: string,
+  verificationCode: string,
+): TE.TaskEither<IErr, string> =>
+  pipe(
+    authenticateWithPhone(verificationId, verificationCode),
+    TE.chain((profile) => fetchProfileIfNotFetched(profile.user?.uid!)),
+    TE.map((profile) => profile.id),
+  );
+
 export const signUpWithEmail = (
   email: string,
   password: string,
@@ -70,6 +88,8 @@ export const signUpWithEmail = (
     TE.chain(validateSignUp),
   );
 
+export const signUpWithPhone = signInWithPhone;
+
 /**
  * Validates a user was correctly created
  */
@@ -80,6 +100,67 @@ export const validateSignUp = (
     O.fromNullable(credentials.user),
     O.map((user) => user.uid),
     TE.fromOption(() => "BAD_REQUEST"),
+  );
+
+// const getTEUser = () =>
+//   pipe(
+//     selectAuthUser(),
+//     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+//   );
+//
+// export const updateUserPhone = async (phone: string) =>
+//   pipe(
+//     getTEUser(),
+//     TE.chainFirst((user) =>
+//       TE.tryCatch(
+//         async () => user.updatePhoneNumber(phone),
+//         () => "BAD_REQUEST" as IErr,
+//       ),
+//     ),
+//   );
+
+export const updateUserEmailAndPassword = (
+  newEmail: string,
+  currentPassword: string,
+  newPassword: string,
+) =>
+  pipe(
+    selectCurrentProfileEmail(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain((currentEmail) =>
+      updateUserEmail(currentEmail, currentPassword, newEmail),
+    ),
+    TE.chain(() => updateUserPassword(newEmail, currentPassword, newPassword)),
+  );
+
+export const updateUserEmail = (
+  currentEmail: string,
+  currentPassword: string,
+  newEmail: string,
+) =>
+  pipe(
+    authenticateWithEmailAndPassword(currentEmail, currentPassword),
+    TE.chain((user) =>
+      TE.tryCatch(
+        async () => user.user!.updateEmail(newEmail),
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
+  );
+
+export const updateUserPassword = (
+  currentEmail: string,
+  currentPassword: string,
+  newPassword: string,
+) =>
+  pipe(
+    authenticateWithEmailAndPassword(currentEmail, currentPassword),
+    TE.chain((user) =>
+      TE.tryCatch(
+        async () => user.user!.updatePassword(newPassword),
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
   );
 
 /**

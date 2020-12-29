@@ -13,7 +13,7 @@ import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
 import { useMachine } from "../machine/machine";
-import { signInWithPhone } from "../store/effects";
+import { signUpWithPhone } from "../store/effects";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 
@@ -39,7 +39,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
           TE.chainFirst((fields) =>
-            signInWithPhone(verificationId!, fields.verificationCode),
+            signUpWithPhone(verificationId!, fields.verificationCode),
           ),
           TE.map((fields) =>
             execute((ctx) => {
