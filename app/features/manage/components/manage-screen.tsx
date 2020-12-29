@@ -35,7 +35,7 @@ import {
   selectCurrentProfileThemeSetting,
   selectPushNotificationsEnabled,
 } from "../../profiles/store/state";
-import { manageProfileRoute } from "./manage-profile-screen";
+import { manageProfileRoute } from "./manage-profile";
 import {
   selectCurrentUserId,
   selectAuthProviderPhone,

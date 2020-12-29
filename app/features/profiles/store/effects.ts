@@ -102,6 +102,25 @@ export const addHouseholdToCurrentProfile = (
     TE.chain(fetchCurrentProfileIfNotFetched),
   );
 
+export const updateProfile = (fields: Partial<ProfileModel>) =>
+  pipe(
+    selectCurrentUserId(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain(fetchProfileIfNotFetched),
+    TE.chainFirst((profile) =>
+      TE.tryCatch(
+        () =>
+          database.profiles.database.doc(profile.id).update({
+            ...profile,
+            ...fields,
+          }),
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
+    TE.map((profile) => profile.id),
+    TE.chain(fetchProfile),
+  );
+
 /**
  * Removes a household from the profile.
  *

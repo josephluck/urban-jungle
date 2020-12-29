@@ -19,6 +19,7 @@ import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
+import { updateProfile } from "../../profiles/store/effects";
 import { selectCurrentProfile } from "../../profiles/store/state";
 
 type Fields = Required<Pick<ProfileModel, "name" | "avatar">>;
@@ -49,10 +50,7 @@ export const ManageProfileScreen = ({
         pipe(
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
-          TE.map((fields) => {
-            console.log(fields);
-            return fields;
-          }),
+          TE.chain(updateProfile),
           TE.map(() => navigation.goBack()),
         ),
       ),
