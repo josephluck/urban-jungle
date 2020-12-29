@@ -1,19 +1,18 @@
-import firebase from "firebase";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-
+import { sequenceSTE } from "@urban-jungle/shared/fp/task-either";
 import {
   makeProfileModel,
   ProfileModel,
   ThemeSetting,
 } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import { database } from "../../../database";
 import { Context } from "../../auth/machine/types";
 import { fetchCurrentProfileIfNotFetched } from "../../auth/store/effects";
-import { selectCurrentUserId } from "../../auth/store/state";
+import { selectAuthUser, selectCurrentUserId } from "../../auth/store/state";
 import {
   selectProfileById,
   selectProfiles,
@@ -40,6 +39,24 @@ export const createProfileForUser = (signUpContext: Context) => (
         () => database.profiles.database.doc(profile.id).set(profile),
         () => "BAD_REQUEST" as IErr,
       ),
+    ),
+  );
+
+export const syncAuthUserWithProfile = (userId: string) =>
+  pipe(
+    sequenceSTE({
+      user: pipe(
+        selectAuthUser(),
+        TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+      ),
+      profile: fetchProfileIfNotFetched(userId),
+    }),
+    TE.map(({ profile, user }) =>
+      makeProfileModel({
+        ...profile,
+        email: pipe(O.fromNullable(user.email), O.toUndefined),
+        phoneNumber: pipe(O.fromNullable(user.phoneNumber), O.toUndefined),
+      }),
     ),
   );
 
@@ -73,10 +90,10 @@ export const addHouseholdToCurrentProfile = (
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain((id) =>
+    TE.chain((profileId) =>
       TE.tryCatch(
         () =>
-          database.profiles.database.doc(id).update({
+          database.profiles.database.doc(profileId).update({
             householdIds: firebase.firestore.FieldValue.arrayUnion(householdId),
           }),
         () => "BAD_REQUEST" as IErr,

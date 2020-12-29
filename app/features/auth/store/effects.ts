@@ -14,6 +14,7 @@ import {
 import {
   createProfileForUser,
   fetchProfileIfNotFetched,
+  syncAuthUserWithProfile,
 } from "../../profiles/store/effects";
 import { selectCurrentProfileEmail } from "../../profiles/store/state";
 import { Context } from "../machine/types";
@@ -98,7 +99,7 @@ export const addEmailAndPasswordCredentials = (
   pipe(
     selectAuthUser(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain((user) =>
+    TE.chainFirst((user) =>
       TE.tryCatch(
         async () =>
           user.linkWithCredential(
@@ -107,6 +108,8 @@ export const addEmailAndPasswordCredentials = (
         () => "BAD_REQUEST" as IErr,
       ),
     ),
+    TE.map((user) => user.uid),
+    TE.chain(syncAuthUserWithProfile),
   );
 
 export const signUpWithPhone = signInWithPhone;
@@ -139,17 +142,21 @@ export const updateUserPhone = async (
         () => "BAD_REQUEST" as IErr,
       ),
     ),
+    TE.map((user) => user.uid),
+    TE.chain(syncAuthUserWithProfile),
   );
 
 export const updateUserEmail = (currentPassword: string, newEmail: string) =>
   pipe(
     authenticateWithPassword(currentPassword),
-    TE.chain((user) =>
+    TE.chainFirst((user) =>
       TE.tryCatch(
         async () => user.user!.updateEmail(newEmail),
         () => "BAD_REQUEST" as IErr,
       ),
     ),
+    TE.map((credential) => credential.user!.uid),
+    TE.chain(syncAuthUserWithProfile),
   );
 
 export const updateUserPassword = (
