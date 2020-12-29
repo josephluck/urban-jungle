@@ -16,7 +16,6 @@ import { Insets } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { withTheme } from "styled-components/native";
-import { signUpCaptureEmailRoute } from "../features/auth/components/sign-up-capture-email";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
 import { signUpNameRoute } from "../features/auth/components/sign-up-name";
 import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
@@ -281,10 +280,6 @@ export const AppNavigation = () => {
           <Stack.Screen
             name={signUpNameRoute.routeName}
             component={signUpNameRoute.screen}
-          />
-          <Stack.Screen
-            name={signUpCaptureEmailRoute.routeName}
-            component={signUpCaptureEmailRoute.screen}
           />
           <Stack.Screen
             name={signUpPasswordRoute.routeName}
