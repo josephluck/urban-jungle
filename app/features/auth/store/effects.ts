@@ -19,21 +19,24 @@ import { selectCurrentProfileEmail } from "../../profiles/store/state";
 import { Context } from "../machine/types";
 import { selectAuthUser, selectCurrentUserId } from "./state";
 
-const authenticateWithEmailAndPassword = (
-  currentEmail: string,
-  currentPassword: string,
-) =>
+const authenticateWithEmailAndPassword = (email: string, password: string) =>
   pipe(
     TE.tryCatch(
-      async () =>
-        firebase
-          .auth()
-          .signInWithEmailAndPassword(currentEmail, currentPassword),
+      async () => firebase.auth().signInWithEmailAndPassword(email, password),
       () => "UNAUTHENTICATED" as IErr,
     ),
     TE.filterOrElse(
       (user) => Boolean(user.user),
       () => "UNAUTHENTICATED" as IErr,
+    ),
+  );
+
+const authenticateWithPassword = (password: string) =>
+  pipe(
+    selectCurrentProfileEmail(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain((currentEmail) =>
+      authenticateWithEmailAndPassword(currentEmail, password),
     ),
   );
 
@@ -88,7 +91,10 @@ export const signUpWithEmail = (
     TE.chain(validateSignUp),
   );
 
-export const linkWithEmailCredential = (email: string, password: string) =>
+export const addEmailAndPasswordCredentials = (
+  email: string,
+  password: string,
+) =>
   pipe(
     selectAuthUser(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
@@ -105,9 +111,6 @@ export const linkWithEmailCredential = (email: string, password: string) =>
 
 export const signUpWithPhone = signInWithPhone;
 
-/**
- * Validates a user was correctly created
- */
 export const validateSignUp = (
   credentials: firebase.auth.UserCredential,
 ): TE.TaskEither<IErr, string> =>
@@ -138,31 +141,9 @@ export const updateUserPhone = async (
     ),
   );
 
-export const updateUserEmailAndPassword = (
-  newEmail: string,
-  currentPassword: string,
-  newPassword: string,
-) =>
+export const updateUserEmail = (currentPassword: string, newEmail: string) =>
   pipe(
-    selectCurrentProfileEmail(),
-    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain((currentEmail) =>
-      pipe(
-        updateUserEmail(currentEmail, currentPassword, newEmail),
-        TE.chain(() =>
-          updateUserPassword(newEmail, currentPassword, newPassword),
-        ),
-      ),
-    ),
-  );
-
-export const updateUserEmail = (
-  currentEmail: string,
-  currentPassword: string,
-  newEmail: string,
-) =>
-  pipe(
-    authenticateWithEmailAndPassword(currentEmail, currentPassword),
+    authenticateWithPassword(currentPassword),
     TE.chain((user) =>
       TE.tryCatch(
         async () => user.user!.updateEmail(newEmail),
@@ -172,12 +153,11 @@ export const updateUserEmail = (
   );
 
 export const updateUserPassword = (
-  currentEmail: string,
   currentPassword: string,
   newPassword: string,
 ) =>
   pipe(
-    authenticateWithEmailAndPassword(currentEmail, currentPassword),
+    authenticateWithPassword(currentPassword),
     TE.chain((user) =>
       TE.tryCatch(
         async () => user.user!.updatePassword(newPassword),

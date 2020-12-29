@@ -42,9 +42,10 @@ import {
   selectAuthProviderEmail,
 } from "../../auth/store/state";
 import { StackScreenProps } from "@react-navigation/stack";
-import { manageProfileEmail } from "./manage-profile-email";
+import { manageProfilePassword } from "./manage-profile-password";
 import { addProfileEmail } from "./add-profile-email";
 import { manageProfilePhone } from "./manage-profile-phone";
+import { manageProfileEmail } from "./manage-profile-email";
 
 /**
  * NB: if this errors, it's likely because you haven't run a release yet.
@@ -102,7 +103,12 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
     [navigation, currentProfileId],
   );
 
-  const handleManageEmailAddress = useCallback(
+  const handleManagePassword = useCallback(
+    () => manageProfilePassword.navigateTo(navigation, {}),
+    [navigation],
+  );
+
+  const handleManageEmail = useCallback(
     () => manageProfileEmail.navigateTo(navigation, {}),
     [navigation],
   );
@@ -185,12 +191,20 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
                   </TouchableOpacity>
                 ),
                 () => (
-                  <TouchableOpacity onPress={handleManageEmailAddress}>
-                    <ListItem
-                      title="Change password"
-                      right={<Icon icon="chevron-right" />}
-                    />
-                  </TouchableOpacity>
+                  <>
+                    <TouchableOpacity onPress={handleManageEmail}>
+                      <ListItem
+                        title="Change email"
+                        right={<Icon icon="chevron-right" />}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleManagePassword}>
+                      <ListItem
+                        title="Change password"
+                        right={<Icon icon="chevron-right" />}
+                      />
+                    </TouchableOpacity>
+                  </>
                 ),
               ),
             )}

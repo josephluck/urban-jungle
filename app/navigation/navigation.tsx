@@ -28,6 +28,7 @@ import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { addProfileEmail } from "../features/manage/components/add-profile-email";
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
+import { manageProfilePassword } from "../features/manage/components/manage-profile-password";
 import { manageProfilePhone } from "../features/manage/components/manage-profile-phone";
 import { manageProfilePhoneVerify } from "../features/manage/components/manage-profile-phone-verify";
 import { manageProfileRoute } from "../features/manage/components/manage-profile-screen";
@@ -217,8 +218,9 @@ const ManageStack = () => (
     {[
       manageRoute,
       manageProfileRoute,
-      manageProfileEmail,
       addProfileEmail,
+      manageProfileEmail,
+      manageProfilePassword,
       manageProfilePhone,
       manageProfilePhoneVerify,
     ].map((route) => (

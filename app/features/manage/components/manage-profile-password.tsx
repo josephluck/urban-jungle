@@ -3,6 +3,7 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
+import { InteractionManager } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
@@ -11,26 +12,26 @@ import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { addEmailAndPasswordCredentials } from "../../auth/store/effects";
+import { updateUserPassword } from "../../auth/store/effects";
 
-const AddProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
+const ManageProfilePassword = ({ navigation }: StackScreenProps<{}>) => {
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit } = useForm<{
-    email: string;
-    password: string;
+    currentPassword: string;
+    newPassword: string;
   }>(
     {
-      email: "",
-      password: "",
+      currentPassword: "",
+      newPassword: "",
     },
     {
-      email: [constraints.isRequired, constraints.isString],
-      password: [constraints.isRequired, constraints.isString],
+      currentPassword: [constraints.isRequired, constraints.isString],
+      newPassword: [constraints.isRequired, constraints.isString],
     },
   );
 
-  const handleSignUp = useCallback(
+  const handleSubmit = useCallback(
     () =>
       runWithUIState(
         pipe(
@@ -38,7 +39,12 @@ const AddProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
           TE.mapLeft(() => "VALIDATION" as IErr),
           TE.map((fields) => {
             runWithUIState(
-              addEmailAndPasswordCredentials(fields.email, fields.password),
+              pipe(
+                updateUserPassword(fields.currentPassword, fields.newPassword),
+                TE.map(() =>
+                  InteractionManager.runAfterInteractions(navigation.goBack),
+                ),
+              ),
             );
           }),
         ),
@@ -51,7 +57,7 @@ const AddProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
       onBack={navigation.goBack}
       footer={
         <Footer>
-          <Button onPress={handleSignUp} large>
+          <Button onPress={handleSubmit} large>
             Save
           </Button>
         </Footer>
@@ -59,24 +65,24 @@ const AddProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
     >
       <ContentContainer>
         <TextField
-          {...registerTextInput("email")}
-          label="Email address"
-          textContentType="emailAddress"
-          autoCompleteType="email"
-          keyboardType="email-address"
-          returnKeyType="send"
+          {...registerTextInput("currentPassword")}
+          label="Current password"
+          textContentType="password"
+          secureTextEntry
           autoFocus
+          returnKeyType="send"
           autoCapitalize="none"
           autoCorrect={false}
         />
 
         <TextField
-          {...registerTextInput("password")}
-          label="Password"
+          {...registerTextInput("newPassword")}
+          label="New password"
           textContentType="password"
           secureTextEntry
           returnKeyType="send"
           autoCapitalize="none"
+          onSubmitEditing={handleSubmit}
           autoCorrect={false}
         />
       </ContentContainer>
@@ -94,7 +100,7 @@ const Footer = styled.View`
   padding-vertical: ${symbols.spacing._20}px;
 `;
 
-export const addProfileEmail = makeNavigationRoute({
-  screen: AddProfileEmail,
-  routeName: "ADD_PROFILE_EMAIL",
+export const manageProfilePassword = makeNavigationRoute({
+  screen: ManageProfilePassword,
+  routeName: "MANAGE_PROFILE_PASSWORD",
 });
