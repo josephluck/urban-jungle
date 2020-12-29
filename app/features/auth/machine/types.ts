@@ -1,3 +1,5 @@
+import { ImageModel } from "@urban-jungle/shared/models/image";
+
 export type Context = {
   authenticationFlow: "splash" | "signUp" | "signIn";
   authType: "phone" | "email";
@@ -7,7 +9,7 @@ export type Context = {
   emailAddress?: string;
   password?: string;
   name?: string;
-  avatar?: string;
+  avatar?: ImageModel;
   skipAvatar: boolean;
   isAuthenticated: boolean;
   skipEmailAddress: boolean;

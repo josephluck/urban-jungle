@@ -1,3 +1,4 @@
+import { ImageModel } from "@urban-jungle/shared/models/image";
 import React from "react";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
@@ -13,7 +14,7 @@ export const ListItem = ({
 }: {
   title?: React.ReactNode;
   detail?: React.ReactNode;
-  image?: string;
+  image?: string | ImageModel;
   showImageFallback?: boolean;
   right?: React.ReactNode;
 }) => (

@@ -1,7 +1,7 @@
+import { ImageModel } from "@urban-jungle/shared/models/image";
 import React from "react";
 import { Image, StyleProp, TouchableOpacity, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
 import { Icon } from "./icon";
 
@@ -14,7 +14,7 @@ export const CircleImage = ({
   withDeleteBadge,
 }: {
   style?: StyleProp<ViewStyle>;
-  uri: string;
+  uri: string | ImageModel;
   size?: number;
   withTickBadge?: boolean;
   withDeleteBadge?: boolean;
@@ -31,7 +31,7 @@ export const CircleImage = ({
       <Image
         width={size}
         style={{ width: size, aspectRatio: 1, borderRadius: size / 2 }}
-        source={{ uri }}
+        source={{ uri: typeof uri === "string" ? uri : uri.uri }}
       />
       {withTickBadge || withDeleteBadge ? (
         <BadgeWrapper

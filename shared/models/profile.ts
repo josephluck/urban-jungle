@@ -1,4 +1,5 @@
 import { BaseModel, cleanObj, makeBaseModel } from "./base";
+import { ImageModel } from "./image";
 
 export type ThemeSetting = "light" | "dark" | "system";
 
@@ -22,7 +23,7 @@ export interface ProfileModel extends BaseModel {
   /**
    * Pretty picture of the profile. If not provided, falls back to a placeholder.
    */
-  avatar?: string;
+  avatar?: ImageModel;
   /**
    * The Expo Push token for the user's device
    */

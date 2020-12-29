@@ -6,7 +6,6 @@ import { store } from "../../../store/state";
 import {
   MiniProfile,
   selectMiniProfileById,
-  selectProfileAvatarById,
   selectProfileNameById,
 } from "../../profiles/store/state";
 
@@ -78,18 +77,6 @@ export const selectProfileIdsForHousehold = (id: string): O.Option<string[]> =>
   pipe(
     selectHouseholdById(id),
     O.map((household) => household.profileIds),
-  );
-
-export const selectProfileAvatarsForHousehold = (
-  id: string,
-): O.Option<string>[] =>
-  pipe(
-    selectProfileIdsForHousehold(id),
-    O.map((profileIds) => profileIds.map(selectProfileAvatarById)),
-    O.fold(
-      () => [],
-      (val) => val,
-    ),
   );
 
 export const selectProfileNamesForHousehold = (

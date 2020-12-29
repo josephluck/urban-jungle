@@ -1,4 +1,5 @@
 import { getFirstLetterFromOptionString } from "@urban-jungle/shared/fp/option";
+import { ImageModel } from "@urban-jungle/shared/models/image";
 import {
   ProfileModel,
   ThemeSetting,
@@ -28,7 +29,7 @@ export const selectCurrentProfileEmail = (): O.Option<string> =>
     O.filterMap((p) => O.fromNullable(p.email)),
   );
 
-export const selectCurrentProfileAvatar = (): O.Option<string> =>
+export const selectCurrentProfileAvatar = (): O.Option<ImageModel> =>
   pipe(
     selectCurrentProfile(),
     O.filterMap((p) => O.fromNullable(p.avatar)),
@@ -85,7 +86,7 @@ export const selectProfileById = (id: O.Option<string>) => (
 export const selectProfileById2 = (id: string): O.Option<ProfileModel> =>
   O.fromNullable(selectProfiles()[id]);
 
-export const selectProfileAvatarById = (id: string): O.Option<string> =>
+export const selectProfileAvatarById = (id: string): O.Option<ImageModel> =>
   pipe(
     selectProfileById2(id),
     O.chain((profile) => O.fromNullable(profile.avatar)),
@@ -102,7 +103,7 @@ export interface MiniProfile {
   id: string;
   name: O.Option<string>;
   letter: O.Option<string>;
-  avatar: O.Option<string>;
+  avatar: O.Option<ImageModel>;
 }
 
 export const selectMiniProfileById = (id: string): MiniProfile => {

@@ -77,7 +77,7 @@ export const PlantScreen = ({
       ),
       nickname: pipe(
         plant,
-        O.map((plant) => plant.nickname),
+        O.filterMap((plant) => O.fromNullable(plant.nickname)),
         O.getOrElse(() => ""),
       ),
       location: pipe(
@@ -193,7 +193,11 @@ export const PlantScreen = ({
                 {cares.map((care) => (
                   <ListItem
                     key={care.id}
-                    image={care.profile.avatar}
+                    image={pipe(
+                      O.fromNullable(care.profile.avatar),
+                      O.map((image) => image.uri),
+                      O.toUndefined,
+                    )}
                     title={care.todo.title}
                     detail={`By ${care.profile.name} on ${moment(
                       care.dateCreated.toDate(),
