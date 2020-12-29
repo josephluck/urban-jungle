@@ -7,6 +7,7 @@ import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
+import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
@@ -48,11 +49,14 @@ const AddProfilePassword = ({
   );
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack}>
+    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
       <ContentContainer>
+        <ScreenTitle
+          title="Add email address"
+          description="Please choose a password"
+        />
         <TextField
           {...registerTextInput("password")}
-          label="Password"
           textContentType="password"
           secureTextEntry
           returnKeyType="send"

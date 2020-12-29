@@ -60,7 +60,7 @@ const ManageProfileEmailVerifyPassword = ({
   );
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack}>
+    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
       <ContentContainer>
         <ScreenTitle
           title="Change email address"
@@ -69,7 +69,6 @@ const ManageProfileEmailVerifyPassword = ({
 
         <TextField
           {...registerTextInput("currentPassword")}
-          label="Current password"
           textContentType="password"
           secureTextEntry
           returnKeyType="send"

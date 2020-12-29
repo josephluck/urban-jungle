@@ -7,6 +7,7 @@ import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
+import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
@@ -44,11 +45,14 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack}>
+    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
       <ContentContainer>
+        <ScreenTitle
+          title="Change email address"
+          description="What's your new email address?"
+        />
         <TextField
           {...registerTextInput("email")}
-          label="New email address"
           textContentType="emailAddress"
           autoCompleteType="email"
           keyboardType="email-address"
@@ -60,7 +64,7 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
         />
 
         <Button onPress={handleSubmit} large>
-          Save
+          Next
         </Button>
       </ContentContainer>
     </BackableScreenLayout>
