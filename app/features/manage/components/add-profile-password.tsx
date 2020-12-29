@@ -11,19 +11,23 @@ import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { addProfilePassword } from "./add-profile-password";
+import { addEmailAndPasswordCredentials } from "../../auth/store/effects";
 
-const AddProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
+const AddProfilePassword = ({
+  navigation,
+  route,
+}: StackScreenProps<Record<keyof AddProfilePasswordParams, never>>) => {
+  const { email } = addProfilePassword.getParams(route);
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit } = useForm<{
-    email: string;
+    password: string;
   }>(
     {
-      email: "",
+      password: "",
     },
     {
-      email: [constraints.isRequired, constraints.isString],
+      password: [constraints.isRequired, constraints.isString],
     },
   );
 
@@ -33,32 +37,32 @@ const AddProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
         pipe(
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
-          TE.map((fields) =>
-            addProfilePassword.navigateTo(navigation, { email: fields.email }),
-          ),
+          TE.map((fields) => {
+            runWithUIState(
+              addEmailAndPasswordCredentials(email, fields.password),
+            );
+          }),
         ),
       ),
-    [submit, navigation],
+    [submit, email],
   );
 
   return (
     <BackableScreenLayout onBack={navigation.goBack}>
       <ContentContainer>
         <TextField
-          {...registerTextInput("email")}
-          label="Email address"
-          textContentType="emailAddress"
-          autoCompleteType="email"
-          keyboardType="email-address"
+          {...registerTextInput("password")}
+          label="Password"
+          textContentType="password"
+          secureTextEntry
           returnKeyType="send"
-          onSubmitEditing={handleSubmit}
-          autoFocus
           autoCapitalize="none"
           autoCorrect={false}
+          onSubmitEditing={handleSubmit}
         />
 
         <Button onPress={handleSubmit} large>
-          Next
+          Save
         </Button>
       </ContentContainer>
     </BackableScreenLayout>
@@ -71,7 +75,13 @@ const ContentContainer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;
 
-export const addProfileEmail = makeNavigationRoute({
-  screen: AddProfileEmail,
-  routeName: "ADD_PROFILE_EMAIL",
-});
+type AddProfilePasswordParams = {
+  email: string;
+};
+
+export const addProfilePassword = makeNavigationRoute<AddProfilePasswordParams>(
+  {
+    screen: AddProfilePassword,
+    routeName: "ADD_PROFILE_PASSWORD",
+  },
+);

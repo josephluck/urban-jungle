@@ -27,6 +27,7 @@ import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { addProfileEmail } from "../features/manage/components/add-profile-email";
+import { addProfilePassword } from "../features/manage/components/add-profile-password";
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
 import { manageProfileEmailVerifyPassword } from "../features/manage/components/manage-profile-email-verify-password";
 import { manageProfilePassword } from "../features/manage/components/manage-profile-password";
@@ -220,6 +221,7 @@ const ManageStack = () => (
       manageRoute,
       manageProfileRoute,
       addProfileEmail,
+      addProfilePassword,
       manageProfileEmail,
       manageProfileEmailVerifyPassword,
       manageProfilePassword,
