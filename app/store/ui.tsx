@@ -1,11 +1,8 @@
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import { useContext } from "react";
-import React, { createContext, useCallback, useState } from "react";
-import { Keyboard, View } from "react-native";
-
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { createContext, useCallback, useContext, useState } from "react";
+import { Keyboard, View } from "react-native";
 import { BottomDrawer } from "../components/bottom-drawer";
 import { Button } from "../components/button";
 import { BodyText, SubHeading, SubScriptText } from "../components/typography";
@@ -105,6 +102,7 @@ export const useGlobalErrorContext = () => useContext(GlobalErrorContext);
 export const useRunWithUIState = <V extends TE.TaskEither<IErr, any>>() => {
   const { setError } = useGlobalErrorContext();
 
+  // TODO: support options for success / failure toasts
   return useCallback((task: V, handleErrors: boolean = true) => {
     startLoading(void null);
     setError(undefined);
@@ -122,6 +120,7 @@ export const useRunWithUIState = <V extends TE.TaskEither<IErr, any>>() => {
 
 /**
  * Wraps up common TaskEither loading / error handling functions
+ * TODO: deprecate this
  */
 export const UIEffect = {
   start: startLoading,

@@ -1,14 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback } from "react";
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
-import { env } from "../../../env";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
@@ -23,7 +21,6 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
     context: { verificationId, phoneNumber },
   } = useMachine();
   const runWithUIState = useRunWithUIState();
-  const recaptchaVerifier = useRef<FirebaseRecaptchaVerifierModal>(null);
 
   const { registerTextInput, submit } = useForm<{ verificationCode: string }>(
     { verificationCode: "" },
@@ -72,12 +69,6 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
           Next
         </Button>
       </SplashContainer>
-
-      <FirebaseRecaptchaVerifierModal
-        ref={recaptchaVerifier}
-        firebaseConfig={env.firebase}
-        attemptInvisibleVerification
-      />
     </BackableScreenLayout>
   );
 };

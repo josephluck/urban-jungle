@@ -88,6 +88,21 @@ export const signUpWithEmail = (
     TE.chain(validateSignUp),
   );
 
+export const linkWithEmailCredential = (email: string, password: string) =>
+  pipe(
+    selectAuthUser(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chain((user) =>
+      TE.tryCatch(
+        async () =>
+          user.linkWithCredential(
+            firebase.auth.EmailAuthProvider.credential(email, password),
+          ),
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
+  );
+
 export const signUpWithPhone = signInWithPhone;
 
 /**
@@ -102,22 +117,26 @@ export const validateSignUp = (
     TE.fromOption(() => "BAD_REQUEST"),
   );
 
-// const getTEUser = () =>
-//   pipe(
-//     selectAuthUser(),
-//     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-//   );
-//
-// export const updateUserPhone = async (phone: string) =>
-//   pipe(
-//     getTEUser(),
-//     TE.chainFirst((user) =>
-//       TE.tryCatch(
-//         async () => user.updatePhoneNumber(phone),
-//         () => "BAD_REQUEST" as IErr,
-//       ),
-//     ),
-//   );
+export const updateUserPhone = async (
+  verificationId: string,
+  verificationCode: string,
+) =>
+  pipe(
+    selectAuthUser(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+    TE.chainFirst((user) =>
+      TE.tryCatch(
+        async () =>
+          user.updatePhoneNumber(
+            firebase.auth.PhoneAuthProvider.credential(
+              verificationId,
+              verificationCode,
+            ),
+          ),
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
+  );
 
 export const updateUserEmailAndPassword = (
   newEmail: string,
@@ -128,9 +147,13 @@ export const updateUserEmailAndPassword = (
     selectCurrentProfileEmail(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chain((currentEmail) =>
-      updateUserEmail(currentEmail, currentPassword, newEmail),
+      pipe(
+        updateUserEmail(currentEmail, currentPassword, newEmail),
+        TE.chain(() =>
+          updateUserPassword(newEmail, currentPassword, newPassword),
+        ),
+      ),
     ),
-    TE.chain(() => updateUserPassword(newEmail, currentPassword, newPassword)),
   );
 
 export const updateUserEmail = (

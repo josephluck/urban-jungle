@@ -1,9 +1,7 @@
+import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-
-import { sequenceTO } from "@urban-jungle/shared/fp/option";
-
 import { store } from "../../../store/state";
 import { selectCurrentProfile } from "../../profiles/store/state";
 
@@ -28,6 +26,27 @@ export const selectCurrentUserId = (): O.Option<string> =>
 export const selectHasAuthenticated = (): boolean =>
   pipe(sequenceTO(selectAuthUser(), selectCurrentProfile()), O.isSome);
 
+export const selectAuthProviders = () =>
+  pipe(
+    selectAuthUser(),
+    O.map((user) => user.providerData),
+  );
+
+export const selectAuthProviderPhone = () =>
+  pipe(
+    selectAuthProviders(),
+    O.filterMap((providers) =>
+      O.fromNullable(providers.find((p) => p?.providerId === "phone")),
+    ),
+  );
+
+export const selectAuthProviderEmail = () =>
+  pipe(
+    selectAuthProviders(),
+    O.filterMap((providers) =>
+      O.fromNullable(providers.find((p) => p?.providerId === "password")),
+    ),
+  );
 /**
  * MUTATORS
  */

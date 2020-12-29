@@ -26,6 +26,11 @@ import { splashRoute } from "../features/auth/components/splash";
 import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
+import { addProfileEmail } from "../features/manage/components/add-profile-email";
+import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
+import { manageProfilePhone } from "../features/manage/components/manage-profile-phone";
+import { manageProfilePhoneVerify } from "../features/manage/components/manage-profile-phone-verify";
+import { manageProfileRoute } from "../features/manage/components/manage-profile-screen";
 import { manageRoute } from "../features/manage/components/manage-screen";
 import { managePlantRoute } from "../features/plants/components/manage-plant-screen";
 import { newPlantLocationRoute } from "../features/plants/components/new-plant/new-plant-location-screen";
@@ -207,6 +212,25 @@ const CareStack = () => (
   </Stack.Navigator>
 );
 
+const ManageStack = () => (
+  <Stack.Navigator headerMode="none">
+    {[
+      manageRoute,
+      manageProfileRoute,
+      manageProfileEmail,
+      addProfileEmail,
+      manageProfilePhone,
+      manageProfilePhoneVerify,
+    ].map((route) => (
+      <Stack.Screen
+        key={route.routeName}
+        name={route.routeName}
+        component={route.screen}
+      />
+    ))}
+  </Stack.Navigator>
+);
+
 export const AppNavigation = () => {
   const isLoggedIn = useStore(selectHasAuthenticated);
   return (
@@ -226,10 +250,7 @@ export const AppNavigation = () => {
         <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
           <Tab.Screen name={careRoute.routeName} component={CareStack} />
           <Tab.Screen name={plantsRoute.routeName} component={PlantStack} />
-          <Tab.Screen
-            name={manageRoute.routeName}
-            component={manageRoute.screen}
-          />
+          <Tab.Screen name={manageRoute.routeName} component={ManageStack} />
         </Tab.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

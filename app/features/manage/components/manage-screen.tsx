@@ -35,6 +35,16 @@ import {
   selectCurrentProfileThemeSetting,
   selectPushNotificationsEnabled,
 } from "../../profiles/store/state";
+import { manageProfileRoute } from "./manage-profile-screen";
+import {
+  selectCurrentUserId,
+  selectAuthProviderPhone,
+  selectAuthProviderEmail,
+} from "../../auth/store/state";
+import { StackScreenProps } from "@react-navigation/stack";
+import { manageProfileEmail } from "./manage-profile-email";
+import { addProfileEmail } from "./add-profile-email";
+import { manageProfilePhone } from "./manage-profile-phone";
 
 /**
  * NB: if this errors, it's likely because you haven't run a release yet.
@@ -42,7 +52,13 @@ import {
  */
 const releaseDate = require("../../../release-date.json");
 
-export const ManageScreen = () => {
+export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
+  const _currentProfileId = useStore(selectCurrentUserId);
+  const currentProfileId = pipe(
+    _currentProfileId,
+    O.getOrElse(() => ""),
+  );
+
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId,
   );
@@ -51,10 +67,16 @@ export const ManageScreen = () => {
     O.getOrElse(() => ""),
   );
   const pushNotificationsEnabled = useStore(selectPushNotificationsEnabled);
+
   const people = useStore(
     () => selectProfilesForHousehold(selectedHouseholdId),
     [selectedHouseholdId],
   );
+
+  const authProviderPhone = useStore(selectAuthProviderPhone);
+
+  const authProviderEmail = useStore(selectAuthProviderEmail);
+
   const { hide: closeContextMenu } = useContextMenu();
 
   const handleTogglePushNotifications = useCallback(() => {
@@ -72,9 +94,33 @@ export const ManageScreen = () => {
     await signOut();
   }, [closeContextMenu]);
 
-  const handleEditProfile = useCallback(() => {
-    console.log("TODO");
-  }, []);
+  const handleEditProfile = useCallback(
+    () =>
+      manageProfileRoute.navigateTo(navigation, {
+        profileId: currentProfileId,
+      }),
+    [navigation, currentProfileId],
+  );
+
+  const handleManageEmailAddress = useCallback(
+    () => manageProfileEmail.navigateTo(navigation, {}),
+    [navigation],
+  );
+
+  const handleAddEmailAddress = useCallback(
+    () => addProfileEmail.navigateTo(navigation, {}),
+    [navigation],
+  );
+
+  const handleManagePhoneNumber = useCallback(
+    () => manageProfilePhone.navigateTo(navigation, {}),
+    [navigation],
+  );
+
+  const handleAddPhoneNumber = useCallback(
+    () => manageProfilePhone.navigateTo(navigation, {}),
+    [navigation],
+  );
 
   return (
     <ScreenLayout isRootScreen>
@@ -122,13 +168,60 @@ export const ManageScreen = () => {
                 right={<Icon icon="chevron-right" />}
               />
             </ContextMenuTouchable>
+          </View>
+          <WelcomeMessageContainer>
+            <Heading>Security</Heading>
+          </WelcomeMessageContainer>
+          <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
+            {pipe(
+              authProviderEmail,
+              O.fold(
+                () => (
+                  <TouchableOpacity onPress={handleAddEmailAddress}>
+                    <ListItem
+                      title="Add password"
+                      right={<Icon icon="chevron-right" />}
+                    />
+                  </TouchableOpacity>
+                ),
+                () => (
+                  <TouchableOpacity onPress={handleManageEmailAddress}>
+                    <ListItem
+                      title="Change password"
+                      right={<Icon icon="chevron-right" />}
+                    />
+                  </TouchableOpacity>
+                ),
+              ),
+            )}
+            {pipe(
+              authProviderPhone,
+              O.fold(
+                () => (
+                  <TouchableOpacity onPress={handleAddPhoneNumber}>
+                    <ListItem
+                      title="Add phone number"
+                      right={<Icon icon="chevron-right" />}
+                    />
+                  </TouchableOpacity>
+                ),
+                () => (
+                  <TouchableOpacity onPress={handleManagePhoneNumber}>
+                    <ListItem
+                      title="Change phone number"
+                      right={<Icon icon="chevron-right" />}
+                    />
+                  </TouchableOpacity>
+                ),
+              ),
+            )}
             <ContextMenuTouchable
               menuId="sign-out"
               buttons={[
                 <ContextMenuIconButton icon="log-out" onPress={handleSignOut}>
                   Sign out
                 </ContextMenuIconButton>,
-                <ContextMenuIconButton onPress={closeContextMenu}>
+                <ContextMenuIconButton onPress={handleSignOut}>
                   Cancel
                 </ContextMenuIconButton>,
               ]}
@@ -157,10 +250,7 @@ export const ManageScreen = () => {
                 disabled={!item.isCurrentProfile}
               >
                 <ListItem
-                  image={pipe(
-                    item.avatar,
-                    O.getOrElse(() => ""),
-                  )}
+                  image={pipe(item.avatar, O.toUndefined)}
                   title={pipe(
                     item.name,
                     O.getOrElse(() => ""),
@@ -190,7 +280,7 @@ export const manageRoute = makeNavigationRoute({
   routeName: "MANAGE_SCREEN",
 });
 
-const ScreenContainer = styled.View`
+const ScreenContainer = styled.ScrollView`
   padding-top: ${symbols.spacing.appVertical}px;
   flex: 1;
 `;

@@ -29,6 +29,12 @@ export const selectCurrentProfileEmail = (): O.Option<string> =>
     O.filterMap((p) => O.fromNullable(p.email)),
   );
 
+export const selectCurrentProfilePhone = (): O.Option<string> =>
+  pipe(
+    selectCurrentProfile(),
+    O.filterMap((p) => O.fromNullable(p.phoneNumber)),
+  );
+
 export const selectCurrentProfileAvatar = (): O.Option<ImageModel> =>
   pipe(
     selectCurrentProfile(),
