@@ -99,6 +99,14 @@ export const signUpWithEmail = (
     TE.chain(validateSignUp),
   );
 
+export const sendForgottenPasswordEmail = (email: string) =>
+  pipe(
+    TE.tryCatch(
+      () => firebase.auth().sendPasswordResetEmail(email),
+      () => "BAD_REQUEST" as IErr,
+    ),
+  );
+
 export const addEmailAndPasswordCredentials = (
   email: string,
   password: string,
@@ -112,7 +120,10 @@ export const addEmailAndPasswordCredentials = (
           user.linkWithCredential(
             firebase.auth.EmailAuthProvider.credential(email, password),
           ),
-        () => "BAD_REQUEST" as IErr,
+        (err) => {
+          console.log({ err });
+          return "BAD_REQUEST" as IErr;
+        },
       ),
     ),
     TE.map((user) => user.uid),

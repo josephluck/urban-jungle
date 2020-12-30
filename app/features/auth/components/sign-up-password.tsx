@@ -17,7 +17,11 @@ import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 import styled from "styled-components/native";
 import { symbols } from "../../../theme";
-import { signInWithEmail, signUpWithEmail } from "../store/effects";
+import {
+  sendForgottenPasswordEmail,
+  signInWithEmail,
+  signUpWithEmail,
+} from "../store/effects";
 import { View } from "react-native";
 
 const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
@@ -53,6 +57,11 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
     [submit, context, execute, values],
   );
 
+  const handleForgottenPassword = useCallback(
+    () => runWithUIState(sendForgottenPasswordEmail(context.emailAddress!)),
+    [context],
+  );
+
   return (
     <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
       <SplashContainer>
@@ -78,7 +87,7 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
 
         <View>
           {context.authenticationFlow === "signIn" ? (
-            <EmailButton type="plain" onPress={() => console.log("TODO")}>
+            <EmailButton type="plain" onPress={handleForgottenPassword}>
               I've forgotten my password
             </EmailButton>
           ) : null}
