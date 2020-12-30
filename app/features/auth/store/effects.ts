@@ -33,10 +33,6 @@ const authenticateWithEmailAndPassword = (email: string, password: string) =>
       async () => firebase.auth().signInWithEmailAndPassword(email, password),
       () => "UNAUTHENTICATED" as IErr,
     ),
-    TE.filterOrElse(
-      (user) => Boolean(user.user),
-      () => "UNAUTHENTICATED" as IErr,
-    ),
   );
 
 const authenticateWithPassword = (password: string) =>
@@ -162,16 +158,17 @@ export const updateUserPhone = (
     TE.chain(syncAuthUserWithProfile),
   );
 
-export const updateUserEmail = (currentPassword: string, newEmail: string) =>
+export const updateUserEmail = (newEmail: string) =>
   pipe(
-    authenticateWithPassword(currentPassword),
+    selectAuthUser(),
+    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
     TE.chainFirst((user) =>
       TE.tryCatch(
-        async () => user.user!.updateEmail(newEmail),
+        async () => user.updateEmail(newEmail),
         () => "BAD_REQUEST" as IErr,
       ),
     ),
-    TE.map((credential) => credential.user!.uid),
+    TE.map((user) => user.uid),
     TE.chain(syncAuthUserWithProfile),
   );
 
@@ -203,7 +200,7 @@ export const handleEndOfManageAuthFlow = ({
     case "ADD_PHONE_AUTH":
       return updateUserPhone(verificationId!, verificationCode!);
     case "CHANGE_EMAIL":
-      return updateUserEmail(currentPassword!, newEmailAddress!);
+      return updateUserEmail(newEmailAddress!);
     case "CHANGE_PHONE":
       return updateUserPhone(verificationId!, verificationCode!);
     case "CHANGE_PASSWORD":
