@@ -1,14 +1,12 @@
+import { StorageEntityType } from "@urban-jungle/shared/models/storage";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import * as ImagePicker from "expo-image-picker";
 import {
   ImageInfo,
   ImagePickerOptions,
 } from "expo-image-picker/build/ImagePicker.types";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
-
-import { StorageEntityType } from "@urban-jungle/shared/models/storage";
-import { IErr } from "@urban-jungle/shared/utils/err";
-
+import * as TE from "fp-ts/lib/TaskEither";
 import { uploadPhoto } from "./storage";
 
 // TODO: move these options out to "presets" as it's very specific to plant images right now
@@ -24,9 +22,8 @@ export const takePicture = (
       const result = await ImagePicker.launchCameraAsync(options);
       if (result.cancelled) {
         throw new Error("Cancelled");
-      } else {
-        return result;
       }
+      return result;
     },
     () => "BAD_REQUEST",
   );

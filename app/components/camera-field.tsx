@@ -1,15 +1,14 @@
-import * as Permissions from "expo-permissions";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback, useState } from "react";
-import { StyleProp, ViewStyle } from "react-native";
-import styled from "styled-components/native";
-
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import { Camera } from "expo-camera";
+import * as Permissions from "expo-permissions";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleProp, ViewStyle } from "react-native";
+import styled from "styled-components/native";
 import { takeAndUploadPicture } from "../features/photos/camera";
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
@@ -24,6 +23,10 @@ export type CameraFieldProps = {
   label?: string;
   style?: StyleProp<ViewStyle>;
   type?: StorageEntityType;
+  /**
+   * When true will place the
+   */
+  viewport?: boolean;
 };
 
 export const CameraField = ({
@@ -35,7 +38,9 @@ export const CameraField = ({
   label,
   style,
   type = "default",
+  viewport = false,
 }: CameraFieldProps) => {
+  const [hasPermission, setHasPermission] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const handleClearResult = useCallback(() => {
@@ -43,9 +48,9 @@ export const CameraField = ({
       onTouched();
     }
     onChange({ uri: "", height: 0, width: 0 });
-  }, []);
+  }, [onTouched, onChange]);
 
-  const handleLaunchCamera = async () => {
+  const handleLaunchCamera = useCallback(async () => {
     if (onTouched) {
       onTouched();
     }
@@ -53,13 +58,15 @@ export const CameraField = ({
       obtainCameraPermissions,
       TE.map(() => setSaving(true)),
       TE.chain(() => takeAndUploadPicture(type)),
-      TE.map((image) => {
-        onChange(image);
-        setSaving(false);
-      }),
+      TE.map(onChange),
+      TE.map(() => setSaving(false)),
       TE.mapLeft(() => setSaving(false)),
     )();
-  };
+  }, [setSaving, type, onTouched]);
+
+  const handleAskForPermission = useCallback(() => {
+    pipe(obtainCameraPermissions)();
+  }, []);
 
   const hasValue = pipe(
     O.fromNullable(value),
@@ -67,28 +74,62 @@ export const CameraField = ({
     O.isSome,
   );
 
+  useEffect(() => {
+    const doEffect = async () => {
+      const result = await Permissions.getAsync(Permissions.CAMERA);
+      setHasPermission(result.granted);
+    };
+    doEffect();
+  }, []);
+
   // TODO: progress bar / loading indicator...
   return (
     <FormField label={label} error={error} touched={touched}>
-      <ContainerButton
-        disabled={hasValue || saving}
-        onPress={handleLaunchCamera}
-        style={style}
-      >
-        {hasValue && value ? (
-          <TakenPictureContainer>
-            <TakenPicture source={{ uri: value.uri }} />
-            <RetryButton onPress={handleClearResult}>
-              <Icon icon="x" size={20} />
-            </RetryButton>
-          </TakenPictureContainer>
-        ) : (
-          <Icon icon="camera" size={36} color={symbols.colors.midOffGray} />
-        )}
-      </ContainerButton>
+      {viewport ? (
+        <ContainerButton
+          disabled={hasValue || saving || hasPermission}
+          onPress={handleAskForPermission}
+          style={style}
+        >
+          {hasValue && value ? (
+            <ImagePreview uri={value.uri} onPress={handleClearResult} />
+          ) : hasPermission ? (
+            <Camera />
+          ) : (
+            <Icon icon="camera" size={36} color={symbols.colors.midOffGray} />
+          )}
+        </ContainerButton>
+      ) : (
+        <ContainerButton
+          disabled={hasValue || saving}
+          onPress={handleLaunchCamera}
+          style={style}
+        >
+          {hasValue && value ? (
+            <ImagePreview uri={value.uri} onPress={handleClearResult} />
+          ) : (
+            <Icon icon="camera" size={36} color={symbols.colors.midOffGray} />
+          )}
+        </ContainerButton>
+      )}
     </FormField>
   );
 };
+
+const ImagePreview = ({
+  uri,
+  onPress,
+}: {
+  uri: string;
+  onPress: () => void;
+}) => (
+  <TakenPictureContainer>
+    <TakenPicture source={{ uri }} />
+    <RetryButton onPress={onPress}>
+      <Icon icon="x" size={20} />
+    </RetryButton>
+  </TakenPictureContainer>
+);
 
 const obtainCameraPermissions: TE.TaskEither<IErr, void> = TE.tryCatch(
   async () => {
