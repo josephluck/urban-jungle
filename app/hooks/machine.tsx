@@ -1,9 +1,7 @@
 import { Condition, makeMachine, State } from "@josephluck/machi/src/machine";
 import produce from "immer";
-import React, { useCallback, useContext, useState } from "react";
-import { fetchOrCreateProfile } from "../features/auth/store/effects";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import { navigate } from "../navigation/navigation-imperative";
-import { useRunWithUIState } from "../store/ui";
 
 export const makeMachineHooks = <
   Context extends any = void,
@@ -22,7 +20,7 @@ export const makeMachineHooks = <
   initialContext: Context;
 }) => {
   const useMakeMachine = () => {
-    const runWithUIState = useRunWithUIState();
+    const onFinishedRef = useRef<(ctx: Context) => any>();
     const [context, setContext] = useState<Context>(initialContext);
     const [currentEntryId, setCurrentEntryId] = useState<string>();
     const getNextState = makeMachine<Context, AdditionalEntryData, Conditions>(
@@ -37,12 +35,15 @@ export const makeMachineHooks = <
         const ctx = produce(context, producer);
         setContext(ctx);
         const result = getNextState(ctx, currentEntryId);
+        console.log({ ctx, nextEntry: result?.entry });
         if (!result) {
           console.log(
             "Next state in machine not found - reached the end.",
             ctx,
           );
-          runWithUIState(fetchOrCreateProfile(ctx));
+          if (onFinishedRef.current) {
+            onFinishedRef.current(ctx);
+          }
         } else if (shouldNavigate) {
           setCurrentEntryId(result.entry.id);
           navigate(result.entry.routeName);
@@ -52,7 +53,14 @@ export const makeMachineHooks = <
       [context, currentEntryId, navigate, getNextState],
     );
 
-    return { context, setContext, clearContext, execute, getNextState };
+    return {
+      context,
+      setContext,
+      clearContext,
+      execute,
+      getNextState,
+      onFinishedRef,
+    };
   };
 
   const MachineContext = React.createContext<ReturnType<typeof useMakeMachine>>(
@@ -60,8 +68,11 @@ export const makeMachineHooks = <
       context: initialContext,
       setContext: async () => void null,
       clearContext: async () => undefined,
-      execute: async () => undefined,
+      execute: () => undefined,
       getNextState: () => void null,
+      onFinishedRef: {
+        current: () => {},
+      },
     },
   );
 
@@ -71,7 +82,12 @@ export const makeMachineHooks = <
     </MachineContext.Provider>
   );
 
-  const useMachine = () => useContext(MachineContext);
+  const useMachine = (onFinished: (ctx: Context) => any) => {
+    const ctx = useContext(MachineContext);
+    ctx.onFinishedRef.current = onFinished;
+
+    return ctx;
+  };
 
   return {
     MachineProvider,

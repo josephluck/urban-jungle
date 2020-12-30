@@ -12,13 +12,14 @@ import {
   createProfileHouseholdRelation,
   storeSelectedHouseholdIdToStorage,
 } from "../../households/store/effects";
+import { ManageAuthContext as ManageAuthContext } from "../../manage/machine/types";
 import {
   createProfileForUser,
   fetchProfileIfNotFetched,
   syncAuthUserWithProfile,
 } from "../../profiles/store/effects";
 import { selectCurrentProfileEmail } from "../../profiles/store/state";
-import { Context } from "../machine/types";
+import { Context as AuthContext } from "../machine/types";
 import {
   selectAuthProviderEmail,
   selectAuthProviderPhone,
@@ -179,6 +180,30 @@ export const updateUserPassword = (
     ),
   );
 
+export const handleEndOfManageAuthFlow = ({
+  flow,
+  newEmailAddress,
+  newPassword,
+  verificationCode,
+  verificationId,
+  currentPassword,
+}: ManageAuthContext) => {
+  switch (flow) {
+    case "ADD_EMAIL_AUTH":
+      return addEmailAndPasswordCredentials(newEmailAddress!, newPassword!);
+    case "ADD_PHONE_AUTH":
+      return updateUserPhone(verificationId!, verificationCode!);
+    case "CHANGE_EMAIL":
+      return updateUserEmail(currentPassword!, newEmailAddress!);
+    case "CHANGE_PHONE":
+      return updateUserPhone(verificationId!, verificationCode!);
+    case "CHANGE_PASSWORD":
+      return updateUserPassword(currentPassword!, newPassword!);
+    default:
+      return TE.left("BAD_REQUEST" as IErr);
+  }
+};
+
 const removeAuthProvider = (provider: O.Option<firebase.UserInfo>) =>
   pipe(
     sequenceSTE({
@@ -225,7 +250,7 @@ export const handleInitialHouseholdInvitationLink = (
 export const signOut = store.createEffect(() => firebase.auth().signOut());
 
 export const fetchOrCreateProfile = (
-  signUpContext: Context,
+  signUpContext: AuthContext,
 ): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     fetchCurrentProfileIfNotFetched(),
@@ -243,7 +268,7 @@ export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
   );
 
 export const createAndSeedProfile = (
-  signUpContext: Context,
+  signUpContext: AuthContext,
 ) => (): TE.TaskEither<IErr, ProfileModel> =>
   pipe(
     selectAuthUser(),

@@ -11,7 +11,7 @@ import {
   ContextMenuProvider,
 } from "./components/context-menu";
 import { GlobalLoading } from "./components/global-loading";
-import { MachineProvider } from "./features/auth/machine/machine";
+import { AuthMachineProvider } from "./features/auth/machine/machine";
 // import * as reactotron from "./reactotron";
 import { selectInitializing } from "./features/auth/store/state";
 import { AuthenticationSubscription } from "./features/auth/subscriptions/auth";
@@ -19,6 +19,7 @@ import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { HouseholdCaresSubscription } from "./features/care/subscriptions/household-cares";
 import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
 import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
+import { ManageAuthMachineProvider } from "./features/manage/machine/machine";
 import { HouseholdPlantsSubscription } from "./features/plants/subscriptions/household-plants";
 import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
 import { selectCurrentProfileThemeIsDark } from "./features/profiles/store/state";
@@ -49,53 +50,55 @@ export default () => {
   const theme = isDarkTheme ? darkTheme : lightTheme;
 
   return (
-    <MachineProvider>
-      <ThemeProvider theme={theme}>
-        <ContextMenuProvider>
-          <GlobalErrorProvider loading={loading}>
-            <GatewayProvider>
-              <StatusBar barStyle={theme.type} />
-              <AppWrapper>
-                {loading ? null : (
-                  <>
-                    <CurrentProfileHouseholdsSubscription />
-                    {selectedHouseholdId ? (
-                      <>
-                        <HouseholdPlantsSubscription
-                          householdId={selectedHouseholdId}
-                        />
-                        <HouseholdCaresSubscription
-                          householdId={selectedHouseholdId}
-                        />
-                        <HouseholdTodosSubscription
-                          householdId={selectedHouseholdId}
-                        />
-                        <HouseholdPhotosSubscription
-                          householdId={selectedHouseholdId}
-                        />
-                      </>
-                    ) : null}
-                  </>
-                )}
-                {fontsLoading ? null : (
-                  <>
-                    <AppNavigation />
-                    <AuthenticationSubscription />
-                    {/* Auth subscription navigates during onboarding rehydratioh, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
-                  </>
-                )}
-              </AppWrapper>
-              <ProfilesSubscription />
-              <GlobalLoading />
-              <GatewayDest
-                name={contextMenuGatewayId}
-                component={BottomSheetGatewayContainer}
-              />
-            </GatewayProvider>
-          </GlobalErrorProvider>
-        </ContextMenuProvider>
-      </ThemeProvider>
-    </MachineProvider>
+    <AuthMachineProvider>
+      <ManageAuthMachineProvider>
+        <ThemeProvider theme={theme}>
+          <ContextMenuProvider>
+            <GlobalErrorProvider loading={loading}>
+              <GatewayProvider>
+                <StatusBar barStyle={theme.type} />
+                <AppWrapper>
+                  {loading ? null : (
+                    <>
+                      <CurrentProfileHouseholdsSubscription />
+                      {selectedHouseholdId ? (
+                        <>
+                          <HouseholdPlantsSubscription
+                            householdId={selectedHouseholdId}
+                          />
+                          <HouseholdCaresSubscription
+                            householdId={selectedHouseholdId}
+                          />
+                          <HouseholdTodosSubscription
+                            householdId={selectedHouseholdId}
+                          />
+                          <HouseholdPhotosSubscription
+                            householdId={selectedHouseholdId}
+                          />
+                        </>
+                      ) : null}
+                    </>
+                  )}
+                  {fontsLoading ? null : (
+                    <>
+                      <AppNavigation />
+                      <AuthenticationSubscription />
+                      {/* Auth subscription navigates during onboarding rehydration, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
+                    </>
+                  )}
+                </AppWrapper>
+                <ProfilesSubscription />
+                <GlobalLoading />
+                <GatewayDest
+                  name={contextMenuGatewayId}
+                  component={BottomSheetGatewayContainer}
+                />
+              </GatewayProvider>
+            </GlobalErrorProvider>
+          </ContextMenuProvider>
+        </ThemeProvider>
+      </ManageAuthMachineProvider>
+    </AuthMachineProvider>
   );
 };
 

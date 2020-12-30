@@ -1,26 +1,29 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { ImageModel } from "@urban-jungle/shared/models/image";
+import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import { View } from "react-native";
+import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { CameraField } from "../../../components/camera-field";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
-import { useMachine } from "../machine/machine";
+import { symbols } from "../../../theme";
+import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 
 const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
-  const { execute } = useMachine();
+  const { execute } = useAuthMachine();
   const runWithUIState = useRunWithUIState();
 
   const { registerCameraField, submit } = useForm<{ avatar: ImageModel }>(
-    { avatar: "" },
+    { avatar: makeImageModel() },
     { avatar: [constraints.isRequired, constraints.isString] },
   );
 
@@ -53,7 +56,7 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
       <SplashContainer>
         <ScreenTitle title="🌱 Urban Jungle" description="?" />
 
-        <AvatarField {...registerCameraField("avatar")} />
+        <CameraField viewport {...registerCameraField("avatar")} />
 
         <View>
           <EmailButton type="plain" onPress={handleSkip}>

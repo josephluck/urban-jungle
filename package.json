@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "start": "yarn workspace @urban-jungle/app run start",
-    "clean": "find . -name \"node_modules\" -exec rm -rf '{}' + && find . -name \".build\" -exec rm -rf '{}' +"
+    "clean": "find . -name \"node_modules\" -exec rm -rf '{}' + && find . -name \".build\" -exec rm -rf '{}' +",
+    "generate-flow-charts": "yarn run generate-sign-up-chart && yarn run generate-manage-auth-chart",
+    "generate-sign-up-chart": "yarn workspace @urban-jungle/app run generate-sign-up-flow-chart && git add ./app/sign-up-flow.png",
+    "generate-manage-auth-chart": "yarn workspace @urban-jungle/app run generate-manage-auth-flow-chart && git add ./app/manage-auth-flow.png"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn workspace @urban-jungle/app run generate-sign-up-flow-chart && git add ./app/sign-up-flow.png"
+      "pre-commit": "yarn run generate-flow-charts"
     }
   },
   "workspaces": {

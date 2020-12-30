@@ -19,12 +19,12 @@ import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { useMachine } from "../machine/machine";
+import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 
 const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
-  const { execute, context } = useMachine();
+  const { execute, context } = useAuthMachine();
   const recaptchaVerifier = useRef<FirebaseRecaptchaVerifierModal>(null);
   const runWithUIState = useRunWithUIState();
 

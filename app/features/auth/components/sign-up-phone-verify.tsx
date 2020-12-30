@@ -10,7 +10,7 @@ import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
-import { useMachine } from "../machine/machine";
+import { useAuthMachine } from "../machine/machine";
 import { signUpWithPhone } from "../store/effects";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
@@ -19,7 +19,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
   const {
     execute,
     context: { verificationId, phoneNumber },
-  } = useMachine();
+  } = useAuthMachine();
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit } = useForm<{ verificationCode: string }>(

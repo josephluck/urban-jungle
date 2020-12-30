@@ -25,13 +25,10 @@ import { splashRoute } from "../features/auth/components/splash";
 import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/care/components/care-screen";
 import { careSessionRoute } from "../features/care/components/care-session-screen";
-import { addProfileEmail } from "../features/manage/components/add-profile-email";
-import { addProfilePassword } from "../features/manage/components/add-profile-password";
 import { manageProfileRoute } from "../features/manage/components/manage-profile";
+import { manageProfileChooseAuthVerify } from "../features/manage/components/manage-profile-choose-auth-verify";
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
-import { manageProfileEmailVerifyPassword } from "../features/manage/components/manage-profile-email-verify-password";
 import { manageProfilePassword } from "../features/manage/components/manage-profile-password";
-import { manageProfilePasswordVerify } from "../features/manage/components/manage-profile-password-verify";
 import { manageProfilePhone } from "../features/manage/components/manage-profile-phone";
 import { manageProfilePhoneVerify } from "../features/manage/components/manage-profile-phone-verify";
 import { manageRoute } from "../features/manage/components/manage-screen";
@@ -220,12 +217,9 @@ const ManageStack = () => (
     {[
       manageRoute,
       manageProfileRoute,
-      addProfileEmail,
-      addProfilePassword,
+      manageProfileChooseAuthVerify,
       manageProfileEmail,
-      manageProfileEmailVerifyPassword,
       manageProfilePassword,
-      manageProfilePasswordVerify,
       manageProfilePhone,
       manageProfilePhoneVerify,
     ].map((route) => (

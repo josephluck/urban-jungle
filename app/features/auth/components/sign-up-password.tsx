@@ -12,7 +12,7 @@ import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
-import { useMachine } from "../machine/machine";
+import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 import styled from "styled-components/native";
@@ -21,7 +21,7 @@ import { signInWithEmail, signUpWithEmail } from "../store/effects";
 import { View } from "react-native";
 
 const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
-  const { execute, context } = useMachine();
+  const { execute, context } = useAuthMachine();
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit, values } = useForm<{ password: string }>(
@@ -38,14 +38,16 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
           TE.chain((fields) =>
             context.authenticationFlow === "signIn"
               ? signInWithEmail(context.emailAddress!, fields.password)
-              : signUpWithEmail(context.emailAddress!, fields.password),
+              : pipe(
+                  signUpWithEmail(context.emailAddress!, fields.password),
+                  TE.map(() => {
+                    execute((ctx) => {
+                      ctx.password = values.password;
+                    });
+                    return "";
+                  }),
+                ),
           ),
-          TE.mapLeft(() => {
-            execute((ctx) => {
-              ctx.password = values.password;
-            });
-            return "BAD_REQUEST" as IErr;
-          }),
         ),
       ),
     [submit, context, execute, values],

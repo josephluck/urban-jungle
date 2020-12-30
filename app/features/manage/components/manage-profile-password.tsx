@@ -5,36 +5,30 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import {
-  ContextMenuDotsButton,
-  ContextMenuIconButton,
-  useContextMenu,
-} from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { removeEmailAuth } from "../../auth/store/effects";
-import { selectHasMultipleAuthProviders } from "../../auth/store/state";
-import { manageProfilePasswordVerify } from "./manage-profile-password-verify";
+import { signInWithEmail } from "../../auth/store/effects";
+import { useManageAuthMachine } from "../machine/machine";
+import { getScreenTitle } from "../machine/types";
+import { routeNames } from "../route-names";
 
 const ManageProfilePassword = ({ navigation }: StackScreenProps<{}>) => {
   const runWithUIState = useRunWithUIState();
-  const { hide: closeContextMenu } = useContextMenu();
-  const hasMultipleAuthProviders = useStore(selectHasMultipleAuthProviders);
+  const { context, execute } = useManageAuthMachine();
 
-  const { registerTextInput, submit } = useForm<{
-    currentPassword: string;
+  const { registerTextInput, submit, setValue } = useForm<{
+    password: string;
   }>(
     {
-      currentPassword: "",
+      password: "",
     },
     {
-      currentPassword: [constraints.isRequired, constraints.isString],
+      password: [constraints.isRequired, constraints.isString],
     },
   );
 
@@ -44,50 +38,45 @@ const ManageProfilePassword = ({ navigation }: StackScreenProps<{}>) => {
         pipe(
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
-          TE.map((fields) =>
-            manageProfilePasswordVerify.navigateTo(navigation, {
-              password: fields.currentPassword,
-            }),
-          ),
+          TE.chain((fields) => {
+            if (context.recentlyAuthenticated) {
+              execute((ctx) => {
+                ctx.newPassword = fields.password;
+              });
+              return TE.right(fields);
+            }
+            return pipe(
+              signInWithEmail(context.currentEmailAddress!, fields.password),
+              TE.map(() =>
+                execute((ctx) => {
+                  ctx.currentPassword = fields.password;
+                  ctx.recentlyAuthenticated = true;
+                }),
+              ),
+              TE.map(() => fields),
+            );
+          }),
+          TE.map(() => setValue("password", "")),
         ),
       ),
-    [submit, navigation],
-  );
-
-  const handleRemoveEmailAuth = useCallback(
-    () => runWithUIState(pipe(removeEmailAuth(), TE.map(navigation.goBack))),
-    [],
+    [submit, execute, context],
   );
 
   return (
-    <BackableScreenLayout
-      onBack={navigation.goBack}
-      scrollView={false}
-      headerRightButton={
-        hasMultipleAuthProviders ? (
-          <ContextMenuDotsButton menuId="remove-profile-password">
-            {[
-              <ContextMenuIconButton
-                icon="trash"
-                onPress={handleRemoveEmailAuth}
-              >
-                Remove email auth
-              </ContextMenuIconButton>,
-              <ContextMenuIconButton onPress={closeContextMenu}>
-                Cancel
-              </ContextMenuIconButton>,
-            ]}
-          </ContextMenuDotsButton>
-        ) : null
-      }
-    >
+    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
       <ContentContainer>
         <ScreenTitle
-          title="Change password"
-          description="What's your current password?"
+          title={getScreenTitle(context.flow)}
+          description={
+            !context.recentlyAuthenticated
+              ? "What's your password"
+              : context.flow === "ADD_EMAIL_AUTH"
+              ? "Please choose a password"
+              : "Please choose a new password"
+          }
         />
         <TextField
-          {...registerTextInput("currentPassword")}
+          {...registerTextInput("password")}
           textContentType="password"
           secureTextEntry
           autoFocus
@@ -113,5 +102,5 @@ const ContentContainer = styled.View`
 
 export const manageProfilePassword = makeNavigationRoute({
   screen: ManageProfilePassword,
-  routeName: "MANAGE_PROFILE_PASSWORD",
+  routeName: routeNames.manageAuthPasswordRoute,
 });

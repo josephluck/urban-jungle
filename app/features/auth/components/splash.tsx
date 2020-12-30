@@ -7,11 +7,11 @@ import { BackableScreenLayout } from "../../../components/layouts/backable-scree
 import { ScreenTitle } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { symbols } from "../../../theme";
-import { useMachine } from "../machine/machine";
+import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 
 const SplashScreen = ({}: StackScreenProps<{}>) => {
-  const { execute } = useMachine();
+  const { execute } = useAuthMachine();
 
   const handleSignUp = useCallback(
     () =>

@@ -1,8 +1,9 @@
-import { sequenceTO } from "@urban-jungle/shared/fp/option";
+import { sequenceSO, sequenceTO } from "@urban-jungle/shared/fp/option";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { store } from "../../../store/state";
+import { AuthProvider, ManageAuthContext } from "../../manage/machine/types";
 import { selectCurrentProfile } from "../../profiles/store/state";
 
 /**
@@ -54,6 +55,44 @@ export const selectHasMultipleAuthProviders = () =>
     O.map((providers) => providers.filter(Boolean)),
     O.filter((providers) => providers.length > 0),
     O.isSome,
+  );
+
+const selectAuthProvidersForMachine = (): O.Option<AuthProvider[]> => {
+  const authProviderEmail = selectAuthProviderEmail();
+  const authProviderPhone = selectAuthProviderPhone();
+
+  if (O.isSome(authProviderEmail) && O.isSome(authProviderPhone)) {
+    return O.some(["EMAIL", "PHONE"]);
+  }
+
+  if (O.isSome(authProviderPhone)) {
+    return O.some(["PHONE"]);
+  }
+
+  if (O.isSome(authProviderEmail)) {
+    return O.some(["EMAIL"]);
+  }
+
+  return O.none;
+};
+
+export const selectManageAuthInitialContext = (): Partial<ManageAuthContext> =>
+  pipe(
+    sequenceSO({
+      profile: selectCurrentProfile(),
+      authProviders: selectAuthProvidersForMachine(),
+    }),
+    O.map(
+      ({ profile, authProviders }): Partial<ManageAuthContext> => {
+        console.log({ profile, authProviders });
+        return {
+          currentEmailAddress: profile.email,
+          currentPhoneNumber: profile.phoneNumber,
+          currentAuthProviders: authProviders,
+        };
+      },
+    ),
+    O.getOrElse(() => ({})),
   );
 
 /**

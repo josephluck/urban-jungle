@@ -1,6 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { IErr } from "@urban-jungle/shared/utils/err";
-import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
@@ -11,21 +10,15 @@ import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
-import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { updateUserPhone } from "../../auth/store/effects";
-import { selectAuthProviderPhone } from "../../auth/store/state";
-import { manageRoute } from "./manage-screen";
+import { signInWithPhone } from "../../auth/store/effects";
+import { useManageAuthMachine } from "../machine/machine";
+import { getScreenTitle } from "../machine/types";
+import { routeNames } from "../route-names";
 
-const ManageProfilePhoneVerify = ({
-  navigation,
-  route,
-}: StackScreenProps<Record<keyof ManageProfilePhoneVerifyParams, never>>) => {
-  const { verificationId, phoneNumber } = manageProfilePhoneVerify.getParams(
-    route,
-  );
-  const alreadyHasPhoneAuth = pipe(useStore(selectAuthProviderPhone), O.isSome);
+const ManageProfilePhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
+  const { context, execute } = useManageAuthMachine();
 
   const runWithUIState = useRunWithUIState();
 
@@ -46,23 +39,39 @@ const ManageProfilePhoneVerify = ({
         pipe(
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
-          TE.chainFirst((fields) =>
-            updateUserPhone(verificationId, fields.verificationCode),
-          ),
-          TE.map(() => manageRoute.navigateTo(navigation, {})),
+          TE.chain((fields) => {
+            if (context.recentlyAuthenticated) {
+              execute((ctx) => {
+                ctx.verificationCode = fields.verificationCode;
+              });
+              return TE.right(fields);
+            }
+            return pipe(
+              signInWithPhone(context.verificationId!, fields.verificationCode),
+              TE.map(() =>
+                execute((ctx) => {
+                  ctx.verificationCode = fields.verificationCode;
+                  ctx.recentlyAuthenticated = true;
+                }),
+              ),
+              TE.map(() => fields),
+            );
+          }),
         ),
       ),
-    [submit, verificationId, navigation],
+    [submit, execute, context],
   );
 
   return (
     <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
       <ContentContainer>
         <ScreenTitle
-          title={
-            alreadyHasPhoneAuth ? "Change phone number" : "Add phone number"
-          }
-          description={`Please enter the code we sent to ${phoneNumber}`}
+          title={getScreenTitle(context.flow)}
+          description={`Please enter the code we sent to ${
+            context.recentlyAuthenticated
+              ? context.newPhoneNumber
+              : context.currentPhoneNumber
+          }`}
         />
 
         <TextField
@@ -75,7 +84,7 @@ const ManageProfilePhoneVerify = ({
         />
 
         <Button onPress={handleSubmit} large>
-          Send
+          Next
         </Button>
       </ContentContainer>
     </BackableScreenLayout>
@@ -88,14 +97,7 @@ const ContentContainer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
 `;
 
-type ManageProfilePhoneVerifyParams = {
-  verificationId: string;
-  phoneNumber: string;
-};
-
-export const manageProfilePhoneVerify = makeNavigationRoute<ManageProfilePhoneVerifyParams>(
-  {
-    screen: ManageProfilePhoneVerify,
-    routeName: "MANAGE_PROFILE_PHONE_VERIFY",
-  },
-);
+export const manageProfilePhoneVerify = makeNavigationRoute({
+  screen: ManageProfilePhoneVerify,
+  routeName: routeNames.manageAuthPhoneVerifyRoute,
+});

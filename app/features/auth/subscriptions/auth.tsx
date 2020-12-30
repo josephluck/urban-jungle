@@ -5,12 +5,12 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useEffect } from "react";
 import { resetGlobalState } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
-import { useMachine } from "../machine/machine";
+import { useAuthMachine } from "../machine/machine";
 import { fetchCurrentProfileIfNotFetched } from "../store/effects";
 import { setInitializing, setUser } from "../store/state";
 
 export const AuthenticationSubscription = () => {
-  const { execute } = useMachine();
+  const { execute } = useAuthMachine();
   const runWithUIState = useRunWithUIState();
 
   useEffect(() => {

@@ -10,12 +10,12 @@ import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
-import { useMachine } from "../machine/machine";
+import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 
 const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
-  const { execute } = useMachine();
+  const { execute } = useAuthMachine();
   const runWithUIState = useRunWithUIState();
 
   const { registerTextInput, submit } = useForm<{ name: string }>(

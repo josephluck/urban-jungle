@@ -40,12 +40,12 @@ import {
   selectCurrentUserId,
   selectAuthProviderPhone,
   selectAuthProviderEmail,
+  selectManageAuthInitialContext,
 } from "../../auth/store/state";
 import { StackScreenProps } from "@react-navigation/stack";
-import { manageProfilePassword } from "./manage-profile-password";
-import { addProfileEmail } from "./add-profile-email";
-import { manageProfilePhone } from "./manage-profile-phone";
-import { manageProfileEmail } from "./manage-profile-email";
+import { useManageAuthMachine } from "../machine/machine";
+import { ManageAuthFlow } from "../machine/types";
+import { routeNames } from "../route-names";
 
 /**
  * NB: if this errors, it's likely because you haven't run a release yet.
@@ -54,6 +54,8 @@ import { manageProfileEmail } from "./manage-profile-email";
 const releaseDate = require("../../../release-date.json");
 
 export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
+  const { hide: hideContextMenu } = useContextMenu();
+  const { execute } = useManageAuthMachine();
   const _currentProfileId = useStore(selectCurrentUserId);
   const currentProfileId = pipe(
     _currentProfileId,
@@ -90,6 +92,8 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
 
   const themeSetting = useStore(selectCurrentProfileThemeSetting);
 
+  const initialManageAuthContext = useStore(selectManageAuthInitialContext);
+
   const handleSignOut = useCallback(async () => {
     closeContextMenu();
     await signOut();
@@ -103,30 +107,21 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
     [navigation, currentProfileId],
   );
 
-  const handleManagePassword = useCallback(
-    () => manageProfilePassword.navigateTo(navigation, {}),
-    [navigation],
-  );
-
-  const handleManageEmail = useCallback(
-    () => manageProfileEmail.navigateTo(navigation, {}),
-    [navigation],
-  );
-
-  const handleAddEmailAddress = useCallback(
-    () => addProfileEmail.navigateTo(navigation, {}),
-    [navigation],
-  );
-
-  const handleManagePhoneNumber = useCallback(
-    () => manageProfilePhone.navigateTo(navigation, {}),
-    [navigation],
-  );
-
-  const handleAddPhoneNumber = useCallback(
-    () => manageProfilePhone.navigateTo(navigation, {}),
-    [navigation],
-  );
+  const makeManageAuthExecuteHandler = (flow: ManageAuthFlow) => () =>
+    execute((ctx) => {
+      ctx.flow = flow;
+      ctx.recentlyAuthenticated = false;
+      ctx.currentPhoneNumber = initialManageAuthContext.currentPhoneNumber;
+      ctx.newPhoneNumber = undefined;
+      ctx.currentEmailAddress = initialManageAuthContext.currentEmailAddress;
+      ctx.newEmailAddress = undefined;
+      ctx.currentPassword = undefined;
+      ctx.newPassword = undefined;
+      ctx.verificationId = undefined;
+      ctx.verificationCode = undefined;
+      ctx.currentAuthProviders =
+        initialManageAuthContext.currentAuthProviders || [];
+    });
 
   return (
     <ScreenLayout isRootScreen>
@@ -183,7 +178,9 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
               authProviderEmail,
               O.fold(
                 () => (
-                  <TouchableOpacity onPress={handleAddEmailAddress}>
+                  <TouchableOpacity
+                    onPress={makeManageAuthExecuteHandler("ADD_EMAIL_AUTH")}
+                  >
                     <ListItem
                       title="Add password"
                       right={<Icon icon="chevron-right" />}
@@ -192,13 +189,17 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
                 ),
                 () => (
                   <>
-                    <TouchableOpacity onPress={handleManageEmail}>
+                    <TouchableOpacity
+                      onPress={makeManageAuthExecuteHandler("CHANGE_EMAIL")}
+                    >
                       <ListItem
                         title="Change email"
                         right={<Icon icon="chevron-right" />}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={handleManagePassword}>
+                    <TouchableOpacity
+                      onPress={makeManageAuthExecuteHandler("CHANGE_PASSWORD")}
+                    >
                       <ListItem
                         title="Change password"
                         right={<Icon icon="chevron-right" />}
@@ -212,7 +213,9 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
               authProviderPhone,
               O.fold(
                 () => (
-                  <TouchableOpacity onPress={handleAddPhoneNumber}>
+                  <TouchableOpacity
+                    onPress={makeManageAuthExecuteHandler("ADD_PHONE_AUTH")}
+                  >
                     <ListItem
                       title="Add phone number"
                       right={<Icon icon="chevron-right" />}
@@ -220,7 +223,9 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
                   </TouchableOpacity>
                 ),
                 () => (
-                  <TouchableOpacity onPress={handleManagePhoneNumber}>
+                  <TouchableOpacity
+                    onPress={makeManageAuthExecuteHandler("CHANGE_PHONE")}
+                  >
                     <ListItem
                       title="Change phone number"
                       right={<Icon icon="chevron-right" />}
@@ -235,7 +240,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
                 <ContextMenuIconButton icon="log-out" onPress={handleSignOut}>
                   Sign out
                 </ContextMenuIconButton>,
-                <ContextMenuIconButton onPress={handleSignOut}>
+                <ContextMenuIconButton onPress={hideContextMenu}>
                   Cancel
                 </ContextMenuIconButton>,
               ]}
@@ -291,7 +296,7 @@ const themeSettingOptions: [ThemeSetting, string][] = [
 
 export const manageRoute = makeNavigationRoute({
   screen: ManageScreen,
-  routeName: "MANAGE_SCREEN",
+  routeName: routeNames.manageRoute,
 });
 
 const ScreenContainer = styled.ScrollView`
