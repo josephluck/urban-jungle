@@ -1,23 +1,21 @@
 import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
-import firebase from "firebase";
-import * as O from "fp-ts/lib/Option";
-
 import { CareModel } from "@urban-jungle/shared/models/care";
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import {
   CareId,
   HouseholdId,
+  PhotoId,
   PlantId,
   TodoId,
   UserId,
-  PhotoId,
 } from "@urban-jungle/shared/models/ids";
 import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
-
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
 import {
   IdentificationResult,
   IdentificationSuggestion,
@@ -113,6 +111,7 @@ export const store = stately<State>(defaultState);
 export const logGlobalState = store.createEffect(console.log);
 
 export const resetGlobalState = store.createMutator((s) => {
+  console.log(s);
   s = defaultState;
 });
 

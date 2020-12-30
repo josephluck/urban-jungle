@@ -1,10 +1,9 @@
 import React from "react";
 import { StyleProp, ViewProps } from "react-native";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
-import { Label, LabelText } from "./label";
+import { Label } from "./label";
 
 export type PickerValue = string | number | undefined;
 
