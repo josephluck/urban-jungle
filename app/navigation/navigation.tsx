@@ -174,43 +174,35 @@ const TabIcon = styled.TouchableOpacity`
 
 const PlantStack = () => (
   <Stack.Navigator headerMode="none">
-    <Stack.Screen name={plantsRoute.routeName} component={plantsRoute.screen} />
-    <Stack.Screen name={plantRoute.routeName} component={plantRoute.screen} />
-    <Stack.Screen
-      name={managePlantRoute.routeName}
-      component={managePlantRoute.screen}
-    />
-    <Stack.Screen name={todoRoute.routeName} component={todoRoute.screen} />
-    <Stack.Screen
-      name={manageTodoRoute.routeName}
-      component={manageTodoRoute.screen}
-    />
-    <Stack.Screen
-      name={newPlantPictureRoute.routeName}
-      component={newPlantPictureRoute.screen}
-    />
-    <Stack.Screen
-      name={newPlantNicknameRoute.routeName}
-      component={newPlantNicknameRoute.screen}
-    />
-    <Stack.Screen
-      name={newPlantSuggestionRoute.routeName}
-      component={newPlantSuggestionRoute.screen}
-    />
-    <Stack.Screen
-      name={newPlantLocationRoute.routeName}
-      component={newPlantLocationRoute.screen}
-    />
+    {[
+      plantsRoute,
+      plantRoute,
+      managePlantRoute,
+      todoRoute,
+      manageTodoRoute,
+      newPlantPictureRoute,
+      newPlantNicknameRoute,
+      newPlantSuggestionRoute,
+      newPlantLocationRoute,
+    ].map((route) => (
+      <Stack.Screen
+        key={route.routeName}
+        name={route.routeName}
+        component={route.screen}
+      />
+    ))}
   </Stack.Navigator>
 );
 
 const CareStack = () => (
   <Stack.Navigator headerMode="none">
-    <Stack.Screen name={careRoute.routeName} component={careRoute.screen} />
-    <Stack.Screen
-      name={careSessionRoute.routeName}
-      component={careSessionRoute.screen}
-    />
+    {[careRoute, careSessionRoute].map((route) => (
+      <Stack.Screen
+        key={route.routeName}
+        name={route.routeName}
+        component={route.screen}
+      />
+    ))}
   </Stack.Navigator>
 );
 
