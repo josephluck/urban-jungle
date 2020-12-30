@@ -14,6 +14,8 @@ const authMachineHooks = makeMachineHooks<Context, AdditionalEntryData>({
     skipAvatar: false,
     isAuthenticated: false,
     skipEmailAddress: false,
+    hasResetPassword: false,
+    hasSeenResetPasswordInstructions: false,
   },
 });
 

@@ -13,6 +13,8 @@ export type Context = {
   skipAvatar: boolean;
   isAuthenticated: boolean;
   skipEmailAddress: boolean;
+  hasResetPassword: boolean;
+  hasSeenResetPasswordInstructions: boolean;
 };
 
 export type AdditionalEntryData = {

@@ -21,6 +21,8 @@ import { signUpNameRoute } from "../features/auth/components/sign-up-name";
 import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
 import { signUpPhoneRoute } from "../features/auth/components/sign-up-phone";
 import { signUpPhoneVerifyRoute } from "../features/auth/components/sign-up-phone-verify";
+import { signUpResetPasswordRoute } from "../features/auth/components/sign-up-reset-password";
+import { signUpResetPasswordInstructionsRoute } from "../features/auth/components/sign-up-reset-password-instructions";
 import { splashRoute } from "../features/auth/components/splash";
 import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/care/components/care-screen";
@@ -255,30 +257,22 @@ export const AppNavigation = () => {
         </Tab.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">
-          <Stack.Screen
-            name={splashRoute.routeName}
-            component={splashRoute.screen}
-          />
-          <Stack.Screen
-            name={signUpPhoneRoute.routeName}
-            component={signUpPhoneRoute.screen}
-          />
-          <Stack.Screen
-            name={signUpPhoneVerifyRoute.routeName}
-            component={signUpPhoneVerifyRoute.screen}
-          />
-          <Stack.Screen
-            name={signUpEmailRoute.routeName}
-            component={signUpEmailRoute.screen}
-          />
-          <Stack.Screen
-            name={signUpNameRoute.routeName}
-            component={signUpNameRoute.screen}
-          />
-          <Stack.Screen
-            name={signUpPasswordRoute.routeName}
-            component={signUpPasswordRoute.screen}
-          />
+          {[
+            splashRoute,
+            signUpPhoneRoute,
+            signUpPhoneVerifyRoute,
+            signUpEmailRoute,
+            signUpNameRoute,
+            signUpPasswordRoute,
+            signUpResetPasswordRoute,
+            signUpResetPasswordInstructionsRoute,
+          ].map((route) => (
+            <Stack.Screen
+              key={route.routeName}
+              name={route.routeName}
+              component={route.screen}
+            />
+          ))}
         </Stack.Navigator>
       )}
     </NavigationContainer>

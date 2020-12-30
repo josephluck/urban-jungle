@@ -74,8 +74,39 @@ export const states: State<Context, Conditions, AdditionalEntryData>[] = [
             id: "Enter password",
             routeName: routeNames.signUpPasswordRoute,
             isDone: [
-              function hasProvidedPassword(context) {
-                return !!context.password;
+              function hasProvidedOrResetPassword(context) {
+                return !!context.password || context.hasResetPassword;
+              },
+            ],
+          },
+          {
+            fork: "Has reset password",
+            requirements: [
+              function hasResetPassword(context) {
+                return context.hasResetPassword;
+              },
+            ],
+            states: [
+              {
+                id: "Reset password instructions",
+                routeName: routeNames.resetPasswordInstructions,
+                isDone: [
+                  function hasSeenResetPasswordInstructions(context) {
+                    return context.hasSeenResetPasswordInstructions;
+                  },
+                ],
+              },
+              {
+                id: "Reset password enter new password",
+                routeName: routeNames.resetPasswordEnterNewPassword,
+                isDone: [
+                  function hasProvidedPassword(context) {
+                    return !!context.password;
+                  },
+                  function hasSuccessfullyResetPassword(context) {
+                    return context.isAuthenticated;
+                  },
+                ],
               },
             ],
           },

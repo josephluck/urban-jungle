@@ -28,7 +28,9 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
   const { execute, context } = useAuthMachine();
   const runWithUIState = useRunWithUIState();
 
-  const { registerTextInput, submit, values } = useForm<{ password: string }>(
+  const { registerTextInput, submit, values } = useForm<{
+    password: string;
+  }>(
     { password: "" },
     { password: [constraints.isRequired, constraints.isString] },
   );
@@ -52,14 +54,31 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
                   }),
                 ),
           ),
+          TE.mapLeft((err) => {
+            execute((ctx) => {
+              ctx.password = undefined;
+            });
+            return err;
+          }),
         ),
       ),
     [submit, context, execute, values],
   );
 
   const handleForgottenPassword = useCallback(
-    () => runWithUIState(sendForgottenPasswordEmail(context.emailAddress!)),
-    [context],
+    () =>
+      runWithUIState(
+        pipe(
+          sendForgottenPasswordEmail(context.emailAddress!),
+          TE.map(() => {
+            execute((ctx) => {
+              ctx.password = undefined;
+              ctx.hasResetPassword = true;
+            });
+          }),
+        ),
+      ),
+    [context, execute],
   );
 
   return (

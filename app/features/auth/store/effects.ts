@@ -100,11 +100,9 @@ export const signUpWithEmail = (
   );
 
 export const sendForgottenPasswordEmail = (email: string) =>
-  pipe(
-    TE.tryCatch(
-      () => firebase.auth().sendPasswordResetEmail(email),
-      () => "BAD_REQUEST" as IErr,
-    ),
+  TE.tryCatch(
+    () => firebase.auth().sendPasswordResetEmail(email),
+    () => "BAD_REQUEST" as IErr,
   );
 
 export const addEmailAndPasswordCredentials = (
