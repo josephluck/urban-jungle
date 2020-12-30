@@ -99,6 +99,7 @@ export const ManagePlantScreen = ({
           {...registerSinglePickerInput("location")}
         />
         <CameraField
+          viewport
           label="Picture"
           type="plant"
           {...registerCameraField("avatar")}

@@ -3,7 +3,13 @@ import { Feather } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { useEffect } from "react";
-import { StyleProp, View, ViewProps, TouchableOpacity } from "react-native";
+import {
+  StyleProp,
+  View,
+  ViewProps,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import { navigationDidNavigateBeacon } from "../navigation/navigation";
@@ -38,7 +44,10 @@ export const ContextMenuProvider = ({
   children: React.ReactNode;
 }) => {
   const [visibleMenuId, setVisibleMenuId] = useState<string>();
-  const show = useCallback((menuId: string) => setVisibleMenuId(menuId), []);
+  const show = useCallback((menuId: string) => {
+    setVisibleMenuId(menuId);
+    Keyboard.dismiss();
+  }, []);
   const hide = useCallback(() => setVisibleMenuId(undefined), []);
 
   useEffect(() => {

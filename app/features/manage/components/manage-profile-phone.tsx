@@ -8,15 +8,25 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useRef } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import {
+  ContextMenuDotsButton,
+  ContextMenuIconButton,
+  useContextMenu,
+} from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
+import { env } from "../../../env";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { selectAuthProviderPhone } from "../../auth/store/state";
+import { removePhoneAuth } from "../../auth/store/effects";
+import {
+  selectAuthProviderPhone,
+  selectHasMultipleAuthProviders,
+} from "../../auth/store/state";
 import { selectCurrentProfilePhone } from "../../profiles/store/state";
 import { manageProfilePhoneVerify } from "./manage-profile-phone-verify";
 
@@ -25,6 +35,8 @@ const ManageProfilePhone = ({ navigation }: StackScreenProps<{}>) => {
   const runWithUIState = useRunWithUIState();
   const profilePhone = useStore(selectCurrentProfilePhone);
   const alreadyHasPhoneAuth = pipe(useStore(selectAuthProviderPhone), O.isSome);
+  const { hide: closeContextMenu } = useContextMenu();
+  const hasMultipleAuthProviders = useStore(selectHasMultipleAuthProviders);
 
   const { registerTextInput, submit } = useForm<{
     phone: string;
@@ -67,8 +79,33 @@ const ManageProfilePhone = ({ navigation }: StackScreenProps<{}>) => {
     [submit],
   );
 
+  const handleRemovePhoneAuth = useCallback(
+    () => runWithUIState(pipe(removePhoneAuth(), TE.map(navigation.goBack))),
+    [],
+  );
+
   return (
-    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <BackableScreenLayout
+      onBack={navigation.goBack}
+      scrollView={false}
+      headerRightButton={
+        hasMultipleAuthProviders && alreadyHasPhoneAuth ? (
+          <ContextMenuDotsButton menuId="remove-profile-phone">
+            {[
+              <ContextMenuIconButton
+                icon="trash"
+                onPress={handleRemovePhoneAuth}
+              >
+                Remove phone auth
+              </ContextMenuIconButton>,
+              <ContextMenuIconButton onPress={closeContextMenu}>
+                Cancel
+              </ContextMenuIconButton>,
+            ]}
+          </ContextMenuDotsButton>
+        ) : null
+      }
+    >
       <ContentContainer>
         <ScreenTitle
           title={
@@ -96,6 +133,12 @@ const ManageProfilePhone = ({ navigation }: StackScreenProps<{}>) => {
           Next
         </Button>
       </ContentContainer>
+
+      <FirebaseRecaptchaVerifierModal
+        ref={recaptchaVerifier}
+        firebaseConfig={env.firebase}
+        attemptInvisibleVerification
+      />
     </BackableScreenLayout>
   );
 };

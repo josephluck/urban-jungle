@@ -5,17 +5,27 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import {
+  ContextMenuDotsButton,
+  ContextMenuIconButton,
+  useContextMenu,
+} from "../../../components/context-menu";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
+import { removeEmailAuth } from "../../auth/store/effects";
+import { selectHasMultipleAuthProviders } from "../../auth/store/state";
 import { manageProfilePasswordVerify } from "./manage-profile-password-verify";
 
 const ManageProfilePassword = ({ navigation }: StackScreenProps<{}>) => {
   const runWithUIState = useRunWithUIState();
+  const { hide: closeContextMenu } = useContextMenu();
+  const hasMultipleAuthProviders = useStore(selectHasMultipleAuthProviders);
 
   const { registerTextInput, submit } = useForm<{
     currentPassword: string;
@@ -44,8 +54,33 @@ const ManageProfilePassword = ({ navigation }: StackScreenProps<{}>) => {
     [submit, navigation],
   );
 
+  const handleRemoveEmailAuth = useCallback(
+    () => runWithUIState(pipe(removeEmailAuth(), TE.map(navigation.goBack))),
+    [],
+  );
+
   return (
-    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <BackableScreenLayout
+      onBack={navigation.goBack}
+      scrollView={false}
+      headerRightButton={
+        hasMultipleAuthProviders ? (
+          <ContextMenuDotsButton menuId="remove-profile-password">
+            {[
+              <ContextMenuIconButton
+                icon="trash"
+                onPress={handleRemoveEmailAuth}
+              >
+                Remove email auth
+              </ContextMenuIconButton>,
+              <ContextMenuIconButton onPress={closeContextMenu}>
+                Cancel
+              </ContextMenuIconButton>,
+            ]}
+          </ContextMenuDotsButton>
+        ) : null
+      }
+    >
       <ContentContainer>
         <ScreenTitle
           title="Change password"

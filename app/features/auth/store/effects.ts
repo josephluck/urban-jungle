@@ -1,3 +1,4 @@
+import { sequenceSTE } from "@urban-jungle/shared/fp/task-either";
 import { ProfileModel } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
@@ -18,7 +19,12 @@ import {
 } from "../../profiles/store/effects";
 import { selectCurrentProfileEmail } from "../../profiles/store/state";
 import { Context } from "../machine/types";
-import { selectAuthUser, selectCurrentUserId } from "./state";
+import {
+  selectAuthProviderEmail,
+  selectAuthProviderPhone,
+  selectAuthUser,
+  selectCurrentUserId,
+} from "./state";
 
 const authenticateWithEmailAndPassword = (email: string, password: string) =>
   pipe(
@@ -123,7 +129,7 @@ export const validateSignUp = (
     TE.fromOption(() => "BAD_REQUEST"),
   );
 
-export const updateUserPhone = async (
+export const updateUserPhone = (
   verificationId: string,
   verificationCode: string,
 ) =>
@@ -172,6 +178,33 @@ export const updateUserPassword = (
       ),
     ),
   );
+
+const removeAuthProvider = (provider: O.Option<firebase.UserInfo>) =>
+  pipe(
+    sequenceSTE({
+      providerId: pipe(
+        provider,
+        O.map((provider) => provider.providerId),
+        TE.fromOption(() => "NOT_FOUND" as IErr),
+      ),
+      user: pipe(
+        selectAuthUser(),
+        TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+      ),
+    }),
+    TE.chain(({ providerId, user }) =>
+      TE.tryCatch(
+        async () => user.unlink(providerId),
+        () => "BAD_REQUEST" as IErr,
+      ),
+    ),
+  );
+
+export const removeEmailAuth = () =>
+  pipe(selectAuthProviderEmail(), removeAuthProvider);
+
+export const removePhoneAuth = () =>
+  pipe(selectAuthProviderPhone(), removeAuthProvider);
 
 /**
  * Handles creating the relationship between the given profile id and the

@@ -47,12 +47,7 @@ const ManageProfilePhoneVerify = ({
           TE.fromEither(submit()),
           TE.mapLeft(() => "VALIDATION" as IErr),
           TE.chainFirst((fields) =>
-            TE.tryCatch(
-              async () => {
-                updateUserPhone(verificationId, fields.verificationCode);
-              },
-              () => "BAD_REQUEST" as IErr,
-            ),
+            updateUserPhone(verificationId, fields.verificationCode),
           ),
           TE.map(() => manageRoute.navigateTo(navigation, {})),
         ),
@@ -72,7 +67,6 @@ const ManageProfilePhoneVerify = ({
 
         <TextField
           {...registerTextInput("verificationCode")}
-          label="Verification code"
           autoCompleteType="off"
           returnKeyType="send"
           autoCapitalize="none"

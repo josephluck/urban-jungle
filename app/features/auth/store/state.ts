@@ -47,6 +47,15 @@ export const selectAuthProviderEmail = () =>
       O.fromNullable(providers.find((p) => p?.providerId === "password")),
     ),
   );
+
+export const selectHasMultipleAuthProviders = () =>
+  pipe(
+    selectAuthProviders(),
+    O.map((providers) => providers.filter(Boolean)),
+    O.filter((providers) => providers.length > 0),
+    O.isSome,
+  );
+
 /**
  * MUTATORS
  */
