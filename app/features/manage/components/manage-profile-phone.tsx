@@ -74,7 +74,7 @@ const ManageProfilePhone = ({ navigation }: StackScreenProps<{}>) => {
         <ScreenTitle
           title={getScreenTitle(context.flow)}
           description={
-            context.flow === "CHANGE_PHONE"
+            context.recentlyAuthenticated
               ? "What's your new phone number"
               : "What's your phone number?"
           }

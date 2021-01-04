@@ -9,6 +9,7 @@ import React, { useCallback, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { launchCameraAndTakePicture } from "../../../components/camera";
 import {
   ContextMenuDotsButton,
   ContextMenuIconButton,
@@ -25,7 +26,6 @@ import { UIEffect } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { takePicture } from "../../photos/camera";
 import { uploadPhoto } from "../../photos/storage";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { todoRoute } from "../../todos/components/todo-screen";
@@ -105,7 +105,7 @@ export const PlantScreen = ({
   const handleTakePicture = useCallback(() => {
     hideContextMenu();
     pipe(
-      takePicture(),
+      launchCameraAndTakePicture(),
       TE.map(UIEffect.start),
       TE.chain(uploadPhoto("plant")),
       TE.chain((imageInfo) =>

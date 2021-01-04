@@ -5,13 +5,14 @@ import {
   ProfileModel,
 } from "@urban-jungle/shared/models/profile";
 import { IErr } from "@urban-jungle/shared/utils/err";
+import { Camera } from "expo-camera";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { CameraField } from "../../../components/camera-field";
+import { CameraButton } from "../../../components/camera-button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -70,9 +71,11 @@ export const ManageProfileScreen = ({
     >
       <ContentContainer>
         <TextField label="Name" {...registerTextInput("name")} />
-        <CameraField
+        <CameraButton
+          viewport
           label="Picture"
           type="profile"
+          direction={Camera.Constants.Type.front}
           {...registerCameraField("avatar")}
         />
       </ContentContainer>

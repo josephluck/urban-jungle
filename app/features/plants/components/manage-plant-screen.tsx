@@ -8,7 +8,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { CameraField } from "../../../components/camera-field";
+import { CameraButton } from "../../../components/camera-button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
@@ -98,7 +98,7 @@ export const ManagePlantScreen = ({
           }))}
           {...registerSinglePickerInput("location")}
         />
-        <CameraField
+        <CameraButton
           viewport
           label="Picture"
           type="plant"

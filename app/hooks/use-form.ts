@@ -1,12 +1,10 @@
 import { FieldConstraintsMap, makeValidator } from "@josephluck/valley/lib/fp";
+import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { useState } from "react";
-
-import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
-
-import { CameraFieldProps } from "../components/camera-field";
+import { CameraButtonProps } from "../components/camera-button";
 import { DualNumberPickerFieldProps } from "../components/dual-number-picker-field";
 import { DualTextPickerFieldProps } from "../components/dual-text-picker-field";
 import { NumberFieldProps } from "../components/number-field";
@@ -185,7 +183,7 @@ export function useForm<Fs extends Fields>(
 
   const registerCameraField = <Fk extends CameraKeys>(
     fieldKey: Fk,
-  ): Pick<CameraFieldProps, "value" | "error" | "touched" | "onChange"> => {
+  ): Pick<CameraButtonProps, "value" | "error" | "touched" | "onChange"> => {
     const value: ImageModel = pipe(
       O.fromNullable(values[fieldKey] as ImageModel),
       O.filter((image) => Boolean(image) && Boolean(image.uri)),

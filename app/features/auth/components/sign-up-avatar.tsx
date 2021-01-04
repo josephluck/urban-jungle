@@ -7,7 +7,7 @@ import React, { useCallback } from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { CameraField } from "../../../components/camera-field";
+import { CameraButton } from "../../../components/camera-button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -56,7 +56,7 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
       <SplashContainer>
         <ScreenTitle title="🌱 Urban Jungle" description="?" />
 
-        <CameraField viewport {...registerCameraField("avatar")} />
+        <CameraButton viewport {...registerCameraField("avatar")} />
 
         <View>
           <EmailButton type="plain" onPress={handleSkip}>

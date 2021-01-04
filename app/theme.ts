@@ -138,6 +138,7 @@ const colors = {
 
 const aspectRatio = {
   plantImage: 16 / 9,
+  profileImage: 1 / 1,
 };
 
 export const symbols = {

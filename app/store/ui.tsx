@@ -1,4 +1,5 @@
 import { IErr } from "@urban-jungle/shared/utils/err";
+import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { createContext, useCallback, useContext, useState } from "react";
@@ -58,11 +59,13 @@ export const GlobalErrorProvider = ({
 }) => {
   const [error, setError] = useState<IErr>();
 
+  const clearError = useCallback(() => setError(undefined), [setError]);
+
   return (
     <GlobalErrorContext.Provider value={{ error, setError }}>
       {children}
 
-      <BottomDrawer onClose={() => setError(undefined)} visible={!!error}>
+      <BottomDrawer onClose={clearError} visible={!!error}>
         {loading ? null : (
           <>
             <View style={{ alignItems: "center" }}>
@@ -87,7 +90,7 @@ export const GlobalErrorProvider = ({
               </SubScriptText>
             </View>
 
-            <Button onPress={() => setError(undefined)} large>
+            <Button onPress={clearError} large>
               Close
             </Button>
           </>
@@ -99,23 +102,29 @@ export const GlobalErrorProvider = ({
 
 export const useGlobalErrorContext = () => useContext(GlobalErrorContext);
 
-export const useRunWithUIState = <V extends TE.TaskEither<IErr, any>>() => {
+export const useRunWithUIState = () => {
   const { setError } = useGlobalErrorContext();
 
   // TODO: support options for success / failure toasts
-  return useCallback((task: V, handleErrors: boolean = true) => {
-    startLoading(void null);
-    setError(undefined);
-    return pipe(
-      pipeWithUILoading(task),
-      TE.mapLeft((err) => {
-        if (handleErrors && err !== "VALIDATION") {
-          setError(err);
-        }
-        return err;
-      }),
-    )();
-  }, []);
+  return useCallback(
+    <T, V extends TE.TaskEither<IErr, T>>(
+      task: V,
+      handleErrors: boolean = true,
+    ): Promise<E.Either<IErr, T>> => {
+      startLoading(void null);
+      setError(undefined);
+      return pipe(
+        pipeWithUILoading(task),
+        TE.mapLeft((err) => {
+          if (handleErrors && err !== "VALIDATION") {
+            setError(err);
+          }
+          return err;
+        }),
+      )();
+    },
+    [],
+  );
 };
 
 /**

@@ -1,21 +1,18 @@
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import { StorageEntityType } from "@urban-jungle/shared/models/storage";
-import { Camera } from "expo-camera";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-import { useRunWithUIState } from "../store/ui";
 import { symbols } from "../theme";
-import { Button } from "./button";
 import { useCamera } from "./camera";
 import { FormField } from "./form-field";
 import { Icon } from "./icon";
 import { ImagePreview } from "./image-preview";
 
-export type CameraFieldProps = {
+export type CameraButtonProps = {
   value?: ImageModel;
   onChange: (value: ImageModel) => void;
   onTouched?: () => void;
@@ -25,10 +22,9 @@ export type CameraFieldProps = {
   style?: StyleProp<ViewStyle>;
   type?: StorageEntityType;
   aspectRatio?: number;
-  direction?: typeof Camera.Constants.Type;
 };
 
-export const CameraField = ({
+export const CameraButton = ({
   value,
   onChange,
   onTouched,
@@ -36,16 +32,10 @@ export const CameraField = ({
   error,
   label,
   style,
-  direction = Camera.Constants.Type.back,
+  type = "default",
   aspectRatio = symbols.aspectRatio.plantImage,
-}: CameraFieldProps) => {
-  const {
-    askForPermissions,
-    saving,
-    loading,
-    hasPermissions,
-    setRef,
-  } = useCamera();
+}: CameraButtonProps) => {
+  const { saving, takeModalPictureAndUpload } = useCamera();
 
   const handleClearResult = useCallback(() => {
     if (onTouched) {
@@ -53,6 +43,13 @@ export const CameraField = ({
     }
     onChange({ uri: "", height: 0, width: 0 });
   }, [onTouched, onChange]);
+
+  const handleLaunchCamera = useCallback(async () => {
+    if (onTouched) {
+      onTouched();
+    }
+    pipe(takeModalPictureAndUpload(type), TE.map(onChange));
+  }, [type, onTouched]);
 
   const hasValue = pipe(
     O.fromNullable(value),
@@ -63,8 +60,8 @@ export const CameraField = ({
   return (
     <FormField label={label} error={error} touched={touched}>
       <ContainerButton
-        disabled={hasValue || saving || loading}
-        onPress={askForPermissions}
+        disabled={hasValue || saving}
+        onPress={handleLaunchCamera}
         style={[{ aspectRatio }, style]}
       >
         {hasValue && value ? (
@@ -72,16 +69,6 @@ export const CameraField = ({
             uri={value.uri}
             onPress={handleClearResult}
             aspectRatio={aspectRatio}
-          />
-        ) : hasPermissions && !loading ? (
-          <Camera
-            style={{
-              width: "100%",
-              aspectRatio,
-              borderRadius: symbols.borderRadius.small,
-            }}
-            type={direction}
-            ref={setRef}
           />
         ) : (
           <Icon icon="camera" size={36} color={symbols.colors.midOffGray} />
@@ -98,31 +85,3 @@ const ContainerButton = styled.TouchableOpacity`
   border-radius: ${symbols.borderRadius.small}px;
   width: 100%;
 `;
-
-export const CameraFieldButton = ({
-  children,
-  value,
-  onChange,
-  type = "default",
-}: {
-  children: string;
-  value?: ImageModel;
-  onChange: (value: ImageModel) => void;
-  type?: StorageEntityType;
-}) => {
-  const runWithUIState = useRunWithUIState();
-  const { takeInlinePictureAndUpload } = useCamera();
-
-  const handlePress = useCallback(() => {
-    if (value) {
-      return;
-    }
-    runWithUIState(pipe(takeInlinePictureAndUpload(type), TE.map(onChange)));
-  }, [value, onChange]);
-
-  return (
-    <Button disabled={!!value} onPress={handlePress}>
-      {children}
-    </Button>
-  );
-};

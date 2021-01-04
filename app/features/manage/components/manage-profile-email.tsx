@@ -59,7 +59,7 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
         <ScreenTitle
           title={getScreenTitle(context.flow)}
           description={
-            context.flow === "CHANGE_EMAIL"
+            context.recentlyAuthenticated
               ? "What is your new email address?"
               : "What is your email address?"
           }

@@ -121,6 +121,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
       ctx.verificationCode = undefined;
       ctx.currentAuthProviders =
         initialManageAuthContext.currentAuthProviders || [];
+      ctx.selectedAuthSecurityCheckProvider = undefined;
     });
 
   return (

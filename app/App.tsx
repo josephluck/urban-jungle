@@ -6,6 +6,7 @@ import { LogBox, StatusBar } from "react-native";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components/native";
 import { BottomSheetGatewayContainer } from "./components/bottom-drawer";
+import { CameraProvider } from "./components/camera";
 import {
   contextMenuGatewayId,
   ContextMenuProvider,
@@ -55,45 +56,47 @@ export default () => {
         <ThemeProvider theme={theme}>
           <ContextMenuProvider>
             <GlobalErrorProvider loading={loading}>
-              <GatewayProvider>
-                <StatusBar barStyle={theme.type} />
-                <AppWrapper>
-                  {loading ? null : (
-                    <>
-                      <CurrentProfileHouseholdsSubscription />
-                      {selectedHouseholdId ? (
-                        <>
-                          <HouseholdPlantsSubscription
-                            householdId={selectedHouseholdId}
-                          />
-                          <HouseholdCaresSubscription
-                            householdId={selectedHouseholdId}
-                          />
-                          <HouseholdTodosSubscription
-                            householdId={selectedHouseholdId}
-                          />
-                          <HouseholdPhotosSubscription
-                            householdId={selectedHouseholdId}
-                          />
-                        </>
-                      ) : null}
-                    </>
-                  )}
-                  {fontsLoading ? null : (
-                    <>
-                      <AppNavigation />
-                      <AuthenticationSubscription />
-                      {/* Auth subscription navigates during onboarding rehydration, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
-                    </>
-                  )}
-                </AppWrapper>
-                <ProfilesSubscription />
-                <GlobalLoading />
-                <GatewayDest
-                  name={contextMenuGatewayId}
-                  component={BottomSheetGatewayContainer}
-                />
-              </GatewayProvider>
+              <CameraProvider>
+                <GatewayProvider>
+                  <StatusBar barStyle={theme.type} />
+                  <AppWrapper>
+                    {loading ? null : (
+                      <>
+                        <CurrentProfileHouseholdsSubscription />
+                        {selectedHouseholdId ? (
+                          <>
+                            <HouseholdPlantsSubscription
+                              householdId={selectedHouseholdId}
+                            />
+                            <HouseholdCaresSubscription
+                              householdId={selectedHouseholdId}
+                            />
+                            <HouseholdTodosSubscription
+                              householdId={selectedHouseholdId}
+                            />
+                            <HouseholdPhotosSubscription
+                              householdId={selectedHouseholdId}
+                            />
+                          </>
+                        ) : null}
+                      </>
+                    )}
+                    {fontsLoading ? null : (
+                      <>
+                        <AppNavigation />
+                        <AuthenticationSubscription />
+                        {/* Auth subscription navigates during onboarding rehydration, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
+                      </>
+                    )}
+                  </AppWrapper>
+                  <ProfilesSubscription />
+                  <GlobalLoading />
+                  <GatewayDest
+                    name={contextMenuGatewayId}
+                    component={BottomSheetGatewayContainer}
+                  />
+                </GatewayProvider>
+              </CameraProvider>
             </GlobalErrorProvider>
           </ContextMenuProvider>
         </ThemeProvider>
