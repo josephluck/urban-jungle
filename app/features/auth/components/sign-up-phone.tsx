@@ -1,20 +1,16 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import firebase from "firebase";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback } from "react";
-import { useRef } from "react";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback, useRef } from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
-
-import { IErr } from "@urban-jungle/shared/utils/err";
-
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
-import { env } from "../../../env";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../store/ui";
@@ -30,7 +26,9 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
 
   const { registerTextInput, submit } = useForm<{ phone: string }>(
     { phone: "" },
-    { phone: [constraints.isString, constraints.isLengthAtLeast(11)] },
+    {
+      phone: [constraints.isString, constraints.isLengthAtLeast(11)],
+    },
   );
 
   const handleSignUp = useCallback(
@@ -42,9 +40,13 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
           TE.chainFirst((fields) =>
             TE.tryCatch(
               async () => {
+                const phoneNumber = fields.phone.startsWith("+44")
+                  ? fields.phone
+                  : `+44${fields.phone.slice(1)}`;
                 const phoneProvider = new firebase.auth.PhoneAuthProvider();
+                console.log(recaptchaVerifier, { phoneNumber });
                 const verificationId = await phoneProvider.verifyPhoneNumber(
-                  fields.phone,
+                  phoneNumber,
                   recaptchaVerifier.current!,
                 );
                 execute((ctx) => {
@@ -99,11 +101,11 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
         </View>
       </SplashContainer>
 
-      <FirebaseRecaptchaVerifierModal
+      {/* <FirebaseRecaptchaVerifierModal
         ref={recaptchaVerifier}
         firebaseConfig={env.firebase}
         attemptInvisibleVerification
-      />
+      /> */}
     </BackableScreenLayout>
   );
 };

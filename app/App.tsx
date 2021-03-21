@@ -58,43 +58,45 @@ export default () => {
             <GlobalErrorProvider loading={loading}>
               <CameraProvider>
                 <GatewayProvider>
-                  <StatusBar barStyle={theme.type} />
-                  <AppWrapper>
-                    {loading ? null : (
-                      <>
-                        <CurrentProfileHouseholdsSubscription />
-                        {selectedHouseholdId ? (
-                          <>
-                            <HouseholdPlantsSubscription
-                              householdId={selectedHouseholdId}
-                            />
-                            <HouseholdCaresSubscription
-                              householdId={selectedHouseholdId}
-                            />
-                            <HouseholdTodosSubscription
-                              householdId={selectedHouseholdId}
-                            />
-                            <HouseholdPhotosSubscription
-                              householdId={selectedHouseholdId}
-                            />
-                          </>
-                        ) : null}
-                      </>
-                    )}
-                    {fontsLoading ? null : (
-                      <>
-                        <AppNavigation />
-                        <AuthenticationSubscription />
-                        {/* Auth subscription navigates during onboarding rehydration, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
-                      </>
-                    )}
-                  </AppWrapper>
-                  <ProfilesSubscription />
-                  <GlobalLoading />
-                  <GatewayDest
-                    name={contextMenuGatewayId}
-                    component={BottomSheetGatewayContainer}
-                  />
+                  <>
+                    <StatusBar barStyle={theme.type} />
+                    <AppWrapper>
+                      {loading ? null : (
+                        <>
+                          <CurrentProfileHouseholdsSubscription />
+                          {selectedHouseholdId ? (
+                            <>
+                              <HouseholdPlantsSubscription
+                                householdId={selectedHouseholdId}
+                              />
+                              <HouseholdCaresSubscription
+                                householdId={selectedHouseholdId}
+                              />
+                              <HouseholdTodosSubscription
+                                householdId={selectedHouseholdId}
+                              />
+                              <HouseholdPhotosSubscription
+                                householdId={selectedHouseholdId}
+                              />
+                            </>
+                          ) : null}
+                        </>
+                      )}
+                      {fontsLoading ? null : (
+                        <>
+                          <AppNavigation />
+                          <AuthenticationSubscription />
+                          {/* Auth subscription navigates during onboarding rehydration, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
+                        </>
+                      )}
+                    </AppWrapper>
+                    <ProfilesSubscription />
+                    <GlobalLoading />
+                    <GatewayDest
+                      name={contextMenuGatewayId}
+                      component={BottomSheetGatewayContainer}
+                    />
+                  </>
                 </GatewayProvider>
               </CameraProvider>
             </GlobalErrorProvider>

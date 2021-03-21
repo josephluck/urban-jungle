@@ -19,8 +19,7 @@ import {
 import { TouchableOpacity as AndroidTouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
-import { navigationDidNavigateBeacon } from "../navigation/navigation";
-// import { navigationDidNavigateBeacon } from "../navigation/navigation";
+import { navigationDidNavigateBeacon } from "../navigation/beacon";
 import { symbols } from "../theme";
 import { BottomDrawer } from "./bottom-drawer";
 import { TouchableIcon } from "./touchable-icon";

@@ -46,25 +46,14 @@ import { todoRoute } from "../features/todos/components/todo-screen";
 import { useStore } from "../store/state";
 // import { logGlobalState } from "../store/state";
 import { symbols, Theme } from "../theme";
+import {
+  navigationDidNavigateBeacon,
+  navigationIsAtRootBeacon,
+} from "./beacon";
 import { navigationRef } from "./navigation-imperative";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const makeEmitter = <T extends any>() => {
-  type Subscriber = (data: T) => void;
-  let subs: Subscriber[] = [];
-  return {
-    emit: (data: T) => subs.forEach((fn) => fn(data)),
-    subscribe: (fn: Subscriber) => {
-      subs.push(fn);
-      return () => subs.filter((fn) => fn !== fn);
-    },
-  };
-};
-
-const navigationIsAtRootBeacon = makeEmitter<boolean>();
-export const navigationDidNavigateBeacon = makeEmitter<void>();
 
 class TabBarComponent extends React.Component<
   BottomTabBarProps<BottomTabBarOptions> & { theme: Theme } & {
