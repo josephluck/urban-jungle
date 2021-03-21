@@ -1,24 +1,35 @@
 import { Gateway } from "@chardskarth/react-gateway";
 import { Feather } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
-import React, { useCallback, useContext, useMemo, useState } from "react";
-import { useEffect } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
+  Keyboard,
+  Platform,
   StyleProp,
+  TouchableOpacity as IosTouchableOpacity,
   View,
   ViewProps,
-  TouchableOpacity,
-  Keyboard,
 } from "react-native";
+import { TouchableOpacity as AndroidTouchableOpacity } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import { navigationDidNavigateBeacon } from "../navigation/navigation";
-
 // import { navigationDidNavigateBeacon } from "../navigation/navigation";
 import { symbols } from "../theme";
 import { BottomDrawer } from "./bottom-drawer";
 import { TouchableIcon } from "./touchable-icon";
 import { SubHeading } from "./typography";
+
+const TouchableOpacity = Platform.select({
+  ios: IosTouchableOpacity,
+  android: AndroidTouchableOpacity,
+});
 
 export const contextMenuGatewayId = "GATEWAY_CONTEXT_MENU";
 
