@@ -31,7 +31,7 @@ import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { todoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
 import { deletePlantByHouseholdId, savePlantImage } from "../store/effects";
-import { selectPlantByHouseholdId } from "../store/state";
+import { getPlantName, selectPlantByHouseholdId } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
 
 export const PlantScreen = ({
@@ -127,8 +127,8 @@ export const PlantScreen = ({
     () =>
       pipe(
         plant,
-        O.map((p) => p.name),
-        O.getOrElse(() => "plant"),
+        O.map(getPlantName),
+        O.getOrElse(() => "Unknown"),
       ),
     [plant],
   );

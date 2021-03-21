@@ -1,8 +1,6 @@
+import { PlantModel } from "@urban-jungle/shared/models/plant";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-
-import { PlantModel } from "@urban-jungle/shared/models/plant";
-
 import { normalizedStateFactory } from "../../../store/factory";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectProfileById2 } from "../../profiles/store/state";
@@ -68,3 +66,6 @@ export const isPlantAvatarThisPhoto = (
       (photo) => photo.id === photoId,
     ),
   );
+
+export const getPlantName = (plant: PlantModel) =>
+  plant.nickname || plant.name || "Unknown";

@@ -1,12 +1,10 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
-
-import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
-
 import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
@@ -15,7 +13,7 @@ import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { selectPlantsByHouseholdId } from "../store/state";
+import { getPlantName, selectPlantsByHouseholdId } from "../store/state";
 import { newPlantPictureRoute } from "./new-plant/new-plant-picture-screen";
 import { plantRoute } from "./plant-screen";
 
@@ -59,7 +57,7 @@ export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
                 }
               >
                 <ListItem
-                  title={plant.name}
+                  title={getPlantName(plant)}
                   image={pipe(
                     O.fromNullable(plant.avatar),
                     O.map((avatar) => avatar.uri),

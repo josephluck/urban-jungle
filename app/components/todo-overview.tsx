@@ -4,6 +4,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import styled from "styled-components/native";
+import { getPlantName } from "../features/plants/store/state";
 import { symbols } from "../theme";
 import { PlantImage } from "./plant-image";
 import { PlantNameAndLocation } from "./plant-name-and-location";
@@ -20,7 +21,10 @@ export const TodoOverview = ({
 }) => {
   return (
     <>
-      <PlantNameAndLocation name={plant.name} location={plant.location} />
+      <PlantNameAndLocation
+        name={getPlantName(plant)}
+        location={plant.location}
+      />
       <PlantImage
         uri={pipe(
           O.fromNullable(plant.avatar),
