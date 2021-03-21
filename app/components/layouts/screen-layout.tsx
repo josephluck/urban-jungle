@@ -10,7 +10,7 @@ export const ScreenLayout = ({
   isRootScreen?: boolean;
 }) => (
   <Container>
-    <AvoidingView behavior="padding">
+    <AvoidingView>
       <InnerContainer isRootScreen={isRootScreen}>{children}</InnerContainer>
     </AvoidingView>
   </Container>
