@@ -5,10 +5,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
-import {
-  IMAGE_QUALITY,
-  takeAndUploadPicture,
-} from "../../../../components/camera";
+import { useCamera } from "../../../../components/camera";
 import { CircleButton, CircleImage } from "../../../../components/circle-image";
 import { Icon } from "../../../../components/icon";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
@@ -26,13 +23,12 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
   const requiredImages: number = 1; // TODO: tweak this depending on the quality of Plant.id. The more images, the better.
   const [images, setImages] = useState<ImageInfo[]>([]);
 
+  const { takeModalPictureAndUpload } = useCamera();
+
   const handleTakePicture = useCallback(() => {
     runWithUIState(
       pipe(
-        takeAndUploadPicture("plant", {
-          base64: true,
-          quality: IMAGE_QUALITY.mid,
-        }),
+        takeModalPictureAndUpload("plant"),
         TE.map((image) => {
           setImages((curr) => [...curr, image]);
         }),
@@ -66,10 +62,7 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
     () =>
       runWithUIState(
         pipe(
-          takeAndUploadPicture("plant", {
-            base64: true,
-            quality: IMAGE_QUALITY.mid,
-          }),
+          takeModalPictureAndUpload("plant"),
           TE.map((image) => [image]),
           TE.chain(identify),
           TE.map((result) => {

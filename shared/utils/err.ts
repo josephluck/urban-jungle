@@ -3,4 +3,5 @@ export type IErr =
   | "NOT_FOUND"
   | "UNAUTHENTICATED"
   | "UNKNOWN"
-  | "VALIDATION";
+  | "VALIDATION"
+  | "HANDLED";

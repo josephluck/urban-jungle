@@ -1,10 +1,8 @@
+import { IErr } from "@urban-jungle/shared/utils/err";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
 import { pipe } from "fp-ts/lib/pipeable";
-
-import { IErr } from "@urban-jungle/shared/utils/err";
-
+import * as TE from "fp-ts/lib/TaskEither";
 import { env } from "../../env";
 // import { exampleIdentificationResponse } from "./state";
 import { IdentificationResult } from "./types";
@@ -14,10 +12,7 @@ export const identify = (
 ): TE.TaskEither<IErr, IdentificationResult> =>
   pipe(
     O.fromNullable(images),
-    O.filter(
-      (images) =>
-        images.length >= 3 && images.every((image) => Boolean(image.base64)),
-    ),
+    O.filter((images) => images.every((image) => Boolean(image.base64))),
     O.map((images) => images.map((image) => image.base64 || "")),
     TE.fromOption(() => "NOT_FOUND" as IErr),
     TE.map((base64Images) => ({
@@ -41,8 +36,7 @@ export const identify = (
             "https://api.plant.id/v2/identify",
             request,
           );
-          const data = await response.json();
-          return data;
+          return await response.json();
         },
         () => "BAD_REQUEST" as IErr,
       ),

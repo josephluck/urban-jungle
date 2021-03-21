@@ -102,6 +102,8 @@ export const GlobalErrorProvider = ({
 
 export const useGlobalErrorContext = () => useContext(GlobalErrorContext);
 
+const handledErrorTypes: IErr[] = ["VALIDATION", "HANDLED"];
+
 export const useRunWithUIState = () => {
   const { setError } = useGlobalErrorContext();
 
@@ -116,7 +118,7 @@ export const useRunWithUIState = () => {
       return pipe(
         pipeWithUILoading(task),
         TE.mapLeft((err) => {
-          if (handleErrors && err !== "VALIDATION") {
+          if (handleErrors && !handledErrorTypes.includes(err)) {
             setError(err);
           }
           return err;

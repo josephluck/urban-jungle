@@ -114,8 +114,7 @@ export const addEmailAndPasswordCredentials = (
           user.linkWithCredential(
             firebase.auth.EmailAuthProvider.credential(email, password),
           ),
-        (err) => {
-          console.log({ err });
+        () => {
           return "BAD_REQUEST" as IErr;
         },
       ),

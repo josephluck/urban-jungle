@@ -23,7 +23,6 @@ export const AuthenticationSubscription = () => {
             pipe(
               fetchCurrentProfileIfNotFetched(),
               TE.mapLeft((err) => {
-                console.log("Could not fetch profile", { err });
                 if (err === "UNAUTHENTICATED" || err === "NOT_FOUND") {
                   const phoneProvider = user.providerData.find(
                     (provider) => provider?.providerId === "phone",

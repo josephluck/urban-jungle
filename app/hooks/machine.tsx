@@ -35,12 +35,7 @@ export const makeMachineHooks = <
         const ctx = produce(context, producer);
         setContext(ctx);
         const result = getNextState(ctx, currentEntryId);
-        console.log({ ctx, nextEntry: result?.entry });
         if (!result) {
-          console.log(
-            "Next state in machine not found - reached the end.",
-            ctx,
-          );
           if (onFinishedRef.current) {
             onFinishedRef.current(ctx);
           }

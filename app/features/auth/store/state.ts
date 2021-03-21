@@ -83,14 +83,11 @@ export const selectManageAuthInitialContext = (): Partial<ManageAuthContext> =>
       authProviders: selectAuthProvidersForMachine(),
     }),
     O.map(
-      ({ profile, authProviders }): Partial<ManageAuthContext> => {
-        console.log({ profile, authProviders });
-        return {
-          currentEmailAddress: profile.email,
-          currentPhoneNumber: profile.phoneNumber,
-          currentAuthProviders: authProviders,
-        };
-      },
+      ({ profile, authProviders }): Partial<ManageAuthContext> => ({
+        currentEmailAddress: profile.email,
+        currentPhoneNumber: profile.phoneNumber,
+        currentAuthProviders: authProviders,
+      }),
     ),
     O.getOrElse(() => ({})),
   );

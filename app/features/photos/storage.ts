@@ -1,11 +1,10 @@
-import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
-import firebase from "firebase";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import uuid from "uuid";
-
 import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import { IErr } from "@urban-jungle/shared/utils/err";
+import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
+import firebase from "firebase";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import uuid from "uuid";
 
 // NB: see https://github.com/expo/expo/issues/2402#issuecomment-443726662
 const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>

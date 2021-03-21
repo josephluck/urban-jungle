@@ -88,7 +88,8 @@ export const NewPlantSuggestionScreen = ({
               <SuggestionImage
                 size={100}
                 uri={pipe(
-                  O.fromNullable(item.similar_images[0]),
+                  O.fromNullable(item.similar_images),
+                  O.filterMap((images) => O.fromNullable(images[0])),
                   O.map((image) => image.url),
                   O.getOrElse(() => ""),
                 )}
