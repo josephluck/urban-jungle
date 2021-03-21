@@ -4,6 +4,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import styled from "styled-components/native";
 import { savePlantImage } from "../features/plants/store/effects";
+import { useRunWithUIState } from "../store/ui";
 import { symbols } from "../theme";
 import { CameraButton } from "./camera-button";
 
@@ -14,8 +15,11 @@ export const PlantImageUploader = ({
   householdId: string;
   plantId: string;
 }) => {
+  const runWithUIState = useRunWithUIState();
   const handleSubmit = (imageInfo: ImageInfo) => {
-    pipe(savePlantImage(householdId, plantId, O.fromNullable(imageInfo)))();
+    runWithUIState(
+      pipe(savePlantImage(householdId, plantId, O.fromNullable(imageInfo))),
+    );
   };
 
   return <PlantCameraButton type="plant" onChange={handleSubmit} />;

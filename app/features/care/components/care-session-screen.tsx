@@ -1,4 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, {
@@ -11,9 +12,6 @@ import React, {
 import { Dimensions, ScrollView } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
-
-import { TodoModel } from "@urban-jungle/shared/models/todo";
-
 import { Button } from "../../../components/button";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { TodoOverview } from "../../../components/todo-overview";
@@ -132,6 +130,7 @@ export const CareSessionScreen = ({
         nestedScrollEnabled
         inactiveSlideScale={1}
         inactiveSlideOpacity={1}
+        // slideStyle={{ flex: 1 }}
         renderItem={(slide) => {
           const todoIsDone = doneTodoIds.includes(slide.item.id);
           return (
@@ -210,7 +209,7 @@ const deserializeStringArray = (monthsStr: string) => {
   }
 };
 
-const Slide = styled.View`
+const Slide = styled.SafeAreaView`
   flex: 1;
 `;
 

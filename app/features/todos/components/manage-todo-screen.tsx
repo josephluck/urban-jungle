@@ -14,6 +14,7 @@ import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
+import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertTodoForPlant } from "../store/effects";
@@ -63,6 +64,7 @@ export const ManageTodoScreen = ({
   navigation,
   route,
 }: StackScreenProps<Record<keyof ManageTodoParams, undefined>>) => {
+  const runWithUIState = useRunWithUIState();
   const { plantId, todoId, ...initialFields } = manageTodoRoute.getParams(
     route,
   );
@@ -100,14 +102,16 @@ export const ManageTodoScreen = ({
 
   const handleSubmit = useCallback(
     () =>
-      pipe(
-        TE.fromEither(submit()),
-        TE.mapLeft(() => "VALIDATION" as IErr),
-        TE.chain((todo) =>
-          upsertTodoForPlant(plantId, todoId)(selectedHouseholdId)(todo),
+      runWithUIState(
+        pipe(
+          TE.fromEither(submit()),
+          TE.mapLeft(() => "VALIDATION" as IErr),
+          TE.chain((todo) =>
+            upsertTodoForPlant(plantId, todoId)(selectedHouseholdId)(todo),
+          ),
+          TE.map(() => navigation.goBack()),
         ),
-        TE.map(() => navigation.goBack()),
-      )(),
+      ),
     [selectedHouseholdId, plantId, submit],
   );
 

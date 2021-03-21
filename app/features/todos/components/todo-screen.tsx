@@ -3,6 +3,7 @@ import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import { View } from "react-native";
@@ -14,9 +15,10 @@ import {
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
 import { ListItem } from "../../../components/list-item";
 import { TodoOverview } from "../../../components/todo-overview";
-import { SubHeading } from "../../../components/typography";
+import { Paragraph, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
+import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectCaresForTodo } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
@@ -32,6 +34,7 @@ export const TodoScreen = ({
   navigation,
   route,
 }: StackScreenProps<Record<keyof TodoParams, undefined>>) => {
+  const runWithUIState = useRunWithUIState();
   const { todoId, plantId } = todoRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
@@ -76,7 +79,12 @@ export const TodoScreen = ({
   }, [todoId, todo]);
 
   const handleDelete = useCallback(() => {
-    deleteTodo(todoId)(selectedHouseholdId)();
+    runWithUIState(
+      pipe(
+        deleteTodo(todoId)(selectedHouseholdId),
+        TE.map(() => navigation.goBack()),
+      ),
+    );
   }, [todoId, selectedHouseholdId]);
 
   const todoName = useMemo(
@@ -111,7 +119,7 @@ export const TodoScreen = ({
           () => null,
           ([plant, todo]) => (
             <ContentContainer>
-              <TodoOverview plant={plant} todo={todo} />
+              <TodoOverview plant={plant} todo={todo} includeRecurrence />
               {pipe(
                 mostLovedBy,
                 O.fold(
@@ -130,16 +138,22 @@ export const TodoScreen = ({
                 <SubHeading weight="bold">History</SubHeading>
               </SectionHeading>
               <View>
-                {cares.map((care) => (
-                  <ListItem
-                    key={care.id}
-                    image={care.profile.avatar}
-                    title={`By ${care.profile.name}`}
-                    detail={`On ${moment(care.dateCreated.toDate()).format(
-                      "Do MMM YY",
-                    )}`}
-                  />
-                ))}
+                {cares.length > 0 ? (
+                  <>
+                    {cares.map((care) => (
+                      <ListItem
+                        key={care.id}
+                        image={care.profile.avatar}
+                        title={`By ${care.profile.name}`}
+                        detail={`On ${moment(care.dateCreated.toDate()).format(
+                          "Do MMM YY",
+                        )}`}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  <Paragraph>Nothing yet, get caring!</Paragraph>
+                )}
               </View>
             </ContentContainer>
           ),

@@ -22,7 +22,7 @@ import { PlantNameAndLocation } from "../../../components/plant-name-and-locatio
 import { SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
-import { UIEffect } from "../../../store/ui";
+import { UIEffect, useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
@@ -38,6 +38,7 @@ export const PlantScreen = ({
   navigation,
   route,
 }: StackScreenProps<Record<keyof PlantRouteParams, undefined>>) => {
+  const runWithUIState = useRunWithUIState();
   const { hide: hideContextMenu } = useContextMenu();
   const { plantId } = plantRoute.getParams(route);
 
@@ -97,10 +98,16 @@ export const PlantScreen = ({
     manageTodoRoute.navigateTo(navigation, { plantId });
   }, [plantId]);
 
-  const handleDelete = useCallback(() => {
-    navigation.goBack();
-    deletePlantByHouseholdId(selectedHouseholdId)(plantId)();
-  }, [plantId, selectedHouseholdId]);
+  const handleDelete = useCallback(
+    () =>
+      runWithUIState(
+        pipe(
+          deletePlantByHouseholdId(selectedHouseholdId)(plantId),
+          TE.map(navigation.goBack),
+        ),
+      ),
+    [plantId, selectedHouseholdId],
+  );
 
   const handleTakePicture = useCallback(() => {
     hideContextMenu();
