@@ -1,12 +1,10 @@
 import { act, render, wait } from "@testing-library/react-native";
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makeTodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
 import moment from "moment";
 import React from "react";
 import { View } from "react-native";
-
-import { makeCareModel } from "@urban-jungle/shared/models/care";
-import { makeTodoModel } from "@urban-jungle/shared/models/todo";
-
 import { defaultState, store, useStore } from "../../../store/state";
 import { selectTodosSchedule, upsertTodo } from "../../todos/store/state";
 import { selectCaresByHouseholdId, upsertCare } from "../store/state";

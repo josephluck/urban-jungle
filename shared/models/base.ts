@@ -1,5 +1,5 @@
 import firebase from "firebase";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 
 export interface BaseModel {
   /**

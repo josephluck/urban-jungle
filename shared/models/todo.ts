@@ -1,3 +1,4 @@
+import firebase from "firebase";
 import { BaseModel, cleanObj, makeBaseModel } from "./base";
 
 export interface TodoModel extends BaseModel {

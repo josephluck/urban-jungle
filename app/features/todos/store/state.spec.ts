@@ -1,14 +1,12 @@
+import { makeCareModel } from "@urban-jungle/shared/models/care";
+import { makePlantModel } from "@urban-jungle/shared/models/plant";
+import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
-
-import { makeCareModel } from "@urban-jungle/shared/models/care";
-import { makePlantModel } from "@urban-jungle/shared/models/plant";
-import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
-
-import { defaultDate } from "../../../__mocks__/moment";
 import { defaultState, store } from "../../../store/state";
+import { defaultDate } from "../../../__mocks__/moment";
 import {
   selectTodosSchedule,
   sortTodosByLocationAndPlant,

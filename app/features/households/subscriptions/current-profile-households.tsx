@@ -1,11 +1,10 @@
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import React, { useEffect } from "react";
-
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useEffect } from "react";
 import { database } from "../../../database";
 import { useStore } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";

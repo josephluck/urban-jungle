@@ -1,8 +1,6 @@
+import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import firebase from "firebase";
 import { useEffect } from "react";
-
-import { PhotoModel } from "@urban-jungle/shared/models/photo";
-
 import { database } from "../../../database";
 import { removePhotos, upsertPhotos } from "../../photos/store/state";
 
@@ -38,6 +36,8 @@ const handlePlantPhotoSnapshot = (householdId: string) => async (
     .docChanges()
     .filter((change) => change.type === "removed")
     .map((change) => (change.doc.data() as unknown) as PhotoModel);
+
+  console.log(addedOrModified[0].uri);
 
   upsertPhotos(householdId, addedOrModified);
   removePhotos(householdId, removed);

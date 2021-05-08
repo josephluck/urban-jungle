@@ -1,3 +1,4 @@
+import firebase from "firebase";
 import { HouseholdId } from "../models/ids";
 
 export const database = (firestore: firebase.firestore.Firestore) => {

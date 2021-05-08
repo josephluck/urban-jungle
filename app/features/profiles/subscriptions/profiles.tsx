@@ -1,9 +1,8 @@
+import { ProfileModel } from "@urban-jungle/shared/models/profile";
+import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useEffect } from "react";
-
-import { ProfileModel } from "@urban-jungle/shared/models/profile";
-
 import { database } from "../../../database";
 import { useStore } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";

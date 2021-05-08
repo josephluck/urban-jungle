@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-
 import { TodoModel } from "@urban-jungle/shared/models/todo";
-
+import firebase from "firebase";
+import { useEffect } from "react";
 import { database } from "../../../database";
 import { removeTodos, upsertTodos } from "../store/state";
 

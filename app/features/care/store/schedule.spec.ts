@@ -1,9 +1,7 @@
-import firebase from "firebase";
-import moment from "moment";
-
 import { makeCareModel } from "@urban-jungle/shared/models/care";
 import { makeTodoModel } from "@urban-jungle/shared/models/todo";
-
+import firebase from "firebase";
+import moment from "moment";
 import { defaultState, store } from "../../../store/state";
 import { selectSchedule } from "./schedule";
 

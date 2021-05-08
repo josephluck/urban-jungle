@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-
 import { PlantModel } from "@urban-jungle/shared/models/plant";
-
+import firebase from "firebase";
+import { useEffect } from "react";
 import { database } from "../../../database";
 import { removePlants, upsertPlants } from "../store/state";
 

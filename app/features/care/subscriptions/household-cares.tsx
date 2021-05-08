@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-
 import { CareModel } from "@urban-jungle/shared/models/care";
-
+import firebase from "firebase";
+import { useEffect } from "react";
 import { database } from "../../../database";
 import { removeCares, upsertCares } from "../store/state";
 

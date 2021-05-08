@@ -1,3 +1,4 @@
+import firebase from "firebase";
 import { database as makeDatabase } from "@urban-jungle/shared/database/database";
 import { sequenceSTE, traverseTE } from "@urban-jungle/shared/fp/task-either";
 import { CareModel } from "@urban-jungle/shared/models/care";

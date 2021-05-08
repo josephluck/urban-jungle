@@ -4,7 +4,7 @@ import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import uuid from "uuid";
+import { v4 as uuid } from "uuid";
 
 // NB: see https://github.com/expo/expo/issues/2402#issuecomment-443726662
 const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>

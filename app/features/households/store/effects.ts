@@ -1,12 +1,10 @@
-import firebase from "firebase";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-import { AsyncStorage, Share } from "react-native";
-import uuid from "uuid";
-
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import firebase from "firebase";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import { AsyncStorage, Share } from "react-native";
+import { v4 as uuid } from "uuid";
 import { database } from "../../../database";
 import { makeHouseholdInvitationDeepLink } from "../../../linking/household-invitation";
 import { selectCurrentUserId } from "../../auth/store/state";
