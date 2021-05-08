@@ -5,7 +5,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
-import { useCamera } from "../../../../components/camera";
+import { trimBase64FromImage, useCamera } from "../../../../components/camera";
 import { CircleButton, CircleImage } from "../../../../components/circle-image";
 import { Icon } from "../../../../components/icon";
 import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
@@ -16,7 +16,7 @@ import { symbols } from "../../../../theme";
 import { identify } from "../../../identify/effects";
 import { newPlantNicknameRoute } from "./new-plant-nickname-screen";
 import { newPlantSuggestionRoute } from "./new-plant-suggestion-screen";
-import { setIdentificationResult } from "./state";
+import { setIdentificationResult, setPlantFields } from "./state";
 
 export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
   const runWithUIState = useRunWithUIState();
@@ -45,6 +45,10 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
       runWithUIState(
         pipe(
           TE.right(images),
+          TE.map((images) => {
+            setPlantFields({ avatar: trimBase64FromImage(images[0]) });
+            return images;
+          }),
           TE.chain(identify),
           TE.map((result) => {
             setIdentificationResult(result);
@@ -64,6 +68,10 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
         pipe(
           takeModalPictureAndUpload("plant"),
           TE.map((image) => [image]),
+          TE.map((images) => {
+            setPlantFields({ avatar: trimBase64FromImage(images[0]) });
+            return images;
+          }),
           TE.chain(identify),
           TE.map((result) => {
             setIdentificationResult(result);

@@ -64,6 +64,8 @@ const errToStatus: Record<IErr, number> = {
   NOT_FOUND: 404,
   UNAUTHENTICATED: 403,
   UNKNOWN: 500,
+  VALIDATION: 400,
+  HANDLED: 200,
 };
 
 export const callWithLogging = (fn: TE.TaskEither<IErr, any>) =>

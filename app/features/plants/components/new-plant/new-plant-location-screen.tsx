@@ -70,7 +70,7 @@ export const NewPlantLocationScreen = ({
           TE.chain((plant) =>
             upsertPlantForHousehold(plant)(selectedHouseholdId),
           ),
-          TE.map(() => navigation.goBack()),
+          TE.map(navigation.popToTop),
         ),
       ),
     [selectedHouseholdId, submit, plantFields],

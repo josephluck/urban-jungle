@@ -1,14 +1,13 @@
-import firebase from "firebase";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-
 import { BaseModel } from "@urban-jungle/shared/models/base";
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import { makePhotoModel, PhotoModel } from "@urban-jungle/shared/models/photo";
 import { makePlantModel, PlantModel } from "@urban-jungle/shared/models/plant";
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import firebase from "firebase";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import { trimBase64FromImage } from "../../../components/camera";
 import { database } from "../../../database";
 import { selectHouseholdById } from "../../households/store/state";
 import { selectMostRecentPlantPhoto } from "../../photos/store/state";
@@ -112,11 +111,6 @@ export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
       ),
     ),
   );
-
-const trimBase64FromImage = <V extends { base64?: string }>({
-  base64,
-  ...value
-}: V): Omit<V, "base64"> => value;
 
 /**
  * Deletes a plant's image from the database.

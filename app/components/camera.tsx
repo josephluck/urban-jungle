@@ -189,3 +189,8 @@ const obtainCameraPermissions = TE.tryCatch(
   },
   () => "BAD_REQUEST" as IErr,
 );
+
+export const trimBase64FromImage = <V extends { base64?: string }>({
+  base64,
+  ...value
+}: V): Omit<V, "base64"> => value;
