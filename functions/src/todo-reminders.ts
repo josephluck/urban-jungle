@@ -109,7 +109,9 @@ const buildExpoPushMessage = (
 };
 
 const getNotificationMessage = (plants: PlantModel[]): string => {
-  const plantNames = [...new Set(plants.map((plant) => plant.name))];
+  const plantNames = [
+    ...new Set(plants.map((plant) => plant.nickname || plant.name)),
+  ];
   const length = plantNames.length;
 
   if (length > 4) {

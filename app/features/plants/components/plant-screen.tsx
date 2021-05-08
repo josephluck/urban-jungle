@@ -161,7 +161,7 @@ export const PlantScreen = ({
             <>
               <SectionContent>
                 <PlantNameAndLocation
-                  name={plant.name}
+                  name={getPlantName(plant)}
                   location={plant.location}
                 />
               </SectionContent>
