@@ -4,6 +4,7 @@ import styled from "styled-components/native";
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
 import { Label } from "./label";
+import { TouchableOpacity } from "./touchable-opacity";
 
 export type PickerValue = string | number | undefined;
 
@@ -118,7 +119,7 @@ const OptionsContainer = styled.View<{ centered?: boolean }>`
   justify-content: ${(props) => (props.centered ? "center" : "flex-start")};
 `;
 
-const Option = styled.TouchableOpacity`
+const Option = styled(TouchableOpacity)`
   margin-bottom: ${symbols.spacing._4};
   margin-right: ${symbols.spacing._4};
 `;

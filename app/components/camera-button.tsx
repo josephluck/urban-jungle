@@ -11,6 +11,7 @@ import { useCamera } from "./camera";
 import { FormField } from "./form-field";
 import { Icon } from "./icon";
 import { ImagePreview } from "./image-preview";
+import { TouchableOpacity } from "./touchable-opacity";
 
 export type CameraButtonProps = {
   value?: ImageModel;
@@ -78,7 +79,7 @@ export const CameraButton = ({
   );
 };
 
-const ContainerButton = styled.TouchableOpacity`
+const ContainerButton = styled(TouchableOpacity)`
   align-items: center;
   justify-content: center;
   background-color: ${(props) => props.theme.fieldBackground};

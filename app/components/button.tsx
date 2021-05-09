@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
+import { TouchableOpacity } from "./touchable-opacity";
 import { BodyText } from "./typography";
 
 type ButtonType = "plain" | "primary";
@@ -37,7 +37,7 @@ export const Button = ({
   );
 };
 
-const PlainButtonContainer = styled.TouchableOpacity<{
+const PlainButtonContainer = styled(TouchableOpacity)<{
   large: boolean;
   disabled: boolean;
 }>`

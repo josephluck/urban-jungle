@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
+import { TouchableOpacity } from "./touchable-opacity";
 import { BodyText } from "./typography";
 
 export const CalendarDay = React.memo(
@@ -34,7 +34,7 @@ export const CalendarDay = React.memo(
 
 export const daySize = 50;
 
-const Day = styled.TouchableOpacity<{ isToday: boolean }>`
+const Day = styled(TouchableOpacity)<{ isToday: boolean }>`
   width: ${daySize}px;
   height: ${daySize}px;
   background-color: ${(props) =>

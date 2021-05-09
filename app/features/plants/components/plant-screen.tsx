@@ -6,7 +6,6 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import moment from "moment";
 import React, { useCallback, useMemo } from "react";
-import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { launchCameraAndTakePicture } from "../../../components/camera";
@@ -19,6 +18,7 @@ import { BackableScreenLayout } from "../../../components/layouts/backable-scree
 import { ListItem } from "../../../components/list-item";
 import { PlantImageCarousel } from "../../../components/plant-image-carousel";
 import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
+import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";

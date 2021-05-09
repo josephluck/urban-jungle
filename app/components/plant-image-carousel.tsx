@@ -10,6 +10,7 @@ import { useRunWithUIState } from "../store/ui";
 import { symbols } from "../theme";
 import { PlantImage } from "./plant-image";
 import { PlantImageUploader } from "./plant-image-uploader";
+import { TouchableOpacity } from "./touchable-opacity";
 
 const horizontalMargin = symbols.spacing._4;
 const sliderWidth = Dimensions.get("window").width;
@@ -93,6 +94,6 @@ const Slide = styled.View`
   padding-horizontal: ${symbols.spacing._4}px;
 `;
 
-const PlantImageButton = styled.TouchableOpacity`
+const PlantImageButton = styled(TouchableOpacity)`
   width: ${slideWidth}px;
 `;

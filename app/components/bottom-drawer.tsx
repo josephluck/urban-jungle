@@ -5,22 +5,16 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import {
-  Animated,
-  BackHandler,
-  Dimensions,
-  TouchableOpacity,
-  Easing,
-} from "react-native";
+import { Animated, BackHandler, Dimensions, Easing } from "react-native";
 import Reanimated from "react-native-reanimated";
 import {
   default as BottomSheet,
   default as BottomSheetBehavior,
 } from "reanimated-bottom-sheet";
 import styled, { ThemeProvider } from "styled-components/native";
-
 import { lightTheme, symbols } from "../theme";
 import { ContextMenuContext } from "./context-menu";
+import { TouchableOpacity } from "./touchable-opacity";
 import { BodyText, Heading, SubHeading } from "./typography";
 
 export const BottomDrawer = ({

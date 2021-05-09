@@ -8,27 +8,15 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import {
-  Keyboard,
-  Platform,
-  StyleProp,
-  TouchableOpacity as IosTouchableOpacity,
-  View,
-  ViewProps,
-} from "react-native";
-import { TouchableOpacity as AndroidTouchableOpacity } from "react-native-gesture-handler";
+import { Keyboard, StyleProp, View, ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import { navigationDidNavigateBeacon } from "../navigation/beacon";
 import { symbols } from "../theme";
 import { BottomDrawer } from "./bottom-drawer";
 import { TouchableIcon } from "./touchable-icon";
+import { TouchableOpacity } from "./touchable-opacity";
 import { SubHeading } from "./typography";
-
-const TouchableOpacity = Platform.select({
-  ios: IosTouchableOpacity,
-  android: AndroidTouchableOpacity,
-});
 
 export const contextMenuGatewayId = "GATEWAY_CONTEXT_MENU";
 
@@ -81,7 +69,7 @@ const ICON_SIZE = 28;
 const BUTTON_MARGIN = symbols.spacing._16;
 const BUTTON_HEIGHT = ICON_SIZE + BUTTON_MARGIN * 2;
 
-const ContextMenuButtonItem = styled(TouchableOpacity as any)`
+const ContextMenuButtonItem = styled(TouchableOpacity)`
   flex-direction: row;
   align-items: center;
   height: ${BUTTON_HEIGHT}px;

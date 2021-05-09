@@ -8,13 +8,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Dimensions, ScrollView, TouchableOpacity } from "react-native";
+import { Dimensions, ScrollView } from "react-native";
 import Carousel, { CarouselStatic } from "react-native-snap-carousel";
 import styled from "styled-components/native";
-
 import { CalendarDay, daySize } from "../../../components/calendar-day";
 import { CareListItem } from "../../../components/care-list-item";
 import { TodoListItem } from "../../../components/todo-list-item";
+import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { BodyText } from "../../../components/typography";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";

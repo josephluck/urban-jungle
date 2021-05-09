@@ -16,6 +16,7 @@ import { Insets } from "react-native";
 import Animated, { Easing } from "react-native-reanimated";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { withTheme } from "styled-components/native";
+import { TouchableOpacity } from "../components/touchable-opacity";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
 import { signUpNameRoute } from "../features/auth/components/sign-up-name";
 import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
@@ -150,15 +151,17 @@ const TabBar = withSafeAreaInsets(withTheme(TabBarComponent));
 
 const TabBarContainer = styled.View`
   flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-around;
+  width: 100%;
+  flex: 1;
 `;
 
-const TabIcon = styled.TouchableOpacity`
+const TabIcon = styled(TouchableOpacity)`
   flex: 1;
   align-items: center;
   justify-content: space-evenly;
   height: ${symbols.spacing.tabBarHeight};
+  width: 80;
 `;
 
 const PlantStack = () => (

@@ -1,9 +1,10 @@
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import React from "react";
-import { Image, StyleProp, TouchableOpacity, ViewStyle } from "react-native";
+import { Image, StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
 import { Icon } from "./icon";
+import { TouchableOpacity } from "./touchable-opacity";
 
 export const CircleImage = ({
   style,

@@ -1,11 +1,10 @@
+import { StackScreenProps } from "@react-navigation/stack";
+import { ThemeSetting } from "@urban-jungle/shared/models/profile";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
-import { FlatList, TouchableOpacity, View } from "react-native";
+import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
-
-import { ThemeSetting } from "@urban-jungle/shared/models/profile";
-
 import { Button } from "../../../components/button";
 import {
   ContextMenuIconButton,
@@ -15,11 +14,18 @@ import {
 import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
+import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { signOut } from "../../auth/store/effects";
+import {
+  selectAuthProviderEmail,
+  selectAuthProviderPhone,
+  selectCurrentUserId,
+  selectManageAuthInitialContext,
+} from "../../auth/store/state";
 import { shareHouseholdInvitation } from "../../households/store/effects";
 import {
   selectedSelectedOrMostRecentHouseholdId,
@@ -35,17 +41,10 @@ import {
   selectCurrentProfileThemeSetting,
   selectPushNotificationsEnabled,
 } from "../../profiles/store/state";
-import { manageProfileRoute } from "./manage-profile";
-import {
-  selectCurrentUserId,
-  selectAuthProviderPhone,
-  selectAuthProviderEmail,
-  selectManageAuthInitialContext,
-} from "../../auth/store/state";
-import { StackScreenProps } from "@react-navigation/stack";
 import { useManageAuthMachine } from "../machine/machine";
 import { ManageAuthFlow } from "../machine/types";
 import { routeNames } from "../route-names";
+import { manageProfileRoute } from "./manage-profile";
 
 /**
  * NB: if this errors, it's likely because you haven't run a release yet.

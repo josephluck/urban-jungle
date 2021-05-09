@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled, { useTheme } from "styled-components/native";
-
 import { symbols } from "../theme";
 import { Icon } from "./icon";
+import { TouchableOpacity } from "./touchable-opacity";
 
 export const TouchableIcon = ({
   icon,
@@ -32,7 +32,7 @@ export const TouchableIcon = ({
   );
 };
 
-const IconButtonContainer = styled.TouchableOpacity`
+const IconButtonContainer = styled(TouchableOpacity)`
   min-width: ${symbols.size.minimumTouchableSize}px;
   min-height: ${symbols.size.minimumTouchableSize}px;
   align-items: center;

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { symbols } from "../theme";
 import { Icon } from "./icon";
+import { TouchableOpacity } from "./touchable-opacity";
 
 export const ImagePreview = ({
   uri,
@@ -26,7 +27,7 @@ const TakenPicture = styled.Image`
   width: 100%;
 `;
 
-const RetryButton = styled.TouchableOpacity`
+const RetryButton = styled(TouchableOpacity)`
   position: absolute;
   top: ${symbols.spacing._6}px;
   right: ${symbols.spacing._6}px;
