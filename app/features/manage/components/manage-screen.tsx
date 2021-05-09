@@ -137,6 +137,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
                 <ContextMenuIconButton
                   icon={themeSetting === setting ? "check" : undefined}
                   onPress={saveThemeSettingForProfile(setting)}
+                  key={label}
                 >
                   {label}
                 </ContextMenuIconButton>
@@ -153,12 +154,14 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
                 <ContextMenuIconButton
                   icon={pushNotificationsEnabled ? "check" : undefined}
                   onPress={handleTogglePushNotifications}
+                  key="enabled"
                 >
                   Enabled
                 </ContextMenuIconButton>,
                 <ContextMenuIconButton
                   icon={!pushNotificationsEnabled ? "check" : undefined}
                   onPress={handleTogglePushNotifications}
+                  key="disabled"
                 >
                   Disabled
                 </ContextMenuIconButton>,
@@ -237,10 +240,14 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
             <ContextMenuTouchable
               menuId="sign-out"
               buttons={[
-                <ContextMenuIconButton icon="log-out" onPress={handleSignOut}>
+                <ContextMenuIconButton
+                  icon="log-out"
+                  onPress={handleSignOut}
+                  key="sign-out"
+                >
                   Sign out
                 </ContextMenuIconButton>,
-                <ContextMenuIconButton onPress={hideContextMenu}>
+                <ContextMenuIconButton onPress={hideContextMenu} key="cancel">
                   Cancel
                 </ContextMenuIconButton>,
               ]}

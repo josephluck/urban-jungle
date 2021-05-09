@@ -88,6 +88,21 @@ type ContextMenuButtonType = {
   onPress: () => void;
 };
 
+export const ContextMenuIconButton = ({
+  onPress,
+  icon,
+  children,
+}: ContextMenuButtonType) => (
+  <ContextMenuButtonItem onPress={onPress}>
+    {icon ? (
+      <ContextMenuButtonIcon name={icon} size={ICON_SIZE} />
+    ) : (
+      <View style={{ width: ICON_SIZE, height: ICON_SIZE }} />
+    )}
+    <ContextMenuSubHeading>{children}</ContextMenuSubHeading>
+  </ContextMenuButtonItem>
+);
+
 export const ContextMenuDotsButton = ({
   style,
   children,
@@ -114,36 +129,23 @@ export const ContextMenuDotsButton = ({
 
   const isFocused = useIsFocused();
 
+  console.log("Dots button: ", { menuId, visibleMenuId, isFocused });
+
+  const visible = visibleMenuId === menuId && isFocused;
+
   return (
     <>
       <ContextButton style={style} onPress={handleShow} icon="more-vertical" />
       <Gateway into={contextMenuGatewayId}>
-        <BottomDrawer
-          height={height}
-          onClose={hide}
-          visible={visibleMenuId === menuId && isFocused}
-        >
-          {children}
-        </BottomDrawer>
+        {visible ? (
+          <BottomDrawer height={height} onClose={hide} visible={visible}>
+            {children}
+          </BottomDrawer>
+        ) : null}
       </Gateway>
     </>
   );
 };
-
-export const ContextMenuIconButton = ({
-  onPress,
-  icon,
-  children,
-}: ContextMenuButtonType) => (
-  <ContextMenuButtonItem onPress={onPress}>
-    {icon ? (
-      <ContextMenuButtonIcon name={icon} size={ICON_SIZE} />
-    ) : (
-      <View style={{ width: ICON_SIZE, height: ICON_SIZE }} />
-    )}
-    <ContextMenuSubHeading>{children}</ContextMenuSubHeading>
-  </ContextMenuButtonItem>
-);
 
 export const ContextMenuTouchable = ({
   children,
@@ -168,17 +170,19 @@ export const ContextMenuTouchable = ({
     show(menuId);
   }, [show, menuId]);
 
+  console.log("Touchable: ", { menuId, visibleMenuId, isFocused });
+
+  const visible = visibleMenuId === menuId && isFocused;
+
   return (
     <>
       <TouchableOpacity onPress={handleShow}>{children}</TouchableOpacity>
       <Gateway into={contextMenuGatewayId}>
-        <BottomDrawer
-          height={height}
-          onClose={hide}
-          visible={visibleMenuId === menuId && isFocused}
-        >
-          {buttons}
-        </BottomDrawer>
+        {visible ? (
+          <BottomDrawer height={height} onClose={hide} visible={visible}>
+            {buttons}
+          </BottomDrawer>
+        ) : null}
       </Gateway>
     </>
   );
