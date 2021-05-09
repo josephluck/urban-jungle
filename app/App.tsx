@@ -3,6 +3,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import { LogBox, StatusBar } from "react-native";
+import "react-native-get-random-values";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components/native";
 import { BottomSheetGatewayContainer } from "./components/bottom-drawer";

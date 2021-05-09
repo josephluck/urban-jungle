@@ -1,7 +1,6 @@
 import { decode, encode } from "base-64";
 import firebase from "firebase";
 import "firebase/firestore";
-
 import { env } from "./env";
 
 // @ts-ignore
