@@ -27,19 +27,18 @@ const getFileFromUri = (uri: string): TE.TaskEither<IErr, any> =>
   );
 
 /**
- * Resizes an image to a sensible size (max 800px by 800px) as well as applying
- * light compression
+ * Resizes an image to a sensible size as well as applying light compression
  */
 export const resizePhoto = (image: ImageInfo): TE.TaskEither<IErr, ImageInfo> =>
   TE.tryCatch(
     () =>
       ImageManipulator.manipulateAsync(
         image.uri,
-        [{ resize: { width: 800 } }],
+        [{ resize: { width: 600 } }],
         {
-          compress: 0.6,
+          compress: 0.9,
           base64: true,
-          format: ImageManipulator.SaveFormat.PNG,
+          format: ImageManipulator.SaveFormat.JPEG,
         },
       ),
     () => "UNKNOWN" as IErr,

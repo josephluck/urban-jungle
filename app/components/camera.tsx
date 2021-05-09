@@ -15,7 +15,6 @@ import { resizePhoto, uploadPhoto } from "../features/photos/storage";
 export const launchCameraAndTakePicture = (
   options: ImagePickerOptions = {
     base64: true,
-    quality: 0.5,
   },
 ): TE.TaskEither<IErr, ImageInfo> =>
   TE.tryCatch(
