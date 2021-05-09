@@ -11,12 +11,14 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useContext, useRef, useState } from "react";
-import { uploadPhoto } from "../features/photos/storage";
+import { resizePhoto, uploadPhoto } from "../features/photos/storage";
 
 // TODO: move these options out to "presets" as it's very specific to plant images right now
 // TODO: compression
 export const launchCameraAndTakePicture = (
   options: ImagePickerOptions = {
+    base64: true,
+    quality: 0.5,
     allowsEditing: true,
     aspect: [16, 9],
   },
@@ -31,13 +33,6 @@ export const launchCameraAndTakePicture = (
     },
     () => "BAD_REQUEST",
   );
-
-export const IMAGE_QUALITY = {
-  low: 0.3,
-  mid: 0.6,
-  high: 0.8,
-  max: 1,
-};
 
 type CameraContextType = {
   direction: typeof Camera.Constants.Type;
@@ -126,7 +121,28 @@ export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
         setSaving(true);
         return image;
       }),
+      TE.map((result) => {
+        console.log("Beginning upload", result.uri);
+        return result;
+      }),
+      TE.chain(resizePhoto),
+      TE.mapLeft((err) => {
+        console.log("Error with resizePhoto", err);
+        return err;
+      }),
+      TE.map((result) => {
+        console.log("Resized", result.uri, result.height, result.width);
+        return result;
+      }),
       TE.chain(uploadPhoto(type)),
+      TE.mapLeft((err) => {
+        console.log("Error with uploadPhoto", err);
+        return err;
+      }),
+      TE.map((result) => {
+        console.log("Finished upload");
+        return result;
+      }),
       TE.map((image) => {
         setSaving(false);
         return image;
@@ -140,7 +156,18 @@ export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
   const takeModalPictureAndUpload = (type: StorageEntityType) =>
     pipe(
       askForPermissions(),
-      TE.chain(() => launchCameraAndTakePicture({ base64: true })),
+      TE.map(() => {
+        console.log("Opening camera");
+      }),
+      TE.chain(() => launchCameraAndTakePicture()),
+      TE.mapLeft((err) => {
+        console.log("Error with launchCameraAndTakePicture", err);
+        return err;
+      }),
+      TE.map((result) => {
+        console.log("Finished taking picture");
+        return result;
+      }),
       TE.chain(uploadTakenPhoto(type)),
     );
 
@@ -154,6 +181,14 @@ export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
           () => "BAD_REQUEST" as IErr,
         ),
       ),
+      TE.mapLeft((err) => {
+        console.log("Error with camera.takePictureAsync", err);
+        return err;
+      }),
+      TE.map((result) => {
+        console.log("Finished taking inline picture");
+        return result;
+      }),
       TE.chain(uploadTakenPhoto(type)),
     );
 
