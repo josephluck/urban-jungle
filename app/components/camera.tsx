@@ -116,28 +116,8 @@ export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
         setSaving(true);
         return image;
       }),
-      TE.map((result) => {
-        console.log("Beginning upload", result.uri);
-        return result;
-      }),
       TE.chain(resizePhoto),
-      TE.mapLeft((err) => {
-        console.log("Error with resizePhoto", err);
-        return err;
-      }),
-      TE.map((result) => {
-        console.log("Resized", result.uri, result.height, result.width);
-        return result;
-      }),
       TE.chain(uploadPhoto(type)),
-      TE.mapLeft((err) => {
-        console.log("Error with uploadPhoto", err);
-        return err;
-      }),
-      TE.map((result) => {
-        console.log("Finished upload");
-        return result;
-      }),
       TE.map((image) => {
         setSaving(false);
         return image;
@@ -151,18 +131,7 @@ export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
   const takeModalPictureAndUpload = (type: StorageEntityType) =>
     pipe(
       askForPermissions(),
-      TE.map(() => {
-        console.log("Opening camera");
-      }),
       TE.chain(() => launchCameraAndTakePicture()),
-      TE.mapLeft((err) => {
-        console.log("Error with launchCameraAndTakePicture", err);
-        return err;
-      }),
-      TE.map((result) => {
-        console.log("Finished taking picture");
-        return result;
-      }),
       TE.chain(uploadTakenPhoto(type)),
     );
 
@@ -176,14 +145,6 @@ export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
           () => "BAD_REQUEST" as IErr,
         ),
       ),
-      TE.mapLeft((err) => {
-        console.log("Error with camera.takePictureAsync", err);
-        return err;
-      }),
-      TE.map((result) => {
-        console.log("Finished taking inline picture");
-        return result;
-      }),
       TE.chain(uploadTakenPhoto(type)),
     );
 

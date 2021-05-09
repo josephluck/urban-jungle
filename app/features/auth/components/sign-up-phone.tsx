@@ -44,7 +44,6 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
                   ? fields.phone
                   : `+44${fields.phone.slice(1)}`;
                 const phoneProvider = new firebase.auth.PhoneAuthProvider();
-                console.log(recaptchaVerifier, { phoneNumber });
                 const verificationId = await phoneProvider.verifyPhoneNumber(
                   phoneNumber,
                   recaptchaVerifier.current!,

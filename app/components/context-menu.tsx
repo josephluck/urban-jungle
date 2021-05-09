@@ -128,9 +128,6 @@ export const ContextMenuDotsButton = ({
   );
 
   const isFocused = useIsFocused();
-
-  console.log("Dots button: ", { menuId, visibleMenuId, isFocused });
-
   const visible = visibleMenuId === menuId && isFocused;
 
   return (
@@ -169,8 +166,6 @@ export const ContextMenuTouchable = ({
   const handleShow = useCallback(() => {
     show(menuId);
   }, [show, menuId]);
-
-  console.log("Touchable: ", { menuId, visibleMenuId, isFocused });
 
   const visible = visibleMenuId === menuId && isFocused;
 
