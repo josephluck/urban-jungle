@@ -1,7 +1,7 @@
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { savePlantImage } from "../features/plants/store/effects";
 import { useRunWithUIState } from "../store/ui";
@@ -16,11 +16,11 @@ export const PlantImageUploader = ({
   plantId: string;
 }) => {
   const runWithUIState = useRunWithUIState();
-  const handleSubmit = (imageInfo: ImageInfo) => {
+  const handleSubmit = useCallback((imageInfo: ImageInfo) => {
     runWithUIState(
       pipe(savePlantImage(householdId, plantId, O.fromNullable(imageInfo))),
     );
-  };
+  }, []);
 
   return <PlantCameraButton type="plant" onChange={handleSubmit} />;
 };

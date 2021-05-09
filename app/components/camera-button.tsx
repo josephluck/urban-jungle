@@ -49,7 +49,7 @@ export const CameraButton = ({
     if (onTouched) {
       onTouched();
     }
-    pipe(takeModalPictureAndUpload(type), TE.map(onChange));
+    pipe(takeModalPictureAndUpload(type), TE.map(onChange))();
   }, [type, onTouched]);
 
   const hasValue = pipe(

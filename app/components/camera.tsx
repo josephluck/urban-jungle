@@ -6,21 +6,16 @@ import {
   ImageInfo,
   ImagePickerOptions,
 } from "expo-image-picker/build/ImagePicker.types";
-import * as Permissions from "expo-permissions";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useContext, useRef, useState } from "react";
 import { resizePhoto, uploadPhoto } from "../features/photos/storage";
 
-// TODO: move these options out to "presets" as it's very specific to plant images right now
-// TODO: compression
 export const launchCameraAndTakePicture = (
   options: ImagePickerOptions = {
     base64: true,
     quality: 0.5,
-    allowsEditing: true,
-    aspect: [16, 9],
   },
 ): TE.TaskEither<IErr, ImageInfo> =>
   TE.tryCatch(
@@ -72,7 +67,7 @@ export const useCamera = () => useContext(CameraContext);
 
 export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [hasPermissions, setHasPermissions] = useState(false);
 
   const [availableAspectRatios, setAvailableAspectRatios] = useState<string[]>(
@@ -215,8 +210,8 @@ export const CameraProvider = ({ children }: { children: React.ReactNode }) => {
 
 const obtainCameraPermissions = TE.tryCatch(
   async () => {
-    const camera = await Permissions.askAsync(Permissions.CAMERA);
-    const roll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const camera = await ImagePicker.requestCameraPermissionsAsync();
+    const roll = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (camera.status !== "granted" || roll.status !== "granted") {
       throw new Error();
     }

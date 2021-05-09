@@ -35,9 +35,9 @@ export const resizePhoto = (image: ImageInfo): TE.TaskEither<IErr, ImageInfo> =>
     () =>
       ImageManipulator.manipulateAsync(
         image.uri,
-        [{ resize: { width: 800, height: 800 } }],
+        [{ resize: { width: 800 } }],
         {
-          compress: 0.8,
+          compress: 0.6,
           base64: true,
           format: ImageManipulator.SaveFormat.PNG,
         },
