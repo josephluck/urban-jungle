@@ -80,3 +80,20 @@ export const updateTodoLastDone = (
         } as Partial<TodoModel>),
     () => "BAD_REQUEST" as IErr,
   );
+
+export const updateTodosLastDone = (householdId: string) => (
+  profileId: string,
+) => (cares: CareModel[]) =>
+  TE.tryCatch(
+    async () => {
+      const batch = firebase.firestore().batch();
+      cares.forEach(({ todoId, dateCreated }) =>
+        batch.update(database.todos.database(householdId).doc(todoId), {
+          lastDoneBy: profileId,
+          dateLastDone: dateCreated,
+        } as Partial<TodoModel>),
+      );
+      await batch.commit();
+    },
+    () => "BAD_REQUEST" as IErr,
+  );
