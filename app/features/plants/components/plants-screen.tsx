@@ -6,14 +6,14 @@ import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
-import { ListItem } from "../../../components/list-item";
+import { PlantListItem } from "../../../components/plant-list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { getPlantName, selectPlantsByHouseholdId } from "../store/state";
+import { selectPlantsByHouseholdId } from "../store/state";
 import { newPlantPictureRoute } from "./new-plant/new-plant-picture-screen";
 import { plantRoute } from "./plant-screen";
 
@@ -56,14 +56,7 @@ export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
                   plantRoute.navigateTo(navigation, { plantId: plant.id })
                 }
               >
-                <ListItem
-                  title={getPlantName(plant)}
-                  image={pipe(
-                    O.fromNullable(plant.avatar),
-                    O.map((avatar) => avatar.uri),
-                    O.getOrElse(() => ""),
-                  )}
-                />
+                <PlantListItem plant={plant} />
               </TouchableOpacity>
             ))}
           </PlantsList>
