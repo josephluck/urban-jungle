@@ -186,7 +186,6 @@ const WelcomeMessage = styled(Heading)`
 const ContentContainer = styled.View`
   flex: 1;
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-bottom: ${symbols.spacing.appHorizontal}px;
 `;
 
 const Footer = styled.View`
