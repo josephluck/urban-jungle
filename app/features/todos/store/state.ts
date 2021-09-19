@@ -176,3 +176,11 @@ export const selectMostLovedByForTodo = (householdId: string) => (
     })),
   );
 };
+
+export const selectUniqueTodoTitles = (householdId: string): string[] => [
+  ...new Set(
+    selectTodosByHouseholdId(householdId)
+      .map((todo) => todo.title)
+      .filter(Boolean) as string[],
+  ),
+];

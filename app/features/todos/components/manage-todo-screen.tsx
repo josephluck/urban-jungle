@@ -4,7 +4,7 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { DualNumberPickerField } from "../../../components/dual-number-picker-field";
@@ -18,6 +18,7 @@ import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { upsertTodoForPlant } from "../store/effects";
+import { selectUniqueTodoTitles } from "../store/state";
 
 const monthOptions = [
   "January",
@@ -74,6 +75,7 @@ export const ManageTodoScreen = ({
     registerTextInput,
     registerMultiPickerInput,
     registerDualNumberPickerField,
+    registerSinglePickerInput,
   } = useForm<Fields>(
     {
       title: initialFields.title || "",
@@ -100,6 +102,12 @@ export const ManageTodoScreen = ({
     O.getOrElse(() => ""),
   );
 
+  const todoTypes = pipe(
+    selectedHouseholdId_,
+    O.map(selectUniqueTodoTitles),
+    O.getOrElse(() => [] as string[]),
+  );
+
   const handleSubmit = useCallback(
     () =>
       runWithUIState(
@@ -115,6 +123,12 @@ export const ManageTodoScreen = ({
     [selectedHouseholdId, plantId, submit],
   );
 
+  const [newTypeFieldVisible, setNewTypeFieldVisible] = useState(false);
+
+  const handleShowNewTypeField = useCallback(() => {
+    setNewTypeFieldVisible(true);
+  }, []);
+
   return (
     <BackableScreenLayout
       onBack={navigation.goBack}
@@ -127,7 +141,21 @@ export const ManageTodoScreen = ({
       }
     >
       <ContentContainer>
-        <TextField label="Title" {...registerTextInput("title")} />
+        {newTypeFieldVisible ? (
+          <TextField label="Type" {...registerTextInput("title")} />
+        ) : (
+          <PickerField
+            label="Type"
+            multiValue={false}
+            options={todoTypes.map((todoType) => ({
+              value: todoType,
+              label: todoType,
+            }))}
+            newValueLabel="Something else"
+            onNewValuePress={handleShowNewTypeField}
+            {...registerSinglePickerInput("title")}
+          />
+        )}
         <TextField label="Detail" multiline {...registerTextInput("detail")} />
         <DualNumberPickerField
           label="Repeats every"
