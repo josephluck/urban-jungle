@@ -4,7 +4,6 @@ import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
-import { SectionListData } from "react-native";
 import { normalizedStateFactory } from "../../../store/factory";
 import {
   selectCaresForTodo,
@@ -108,8 +107,8 @@ export const selectTodosAndPlantsByIds = (householdId: string) => (
     .filter((todo) => O.isSome(todo.plant));
 
 export const sortTodosByLocationAndPlant = (
-  { title: titleA, plant: plantA }: TodoWithPlantModel,
-  { title: titleB, plant: plantB }: TodoWithPlantModel,
+  { plant: plantA }: TodoWithPlantModel,
+  { plant: plantB }: TodoWithPlantModel,
 ): number =>
   pipe(
     sequenceTO(plantA, plantB),
@@ -121,12 +120,14 @@ export const sortTodosByLocationAndPlant = (
       ]) =>
         locationA.localeCompare(locationB) ||
         nameA.localeCompare(nameB) ||
-        idA.localeCompare(idB) ||
-        titleA.localeCompare(titleB),
+        idA.localeCompare(idB),
     ),
   );
 
-export type TodosGroup = SectionListData<TodoWithPlantModel, { title: string }>;
+export type TodosGroup = {
+  data: TodoWithPlantModel[];
+  title: string;
+};
 
 // TODO: this could be a reduce...
 export const groupTodosByType = () => {
@@ -135,7 +136,6 @@ export const groupTodosByType = () => {
     todos.forEach((todo) => {
       const existingGroup = groups.find((group) => group.title === todo.title);
       if (existingGroup) {
-        // @ts-ignore - we're able to mutate this readonly array
         existingGroup.data.push(todo);
       } else {
         groups.push({
@@ -145,7 +145,12 @@ export const groupTodosByType = () => {
       }
     });
 
-    return groups;
+    return groups
+      .sort((a, b) => a.title.localeCompare(b.title))
+      .map((group) => ({
+        ...group,
+        data: group.data.sort(sortTodosByLocationAndPlant),
+      }));
   };
 };
 
