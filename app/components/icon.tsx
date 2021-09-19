@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import React from "react";
+import React, { ComponentProps } from "react";
 import { useTheme } from "styled-components";
 
 export const Icon = ({
@@ -7,7 +7,7 @@ export const Icon = ({
   size = 28,
   color,
 }: {
-  icon: string;
+  icon: ComponentProps<typeof Feather>["name"];
   size?: number;
   color?: string;
 }) => {
