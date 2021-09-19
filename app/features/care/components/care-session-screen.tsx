@@ -2,7 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { SectionList } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
@@ -54,13 +54,6 @@ export const CareSessionScreen = ({
   );
 
   const todosGroups = useMemo(() => groupTodosByType()(todos), [todos]);
-
-  /**
-   * Keeps a mutable ref of the done todos for fresh-access in the effect that
-   * keeps the carousel in sync with the next not-done todo
-   */
-  const doneTodoIdsRef = useRef<string[]>([]);
-  doneTodoIdsRef.current = doneTodoIds;
 
   const toggleTodoDone = useCallback(
     (todoId: string) =>
@@ -118,20 +111,31 @@ export const CareSessionScreen = ({
               onPress={() => toggleTodoDone(todo.id)}
               key={todo.id}
             >
-              <PlantListItem
-                plant={O.getOrElse(() => ({}))(todo.plant)}
-                right={
-                  <Icon
-                    icon="check"
-                    size={36}
-                    color={
-                      doneTodoIds.includes(todo.id)
-                        ? symbols.colors.darkGreen
-                        : symbols.colors.transparent
-                    }
-                  />
-                }
-              />
+              {pipe(
+                todo.plant,
+                O.fold(
+                  () => null,
+                  (plant) => {
+                    const isDone = doneTodoIds.includes(todo.id);
+                    return (
+                      <PlantListItem
+                        plant={plant}
+                        right={
+                          <Icon
+                            icon={isDone ? "check-square" : "square"}
+                            size={36}
+                            color={
+                              isDone
+                                ? symbols.colors.darkGreen
+                                : symbols.colors.deepGray
+                            }
+                          />
+                        }
+                      />
+                    );
+                  },
+                ),
+              )}
             </TouchableOpacity>
           )}
         ></SectionList>
