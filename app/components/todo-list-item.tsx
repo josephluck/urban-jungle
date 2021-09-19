@@ -1,12 +1,11 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useMemo } from "react";
-
 import { TodoWithPlantModel } from "../features/todos/store/state";
 import { ListItem } from "./list-item";
 
 export const TodoListItem = React.memo(
-  ({ todo }: { todo: TodoWithPlantModel }) => {
+  ({ todo, right }: { todo: TodoWithPlantModel; right?: React.ReactNode }) => {
     const image = useMemo(
       () =>
         pipe(
@@ -17,7 +16,7 @@ export const TodoListItem = React.memo(
         ),
       [todo.id],
     );
-    return <ListItem title={todo.title} image={image} />;
+    return <ListItem title={todo.title} image={image} right={right} />;
   },
   (prev, next) =>
     prev.todo.id !== next.todo.id || prev.todo.title !== next.todo.title,

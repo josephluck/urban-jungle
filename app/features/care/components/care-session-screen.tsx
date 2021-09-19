@@ -1,30 +1,27 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Dimensions, ScrollView } from "react-native";
-import Carousel, { CarouselStatic } from "react-native-snap-carousel";
+import * as TE from "fp-ts/lib/TaskEither";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { SectionList } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
+import { Icon } from "../../../components/icon";
 import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
-import { TodoOverview } from "../../../components/todo-overview";
+import { PlantListItem } from "../../../components/plant-list-item";
+import { TouchableOpacity } from "../../../components/touchable-opacity";
+import { Heading, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
+import { runWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import {
+  groupTodosByType,
   selectTodosAndPlantsByIds,
-  sortTodosByLocationAndPlant,
 } from "../../todos/store/state";
-import { createCareForPlant } from "../store/effects";
+import { createCaresForPlant } from "../store/effects";
 import { careRoute } from "./care-screen";
 
 export const CareSessionScreen = ({
@@ -34,10 +31,6 @@ export const CareSessionScreen = ({
   const { todoIds = [] } = careSessionRoute.getParams(route);
 
   const [doneTodoIds, setDoneTodos] = useState<string[]>([]);
-
-  const carouselRef = useRef<CarouselStatic<any>>(null);
-
-  const windowWidth = useMemo(() => Dimensions.get("window").width, []);
 
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId,
@@ -56,12 +49,11 @@ export const CareSessionScreen = ({
   );
 
   const todos = useStore(
-    () =>
-      selectTodosAndPlantsByIds(selectedHouseholdId)(todoIds).sort(
-        sortTodosByLocationAndPlant,
-      ),
+    () => selectTodosAndPlantsByIds(selectedHouseholdId)(todoIds),
     [selectedHouseholdId, todoIds.join("")],
   );
+
+  const todosGroups = useMemo(() => groupTodosByType()(todos), [todos]);
 
   /**
    * Keeps a mutable ref of the done todos for fresh-access in the effect that
@@ -70,106 +62,80 @@ export const CareSessionScreen = ({
   const doneTodoIdsRef = useRef<string[]>([]);
   doneTodoIdsRef.current = doneTodoIds;
 
-  /**
-   * Keeps a mutable ref of the list of todo ids in order that they are
-   * displayed in the carousel. Used to navigate between todos in the carousel
-   * when the user has done or skipped a todo
-   */
-  const carouselTodoIdsRef = useRef<string[]>([]);
-  carouselTodoIdsRef.current = todos.map((todo) => todo.id);
-
-  /**
-   * When the list of done todos changes, navigate to the next not-done todo.
-   */
-  useEffect(() => {
-    const indexOfNextTodo = carouselTodoIdsRef.current.findIndex(
-      (todoId) => !doneTodoIdsRef.current.includes(todoId),
-    );
-    requestAnimationFrame(() => {
-      if (indexOfNextTodo > -1) {
-        snapCarouselToIndex(indexOfNextTodo);
-      } else if (
-        doneTodoIdsRef.current.length === carouselTodoIdsRef.current.length
-      ) {
-        careRoute.navigateTo(navigation, {});
-      }
-    });
-  }, [doneTodoIds.length]);
-
-  const snapCarouselToIndex = useCallback((index: number) => {
-    if (carouselRef.current) {
-      carouselRef.current.snapToItem(index, true);
-    }
-  }, []);
-
-  const markTodoAsDone = useCallback(
+  const toggleTodoDone = useCallback(
     (todoId: string) =>
-      setDoneTodos((current) => [...new Set([...current, todoId])]),
+      setDoneTodos((current) =>
+        current.includes(todoId)
+          ? current.filter((id) => id !== todoId)
+          : [...new Set([...current, todoId])],
+      ),
     [],
   );
 
-  const completeTodo = useCallback(
-    (todo: TodoModel) => {
-      markTodoAsDone(todo.id);
-      createCareForPlant(profileId)(todo.id)(todo.plantId)(todo.householdId)();
-    },
-    [markTodoAsDone, profileId],
-  );
-
-  const skipTodo = useCallback((todo: TodoModel) => markTodoAsDone(todo.id), [
-    markTodoAsDone,
-  ]);
+  const submit = useCallback(() => {
+    const todosToSave = todos.filter((todo) => doneTodoIds.includes(todo.id));
+    if (todosToSave.length === 0) {
+      careRoute.navigateTo(navigation, {});
+      return;
+    }
+    runWithUIState(
+      pipe(
+        createCaresForPlant(selectedHouseholdId)(profileId)(
+          todosToSave.map(({ id: todoId, plantId }) => ({ plantId, todoId })),
+        ),
+        TE.map(() => careRoute.navigateTo(navigation, {})),
+      ),
+    );
+  }, [doneTodoIds]);
 
   return (
-    <BackableScreenLayout onBack={() => navigation.goBack()}>
-      <Carousel
-        data={todos}
-        removeClippedSubviews
-        sliderWidth={windowWidth}
-        itemWidth={windowWidth}
-        nestedScrollEnabled
-        inactiveSlideScale={1}
-        inactiveSlideOpacity={1}
-        // slideStyle={{ flex: 1 }}
-        renderItem={(slide) => {
-          const todoIsDone = doneTodoIds.includes(slide.item.id);
-          return (
-            <Slide key={slide.item.id}>
-              <ScrollView
-                style={{
-                  flex: 1,
-                  paddingHorizontal: symbols.spacing.appHorizontal,
-                }}
-              >
-                {pipe(
-                  slide.item.plant,
-                  O.fold(
-                    () => null,
-                    (plant) => <TodoOverview plant={plant} todo={slide.item} />,
-                  ),
-                )}
-              </ScrollView>
-              <Footer>
-                <SkipButton
-                  type="plain"
-                  onPress={() => skipTodo(slide.item)}
-                  disabled={todoIsDone}
-                >
-                  Skip
-                </SkipButton>
-                <Button
-                  onPress={() => completeTodo(slide.item)}
-                  disabled={todoIsDone}
-                  large
-                >
-                  It's done
-                </Button>
-              </Footer>
-            </Slide>
-          );
-        }}
-        ref={carouselRef as any}
-      />
+    <BackableScreenLayout
+      onBack={() => navigation.goBack()}
+      scrollView={false}
+      footer={
+        <Footer>
+          <Button large onPress={submit}>
+            Done
+          </Button>
+        </Footer>
+      }
+    >
+      <ContentContainer>
+        <SectionList
+          style={{ flex: 1 }}
+          ListHeaderComponent={
+            <WelcomeMessage>
+              👋 You have {todoIds.length} thing{todoIds.length > 1 ? "s" : ""}{" "}
+              to do.
+            </WelcomeMessage>
+          }
+          sections={todosGroups}
+          renderSectionHeader={({ section: { title } }) => (
+            <SectionHeading weight="bold">{title}</SectionHeading>
+          )}
+          renderItem={({ item: todo }) => (
+            <TouchableOpacity
+              onPress={() => toggleTodoDone(todo.id)}
+              key={todo.id}
+            >
+              <PlantListItem
+                plant={O.getOrElse(() => ({}))(todo.plant)}
+                right={
+                  <Icon
+                    icon="check"
+                    size={36}
+                    color={
+                      doneTodoIds.includes(todo.id)
+                        ? symbols.colors.darkGreen
+                        : symbols.colors.transparent
+                    }
+                  />
+                }
+              />
+            </TouchableOpacity>
+          )}
+        ></SectionList>
+      </ContentContainer>
     </BackableScreenLayout>
   );
 };
@@ -209,8 +175,14 @@ const deserializeStringArray = (monthsStr: string) => {
   }
 };
 
-const Slide = styled.SafeAreaView`
+const WelcomeMessage = styled(Heading)`
+  margin-bottom: ${symbols.spacing._12}px;
+`;
+
+const ContentContainer = styled.View`
   flex: 1;
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-bottom: ${symbols.spacing.appHorizontal}px;
 `;
 
 const Footer = styled.View`
@@ -218,6 +190,8 @@ const Footer = styled.View`
   padding-vertical: ${symbols.spacing._20}px;
 `;
 
-const SkipButton = styled(Button)`
-  margin-bottom: ${symbols.spacing._8}px;
+const SectionHeading = styled(SubHeading)`
+  padding-top: ${symbols.spacing._20}px;
+  padding-bottom: ${symbols.spacing._12}px;
+  background-color: ${(props) => props.theme.appBackground};
 `;
