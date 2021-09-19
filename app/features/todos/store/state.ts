@@ -1,15 +1,14 @@
-import * as O from "fp-ts/lib/Option";
-import { pipe } from "fp-ts/lib/pipeable";
-import moment from "moment";
-
 import { sequenceTO } from "@urban-jungle/shared/fp/option";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
-
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import moment from "moment";
+import { SectionListData } from "react-native";
 import { normalizedStateFactory } from "../../../store/factory";
 import {
-  selectMostRecentCareForTodo,
   selectCaresForTodo,
+  selectMostRecentCareForTodo,
 } from "../../care/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
 import { selectProfileById2 } from "../../profiles/store/state";
@@ -126,6 +125,29 @@ export const sortTodosByLocationAndPlant = (
         titleA.localeCompare(titleB),
     ),
   );
+
+export type TodosGroup = SectionListData<TodoWithPlantModel, { title: string }>;
+
+// TODO: this could be a reduce...
+export const groupTodosByType = () => {
+  const groups: TodosGroup[] = [];
+  return (todos: TodoWithPlantModel[]) => {
+    todos.forEach((todo) => {
+      const existingGroup = groups.find((group) => group.title === todo.title);
+      if (existingGroup) {
+        // @ts-ignore - we're able to mutate this readonly array
+        existingGroup.data.push(todo);
+      } else {
+        groups.push({
+          title: todo.title,
+          data: [todo],
+        });
+      }
+    });
+
+    return groups;
+  };
+};
 
 export const selectMostLovedByForTodo = (householdId: string) => (
   todoId: string,

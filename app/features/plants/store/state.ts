@@ -68,4 +68,4 @@ export const isPlantAvatarThisPhoto = (
   );
 
 export const getPlantName = (plant: PlantModel) =>
-  plant.nickname || plant.name || "Unknown";
+  plant.nickname || plant.name || "";
