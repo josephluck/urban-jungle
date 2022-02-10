@@ -13,7 +13,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { Insets } from "react-native";
 import Animated from "react-native-reanimated";
-import { withSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  withSafeAreaInsets,
+} from "react-native-safe-area-context";
 import styled, { withTheme } from "styled-components/native";
 import { TouchableOpacity } from "../components/touchable-opacity";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
@@ -126,7 +129,7 @@ class TabBarComponent extends React.Component<
 
 const TabBar = withSafeAreaInsets(withTheme(TabBarComponent));
 
-const TabBarContainer = styled.View`
+const TabBarContainer = styled(SafeAreaView)`
   flex-direction: row;
   justify-content: space-around;
   width: 100%;
@@ -142,7 +145,7 @@ const TabIcon = styled(TouchableOpacity)`
 `;
 
 const PlantStack = () => (
-  <Stack.Navigator headerMode="none">
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
     {[
       plantsRoute,
       plantRoute,
@@ -164,7 +167,7 @@ const PlantStack = () => (
 );
 
 const CareStack = () => (
-  <Stack.Navigator headerMode="none">
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
     {[careRoute, careSessionRoute].map((route) => (
       <Stack.Screen
         key={route.routeName}
@@ -176,7 +179,7 @@ const CareStack = () => (
 );
 
 const ManageStack = () => (
-  <Stack.Navigator headerMode="none">
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
     {[
       manageRoute,
       manageProfileRoute,
@@ -211,13 +214,16 @@ export const AppNavigation = () => {
       }}
     >
       {isLoggedIn ? (
-        <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
+        <Tab.Navigator
+          screenOptions={{ headerShown: false }}
+          tabBar={(props) => <TabBar {...props} />}
+        >
           <Tab.Screen name={careRoute.routeName} component={CareStack} />
           <Tab.Screen name={plantsRoute.routeName} component={PlantStack} />
           <Tab.Screen name={manageRoute.routeName} component={ManageStack} />
         </Tab.Navigator>
       ) : (
-        <Stack.Navigator headerMode="none">
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
           {[
             splashRoute,
             signUpPhoneRoute,
