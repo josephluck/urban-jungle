@@ -124,7 +124,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
     });
 
   return (
-    <ScreenLayout isRootScreen>
+    <ScreenLayout onBack={navigation.goBack}>
       {selectedHouseholdId ? (
         <ScreenContainer>
           <WelcomeMessageContainer first>
@@ -307,7 +307,6 @@ export const manageRoute = makeNavigationRoute({
 });
 
 const ScreenContainer = styled.ScrollView`
-  padding-top: ${symbols.spacing.appVertical}px;
   flex: 1;
 `;
 

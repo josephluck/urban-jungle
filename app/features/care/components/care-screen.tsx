@@ -1,3 +1,4 @@
+import { StackScreenProps } from "@react-navigation/stack";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useMemo, useState } from "react";
@@ -15,6 +16,8 @@ import { runWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
+import { manageRoute } from "../../manage/components/manage-screen";
+import { plantsRoute } from "../../plants/components/plants-screen";
 import {
   groupTodosByType,
   selectDueTodos,
@@ -22,7 +25,7 @@ import {
 } from "../../todos/store/state";
 import { createCaresForPlant } from "../store/effects";
 
-export const CareScreen = () => {
+export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   const selectedHouseholdId_ = useStore(
     selectedSelectedOrMostRecentHouseholdId,
   );
@@ -90,10 +93,29 @@ export const CareScreen = () => {
           paddingTop: symbols.spacing.appVertical,
         }}
         ListHeaderComponent={
-          <WelcomeMessage>
-            👋 You have {todoIds.length} thing{todoIds.length > 1 ? "s" : ""} to
-            do.
-          </WelcomeMessage>
+          <>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingHorizontal: symbols.spacing.appHorizontal,
+                marginBottom: symbols.spacing._20,
+              }}
+            >
+              <Button
+                onPress={() => plantsRoute.navigateTo(navigation)}
+                style={{ marginRight: symbols.spacing._6 }}
+              >
+                Plants
+              </Button>
+              <Button onPress={() => manageRoute.navigateTo(navigation)}>
+                Settings
+              </Button>
+            </View>
+            <WelcomeMessage>
+              👋 You have {todoIds.length} thing{todoIds.length > 1 ? "s" : ""}{" "}
+              to do.
+            </WelcomeMessage>
+          </>
         }
         sections={todosGroups}
         renderSectionHeader={({ section: { title } }) => (
@@ -141,7 +163,7 @@ export const CareScreen = () => {
 
 const WelcomeMessage = styled(Heading)`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  margin-bottom: ${symbols.spacing.appHorizontal * 2}px;
+  margin-bottom: ${symbols.spacing._20}px;
 `;
 
 const Footer = styled.View`

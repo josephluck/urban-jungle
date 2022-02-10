@@ -37,7 +37,7 @@ export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <ScreenLayout isRootScreen>
+    <ScreenLayout onBack={navigation.goBack}>
       {selectedHouseholdId ? (
         <ScreenContainer>
           <WelcomeMessageContainer>
@@ -72,7 +72,6 @@ export const plantsRoute = makeNavigationRoute({
 });
 
 const ScreenContainer = styled.View`
-  padding-top: ${symbols.spacing.appVertical}px;
   flex-grow: 1;
 `;
 
