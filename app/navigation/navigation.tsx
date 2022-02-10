@@ -1,21 +1,6 @@
-import {
-  faHandHoldingWater,
-  faSeedling,
-  faUserCircle,
-} from "@fortawesome/pro-light-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  BottomTabBarProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
-import { Insets } from "react-native";
-import Animated from "react-native-reanimated";
-import { withSafeAreaInsets } from "react-native-safe-area-context";
-import styled, { withTheme } from "styled-components/native";
-import { TouchableOpacity } from "../components/touchable-opacity";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
 import { signUpNameRoute } from "../features/auth/components/sign-up-name";
 import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
@@ -26,7 +11,6 @@ import { signUpResetPasswordInstructionsRoute } from "../features/auth/component
 import { splashRoute } from "../features/auth/components/splash";
 import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/care/components/care-screen";
-import { careSessionRoute } from "../features/care/components/care-session-screen";
 import { manageProfileRoute } from "../features/manage/components/manage-profile";
 import { manageProfileChooseAuthVerify } from "../features/manage/components/manage-profile-choose-auth-verify";
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
@@ -44,182 +28,52 @@ import { plantsRoute } from "../features/plants/components/plants-screen";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { todoRoute } from "../features/todos/components/todo-screen";
 import { useStore } from "../store/state";
-// import { logGlobalState } from "../store/state";
-import { symbols, Theme } from "../theme";
-import {
-  navigationDidNavigateBeacon,
-  navigationIsAtRootBeacon,
-} from "./beacon";
+import { navigationDidNavigateBeacon } from "./beacon";
 import { navigationRef } from "./navigation-imperative";
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
-class TabBarComponent extends React.Component<
-  BottomTabBarProps & { theme: Theme } & {
-    insets?: Insets;
-  },
-  { tabBarVisible: boolean }
-> {
-  unsubscribe = () => {};
-  state = { tabBarVisible: true };
-
-  componentDidMount() {
-    this.unsubscribe = navigationIsAtRootBeacon.subscribe((isAtRoot) => {
-      this.setState({ tabBarVisible: isAtRoot });
-    });
-  }
-
-  componentWillUnmount() {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-    }
-  }
-
-  render() {
-    const tabIconSize = 28;
-
-    const { name: currentScreenName } = this.props.state.routes[
-      this.props.state.index
-    ] || { name: "unknown" };
-
-    return (
-      <Animated.View
-        style={[
-          {
-            position: "absolute",
-            bottom: this.state.tabBarVisible ? 0 : -100,
-            width: "100%",
-            alignItems: "center",
-            backgroundColor: this.props.theme.appBackground,
-          },
-        ]}
-      >
-        <TabBarContainer>
-          {[careRoute, plantsRoute, manageRoute].map((route) => (
-            <TabIcon
-              key={route.routeName}
-              onPress={() => route.navigateTo(this.props.navigation, {})}
-            >
-              <FontAwesomeIcon
-                icon={
-                  route === careRoute
-                    ? faHandHoldingWater
-                    : route === plantsRoute
-                    ? faSeedling
-                    : faUserCircle
-                }
-                size={tabIconSize}
-                color={
-                  currentScreenName === route.routeName
-                    ? this.props.theme.tabBarActive
-                    : this.props.theme.tabBarInactive
-                }
-              />
-            </TabIcon>
-          ))}
-        </TabBarContainer>
-      </Animated.View>
-    );
-  }
-}
-
-const TabBar = withSafeAreaInsets(withTheme(TabBarComponent));
-
-const TabBarContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-around;
-  width: 100%;
-  flex: 1;
-  margin-bottom: ${symbols.spacing._20}px;
-`;
-
-const TabIcon = styled(TouchableOpacity)`
-  flex: 1;
-  align-items: center;
-  justify-content: space-evenly;
-  height: ${symbols.spacing.tabBarHeight};
-  width: 80;
-`;
-
-const PlantStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    {[
-      plantsRoute,
-      plantRoute,
-      managePlantRoute,
-      todoRoute,
-      manageTodoRoute,
-      newPlantPictureRoute,
-      newPlantNicknameRoute,
-      newPlantSuggestionRoute,
-      newPlantLocationRoute,
-    ].map((route) => (
-      <Stack.Screen
-        key={route.routeName}
-        name={route.routeName}
-        component={route.screen}
-      />
-    ))}
-  </Stack.Navigator>
-);
-
-const CareStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    {[careRoute, careSessionRoute].map((route) => (
-      <Stack.Screen
-        key={route.routeName}
-        name={route.routeName}
-        component={route.screen}
-      />
-    ))}
-  </Stack.Navigator>
-);
-
-const ManageStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    {[
-      manageRoute,
-      manageProfileRoute,
-      manageProfileChooseAuthVerify,
-      manageProfileEmail,
-      manageProfilePassword,
-      manageProfilePhone,
-      manageProfilePhoneVerify,
-    ].map((route) => (
-      <Stack.Screen
-        key={route.routeName}
-        name={route.routeName}
-        component={route.screen}
-      />
-    ))}
-  </Stack.Navigator>
-);
-
+// TODO: use nested navigators for popToTop etc...
 export const AppNavigation = () => {
   const isLoggedIn = useStore(selectHasAuthenticated);
   return (
     <NavigationContainer
       ref={navigationRef}
-      onStateChange={(state) => {
-        const indexes =
-          state?.routes.map((route) => route.state?.index ?? 0) ?? [];
-        const isAtRoot = indexes.every((index) => index === 0);
-        navigationIsAtRootBeacon.emit(
-          typeof isAtRoot === "undefined" || isAtRoot,
-        );
+      onStateChange={() => {
         navigationDidNavigateBeacon.emit();
       }}
     >
       {isLoggedIn ? (
-        <Tab.Navigator
-          screenOptions={{ headerShown: false }}
-          tabBar={(props) => <TabBar {...props} />}
-        >
-          <Tab.Screen name={careRoute.routeName} component={CareStack} />
-          <Tab.Screen name={plantsRoute.routeName} component={PlantStack} />
-          <Tab.Screen name={manageRoute.routeName} component={ManageStack} />
-        </Tab.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {[
+            // Care
+            careRoute,
+            // Plants
+            plantsRoute,
+            plantRoute,
+            managePlantRoute,
+            todoRoute,
+            manageTodoRoute,
+            newPlantPictureRoute,
+            newPlantNicknameRoute,
+            newPlantSuggestionRoute,
+            newPlantLocationRoute,
+            // Manage
+            manageRoute,
+            manageProfileRoute,
+            manageProfileChooseAuthVerify,
+            manageProfileEmail,
+            manageProfilePassword,
+            manageProfilePhone,
+            manageProfilePhoneVerify,
+          ].map((route) => (
+            <Stack.Screen
+              key={route.routeName}
+              name={route.routeName}
+              component={route.screen}
+            />
+          ))}
+        </Stack.Navigator>
       ) : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {[
