@@ -9,11 +9,6 @@
     "generate-sign-up-chart": "yarn workspace @urban-jungle/app run generate-sign-up-flow-chart && git add ./app/sign-up-flow.png",
     "generate-manage-auth-chart": "yarn workspace @urban-jungle/app run generate-manage-auth-flow-chart && git add ./app/manage-auth-flow.png"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn run generate-flow-charts"
-    }
-  },
   "workspaces": {
     "packages": [
       "app",
@@ -26,6 +21,6 @@
     ]
   },
   "dependencies": {
-    "husky": "4.3.6"
+    "husky": "7.0.4"
   }
 }

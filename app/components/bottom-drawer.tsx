@@ -149,7 +149,6 @@ const BottomSheetContainer = styled.View`
  * NB: separate component required so that reanimated works with useRef hooks
  */
 const Overlay = ({
-  expansionProportion,
   onPress,
   visible,
 }: {
@@ -157,22 +156,15 @@ const Overlay = ({
   onPress: () => void;
   visible: boolean;
 }) => {
-  const opacity = useRef(
-    useExpansionInterpolation(expansionProportion, [0, 1]),
-  );
   return (
-    <BackdropOverlay
-      style={{
-        opacity: opacity.current,
-      }}
-      pointerEvents={visible ? undefined : "none"}
-    >
+    <BackdropOverlay pointerEvents={visible ? undefined : "none"}>
       <BackdropTouchableHandler onPress={onPress} />
     </BackdropOverlay>
   );
 };
 
 export const BackdropOverlay = styled(Reanimated.View as any)`
+  opacity: 0;
   background-color: ${symbols.colors.blackTint04};
   position: absolute;
   top: 0;
@@ -188,29 +180,6 @@ const BackdropTouchableHandler = styled(TouchableOpacity as any)`
   bottom: 0;
   right: 0;
 `;
-
-/**
- * Custom hook that provides an easy way to create a Reanimated interpolation
- * based on the current expansion of the sheet and a given output range. Useful
- * for when interpolating styles between the closed and expanded as the user
- * drags the sheet in between closed and expanded.
- */
-const useExpansionInterpolation = (
-  /** The inverse of how much of the sheet has expanded */
-  expansionProportion: Reanimated.Value<number>,
-  /** The range to interpolate between i.e. 0 -> 1 for opacity */
-  outputRange: Reanimated.Adaptable<number>[],
-) => {
-  const invertedExpansionProportion = useRef(
-    Reanimated.sub(1, expansionProportion),
-  );
-
-  return Reanimated.interpolate(invertedExpansionProportion.current, {
-    inputRange: [0, 1],
-    outputRange,
-    extrapolate: Reanimated.Extrapolate.CLAMP,
-  });
-};
 
 export const BottomSheetGatewayContainer = ({
   children,
@@ -234,16 +203,11 @@ export const BottomSheetGatewayContainer = ({
     <Animated.View
       style={[
         {
+          opacity: 0,
           position: "absolute",
           bottom: 0,
           height: "100%",
           width: "100%",
-        },
-        {
-          opacity: opacity.current.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-          }),
         },
       ]}
       pointerEvents={visible ? "auto" : "none"}

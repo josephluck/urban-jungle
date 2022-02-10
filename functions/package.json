@@ -14,18 +14,18 @@
   "dependencies": {
     "@urban-jungle/shared": "*",
     "expo-server-sdk": "3.6.0",
-    "firebase-admin": "9.7.0",
-    "firebase-functions": "3.13.2",
-    "firebase-tools": "9.10.2",
-    "fp-ts": "2.10.5",
+    "firebase-admin": "10.0.2",
+    "firebase-functions": "3.17.2",
+    "firebase-tools": "10.1.5",
+    "fp-ts": "2.11.8",
     "moment": "2.29.1"
   },
   "devDependencies": {
-    "firebase-functions-test": "0.2.3",
-    "ts-loader": "9.1.2",
-    "typescript": "4.2.4",
-    "webpack": "5.36.2",
-    "webpack-cli": "4.7.0"
+    "firebase-functions-test": "0.3.3",
+    "ts-loader": "9.2.6",
+    "typescript": "4.5.5",
+    "webpack": "5.68.0",
+    "webpack-cli": "4.9.2"
   },
   "private": true
 }

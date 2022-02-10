@@ -5,7 +5,6 @@ import {
 } from "@fortawesome/pro-light-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
-  BottomTabBarOptions,
   BottomTabBarProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
@@ -13,7 +12,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { Insets } from "react-native";
-import Animated, { Easing } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { withSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { withTheme } from "styled-components/native";
 import { TouchableOpacity } from "../components/touchable-opacity";
@@ -57,20 +56,17 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 class TabBarComponent extends React.Component<
-  BottomTabBarProps<BottomTabBarOptions> & { theme: Theme } & {
+  BottomTabBarProps & { theme: Theme } & {
     insets?: Insets;
-  }
+  },
+  { tabBarVisible: boolean }
 > {
-  transformValue = new Animated.Value(0);
-  unsubscribe: (() => void) | null = null;
+  unsubscribe = () => {};
+  state = { tabBarVisible: true };
 
   componentDidMount() {
     this.unsubscribe = navigationIsAtRootBeacon.subscribe((isAtRoot) => {
-      Animated.timing(this.transformValue, {
-        toValue: isAtRoot ? 0 : 1,
-        duration: 120,
-        easing: Easing.inOut(Easing.ease),
-      }).start();
+      this.setState({ tabBarVisible: isAtRoot });
     });
   }
 
@@ -87,34 +83,15 @@ class TabBarComponent extends React.Component<
       this.props.state.index
     ] || { name: "unknown" };
 
-    const { bottom: safeAreaBottom = 0 } = this.props.insets || {};
-
     return (
       <Animated.View
         style={[
           {
             position: "absolute",
-            bottom: 0,
+            bottom: this.state.tabBarVisible ? 0 : -100,
             width: "100%",
             alignItems: "center",
             backgroundColor: this.props.theme.appBackground,
-          },
-          {
-            opacity: this.transformValue.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 0],
-            }),
-            transform: [
-              {
-                translateY: this.transformValue.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [
-                    -safeAreaBottom,
-                    symbols.spacing.tabBarHeight + safeAreaBottom,
-                  ],
-                }),
-              },
-            ],
           },
         ]}
       >
