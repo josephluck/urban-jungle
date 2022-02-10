@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import { Button } from "../../../components/button";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -49,7 +49,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
       <SplashContainer>
         <ScreenTitle
           title="🌱 Urban Jungle"
@@ -69,7 +69,7 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
           Next
         </Button>
       </SplashContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

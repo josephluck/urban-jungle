@@ -51,6 +51,15 @@ export const selectTodoNextDue = (householdId: string) => (
     O.getOrElse(() => moment()),
   );
 
+export const selectDueTodos = (householdId: string) => () =>
+  selectTodosByHouseholdId(householdId)
+    .map((todo) => ({
+      ...todo,
+      nextDue: selectTodoNextDue(householdId)(todo),
+    }))
+    .filter((todo) => moment(todo.nextDue).isSame(moment(), "date"))
+    .map((todo) => todo.id);
+
 export const selectTodosSchedule = (householdId: string) => (
   numberOfDays: number,
 ) => {

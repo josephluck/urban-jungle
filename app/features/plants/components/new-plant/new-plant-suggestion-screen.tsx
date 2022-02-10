@@ -6,7 +6,7 @@ import { FlatList } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
 import { CircleImage } from "../../../../components/circle-image";
-import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../../components/layouts/screen-layout";
 import { TouchableOpacity } from "../../../../components/touchable-opacity";
 import { BodyText, ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
@@ -47,7 +47,7 @@ export const NewPlantSuggestionScreen = ({
   );
 
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       scrollView={false}
       progress={40}
@@ -110,7 +110,7 @@ export const NewPlantSuggestionScreen = ({
           );
         }}
       />
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

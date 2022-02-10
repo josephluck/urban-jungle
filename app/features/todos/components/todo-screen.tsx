@@ -12,7 +12,7 @@ import {
   ContextMenuDotsButton,
   ContextMenuIconButton,
 } from "../../../components/context-menu";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { TodoOverview } from "../../../components/todo-overview";
 import { Paragraph, SubHeading } from "../../../components/typography";
@@ -98,7 +98,7 @@ export const TodoScreen = ({
   );
 
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       headerRightButton={
         <ContextMenuDotsButton menuId="todo-screen">
@@ -159,7 +159,7 @@ export const TodoScreen = ({
           ),
         ),
       )}
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

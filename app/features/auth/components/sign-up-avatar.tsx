@@ -8,7 +8,7 @@ import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { CameraButton } from "../../../components/camera-button";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
@@ -52,7 +52,7 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
       <SplashContainer>
         <ScreenTitle title="🌱 Urban Jungle" description="?" />
 
@@ -68,7 +68,7 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
           </Button>
         </View>
       </SplashContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

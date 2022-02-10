@@ -3,13 +3,8 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useMemo, useState } from "react";
-import { SectionList } from "react-native";
 import styled from "styled-components/native";
-import { Button } from "../../../components/button";
-import { Icon } from "../../../components/icon";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
-import { PlantListItem } from "../../../components/plant-list-item";
-import { TouchableOpacity } from "../../../components/touchable-opacity";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { Heading, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
@@ -82,65 +77,9 @@ export const CareSessionScreen = ({
   }, [doneTodoIds]);
 
   return (
-    <BackableScreenLayout
-      onBack={() => navigation.goBack()}
-      scrollView={false}
-      footer={
-        <Footer>
-          <Button large onPress={submit}>
-            Done
-          </Button>
-        </Footer>
-      }
-    >
-      <ContentContainer>
-        <SectionList
-          style={{ flex: 1 }}
-          ListHeaderComponent={
-            <WelcomeMessage>
-              👋 You have {todoIds.length} thing{todoIds.length > 1 ? "s" : ""}{" "}
-              to do.
-            </WelcomeMessage>
-          }
-          sections={todosGroups}
-          renderSectionHeader={({ section: { title } }) => (
-            <SectionHeading weight="bold">{title}</SectionHeading>
-          )}
-          renderItem={({ item: todo }) => (
-            <TouchableOpacity
-              onPress={() => toggleTodoDone(todo.id)}
-              key={todo.id}
-            >
-              {pipe(
-                todo.plant,
-                O.fold(
-                  () => null,
-                  (plant) => {
-                    const isDone = doneTodoIds.includes(todo.id);
-                    return (
-                      <PlantListItem
-                        plant={plant}
-                        right={
-                          <Icon
-                            icon={isDone ? "check-square" : "square"}
-                            size={36}
-                            color={
-                              isDone
-                                ? symbols.colors.darkGreen
-                                : symbols.colors.deepGray
-                            }
-                          />
-                        }
-                      />
-                    );
-                  },
-                ),
-              )}
-            </TouchableOpacity>
-          )}
-        ></SectionList>
-      </ContentContainer>
-    </BackableScreenLayout>
+    <ScreenLayout onBack={() => navigation.goBack()}>
+      <ContentContainer></ContentContainer>
+    </ScreenLayout>
   );
 };
 

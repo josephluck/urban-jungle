@@ -8,7 +8,7 @@ import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { DualNumberPickerField } from "../../../components/dual-number-picker-field";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -130,7 +130,7 @@ export const ManageTodoScreen = ({
   }, []);
 
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       footer={
         <Footer>
@@ -172,7 +172,7 @@ export const ManageTodoScreen = ({
           {...registerMultiPickerInput("activeInMonths")}
         />
       </ContentContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

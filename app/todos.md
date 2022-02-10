@@ -1,5 +1,6 @@
 ## Product stuff
 
+- Remove bottom tabs completely - make 3 links at the top of the screen (home, plants, settings)
 - Remove "care" screen and make it the home screen
 - Remove past and future days, they aren't needed
 - Add global loading state before data is fetched from Firebase
@@ -16,3 +17,4 @@
 - Upgrade firebase from 8 to 9
 - Remove "realtime" stuff - not necessary
 - Remove "cares", just store a `lastDone` on a todo
+- Fix all the TS errors

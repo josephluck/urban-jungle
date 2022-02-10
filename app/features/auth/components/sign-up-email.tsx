@@ -1,14 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import * as TE from "fp-ts/lib/TaskEither";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
-
-import { IErr } from "@urban-jungle/shared/utils/err";
-
 import { Button } from "../../../components/button";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -51,7 +49,7 @@ const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
   }, [execute]);
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
       <SplashContainer>
         <ScreenTitle
           title="🌱 Urban Jungle"
@@ -82,7 +80,7 @@ const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
           </Button>
         </View>
       </SplashContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

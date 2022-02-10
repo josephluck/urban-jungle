@@ -8,7 +8,7 @@ import { Button } from "../../../../components/button";
 import { trimBase64FromImage, useCamera } from "../../../../components/camera";
 import { CircleButton, CircleImage } from "../../../../components/circle-image";
 import { Icon } from "../../../../components/icon";
-import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { useRunWithUIState } from "../../../../store/ui";
@@ -92,7 +92,7 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
 
   // TODO: support progress bar
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       progress={20}
       footer={
@@ -145,7 +145,7 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
           ) : null}
         </ImagesList>
       </ScreenContent>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

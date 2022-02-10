@@ -14,7 +14,7 @@ import {
   ContextMenuIconButton,
   useContextMenu,
 } from "../../../components/context-menu";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { PlantImageCarousel } from "../../../components/plant-image-carousel";
 import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
@@ -134,7 +134,7 @@ export const PlantScreen = ({
   );
 
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       stickyHeaderIndices={stickyHeaderIndices}
       headerRightButton={
@@ -216,7 +216,7 @@ export const PlantScreen = ({
           ),
         ),
       )}
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

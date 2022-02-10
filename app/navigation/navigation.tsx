@@ -13,10 +13,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { Insets } from "react-native";
 import Animated from "react-native-reanimated";
-import {
-  SafeAreaView,
-  withSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { withSafeAreaInsets } from "react-native-safe-area-context";
 import styled, { withTheme } from "styled-components/native";
 import { TouchableOpacity } from "../components/touchable-opacity";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
@@ -129,11 +126,12 @@ class TabBarComponent extends React.Component<
 
 const TabBar = withSafeAreaInsets(withTheme(TabBarComponent));
 
-const TabBarContainer = styled(SafeAreaView)`
+const TabBarContainer = styled.View`
   flex-direction: row;
   justify-content: space-around;
   width: 100%;
   flex: 1;
+  margin-bottom: ${symbols.spacing._20}px;
 `;
 
 const TabIcon = styled(TouchableOpacity)`

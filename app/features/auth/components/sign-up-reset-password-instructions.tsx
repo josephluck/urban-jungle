@@ -2,7 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { useCallback } from "react";
 import { View } from "react-native";
 import { Button } from "../../../components/button";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { BodyText, ScreenTitle } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { symbols } from "../../../theme";
@@ -24,7 +24,7 @@ const SignUpResetPasswordInstructions = ({
   );
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
       <SplashContainer>
         <ScreenTitle title="🌱 Urban Jungle" />
 
@@ -46,7 +46,7 @@ const SignUpResetPasswordInstructions = ({
           I've reset my password
         </Button>
       </SplashContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

@@ -13,7 +13,7 @@ import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { CameraButton } from "../../../components/camera-button";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
@@ -59,7 +59,7 @@ export const ManageProfileScreen = ({
   );
 
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       footer={
         <Footer>
@@ -79,7 +79,7 @@ export const ManageProfileScreen = ({
           {...registerCameraField("avatar")}
         />
       </ContentContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

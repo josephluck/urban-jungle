@@ -6,7 +6,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
-import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../../components/layouts/screen-layout";
 import { PickerField } from "../../../../components/picker-field";
 import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
@@ -84,7 +84,7 @@ export const NewPlantLocationScreen = ({
   );
 
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       progress={90}
       footer={
@@ -116,7 +116,7 @@ export const NewPlantLocationScreen = ({
           />
         )}
       </ScreenContent>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { symbols } from "../../../theme";
@@ -30,7 +30,7 @@ const SplashScreen = ({}: StackScreenProps<{}>) => {
   );
 
   return (
-    <BackableScreenLayout scrollView={false}>
+    <ScreenLayout scrollView={false}>
       <SplashContainer>
         <ScreenTitle title="🌱 Urban Jungle" />
         <View style={{ flex: 1 }} />
@@ -45,7 +45,7 @@ const SplashScreen = ({}: StackScreenProps<{}>) => {
           Create account
         </Button>
       </SplashContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

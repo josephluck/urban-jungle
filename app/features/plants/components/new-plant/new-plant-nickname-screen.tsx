@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
-import { BackableScreenLayout } from "../../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../../components/layouts/screen-layout";
 import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
 import { constraints, useForm } from "../../../../hooks/use-form";
@@ -61,7 +61,7 @@ export const NewPlantNicknameScreen = ({
   );
 
   return (
-    <BackableScreenLayout
+    <ScreenLayout
       onBack={navigation.goBack}
       progress={60}
       footer={
@@ -84,7 +84,7 @@ export const NewPlantNicknameScreen = ({
         />
         <TextField {...registerTextInput("nickname")} autoFocus />
       </ScreenContent>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 

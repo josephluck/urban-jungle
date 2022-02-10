@@ -5,7 +5,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { BackableScreenLayout } from "../../../components/layouts/backable-screen";
+import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -54,7 +54,7 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <BackableScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
       <ContentContainer>
         <ScreenTitle
           title={getScreenTitle(context.flow)}
@@ -80,7 +80,7 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
           Next
         </Button>
       </ContentContainer>
-    </BackableScreenLayout>
+    </ScreenLayout>
   );
 };
 
