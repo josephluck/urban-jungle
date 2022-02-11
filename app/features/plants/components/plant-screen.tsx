@@ -4,7 +4,6 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
-import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { PlantImageHeader } from "../../../components/plant-image-header";
@@ -109,12 +108,11 @@ export const PlantScreen = ({
               />
               <SectionHeading>
                 <SubHeading weight="bold">Todos</SubHeading>
-                <Button
+                <TouchableIcon
+                  icon="plus"
                   onPress={handleAddNewTodo}
                   style={{ marginLeft: symbols.spacing._16 }}
-                >
-                  Add
-                </Button>
+                />
               </SectionHeading>
               <SectionContent>
                 {todos.map((todo) => (

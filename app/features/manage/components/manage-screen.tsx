@@ -4,10 +4,10 @@ import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
-import { Button } from "../../../components/button";
 import { Icon } from "../../../components/icon";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
+import { TouchableIcon } from "../../../components/touchable-icon";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
@@ -189,9 +189,10 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
           </View>
           <WelcomeMessageContainer>
             <Heading>Your network</Heading>
-            <Button onPress={shareHouseholdInvitation(selectedHouseholdId)}>
-              Invite
-            </Button>
+            <TouchableIcon
+              icon="plus"
+              onPress={shareHouseholdInvitation(selectedHouseholdId)}
+            />
           </WelcomeMessageContainer>
           <ManageList
             contentContainerStyle={{
