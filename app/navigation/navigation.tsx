@@ -23,6 +23,7 @@ import { manageProfilePassword } from "../features/manage/components/manage-prof
 import { manageProfilePhone } from "../features/manage/components/manage-profile-phone";
 import { manageProfilePhoneVerify } from "../features/manage/components/manage-profile-phone-verify";
 import { manageRoute } from "../features/manage/components/manage-screen";
+import { deletePlantRoute } from "../features/plants/components/delete-plant";
 import { managePlantRoute } from "../features/plants/components/manage-plant-screen";
 import { newPlantLocationRoute } from "../features/plants/components/new-plant/new-plant-location-screen";
 import { newPlantNicknameRoute } from "../features/plants/components/new-plant/new-plant-nickname-screen";
@@ -45,7 +46,10 @@ import {
 
 const Stack = createStackNavigator();
 
-const Navigator: React.FC<{ screens: ScreenDefinition[] }> = ({ screens }) => {
+const Navigator: React.FC<{
+  screens: ScreenDefinition[];
+  modalScreens?: ScreenDefinition[];
+}> = ({ screens, modalScreens }) => {
   const theme = useTheme();
   if (!screens.length) {
     throw new Error("Incorrect navigator configuration, empty list of screens");
@@ -81,6 +85,34 @@ const Navigator: React.FC<{ screens: ScreenDefinition[] }> = ({ screens }) => {
           }}
         />
       ))}
+      {modalScreens ? (
+        <Stack.Group screenOptions={{ presentation: "modal" }}>
+          {modalScreens.map((route) => (
+            <Stack.Screen
+              key={route.routeName}
+              name={route.routeName}
+              component={route.screen}
+              options={{
+                headerStyle: {
+                  backgroundColor: theme.modalBackground,
+                  shadowColor: "transparent",
+                  borderBottomWidth: 0,
+                },
+                headerLeftContainerStyle: {
+                  padding: symbols.spacing.appHorizontal,
+                },
+                headerRightContainerStyle: {
+                  paddingVertical: symbols.spacing.appHorizontal,
+                  paddingHorizontal: symbols.spacing.appHorizontal,
+                },
+                headerTitle: "",
+                headerLeft: () => <></>,
+                headerRight: CloseBackButton,
+              }}
+            />
+          ))}
+        </Stack.Group>
+      ) : null}
     </Stack.Navigator>
   );
 };
@@ -99,6 +131,7 @@ const PlantsStack = () => (
       newPlantSuggestionRoute,
       newPlantLocationRoute,
     ]}
+    modalScreens={[deletePlantRoute]}
   />
 );
 
@@ -112,6 +145,11 @@ const ManageStack = () => (
       manageProfilePassword,
       manageProfilePhone,
       manageProfilePhoneVerify,
+    ]}
+    modalScreens={[
+      manageAppearanceRoute,
+      manageNotificationsRoute,
+      manageLogoutRoute,
     ]}
   />
 );
@@ -137,36 +175,6 @@ export const AppNavigation = () => {
                 name={MANAGE_STACK_NAME}
                 component={ManageStack}
               ></Stack.Screen>
-            </Stack.Group>
-            <Stack.Group screenOptions={{ presentation: "modal" }}>
-              {[
-                manageAppearanceRoute,
-                manageNotificationsRoute,
-                manageLogoutRoute,
-              ].map((route) => (
-                <Stack.Screen
-                  key={route.routeName}
-                  name={route.routeName}
-                  component={route.screen}
-                  options={{
-                    headerStyle: {
-                      backgroundColor: theme.modalBackground,
-                      shadowColor: "transparent",
-                      borderBottomWidth: 0,
-                    },
-                    headerLeftContainerStyle: {
-                      padding: symbols.spacing.appHorizontal,
-                    },
-                    headerRightContainerStyle: {
-                      paddingVertical: symbols.spacing.appHorizontal,
-                      paddingHorizontal: symbols.spacing.appHorizontal,
-                    },
-                    headerTitle: "",
-                    headerLeft: () => <></>,
-                    headerRight: CloseBackButton,
-                  }}
-                />
-              ))}
             </Stack.Group>
           </Stack.Navigator>
         </>

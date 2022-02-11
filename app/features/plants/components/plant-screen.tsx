@@ -2,7 +2,6 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { makeImageModel } from "@urban-jungle/shared/models/image";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
@@ -17,20 +16,18 @@ import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { NavigationButtonList } from "../../../navigation/navigation-button-list";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
-import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
-import { deletePlantByHouseholdId } from "../store/effects";
 import { getPlantName, selectPlantByHouseholdId } from "../store/state";
+import { deletePlantRoute } from "./delete-plant";
 import { managePlantRoute } from "./manage-plant-screen";
 
 export const PlantScreen = ({
   navigation,
   route,
 }: StackScreenProps<Record<keyof PlantRouteParams, undefined>>) => {
-  const runWithUIState = useRunWithUIState();
   const { plantId } = plantRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
@@ -82,17 +79,6 @@ export const PlantScreen = ({
     manageTodoRoute.navigateTo(navigation, { plantId });
   }, [plantId]);
 
-  const handleDelete = useCallback(
-    () =>
-      runWithUIState(
-        pipe(
-          deletePlantByHouseholdId(selectedHouseholdId)(plantId),
-          TE.map(navigation.goBack),
-        ),
-      ),
-    [plantId, selectedHouseholdId],
-  );
-
   return (
     <ScreenLayout
       onBack={navigation.goBack}
@@ -100,7 +86,10 @@ export const PlantScreen = ({
     >
       <NavigationButtonList>
         <TouchableIcon icon="edit-3" onPress={handleEdit} />
-        <TouchableIcon icon="trash" onPress={handleDelete} />
+        <TouchableIcon
+          icon="trash"
+          onPress={() => deletePlantRoute.navigateTo(navigation, { plantId })}
+        />
       </NavigationButtonList>
       {pipe(
         plant,

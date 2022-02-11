@@ -3,16 +3,14 @@
 - Add global loading state before data is fetched from Firebase
 - Add shadows on scroll views / flat lists
 - List items in slight shadows to act as dividers
-- Move context menus to subheading
 - Group plants by location in plants screen
+- Add confirmation to delete screens
 
 ## Bugs / tech stuff
 
 - Move plant creation progress bar to navigation options
 - Fix android root colour (back looks bad)
 - Persist theme preference on device prior to login
-- Todo title isn't pre-selecting in todo form
-- Delete todo is missing
 - Upgrade reanimated stuff, or remove if not needed
 - Find better solution for bottom sheets - react-navigation modal route?
 - Fix camera upload
