@@ -157,7 +157,6 @@ const ManageStack = () => (
 
 export const AppNavigation = () => {
   const isLoggedIn = useStore(selectHasAuthenticated);
-  const theme = useTheme();
   return (
     <NavigationContainer
       ref={navigationRef}

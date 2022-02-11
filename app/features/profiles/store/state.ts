@@ -4,11 +4,15 @@ import {
   ProfileModel,
   ThemeSetting,
 } from "@urban-jungle/shared/models/profile";
+import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
+import { AsyncStorage } from "react-native";
 import { Appearance } from "react-native-appearance";
 import { store } from "../../../store/state";
 import { selectCurrentUserId } from "../../auth/store/state";
+import { persistThemeSettingOnDevice } from "./effects";
 
 /**
  * SELECTORS
@@ -41,11 +45,34 @@ export const selectCurrentProfileAvatar = (): O.Option<ImageModel> =>
     O.filterMap((p) => O.fromNullable(p.avatar)),
   );
 
+export const THEME_SETTING_ASYNC_STORAGE_KEY = "theme-setting";
+
+export const hydrateThemeSetting = () =>
+  pipe(
+    TE.tryCatch(
+      () => AsyncStorage.getItem(THEME_SETTING_ASYNC_STORAGE_KEY),
+      () => "NOT_FOUND" as IErr,
+    ),
+    TE.filterOrElse(
+      (value) => !!value,
+      () => "NOT_FOUND" as IErr,
+    ),
+    TE.map((value) => setTheme(value as ThemeSetting)),
+  )();
+
+export const selectThemeLoading = store.createSelector(
+  (state) => state.profiles.themeLoading,
+);
+
+export const selectTheme = store.createSelector(
+  (state) => state.profiles.theme,
+);
+
 export const selectCurrentProfileThemeSetting = (): ThemeSetting =>
   pipe(
     selectCurrentProfile(),
     O.filterMap((p) => O.fromNullable(p.theme)),
-    O.getOrElse(() => "system" as ThemeSetting),
+    O.getOrElse(selectTheme),
   );
 
 export const getThemeFromDevicePreference = (): ThemeSetting => {
@@ -147,12 +174,20 @@ export const selectCurrentMiniProfile = (): MiniProfile =>
  * MUTATORS
  */
 
+export const setTheme = store.createMutator((s, theme?: ThemeSetting) => {
+  if (theme) {
+    s.profiles.theme = theme;
+  }
+  s.profiles.themeLoading = false;
+});
+
 export const upsertProfile = store.createMutator((s, profile: ProfileModel) => {
   s.profiles.profiles[profile.id] = profile;
 });
 
 export const setProfileTheme = store.createMutator(
   (s, profileId: string, theme: ThemeSetting) => {
+    s.profiles.theme = theme;
     s.profiles.profiles[profileId].theme = theme;
   },
 );
@@ -161,6 +196,19 @@ export const upsertProfiles = store.createMutator(
   (s, profiles: ProfileModel[]) => {
     profiles.forEach((profile) => {
       s.profiles.profiles[profile.id] = profile;
+      pipe(
+        s.auth.authUser,
+        O.filterMap((user) =>
+          pipe(
+            O.fromNullable(profile),
+            O.filter((profile) => profile.email === user.email),
+          ),
+        ),
+        O.map((profile) => {
+          persistThemeSettingOnDevice(profile.id)(profile.theme || "system");
+          setProfileTheme(profile.id, profile.theme || "system");
+        }),
+      );
     });
   },
 );

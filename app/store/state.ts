@@ -10,7 +10,10 @@ import {
 } from "@urban-jungle/shared/models/ids";
 import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
-import { ProfileModel } from "@urban-jungle/shared/models/profile";
+import {
+  ProfileModel,
+  ThemeSetting,
+} from "@urban-jungle/shared/models/profile";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
@@ -27,6 +30,8 @@ interface AuthState {
 
 interface ProfilesState {
   profiles: Record<UserId, ProfileModel>;
+  themeLoading: boolean;
+  theme: ThemeSetting;
 }
 
 interface HouseholdsState {
@@ -72,6 +77,8 @@ export const defaultState: State = {
   },
   profiles: {
     profiles: {},
+    themeLoading: true,
+    theme: "system",
   },
   households: {
     selectedHouseholdId: O.none,

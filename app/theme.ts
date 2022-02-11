@@ -186,6 +186,7 @@ export const darkTheme = {
   optionBorderSelected: symbols.colors.deepGray,
   optionBorder: "transparent",
   loadingOverlayBackground: symbols.colors.blackTint08,
+  loadingOverlayBackgroundSolid: symbols.colors.offBlack,
   loadingIndicator: symbols.colors.lightBlue,
 };
 
@@ -224,6 +225,7 @@ export const lightTheme: Theme = {
   optionBorderSelected: symbols.colors.darkGreen,
   optionBorder: symbols.colors.nearWhite,
   loadingOverlayBackground: symbols.colors.whiteTint05,
+  loadingOverlayBackgroundSolid: symbols.colors.pureWhite,
   loadingIndicator: symbols.colors.solidBlue,
 };
 

@@ -9,6 +9,7 @@ import firebase from "firebase";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
+import { AsyncStorage } from "react-native";
 import { database } from "../../../database";
 import { Context } from "../../auth/machine/types";
 import { fetchCurrentProfileIfNotFetched } from "../../auth/store/effects";
@@ -17,6 +18,7 @@ import {
   selectProfileById,
   selectProfiles,
   setProfileTheme,
+  THEME_SETTING_ASYNC_STORAGE_KEY,
   upsertProfile,
 } from "./state";
 
@@ -168,24 +170,35 @@ export const saveExpoPushTokenToProfile = (
     ),
   );
 
+export const persistThemeSettingOnDevice = (userId: string) => (
+  theme: ThemeSetting,
+) =>
+  pipe(
+    TE.tryCatch(
+      () => AsyncStorage.setItem(THEME_SETTING_ASYNC_STORAGE_KEY, theme),
+      () => "BAD_REQUEST" as IErr,
+    ),
+    TE.map(() => {
+      setProfileTheme(userId, theme);
+    }),
+  );
+
 export const saveThemeSettingForProfile = (
   theme: ThemeSetting,
 ): TE.TaskEither<IErr, void> =>
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chainFirst((userId) => {
-      return TE.tryCatch(
+    TE.chainFirst((userId) =>
+      TE.tryCatch(
         () =>
           database.profiles.database.doc(userId).update({
             theme,
           }),
         () => "BAD_REQUEST" as IErr,
-      );
-    }),
-    TE.map((userId) => {
-      setProfileTheme(userId, theme);
-    }),
+      ),
+    ),
+    TE.chain((userId) => persistThemeSettingOnDevice(userId)(theme)),
   );
 
 export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>
