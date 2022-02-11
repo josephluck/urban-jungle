@@ -31,6 +31,7 @@ import { newPlantPictureRoute } from "../features/plants/components/new-plant/ne
 import { newPlantSuggestionRoute } from "../features/plants/components/new-plant/new-plant-suggestion-screen";
 import { plantRoute } from "../features/plants/components/plant-screen";
 import { plantsRoute } from "../features/plants/components/plants-screen";
+import { deleteTodoRoute } from "../features/todos/components/delete-todo";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { useStore } from "../store/state";
 import { symbols } from "../theme";
@@ -131,7 +132,7 @@ const PlantsStack = () => (
       newPlantSuggestionRoute,
       newPlantLocationRoute,
     ]}
-    modalScreens={[deletePlantRoute]}
+    modalScreens={[deletePlantRoute, deleteTodoRoute]}
   />
 );
 

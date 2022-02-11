@@ -20,8 +20,9 @@ import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { deleteTodo, upsertTodoForPlant } from "../store/effects";
+import { upsertTodoForPlant } from "../store/effects";
 import { selectUniqueTodoTitles } from "../store/state";
+import { deleteTodoRoute } from "./delete-todo";
 
 const monthOptions = [
   "January",
@@ -132,16 +133,6 @@ export const ManageTodoScreen = ({
     setNewTypeFieldVisible(true);
   }, []);
 
-  const handleDelete = useCallback(() => {
-    runWithUIState(
-      pipe(
-        TE.fromOption(() => "NOT_FOUND" as IErr)(O.fromNullable(todoId)),
-        TE.chain((id) => deleteTodo(id)(selectedHouseholdId)),
-        TE.map(navigation.goBack),
-      ),
-    );
-  }, []);
-
   return (
     <ScreenLayout
       onBack={navigation.goBack}
@@ -154,7 +145,10 @@ export const ManageTodoScreen = ({
       }
     >
       <NavigationButtonList>
-        <TouchableIcon icon="trash" onPress={handleDelete} />
+        <TouchableIcon
+          icon="trash"
+          onPress={() => deleteTodoRoute.navigateTo(navigation, { todoId })}
+        />
       </NavigationButtonList>
       <ContentContainer>
         {newTypeFieldVisible ? (
