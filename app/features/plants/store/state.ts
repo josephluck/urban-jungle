@@ -39,3 +39,29 @@ export const isPlantAvatarThisPhoto = (
 
 export const getPlantName = (plant: PlantModel) =>
   plant.nickname || plant.name || "";
+
+export type PlantsGroup = {
+  data: PlantModel[];
+  title: string;
+};
+
+export const groupPlantsByLocation = () => {
+  const groups: PlantsGroup[] = [];
+  return (plants: PlantModel[]) => {
+    plants.forEach((plant) => {
+      const existingGroup = groups.find(
+        (group) => group.title === plant.location,
+      );
+      if (existingGroup) {
+        existingGroup.data.push(plant);
+      } else {
+        groups.push({
+          title: plant.location || "Other",
+          data: [plant],
+        });
+      }
+    });
+
+    return groups.sort((a, b) => a.title.localeCompare(b.title));
+  };
+};

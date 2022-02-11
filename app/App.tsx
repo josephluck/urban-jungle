@@ -9,7 +9,10 @@ import { CameraProvider } from "./components/camera";
 import { GlobalLoading } from "./components/global-loading";
 import { AuthMachineProvider } from "./features/auth/machine/machine";
 // import * as reactotron from "./reactotron";
-import { selectInitializing } from "./features/auth/store/state";
+import {
+  selectInitializing,
+  selectIsLoggedIn,
+} from "./features/auth/store/state";
 import { AuthenticationSubscription } from "./features/auth/subscriptions/auth";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
@@ -37,6 +40,11 @@ export default () => {
   const authInitializing = useStore(selectInitializing);
   const isDarkTheme = useStore(selectCurrentProfileThemeIsDark);
   const isFirestoreLoading = useStore(selectFirestoresInitialising);
+  const isAuthenticated = useStore(selectIsLoggedIn);
+  // Note that if the customer is not logged in, the firestores won't have loaded yet.
+  // we don't want to show the loading splash if the customer is logged out
+  const databaseLoading =
+    isFirestoreLoading && authInitializing === false && isAuthenticated;
 
   const loading = themeLoading || fontsLoading || authInitializing;
 
@@ -97,8 +105,8 @@ export default () => {
                   </AppWrapper>
                   <ProfilesSubscription />
                   <GlobalLoading
-                    forceVisible={loading || isFirestoreLoading}
-                    solid={loading || isFirestoreLoading}
+                    forceVisible={loading || databaseLoading}
+                    solid={loading || databaseLoading}
                   />
                 </>
               </CameraProvider>
@@ -110,7 +118,6 @@ export default () => {
   );
 };
 
-console.disableYellowBox = true;
 LogBox.ignoreAllLogs(true);
 
 const AppWrapper = styled.View`

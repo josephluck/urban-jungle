@@ -1,6 +1,5 @@
 ## Product stuff
 
-- Add global loading state before data is fetched from Firebase
 - Add shadows on scroll views / flat lists
 - List items in slight shadows to act as dividers
 - Group plants by location in plants screen

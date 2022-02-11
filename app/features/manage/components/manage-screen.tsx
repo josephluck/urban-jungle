@@ -93,7 +93,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
     });
 
   return (
-    <ScreenLayout onBack={navigation.goBack}>
+    <ScreenLayout onBack={navigation.goBack} isRootScreen>
       {selectedHouseholdId ? (
         <ScreenContainer>
           <WelcomeMessageContainer first>
@@ -251,7 +251,8 @@ const ReleaseDateText = styled(TertiaryText)`
 
 const WelcomeMessageContainer = styled.View<{ first?: boolean }>`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  margin-top: ${(props) => (props.first ? 0 : symbols.spacing._16)}px;
+  margin-top: ${(props) =>
+    props.first ? symbols.spacing._20 : symbols.spacing._16}px;
   margin-bottom: ${symbols.spacing._20}px;
   flex-direction: row;
   align-items: center;

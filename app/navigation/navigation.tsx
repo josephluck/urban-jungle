@@ -94,19 +94,19 @@ const Navigator: React.FC<{
               name={route.routeName}
               component={route.screen}
               options={{
+                cardStyle: {
+                  borderRadius: symbols.borderRadius.large,
+                },
                 headerStyle: {
                   backgroundColor: theme.modalBackground,
                   shadowColor: "transparent",
                   borderBottomWidth: 0,
                 },
-                headerLeftContainerStyle: {
-                  padding: symbols.spacing.appHorizontal,
-                },
                 headerRightContainerStyle: {
-                  paddingVertical: symbols.spacing.appHorizontal,
+                  paddingVertical: symbols.spacing.appVertical,
                   paddingHorizontal: symbols.spacing.appHorizontal,
                 },
-                headerTitle: "",
+                title: "",
                 headerLeft: () => <></>,
                 headerRight: CloseBackButton,
               }}

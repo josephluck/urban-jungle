@@ -6,7 +6,8 @@ import { CloseButton } from "./close-button";
 
 export const NavigationButtonList: React.FC<{
   children: React.ReactNode | React.ReactNode[];
-}> = ({ children }) => {
+  withoutClose?: boolean;
+}> = ({ children, withoutClose }) => {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
@@ -18,11 +19,15 @@ export const NavigationButtonList: React.FC<{
           }}
         >
           {React.Children.map(children, (child, index) => (
-            <View key={index} style={{ marginRight: symbols.spacing._16 }}>
+            <View key={index} style={{ marginLeft: symbols.spacing._16 }}>
               {child}
             </View>
           ))}
-          <CloseButton />
+          {withoutClose ? null : (
+            <View style={{ marginLeft: symbols.spacing._16 }}>
+              <CloseButton />
+            </View>
+          )}
         </View>
       ),
     });
