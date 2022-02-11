@@ -74,15 +74,7 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   }, [doneTodoIds]);
 
   return (
-    <ScreenLayout
-      footer={
-        <Footer>
-          <Button large onPress={submit}>
-            Done
-          </Button>
-        </Footer>
-      }
-    >
+    <ScreenLayout>
       <SectionList
         style={{
           flex: 1,
@@ -112,6 +104,13 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
               to do.
             </WelcomeMessage>
           </>
+        }
+        ListFooterComponent={
+          <Footer>
+            <Button large onPress={submit}>
+              Done
+            </Button>
+          </Footer>
         }
         sections={todosGroups}
         renderSectionHeader={({ section: { title } }) => (
