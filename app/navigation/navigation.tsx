@@ -17,6 +17,9 @@ import { signUpResetPasswordInstructionsRoute } from "../features/auth/component
 import { splashRoute } from "../features/auth/components/splash";
 import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/home/components/home"; // TODO: rename screen
+import { manageAppearanceRoute } from "../features/manage/components/manage-appearance";
+import { manageLogoutRoute } from "../features/manage/components/manage-logout";
+import { manageNotificationsRoute } from "../features/manage/components/manage-notifications";
 import { manageProfileRoute } from "../features/manage/components/manage-profile";
 import { manageProfileChooseAuthVerify } from "../features/manage/components/manage-profile-choose-auth-verify";
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
@@ -54,6 +57,17 @@ const CloseButton = () => {
         () => navigation.dispatch(StackActions.popToTop()),
         [],
       )}
+      icon="x"
+    />
+  );
+};
+
+const CloseBackButton = () => {
+  const navigation = useNavigation();
+
+  return (
+    <TouchableIcon
+      onPress={useCallback(() => navigation.dispatch(StackActions.pop()), [])}
       icon="x"
     />
   );
@@ -129,23 +143,58 @@ const ManageStack = () => (
 
 export const AppNavigation = () => {
   const isLoggedIn = useStore(selectHasAuthenticated);
+  const theme = useTheme();
   return (
     <NavigationContainer
       ref={navigationRef}
       onStateChange={navigationDidNavigateBeacon.emit}
     >
       {isLoggedIn ? (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name={HOME_STACK_NAME} component={HomeStack} />
-          <Stack.Screen
-            name={PLANTS_STACK_NAME}
-            component={PlantsStack}
-          ></Stack.Screen>
-          <Stack.Screen
-            name={MANAGE_STACK_NAME}
-            component={ManageStack}
-          ></Stack.Screen>
-        </Stack.Navigator>
+        <>
+          <Stack.Navigator>
+            <Stack.Group screenOptions={{ headerShown: false }}>
+              <Stack.Screen name={HOME_STACK_NAME} component={HomeStack} />
+              <Stack.Screen
+                name={PLANTS_STACK_NAME}
+                component={PlantsStack}
+              ></Stack.Screen>
+              <Stack.Screen
+                name={MANAGE_STACK_NAME}
+                component={ManageStack}
+              ></Stack.Screen>
+            </Stack.Group>
+            <Stack.Group screenOptions={{ presentation: "modal" }}>
+              {[
+                manageAppearanceRoute,
+                manageNotificationsRoute,
+                manageLogoutRoute,
+              ].map((route) => (
+                <Stack.Screen
+                  key={route.routeName}
+                  name={route.routeName}
+                  component={route.screen}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: theme.modalBackground,
+                      shadowColor: "transparent",
+                      borderBottomWidth: 0,
+                    },
+                    headerLeftContainerStyle: {
+                      padding: symbols.spacing.appHorizontal,
+                    },
+                    headerRightContainerStyle: {
+                      paddingVertical: symbols.spacing.appHorizontal,
+                      paddingHorizontal: symbols.spacing.appHorizontal,
+                    },
+                    headerTitle: "",
+                    headerLeft: () => <></>,
+                    headerRight: CloseBackButton,
+                  }}
+                />
+              ))}
+            </Stack.Group>
+          </Stack.Navigator>
+        </>
       ) : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {[

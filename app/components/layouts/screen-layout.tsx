@@ -11,6 +11,7 @@ export const ScreenLayout = ({
   scrollView = true,
   progress,
   isRootScreen,
+  isModal,
 }: {
   stickyHeaderIndices?: number[];
   children: React.ReactNode;
@@ -20,9 +21,10 @@ export const ScreenLayout = ({
   scrollView?: boolean;
   progress?: number;
   isRootScreen?: boolean;
+  isModal?: boolean;
 }) => {
   return (
-    <Container>
+    <Container isModal={isModal}>
       <AvoidingView>
         {typeof progress === "number" ? (
           <View style={{ marginTop: symbols.spacing._16 }}>
@@ -44,9 +46,10 @@ export const ScreenLayout = ({
   );
 };
 
-const Container = styled(SafeAreaView)`
+const Container = styled(SafeAreaView)<{ isModal: boolean }>`
   flex: 1;
-  background-color: ${(props) => props.theme.appBackground};
+  background-color: ${(props) =>
+    props.isModal ? props.theme.modalBackground : props.theme.appBackground};
 `;
 
 const AvoidingView = styled.KeyboardAvoidingView`

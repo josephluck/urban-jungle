@@ -154,6 +154,7 @@ export const symbols = {
 export const darkTheme = {
   type: "light-content" as StatusBarStyle,
   appBackground: colors.offBlack,
+  modalBackground: colors.nearBlack,
   avatarBorder: colors.midOffGray,
   avatarBackground: colors.deepGray,
   avatarPlaceholderLetter: colors.nearWhite,
@@ -191,6 +192,7 @@ export const darkTheme = {
 export const lightTheme: Theme = {
   type: "dark-content" as StatusBarStyle,
   appBackground: colors.pureWhite,
+  modalBackground: colors.pureWhite,
   avatarBorder: colors.offWhite,
   avatarBackground: colors.nearWhite,
   avatarPlaceholderLetter: colors.nearBlack,

@@ -19,7 +19,7 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
   deserializeParams = id as DeserializeParams<Params>,
 }: {
   routeName: string;
-  stackName: StackNames;
+  stackName: StackNames | null;
   screen: React.ComponentType<StackScreenProps<Params>>;
   defaultParams?: Required<Params>;
   serializeParams?: SerializeParams<Params>;
@@ -41,12 +41,16 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
         : route.params!,
     );
   },
-  navigateTo: (navigation: NavigationProp<any>, params: Params) => {
-    navigation.navigate(stackName, {
-      screen: routeName,
-      params: serializeParams(params),
-    });
-  },
+  navigateTo: (navigation: NavigationProp<any>, params: Params) =>
+    stackName
+      ? navigation.navigate(stackName, {
+          screen: routeName,
+          params: serializeParams(params),
+        })
+      : navigation.navigate({
+          name: routeName,
+          params: serializeParams(params),
+        }),
 });
 
 export type ScreenDefinition = ReturnType<typeof makeNavigationRoute>;

@@ -3,8 +3,7 @@ import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { createContext, useCallback, useContext, useState } from "react";
-import { Keyboard, View } from "react-native";
-import { BottomDrawer } from "../components/bottom-drawer";
+import { Keyboard, Modal, View } from "react-native";
 import { Button } from "../components/button";
 import { BodyText, SubHeading, SubScriptText } from "../components/typography";
 import { symbols } from "../theme";
@@ -65,7 +64,7 @@ export const GlobalErrorProvider = ({
     <GlobalErrorContext.Provider value={{ error, setError }}>
       {children}
 
-      <BottomDrawer onClose={clearError} visible={!!error}>
+      <Modal visible={!!error}>
         {loading ? null : (
           <>
             <View style={{ alignItems: "center" }}>
@@ -95,7 +94,7 @@ export const GlobalErrorProvider = ({
             </Button>
           </>
         )}
-      </BottomDrawer>
+      </Modal>
     </GlobalErrorContext.Provider>
   );
 };

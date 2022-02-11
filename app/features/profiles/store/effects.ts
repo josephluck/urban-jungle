@@ -174,15 +174,17 @@ export const saveThemeSettingForProfile = (
   pipe(
     selectCurrentUserId(),
     TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain((id) => {
-      setProfileTheme(id, theme);
+    TE.chainFirst((userId) => {
       return TE.tryCatch(
         () =>
-          database.profiles.database.doc(id).update({
+          database.profiles.database.doc(userId).update({
             theme,
           }),
         () => "BAD_REQUEST" as IErr,
       );
+    }),
+    TE.map((userId) => {
+      setProfileTheme(userId, theme);
     }),
   );
 

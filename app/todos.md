@@ -9,6 +9,8 @@
 ## Bugs / tech stuff
 
 - Move plant creation progress bar to navigation options
+- Fix android root colour (back looks bad)
+- Persist theme preference on device prior to login
 - Todo title isn't pre-selecting in todo form
 - Delete todo is missing
 - Upgrade reanimated stuff, or remove if not needed

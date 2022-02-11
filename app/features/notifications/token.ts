@@ -14,13 +14,14 @@ export const disablePushNotifications = (): TE.TaskEither<IErr, void> =>
     ? removeExpoPushTokenFromProfile()
     : TE.left("BAD_REQUEST");
 
-export const enablePushNotifications = (): TE.TaskEither<IErr, string> =>
+export const enablePushNotifications = (): TE.TaskEither<IErr, void> =>
   Constants.isDevice
     ? pipe(
         getPushNotificationPermissions(),
         TE.chain(getExpoPushToken),
         TE.chainFirst(setupAndroidChannels),
         TE.chainFirst(saveExpoPushTokenToProfile),
+        TE.map(() => {}),
       )
     : TE.left("BAD_REQUEST");
 

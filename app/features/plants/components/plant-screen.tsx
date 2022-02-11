@@ -7,11 +7,6 @@ import React, { useCallback, useMemo } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { launchCameraAndTakePicture } from "../../../components/camera";
-import {
-  ContextMenuDotsButton,
-  ContextMenuIconButton,
-  useContextMenu,
-} from "../../../components/context-menu";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { PlantImageHeader } from "../../../components/plant-image-header";
@@ -36,7 +31,6 @@ export const PlantScreen = ({
   route,
 }: StackScreenProps<Record<keyof PlantRouteParams, undefined>>) => {
   const runWithUIState = useRunWithUIState();
-  const { hide: hideContextMenu } = useContextMenu();
   const { plantId } = plantRoute.getParams(route);
 
   const selectedHouseholdId_ = useStore(
@@ -100,7 +94,6 @@ export const PlantScreen = ({
   );
 
   const handleTakePicture = useCallback(() => {
-    hideContextMenu();
     pipe(
       launchCameraAndTakePicture(),
       TE.map(UIEffect.start),
@@ -127,21 +120,21 @@ export const PlantScreen = ({
     <ScreenLayout
       onBack={navigation.goBack}
       stickyHeaderIndices={stickyHeaderIndices}
-      headerRightButton={
-        <ContextMenuDotsButton menuId="plant-screen">
-          {[
-            <ContextMenuIconButton icon="camera" onPress={handleTakePicture}>
-              Snap {plantName}
-            </ContextMenuIconButton>,
-            <ContextMenuIconButton icon="trash" onPress={handleDelete}>
-              Delete {plantName}
-            </ContextMenuIconButton>,
-            <ContextMenuIconButton icon="edit-3" onPress={handleEdit}>
-              Edit {plantName}
-            </ContextMenuIconButton>,
-          ]}
-        </ContextMenuDotsButton>
-      }
+      // headerRightButton={
+      //   <ContextMenuDotsButton menuId="plant-screen">
+      //     {[
+      //       <ContextMenuIconButton icon="camera" onPress={handleTakePicture}>
+      //         Snap {plantName}
+      //       </ContextMenuIconButton>,
+      //       <ContextMenuIconButton icon="trash" onPress={handleDelete}>
+      //         Delete {plantName}
+      //       </ContextMenuIconButton>,
+      //       <ContextMenuIconButton icon="edit-3" onPress={handleEdit}>
+      //         Edit {plantName}
+      //       </ContextMenuIconButton>,
+      //     ]}
+      //   </ContextMenuDotsButton>
+      // }
     >
       {pipe(
         plant,

@@ -1,4 +1,3 @@
-import { GatewayDest, GatewayProvider } from "@chardskarth/react-gateway";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
@@ -6,12 +5,7 @@ import { LogBox, StatusBar } from "react-native";
 import "react-native-get-random-values";
 import { ThemeProvider } from "styled-components";
 import styled from "styled-components/native";
-import { BottomSheetGatewayContainer } from "./components/bottom-drawer";
 import { CameraProvider } from "./components/camera";
-import {
-  contextMenuGatewayId,
-  ContextMenuProvider,
-} from "./components/context-menu";
 import { GlobalLoading } from "./components/global-loading";
 import { AuthMachineProvider } from "./features/auth/machine/machine";
 // import * as reactotron from "./reactotron";
@@ -54,50 +48,42 @@ export default () => {
     <AuthMachineProvider>
       <ManageAuthMachineProvider>
         <ThemeProvider theme={theme}>
-          <ContextMenuProvider>
-            <GlobalErrorProvider loading={loading}>
-              <CameraProvider>
-                <GatewayProvider>
-                  <>
-                    <StatusBar barStyle={theme.type} />
-                    <AppWrapper>
-                      {loading ? null : (
+          <GlobalErrorProvider loading={loading}>
+            <CameraProvider>
+              <>
+                <StatusBar barStyle={theme.type} />
+                <AppWrapper>
+                  {loading ? null : (
+                    <>
+                      <CurrentProfileHouseholdsSubscription />
+                      {selectedHouseholdId ? (
                         <>
-                          <CurrentProfileHouseholdsSubscription />
-                          {selectedHouseholdId ? (
-                            <>
-                              <HouseholdPlantsSubscription
-                                householdId={selectedHouseholdId}
-                              />
-                              <HouseholdTodosSubscription
-                                householdId={selectedHouseholdId}
-                              />
-                              <HouseholdPhotosSubscription
-                                householdId={selectedHouseholdId}
-                              />
-                            </>
-                          ) : null}
+                          <HouseholdPlantsSubscription
+                            householdId={selectedHouseholdId}
+                          />
+                          <HouseholdTodosSubscription
+                            householdId={selectedHouseholdId}
+                          />
+                          <HouseholdPhotosSubscription
+                            householdId={selectedHouseholdId}
+                          />
                         </>
-                      )}
-                      {fontsLoading ? null : (
-                        <>
-                          <AppNavigation />
-                          <AuthenticationSubscription />
-                          {/* Auth subscription navigates during onboarding rehydration, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
-                        </>
-                      )}
-                    </AppWrapper>
-                    <ProfilesSubscription />
-                    <GlobalLoading />
-                    <GatewayDest
-                      name={contextMenuGatewayId}
-                      component={BottomSheetGatewayContainer}
-                    />
-                  </>
-                </GatewayProvider>
-              </CameraProvider>
-            </GlobalErrorProvider>
-          </ContextMenuProvider>
+                      ) : null}
+                    </>
+                  )}
+                  {fontsLoading ? null : (
+                    <>
+                      <AppNavigation />
+                      <AuthenticationSubscription />
+                      {/* Auth subscription navigates during onboarding rehydration, so navigation must be available (otherwise the navigation can happen before the navigator is available) */}
+                    </>
+                  )}
+                </AppWrapper>
+                <ProfilesSubscription />
+                <GlobalLoading />
+              </>
+            </CameraProvider>
+          </GlobalErrorProvider>
         </ThemeProvider>
       </ManageAuthMachineProvider>
     </AuthMachineProvider>
