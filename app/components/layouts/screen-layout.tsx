@@ -3,14 +3,11 @@ import { SafeAreaView } from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../../theme";
 import { ProgressBar } from "../progress-bar";
-import { TouchableIcon } from "../touchable-icon";
 
 export const ScreenLayout = ({
   stickyHeaderIndices,
   children,
-  onBack,
   footer,
-  headerRightButton,
   scrollView = true,
   progress,
   isRootScreen,
@@ -28,16 +25,6 @@ export const ScreenLayout = ({
     <Container>
       <AvoidingView>
         <InnerContainer isRootScreen={isRootScreen}>
-          {onBack || headerRightButton ? (
-            <ControlsContainer progress={progress}>
-              <TouchableIcon
-                onPress={onBack || (() => undefined)}
-                icon="arrow-left"
-                style={{ opacity: onBack ? 1 : 0 }}
-              />
-              {headerRightButton}
-            </ControlsContainer>
-          ) : null}
           {typeof progress === "number" ? (
             <ProgressBar progress={progress} />
           ) : null}
@@ -66,6 +53,8 @@ const AvoidingView = styled.KeyboardAvoidingView`
 
 const InnerContainer = styled.View<{ isRootScreen: boolean }>`
   flex: 1;
+  padding-top: ${(props) =>
+    props.isRootScreen ? 0 : symbols.spacing.appVertical};
   padding-bottom: ${(props) =>
     props.isRootScreen ? symbols.spacing.tabBarHeight : 0};
 `;

@@ -225,9 +225,6 @@ export const lightTheme: Theme = {
   loadingIndicator: symbols.colors.solidBlue,
 };
 
-export const useTheme = () => {
-  const t = useContext(ThemeContext);
-  return t;
-};
+export const useTheme = () => useContext(ThemeContext);
 
 export type Theme = typeof darkTheme;

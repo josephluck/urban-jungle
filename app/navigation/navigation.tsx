@@ -1,6 +1,12 @@
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  StackActions,
+  useNavigation,
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React from "react";
+import React, { useCallback } from "react";
+import { useTheme } from "styled-components";
+import { TouchableIcon } from "../components/touchable-icon";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
 import { signUpNameRoute } from "../features/auth/components/sign-up-name";
 import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
@@ -27,7 +33,9 @@ import { plantRoute } from "../features/plants/components/plant-screen";
 import { plantsRoute } from "../features/plants/components/plants-screen";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { useStore } from "../store/state";
+import { symbols } from "../theme";
 import { navigationDidNavigateBeacon } from "./beacon";
+import { ScreenDefinition } from "./make-navigation-route";
 import { navigationRef } from "./navigation-imperative";
 import {
   HOME_STACK_NAME,
@@ -37,21 +45,62 @@ import {
 
 const Stack = createStackNavigator();
 
-const HomeStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    {[careRoute].map((route) => (
-      <Stack.Screen
-        key={route.routeName}
-        name={route.routeName}
-        component={route.screen}
-      />
-    ))}
-  </Stack.Navigator>
-);
+const CloseButton = () => {
+  const navigation = useNavigation();
+
+  return (
+    <TouchableIcon
+      onPress={useCallback(
+        () => navigation.dispatch(StackActions.popToTop()),
+        [],
+      )}
+      icon="x"
+    />
+  );
+};
+
+const Navigator: React.FC<{ screens: ScreenDefinition[] }> = ({ screens }) => {
+  const theme = useTheme();
+  if (!screens.length) {
+    throw new Error("Incorrect navigator configuration, empty list of screens");
+  }
+  return (
+    <Stack.Navigator>
+      {screens.map((route, index) => (
+        <Stack.Screen
+          key={route.routeName}
+          name={route.routeName}
+          component={route.screen}
+          options={{
+            headerShown: route.routeName !== "CARE_SCREEN",
+            headerStyle: {
+              backgroundColor: theme.appBackground,
+              shadowColor: "transparent",
+              borderBottomWidth: 0,
+            },
+            headerLeftContainerStyle: {
+              padding: symbols.spacing.appHorizontal,
+            },
+            headerRightContainerStyle: {
+              padding: symbols.spacing.appHorizontal,
+            },
+            headerTitle: "",
+            headerLeft: (props) => (
+              <TouchableIcon onPress={props.onPress} icon="arrow-left" />
+            ),
+            headerRight: index === 0 ? undefined : CloseButton,
+          }}
+        />
+      ))}
+    </Stack.Navigator>
+  );
+};
+
+const HomeStack = () => <Navigator screens={[careRoute]} />;
 
 const PlantsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    {[
+  <Navigator
+    screens={[
       plantsRoute,
       plantRoute,
       managePlantRoute,
@@ -60,14 +109,8 @@ const PlantsStack = () => (
       newPlantNicknameRoute,
       newPlantSuggestionRoute,
       newPlantLocationRoute,
-    ].map((route) => (
-      <Stack.Screen
-        key={route.routeName}
-        name={route.routeName}
-        component={route.screen}
-      />
-    ))}
-  </Stack.Navigator>
+    ]}
+  />
 );
 
 const ManageStack = () => (

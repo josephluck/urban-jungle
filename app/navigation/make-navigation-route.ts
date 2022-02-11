@@ -49,4 +49,6 @@ export const makeNavigationRoute = <Params extends Record<string, any> = {}>({
   },
 });
 
+export type ScreenDefinition = ReturnType<typeof makeNavigationRoute>;
+
 const id = <V>(value: V): V => value;

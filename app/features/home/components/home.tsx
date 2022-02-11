@@ -75,7 +75,7 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   }, [doneTodoIds]);
 
   return (
-    <ScreenLayout scrollView={false}>
+    <ScreenLayout scrollView={false} isRootScreen>
       <SectionList
         style={{
           flex: 1,

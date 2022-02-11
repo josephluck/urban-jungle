@@ -13,7 +13,7 @@ export const TouchableIcon = ({
   disabled = false,
 }: {
   icon: string;
-  onPress: () => void;
+  onPress?: () => void;
   size?: number;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
