@@ -14,7 +14,7 @@ import {
 } from "../../../components/context-menu";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
-import { PlantImageCarousel } from "../../../components/plant-image-carousel";
+import { PlantImageHeader } from "../../../components/plant-image-header";
 import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { SubHeading } from "../../../components/typography";
@@ -154,7 +154,7 @@ export const PlantScreen = ({
                   location={plant.location}
                 />
               </SectionContent>
-              <PlantImageCarousel
+              <PlantImageHeader
                 householdId={selectedHouseholdId}
                 plantId={plantId}
               />

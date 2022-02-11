@@ -1,7 +1,6 @@
 ## Product stuff
 
 - Add global loading state before data is fetched from Firebase
-- Remove multiple photos per plant
 - Add shadows on scroll views / flat lists
 - List items in slight shadows to act as dividers
 - Move context menus to subheading

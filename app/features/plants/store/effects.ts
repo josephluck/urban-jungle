@@ -10,9 +10,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 import { trimBase64FromImage } from "../../../components/camera";
 import { database } from "../../../database";
 import { selectHouseholdById } from "../../households/store/state";
-import { selectMostRecentPlantPhoto } from "../../photos/store/state";
 import { deleteTodosByPlant } from "../../todos/store/effects";
-import { isPlantAvatarThisPhoto, selectPlantByHouseholdId } from "./state";
+import { selectPlantByHouseholdId } from "./state";
 
 // TODO: move this as an export in top level state as it's shared?
 export type PlantFields = Omit<
@@ -49,20 +48,6 @@ export const upsertPlantForHousehold = (
       savePlantImage(householdId, plant.id, O.fromNullable(avatar)),
     ),
   );
-
-/**
- * TODOS
- * Make avatar an optional PhotoModel
- * Make sure upload works as expected for both new plants and editing plants
- * Figure out how data fetching works with nested collection
- * ^ May need to update how plants are fetched to include sub-collection?
- * Add state for plant images by plant id
- * Add selector for most recent image for plant
- * Update views to use most recent image for plant
- * Add carousel in plant view for cycling through images
- * Add long press in carousel for deleting an image (with confirmation)
- * Maybe a default flag on an image? Might be good to allow users to choose a primary image
- */
 
 /**
  * Sets a photo in to storage and assigns it to the plant's primary avatar
@@ -114,9 +99,6 @@ export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
 
 /**
  * Deletes a plant's image from the database.
- * Also checks whether the deleted photo is the plant's primary avatar, if it is
- * it'll set the next most recent photo as the primary avatar (if there is
- * another one!)
  *
  * NB: doesn't remove the image from firebase storage.. should probably do that.
  */
@@ -131,35 +113,8 @@ export const deletePlantPhoto = (householdId: string, plantId: string) => (
       () => "BAD_REQUEST" as IErr,
     ),
     TE.chain(() => {
-      if (isPlantAvatarThisPhoto(householdId, plantId)(photoId)) {
-        return pipe(
-          deletePlantAvatar(householdId, plantId)(),
-          TE.chain(() =>
-            setMostRecentPlantPhotoAsPrimary(householdId, plantId, photoId),
-          ),
-        );
-      }
-      return TE.right(void null); // no-op if the deleted photo isn't the primary
+      return pipe(deletePlantAvatar(householdId, plantId)());
     }),
-  );
-
-/**
- * Sets the most recent plant photo as the primary avatar for the plant.
- * Takes an optional ID to filter by (this is useful for when deleting a photo
- * and the state hasn't had a chance to become consistent yet).
- *
- * NB: this is defensive in the sense that it'll only set the most recent photo
- * if there are photos.
- */
-export const setMostRecentPlantPhotoAsPrimary = (
-  householdId: string,
-  plantId: string,
-  excludePhotoId?: string,
-): TE.TaskEither<IErr, void> =>
-  pipe(
-    selectMostRecentPlantPhoto(householdId, plantId, excludePhotoId),
-    TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.chain(setPhotoAsPlantAvatar(householdId, plantId)),
   );
 
 /**
@@ -183,6 +138,7 @@ export const deletePlantAvatar = (
     () => "BAD_REQUEST" as IErr,
   );
 
+// TODO: delete photos associated with this plant
 export const deletePlantByHouseholdId = (householdId: string) => (
   plantId: string,
 ): TE.TaskEither<IErr, string> =>
