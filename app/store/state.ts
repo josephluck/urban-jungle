@@ -1,9 +1,7 @@
 import stately from "@josephluck/stately";
 import useStately from "@josephluck/stately/lib/hooks";
-import { CareModel } from "@urban-jungle/shared/models/care";
 import { HouseholdModel } from "@urban-jungle/shared/models/household";
 import {
-  CareId,
   HouseholdId,
   PhotoId,
   PlantId,
@@ -40,10 +38,6 @@ interface PlantsState {
   byHouseholdId: Record<HouseholdId, Record<PlantId, PlantModel>>;
 }
 
-interface CaresState {
-  byHouseholdId: Record<HouseholdId, Record<CareId, CareModel>>;
-}
-
 interface TodosState {
   byHouseholdId: Record<HouseholdId, Record<TodoId, TodoModel>>;
 }
@@ -63,7 +57,6 @@ export interface State {
   profiles: ProfilesState;
   households: HouseholdsState;
   plants: PlantsState;
-  cares: CaresState;
   todos: TodosState;
   photos: PhotosState;
   newPlantWorkflow: NewPlantWorkflowState;
@@ -85,9 +78,6 @@ export const defaultState: State = {
     households: {},
   },
   plants: {
-    byHouseholdId: {},
-  },
-  cares: {
     byHouseholdId: {},
   },
   todos: {

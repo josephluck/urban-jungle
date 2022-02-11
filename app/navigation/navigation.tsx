@@ -10,7 +10,7 @@ import { signUpResetPasswordRoute } from "../features/auth/components/sign-up-re
 import { signUpResetPasswordInstructionsRoute } from "../features/auth/components/sign-up-reset-password-instructions";
 import { splashRoute } from "../features/auth/components/splash";
 import { selectHasAuthenticated } from "../features/auth/store/state";
-import { careRoute } from "../features/care/components/care-screen";
+import { careRoute } from "../features/home/components/home"; // TODO: rename screen
 import { manageProfileRoute } from "../features/manage/components/manage-profile";
 import { manageProfileChooseAuthVerify } from "../features/manage/components/manage-profile-choose-auth-verify";
 import { manageProfileEmail } from "../features/manage/components/manage-profile-email";
@@ -26,7 +26,6 @@ import { newPlantSuggestionRoute } from "../features/plants/components/new-plant
 import { plantRoute } from "../features/plants/components/plant-screen";
 import { plantsRoute } from "../features/plants/components/plants-screen";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
-import { todoRoute } from "../features/todos/components/todo-screen";
 import { useStore } from "../store/state";
 import { navigationDidNavigateBeacon } from "./beacon";
 import { navigationRef } from "./navigation-imperative";
@@ -52,7 +51,6 @@ export const AppNavigation = () => {
             plantsRoute,
             plantRoute,
             managePlantRoute,
-            todoRoute,
             manageTodoRoute,
             newPlantPictureRoute,
             newPlantNicknameRoute,

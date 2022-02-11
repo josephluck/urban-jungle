@@ -1,10 +1,8 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { makeImageModel } from "@urban-jungle/shared/models/image";
-import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import moment from "moment";
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
@@ -24,11 +22,9 @@ import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { useStore } from "../../../store/state";
 import { UIEffect, useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { selectCaresForPlant } from "../../care/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { uploadPhoto } from "../../photos/storage";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
-import { todoRoute } from "../../todos/components/todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
 import { deletePlantByHouseholdId, savePlantImage } from "../store/effects";
 import { getPlantName, selectPlantByHouseholdId } from "../store/state";
@@ -59,13 +55,6 @@ export const PlantScreen = ({
     () => selectTodosForPlant(plantId)(selectedHouseholdId),
     [plantId, selectedHouseholdId],
   );
-
-  const cares = useStore(
-    () =>
-      selectCaresForPlant(selectedHouseholdId)(plantId).sort(sortByMostRecent),
-    [plantId, selectedHouseholdId],
-  );
-
   const stickyHeaderIndices = [1, 3];
 
   const handleEdit = useCallback(() => {
@@ -183,7 +172,7 @@ export const PlantScreen = ({
                   <TouchableOpacity
                     key={todo.id}
                     onPress={() =>
-                      todoRoute.navigateTo(navigation, {
+                      manageTodoRoute.navigateTo(navigation, {
                         plantId: todo.plantId,
                         todoId: todo.id,
                       })
@@ -191,25 +180,6 @@ export const PlantScreen = ({
                   >
                     <ListItem title={todo.title} />
                   </TouchableOpacity>
-                ))}
-              </SectionContent>
-              <SectionHeading>
-                <SubHeading weight="bold">History</SubHeading>
-              </SectionHeading>
-              <SectionContent>
-                {cares.map((care) => (
-                  <ListItem
-                    key={care.id}
-                    image={pipe(
-                      O.fromNullable(care.profile.avatar),
-                      O.map((image) => image.uri),
-                      O.toUndefined,
-                    )}
-                    title={care.todo.title}
-                    detail={`By ${care.profile.name} on ${moment(
-                      care.dateCreated.toDate(),
-                    ).format("Do MMM YY")}`}
-                  />
                 ))}
               </SectionContent>
             </>

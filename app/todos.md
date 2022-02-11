@@ -1,20 +1,22 @@
 ## Product stuff
 
-- Remove bottom tabs completely - make 3 links at the top of the screen (home, plants, settings)
-- Remove "care" screen and make it the home screen
-- Remove past and future days, they aren't needed
 - Add global loading state before data is fetched from Firebase
 - Remove multiple photos per plant
-- Remove todo "view", it can just go to edit screen
 - Add shadows on scroll views / flat lists
+- List items in slight shadows to act as dividers
+- Move context menus to subheading
+- Add cross to "pop to top" on non-root screens
 
 ## Bugs / tech stuff
 
-- Upgrade reanimated stuff (bottom sheet and tab bar)
+- Todo title isn't pre-selecting in todo form
+- Delete todo is missing
+- Upgrade reanimated stuff, or remove if not needed
 - Find better solution for bottom sheets
 - Fix camera upload
-- Fix push notifications
+- Fix push notifications (now cares have been removed)
 - Upgrade firebase from 8 to 9
 - Remove "realtime" stuff - not necessary
-- Remove "cares", just store a `lastDone` on a todo
 - Fix all the TS errors
+- Move away from moment to datefns
+- Remove unnecessary state/selectors/effects/mutations

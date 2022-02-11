@@ -1,4 +1,3 @@
-import { CareModel } from "@urban-jungle/shared/models/care";
 import { makeTodoModel, TodoModel } from "@urban-jungle/shared/models/todo";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import firebase from "firebase";
@@ -64,11 +63,9 @@ export const deleteTodo = (todoId: string) => (
     () => "BAD_REQUEST" as IErr,
   );
 
-export const updateTodoLastDone = (
-  householdId: string,
-  profileId: string,
-  care: CareModel,
-) => (todoId: string): TE.TaskEither<IErr, void> =>
+export const updateTodoLastDone = (householdId: string, profileId: string) => (
+  todoId: string,
+): TE.TaskEither<IErr, void> =>
   TE.tryCatch(
     () =>
       database.todos
@@ -76,21 +73,21 @@ export const updateTodoLastDone = (
         .doc(todoId)
         .update({
           lastDoneBy: profileId,
-          dateLastDone: care.dateCreated,
+          dateLastDone: firebase.firestore.Timestamp.fromDate(new Date()),
         } as Partial<TodoModel>),
     () => "BAD_REQUEST" as IErr,
   );
 
 export const updateTodosLastDone = (householdId: string) => (
   profileId: string,
-) => (cares: CareModel[]) =>
+) => (todos: TodoModel[]) =>
   TE.tryCatch(
     async () => {
       const batch = firebase.firestore().batch();
-      cares.forEach(({ todoId, dateCreated }) =>
-        batch.update(database.todos.database(householdId).doc(todoId), {
+      todos.forEach(({ id }) =>
+        batch.update(database.todos.database(householdId).doc(id), {
           lastDoneBy: profileId,
-          dateLastDone: dateCreated,
+          dateLastDone: firebase.firestore.Timestamp.fromDate(new Date()),
         } as Partial<TodoModel>),
       );
       await batch.commit();

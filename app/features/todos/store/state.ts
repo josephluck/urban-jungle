@@ -5,12 +5,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import moment from "moment";
 import { normalizedStateFactory } from "../../../store/factory";
-import {
-  selectCaresForTodo,
-  selectMostRecentCareForTodo,
-} from "../../care/store/state";
 import { selectPlantByHouseholdId } from "../../plants/store/state";
-import { selectProfileById2 } from "../../profiles/store/state";
 
 const methods = normalizedStateFactory<TodoModel>("todos");
 
@@ -35,19 +30,18 @@ export const selectTodosByHouseholdIdAndPlantId = (
 /**
  * Returns the date that the todo is due for. If it's overdue,
  * it'll return today. If it's never been done, it'll also return today.
+ * TODO: no need for the wrapping fn
  */
-export const selectTodoNextDue = (householdId: string) => (
-  todo: TodoModel,
-): moment.Moment =>
+export const selectTodoNextDue = (todo: TodoModel): moment.Moment =>
   pipe(
-    selectMostRecentCareForTodo(householdId)(todo.id),
-    O.map((lastCare) =>
-      moment(lastCare.dateCreated.toDate()).add(
+    O.fromNullable(todo.dateLastDone),
+    O.map((lastDone) =>
+      moment(lastDone.toDate()).add(
         todo.recurrenceCount,
         todo.recurrenceInterval,
       ),
     ),
-    O.filter((nextCare) => nextCare.isSameOrAfter(moment(), "day")),
+    O.filter((dueDate) => dueDate.isSameOrAfter(moment(), "day")),
     O.getOrElse(() => moment()),
   );
 
@@ -55,44 +49,10 @@ export const selectDueTodos = (householdId: string) => () =>
   selectTodosByHouseholdId(householdId)
     .map((todo) => ({
       ...todo,
-      nextDue: selectTodoNextDue(householdId)(todo),
+      nextDue: selectTodoNextDue(todo),
     }))
     .filter((todo) => moment(todo.nextDue).isSame(moment(), "date"))
     .map((todo) => todo.id);
-
-export const selectTodosSchedule = (householdId: string) => (
-  numberOfDays: number,
-) => {
-  const currentDate = moment();
-  const todos = selectTodosByHouseholdId(householdId);
-  const todosWithDueDates = todos.map((todo) => {
-    const nextDue = selectTodoNextDue(householdId)(todo);
-    return {
-      ...todo,
-      dueDates: Array.from({ length: numberOfDays }).map((_, i) =>
-        i === 0
-          ? nextDue
-          : nextDue
-              .clone()
-              .add(todo.recurrenceCount * i, todo.recurrenceInterval),
-      ),
-    };
-  });
-  return Array.from({ length: numberOfDays }).map((_, i) => {
-    const date = i === 0 ? currentDate : currentDate.clone().add(i, "days");
-    return {
-      date,
-      todos: todosWithDueDates
-        .filter((todo) =>
-          todo.dueDates.some((dueDate) => dueDate.isSame(date, "day")),
-        )
-        .map(({ dueDates, ...todo }) => ({
-          ...todo,
-          plant: selectPlantByHouseholdId(householdId, todo.plantId),
-        })),
-    };
-  });
-};
 
 export const selectTodosForPlant = (plantId: string) => (
   householdId: string,
@@ -161,34 +121,6 @@ export const groupTodosByType = () => {
         data: group.data.sort(sortTodosByLocationAndPlant),
       }));
   };
-};
-
-export const selectMostLovedByForTodo = (householdId: string) => (
-  todoId: string,
-) => {
-  const profileIdCareCount = selectCaresForTodo(householdId)(todoId).reduce(
-    (acc, care) => ({
-      ...acc,
-      [care.profileId]: acc[care.profileId] ? acc[care.profileId] + 1 : 1,
-    }),
-    {} as Record<string, number>,
-  );
-  const profileIdWithMostCares = Object.keys(profileIdCareCount).reduce(
-    (prevId, currId) =>
-      !prevId
-        ? currId
-        : profileIdCareCount[currId] > profileIdCareCount[prevId]
-        ? currId
-        : prevId,
-    "",
-  );
-  return pipe(
-    selectProfileById2(profileIdWithMostCares),
-    O.map((profile) => ({
-      ...profile,
-      count: profileIdCareCount[profileIdWithMostCares],
-    })),
-  );
 };
 
 export const selectUniqueTodoTitles = (householdId: string): string[] => [

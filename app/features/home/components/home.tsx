@@ -18,12 +18,12 @@ import { selectCurrentUserId } from "../../auth/store/state";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { manageRoute } from "../../manage/components/manage-screen";
 import { plantsRoute } from "../../plants/components/plants-screen";
+import { updateTodosLastDone } from "../../todos/store/effects";
 import {
   groupTodosByType,
   selectDueTodos,
   selectTodosAndPlantsByIds,
 } from "../../todos/store/state";
-import { createCaresForPlant } from "../store/effects";
 
 export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   const selectedHouseholdId_ = useStore(
@@ -69,11 +69,7 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
       return;
     }
     runWithUIState(
-      pipe(
-        createCaresForPlant(selectedHouseholdId)(profileId)(
-          todosToSave.map(({ id: todoId, plantId }) => ({ plantId, todoId })),
-        ),
-      ),
+      pipe(updateTodosLastDone(selectedHouseholdId)(profileId)(todosToSave)),
     );
   }, [doneTodoIds]);
 

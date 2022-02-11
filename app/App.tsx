@@ -18,7 +18,6 @@ import { AuthMachineProvider } from "./features/auth/machine/machine";
 import { selectInitializing } from "./features/auth/store/state";
 import { AuthenticationSubscription } from "./features/auth/subscriptions/auth";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
-import { HouseholdCaresSubscription } from "./features/care/subscriptions/household-cares";
 import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
 import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
 import { ManageAuthMachineProvider } from "./features/manage/machine/machine";
@@ -68,9 +67,6 @@ export default () => {
                           {selectedHouseholdId ? (
                             <>
                               <HouseholdPlantsSubscription
-                                householdId={selectedHouseholdId}
-                              />
-                              <HouseholdCaresSubscription
                                 householdId={selectedHouseholdId}
                               />
                               <HouseholdTodosSubscription
