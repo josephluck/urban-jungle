@@ -18,6 +18,8 @@ export const selectAuthUser = store.createSelector(
   (s): O.Option<firebase.User> => s.auth.authUser,
 );
 
+export const selectIsLoggedIn = () => O.isSome(selectAuthUser());
+
 export const selectCurrentUserId = (): O.Option<string> =>
   pipe(
     selectAuthUser(),

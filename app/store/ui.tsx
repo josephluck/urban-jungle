@@ -32,9 +32,9 @@ export const setLoadingOff = store.createMutator((s) => {
   s.ui.loading = false;
 });
 
-export const selectFirestoresInitialising = store.createSelector(
-  (s) => s.ui.firestoresLoading.length > 0,
-);
+export const selectFirestoresInitialising = store.createSelector((s) => {
+  return s.ui.firestoresLoading.length > 0;
+});
 
 export const selectLoading = store.createSelector((s) => s.ui.loading);
 

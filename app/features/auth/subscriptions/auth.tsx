@@ -42,6 +42,7 @@ export const AuthenticationSubscription = () => {
             false,
           );
         } else {
+          console.log("Nope, no user");
           execute((ctx) => {
             ctx.isAuthenticated = false;
             ctx.authenticationFlow = "splash";
