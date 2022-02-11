@@ -60,8 +60,6 @@ const InnerContainer = styled.View<{ isRootScreen: boolean }>`
   flex: 1;
   padding-top: ${(props) =>
     props.isRootScreen ? 0 : symbols.spacing.appVertical};
-  padding-bottom: ${(props) =>
-    props.isRootScreen ? symbols.spacing.tabBarHeight : 0};
 `;
 
 const ControlsContainer = styled.View<{ progress?: number }>`
