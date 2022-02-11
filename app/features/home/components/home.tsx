@@ -99,8 +99,14 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
               </Button>
             </View>
             <WelcomeMessage>
-              👋 You have {todoIds.length} thing{todoIds.length > 1 ? "s" : ""}{" "}
-              to do.
+              {todoIds.length ? (
+                <>
+                  👋 You have {todoIds.length} thing
+                  {todoIds.length > 1 ? "s" : ""} to do.
+                </>
+              ) : (
+                <>🎉 You're all done!</>
+              )}
             </WelcomeMessage>
           </>
         }
