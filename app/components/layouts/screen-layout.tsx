@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../../theme";
 import { ProgressBar } from "../progress-bar";
@@ -24,10 +24,12 @@ export const ScreenLayout = ({
   return (
     <Container>
       <AvoidingView>
-        <InnerContainer isRootScreen={isRootScreen}>
-          {typeof progress === "number" ? (
+        {typeof progress === "number" ? (
+          <View style={{ marginTop: symbols.spacing._16 }}>
             <ProgressBar progress={progress} />
-          ) : null}
+          </View>
+        ) : null}
+        <InnerContainer isRootScreen={isRootScreen}>
           {scrollView ? (
             <ContentContainerScroll stickyHeaderIndices={stickyHeaderIndices}>
               {children}

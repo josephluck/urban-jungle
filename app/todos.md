@@ -4,9 +4,11 @@
 - Add shadows on scroll views / flat lists
 - List items in slight shadows to act as dividers
 - Move context menus to subheading
+- Group plants by location in plants screen
 
 ## Bugs / tech stuff
 
+- Move plant creation progress bar to navigation options
 - Todo title isn't pre-selecting in todo form
 - Delete todo is missing
 - Upgrade reanimated stuff, or remove if not needed
