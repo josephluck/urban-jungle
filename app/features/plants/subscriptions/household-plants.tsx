@@ -2,6 +2,7 @@ import { PlantModel } from "@urban-jungle/shared/models/plant";
 import firebase from "firebase";
 import { useEffect } from "react";
 import { database } from "../../../database";
+import { setFirestoreLoaded } from "../../../store/ui";
 import { removePlants, upsertPlants } from "../store/state";
 
 /**
@@ -26,6 +27,7 @@ export const HouseholdPlantsSubscription = ({
 const handlePlantSnapshot = (householdId: string) => async (
   snapshot: Snapshot,
 ) => {
+  setFirestoreLoaded("plants");
   const addedOrModified: PlantModel[] = snapshot
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))

@@ -2,6 +2,7 @@ import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import firebase from "firebase";
 import { useEffect } from "react";
 import { database } from "../../../database";
+import { setFirestoreLoaded } from "../../../store/ui";
 import { removePhotos, upsertPhotos } from "../../photos/store/state";
 
 /**
@@ -27,6 +28,7 @@ export const HouseholdPhotosSubscription = ({
 const handlePlantPhotoSnapshot = (householdId: string) => async (
   snapshot: Snapshot,
 ) => {
+  setFirestoreLoaded("plant-photos");
   const addedOrModified: PhotoModel[] = snapshot
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))

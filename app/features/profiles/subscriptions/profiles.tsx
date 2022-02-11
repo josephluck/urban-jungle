@@ -5,6 +5,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import React, { useEffect } from "react";
 import { database } from "../../../database";
 import { useStore } from "../../../store/state";
+import { setFirestoreLoaded } from "../../../store/ui";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { selectProfileIdsForHouseholds } from "../../households/store/state";
 import { deleteProfiles, upsertProfiles } from "../store/state";
@@ -44,6 +45,7 @@ export const ProfilesSubscription = () => {
 };
 
 const handleProfileSnapshot = async (snapshot: Snapshot) => {
+  setFirestoreLoaded("profile");
   const addedOrModified: ProfileModel[] = snapshot
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))

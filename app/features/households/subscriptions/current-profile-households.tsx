@@ -7,6 +7,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useEffect } from "react";
 import { database } from "../../../database";
 import { useStore } from "../../../store/state";
+import { setFirestoreLoaded } from "../../../store/ui";
 import { selectCurrentUserId } from "../../auth/store/state";
 import { removeHouseholdFromProfile } from "../../profiles/store/effects";
 import { storeSelectedHouseholdIdToStorageIfNotPresent } from "../store/effects";
@@ -35,6 +36,7 @@ export const CurrentProfileHouseholdsSubscription = () => {
 };
 
 const handleHouseholdSnapshot = async (snapshot: Snapshot) => {
+  setFirestoreLoaded("households");
   const addedOrModified: HouseholdModel[] = snapshot
     .docChanges()
     .filter((change) => ["added", "modified"].includes(change.type))

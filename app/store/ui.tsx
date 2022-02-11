@@ -9,6 +9,21 @@ import { BodyText, SubHeading, SubScriptText } from "../components/typography";
 import { symbols } from "../theme";
 import { store } from "./state";
 
+export type FirestoreCollectionName =
+  | "auth"
+  | "profile"
+  | "plant-photos"
+  | "todos"
+  | "plants"
+  | "households";
+
+export const setFirestoreLoaded = store.createMutator(
+  (s, key: FirestoreCollectionName) =>
+    (s.ui.firestoresLoading = s.ui.firestoresLoading.filter(
+      (curr) => curr !== key,
+    )),
+);
+
 export const setLoadingOn = store.createMutator((s) => {
   s.ui.loading = true;
 });
@@ -16,6 +31,10 @@ export const setLoadingOn = store.createMutator((s) => {
 export const setLoadingOff = store.createMutator((s) => {
   s.ui.loading = false;
 });
+
+export const selectFirestoresInitialising = store.createSelector(
+  (s) => s.ui.firestoresLoading.length > 0,
+);
 
 export const selectLoading = store.createSelector((s) => s.ui.loading);
 

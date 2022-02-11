@@ -26,7 +26,7 @@ import { HouseholdTodosSubscription } from "./features/todos/subscriptions/house
 import { useFonts } from "./hooks/fonts";
 import { AppNavigation } from "./navigation/navigation";
 import { useStore } from "./store/state";
-import { GlobalErrorProvider } from "./store/ui";
+import { GlobalErrorProvider, selectFirestoresInitialising } from "./store/ui";
 import { darkTheme, lightTheme } from "./theme";
 
 // reactotron.configure();
@@ -36,6 +36,7 @@ export default () => {
   const fontsLoading = useFonts();
   const authInitializing = useStore(selectInitializing);
   const isDarkTheme = useStore(selectCurrentProfileThemeIsDark);
+  const isFirestoreLoading = useStore(selectFirestoresInitialising);
 
   const loading = themeLoading || fontsLoading || authInitializing;
 
@@ -95,7 +96,10 @@ export default () => {
                     )}
                   </AppWrapper>
                   <ProfilesSubscription />
-                  <GlobalLoading forceVisible={loading} solid={loading} />
+                  <GlobalLoading
+                    forceVisible={loading || isFirestoreLoading}
+                    solid={loading || isFirestoreLoading}
+                  />
                 </>
               </CameraProvider>
             </GlobalErrorProvider>

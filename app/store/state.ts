@@ -22,6 +22,7 @@ import {
   IdentificationSuggestion,
 } from "../features/identify/types";
 import { PlantFields } from "../features/plants/store/effects";
+import { FirestoreCollectionName } from "./ui";
 
 interface AuthState {
   initializing: boolean;
@@ -66,6 +67,10 @@ export interface State {
   photos: PhotosState;
   newPlantWorkflow: NewPlantWorkflowState;
   ui: {
+    /**
+     * When each firestore collection finished loading, it's popped from this list of strings
+     */
+    firestoresLoading: FirestoreCollectionName[];
     loading: boolean;
   };
 }
@@ -99,6 +104,14 @@ export const defaultState: State = {
     plant: {},
   },
   ui: {
+    firestoresLoading: [
+      "auth",
+      "profile",
+      "plant-photos",
+      "todos",
+      "plants",
+      "households",
+    ],
     loading: false,
   },
 };

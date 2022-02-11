@@ -4,7 +4,7 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useEffect } from "react";
 import { resetGlobalState } from "../../../store/state";
-import { useRunWithUIState } from "../../../store/ui";
+import { setFirestoreLoaded, useRunWithUIState } from "../../../store/ui";
 import { useAuthMachine } from "../machine/machine";
 import { fetchCurrentProfileIfNotFetched } from "../store/effects";
 import { setInitializing, setUser } from "../store/state";
@@ -15,6 +15,7 @@ export const AuthenticationSubscription = () => {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+      setFirestoreLoaded("auth");
       try {
         setUser(O.fromNullable(user));
 
