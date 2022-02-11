@@ -45,7 +45,10 @@ export const upsertPlantForHousehold = (
       ),
     ),
     TE.chainFirst((plant) =>
-      savePlantImage(householdId, plant.id, O.fromNullable(avatar)),
+      pipe(
+        savePlantImage(householdId, plant.id, O.fromNullable(avatar)),
+        TE.orElse(() => TE.right(makePhotoModel())), // Swallow the error if there's no avatar
+      ),
     ),
   );
 
