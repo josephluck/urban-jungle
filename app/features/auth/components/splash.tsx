@@ -6,6 +6,7 @@ import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
 import { symbols } from "../../../theme";
 import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
@@ -51,6 +52,7 @@ const SplashScreen = ({}: StackScreenProps<{}>) => {
 
 export const splashRoute = makeNavigationRoute({
   routeName: routeNames.splashRoute,
+  stackName: AUTH_STACK_NAME,
   screen: SplashScreen,
 });
 

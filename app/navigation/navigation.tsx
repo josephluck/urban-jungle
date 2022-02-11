@@ -29,48 +29,85 @@ import { manageTodoRoute } from "../features/todos/components/manage-todo-screen
 import { useStore } from "../store/state";
 import { navigationDidNavigateBeacon } from "./beacon";
 import { navigationRef } from "./navigation-imperative";
+import {
+  HOME_STACK_NAME,
+  MANAGE_STACK_NAME,
+  PLANTS_STACK_NAME,
+} from "./stack-names";
 
 const Stack = createStackNavigator();
 
-// TODO: use nested navigators for popToTop etc...
+const HomeStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    {[careRoute].map((route) => (
+      <Stack.Screen
+        key={route.routeName}
+        name={route.routeName}
+        component={route.screen}
+      />
+    ))}
+  </Stack.Navigator>
+);
+
+const PlantsStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    {[
+      plantsRoute,
+      plantRoute,
+      managePlantRoute,
+      manageTodoRoute,
+      newPlantPictureRoute,
+      newPlantNicknameRoute,
+      newPlantSuggestionRoute,
+      newPlantLocationRoute,
+    ].map((route) => (
+      <Stack.Screen
+        key={route.routeName}
+        name={route.routeName}
+        component={route.screen}
+      />
+    ))}
+  </Stack.Navigator>
+);
+
+const ManageStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    {[
+      manageRoute,
+      manageProfileRoute,
+      manageProfileChooseAuthVerify,
+      manageProfileEmail,
+      manageProfilePassword,
+      manageProfilePhone,
+      manageProfilePhoneVerify,
+    ].map((route) => (
+      <Stack.Screen
+        key={route.routeName}
+        name={route.routeName}
+        component={route.screen}
+      />
+    ))}
+  </Stack.Navigator>
+);
+
 export const AppNavigation = () => {
   const isLoggedIn = useStore(selectHasAuthenticated);
   return (
     <NavigationContainer
       ref={navigationRef}
-      onStateChange={() => {
-        navigationDidNavigateBeacon.emit();
-      }}
+      onStateChange={navigationDidNavigateBeacon.emit}
     >
       {isLoggedIn ? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {[
-            // Care
-            careRoute,
-            // Plants
-            plantsRoute,
-            plantRoute,
-            managePlantRoute,
-            manageTodoRoute,
-            newPlantPictureRoute,
-            newPlantNicknameRoute,
-            newPlantSuggestionRoute,
-            newPlantLocationRoute,
-            // Manage
-            manageRoute,
-            manageProfileRoute,
-            manageProfileChooseAuthVerify,
-            manageProfileEmail,
-            manageProfilePassword,
-            manageProfilePhone,
-            manageProfilePhoneVerify,
-          ].map((route) => (
-            <Stack.Screen
-              key={route.routeName}
-              name={route.routeName}
-              component={route.screen}
-            />
-          ))}
+          <Stack.Screen name={HOME_STACK_NAME} component={HomeStack} />
+          <Stack.Screen
+            name={PLANTS_STACK_NAME}
+            component={PlantsStack}
+          ></Stack.Screen>
+          <Stack.Screen
+            name={MANAGE_STACK_NAME}
+            component={ManageStack}
+          ></Stack.Screen>
         </Stack.Navigator>
       ) : (
         <Stack.Navigator screenOptions={{ headerShown: false }}>

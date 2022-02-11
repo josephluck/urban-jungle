@@ -12,4 +12,4 @@ const makeEmitter = <T extends any>() => {
 
 export const navigationIsAtRootBeacon = makeEmitter<boolean>();
 
-export const navigationDidNavigateBeacon = makeEmitter<void>();
+export const navigationDidNavigateBeacon = makeEmitter<any>();

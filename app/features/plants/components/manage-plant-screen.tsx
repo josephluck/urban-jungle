@@ -14,6 +14,7 @@ import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
@@ -130,6 +131,7 @@ type ManagePlantRouteParams = {
 
 export const managePlantRoute = makeNavigationRoute<ManagePlantRouteParams>({
   screen: ManagePlantScreen,
+  stackName: PLANTS_STACK_NAME,
   routeName: "MANAGE_PLANT_SCREEN",
   defaultParams: {
     plantId: "",

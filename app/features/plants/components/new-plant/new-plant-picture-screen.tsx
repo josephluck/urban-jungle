@@ -11,6 +11,7 @@ import { Icon } from "../../../../components/icon";
 import { ScreenLayout } from "../../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
+import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
 import { useRunWithUIState } from "../../../../store/ui";
 import { symbols } from "../../../../theme";
 import { identify } from "../../../identify/effects";
@@ -178,5 +179,6 @@ const SkipButton = styled(Button)`
 
 export const newPlantPictureRoute = makeNavigationRoute({
   screen: NewPlantPictureScreen,
+  stackName: PLANTS_STACK_NAME,
   routeName: "NEW_PLANT_PICTURE_SCREEN",
 });

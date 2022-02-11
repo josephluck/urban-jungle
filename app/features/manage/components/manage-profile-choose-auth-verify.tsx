@@ -6,6 +6,7 @@ import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
 import { symbols } from "../../../theme";
 import { useManageAuthMachine } from "../machine/machine";
 import { AuthProvider, getScreenTitle } from "../machine/types";
@@ -60,5 +61,6 @@ const ProviderButton = styled(Button)`
 
 export const manageProfileChooseAuthVerify = makeNavigationRoute({
   screen: ManageProfileChooseAuthVerifyScreen,
+  stackName: MANAGE_STACK_NAME,
   routeName: routeNames.manageAuthVerifyProviderRoute,
 });

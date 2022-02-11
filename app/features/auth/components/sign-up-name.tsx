@@ -9,6 +9,7 @@ import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
 import { useRunWithUIState } from "../../../store/ui";
 import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
@@ -65,5 +66,6 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
 
 export const signUpNameRoute = makeNavigationRoute({
   screen: SignUpName,
+  stackName: AUTH_STACK_NAME,
   routeName: routeNames.signUpNameRoute,
 });

@@ -12,6 +12,7 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { useAuthMachine } from "../machine/machine";
@@ -78,5 +79,6 @@ const EmailButton = styled(Button)`
 
 export const signUpNameRoute = makeNavigationRoute({
   screen: SignUpName,
+  stackName: AUTH_STACK_NAME,
   routeName: routeNames.signUpNameRoute,
 });

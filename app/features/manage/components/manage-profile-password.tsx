@@ -10,6 +10,7 @@ import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { signInWithEmail } from "../../auth/store/effects";
@@ -102,5 +103,6 @@ const ContentContainer = styled.View`
 
 export const manageProfilePassword = makeNavigationRoute({
   screen: ManageProfilePassword,
+  stackName: MANAGE_STACK_NAME,
   routeName: routeNames.manageAuthPasswordRoute,
 });

@@ -17,6 +17,7 @@ import { ListItem } from "../../../components/list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { signOut } from "../../auth/store/effects";
@@ -303,6 +304,7 @@ const themeSettingOptions: [ThemeSetting, string][] = [
 
 export const manageRoute = makeNavigationRoute({
   screen: ManageScreen,
+  stackName: MANAGE_STACK_NAME,
   routeName: routeNames.manageRoute,
 });
 

@@ -17,6 +17,7 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
@@ -101,6 +102,7 @@ type ManageProfileRouteParams = {
 export const manageProfileRoute = makeNavigationRoute<ManageProfileRouteParams>(
   {
     screen: ManageProfileScreen,
+    stackName: MANAGE_STACK_NAME,
     routeName: "MANAGE_PROFILE_SCREEN",
     defaultParams: {
       profileId: "",

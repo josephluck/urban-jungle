@@ -11,6 +11,7 @@ import { PlantListItem } from "../../../components/plant-list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { HOME_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
 import { runWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
@@ -179,5 +180,6 @@ const SectionHeading = styled(SubHeading)`
 
 export const careRoute = makeNavigationRoute({
   screen: CareScreen,
+  stackName: HOME_STACK_NAME,
   routeName: "CARE_SCREEN",
 });

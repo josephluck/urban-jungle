@@ -19,6 +19,7 @@ import { PlantNameAndLocation } from "../../../components/plant-name-and-locatio
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
 import { UIEffect, useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
@@ -196,6 +197,7 @@ type PlantRouteParams = {
 
 export const plantRoute = makeNavigationRoute<PlantRouteParams>({
   screen: PlantScreen,
+  stackName: PLANTS_STACK_NAME,
   routeName: "PLANT_SCREEN",
   defaultParams: {
     plantId: "",

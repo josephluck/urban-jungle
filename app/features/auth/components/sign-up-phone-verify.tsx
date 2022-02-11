@@ -9,6 +9,7 @@ import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
 import { useRunWithUIState } from "../../../store/ui";
 import { useAuthMachine } from "../machine/machine";
 import { signUpWithPhone } from "../store/effects";
@@ -75,5 +76,6 @@ const SignUpPhoneVerify = ({ navigation }: StackScreenProps<{}>) => {
 
 export const signUpPhoneVerifyRoute = makeNavigationRoute<{}>({
   screen: SignUpPhoneVerify,
+  stackName: AUTH_STACK_NAME,
   routeName: routeNames.signUpPhoneVerifyRoute,
 });

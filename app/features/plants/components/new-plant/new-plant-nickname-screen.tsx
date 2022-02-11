@@ -9,6 +9,7 @@ import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
 import { constraints, useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
+import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
 import { useStore } from "../../../../store/state";
 import { symbols } from "../../../../theme";
 import { PlantFields } from "../../store/effects";
@@ -105,5 +106,6 @@ const Footer = styled.View`
 
 export const newPlantNicknameRoute = makeNavigationRoute({
   screen: NewPlantNicknameScreen,
+  stackName: PLANTS_STACK_NAME,
   routeName: "NEW_PLANT_NICKNAME_SCREEN",
 });

@@ -10,6 +10,7 @@ import { PlantListItem } from "../../../components/plant-list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
@@ -68,6 +69,7 @@ export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
 
 export const plantsRoute = makeNavigationRoute({
   screen: PlantsScreen,
+  stackName: PLANTS_STACK_NAME,
   routeName: "PLANTS_SCREEN",
 });
 
