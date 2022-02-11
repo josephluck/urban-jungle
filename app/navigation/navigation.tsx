@@ -1,10 +1,6 @@
-import {
-  NavigationContainer,
-  StackActions,
-  useNavigation,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useCallback } from "react";
+import React from "react";
 import { useTheme } from "styled-components";
 import { TouchableIcon } from "../components/touchable-icon";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
@@ -38,6 +34,7 @@ import { manageTodoRoute } from "../features/todos/components/manage-todo-screen
 import { useStore } from "../store/state";
 import { symbols } from "../theme";
 import { navigationDidNavigateBeacon } from "./beacon";
+import { CloseBackButton, CloseButton } from "./close-button";
 import { ScreenDefinition } from "./make-navigation-route";
 import { navigationRef } from "./navigation-imperative";
 import {
@@ -47,31 +44,6 @@ import {
 } from "./stack-names";
 
 const Stack = createStackNavigator();
-
-const CloseButton = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableIcon
-      onPress={useCallback(
-        () => navigation.dispatch(StackActions.popToTop()),
-        [],
-      )}
-      icon="x"
-    />
-  );
-};
-
-const CloseBackButton = () => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableIcon
-      onPress={useCallback(() => navigation.dispatch(StackActions.pop()), [])}
-      icon="x"
-    />
-  );
-};
 
 const Navigator: React.FC<{ screens: ScreenDefinition[] }> = ({ screens }) => {
   const theme = useTheme();
@@ -96,7 +68,10 @@ const Navigator: React.FC<{ screens: ScreenDefinition[] }> = ({ screens }) => {
               padding: symbols.spacing.appHorizontal,
             },
             headerRightContainerStyle: {
-              padding: symbols.spacing.appHorizontal,
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              paddingRight: symbols.spacing.appHorizontal,
             },
             headerTitle: "",
             headerLeft: (props) => (

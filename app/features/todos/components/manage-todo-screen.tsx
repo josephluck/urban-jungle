@@ -11,14 +11,16 @@ import { DualNumberPickerField } from "../../../components/dual-number-picker-fi
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
+import { TouchableIcon } from "../../../components/touchable-icon";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { NavigationButtonList } from "../../../navigation/navigation-button-list";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { upsertTodoForPlant } from "../store/effects";
+import { deleteTodo, upsertTodoForPlant } from "../store/effects";
 import { selectUniqueTodoTitles } from "../store/state";
 
 const monthOptions = [
@@ -130,6 +132,16 @@ export const ManageTodoScreen = ({
     setNewTypeFieldVisible(true);
   }, []);
 
+  const handleDelete = useCallback(() => {
+    runWithUIState(
+      pipe(
+        TE.fromOption(() => "NOT_FOUND" as IErr)(O.fromNullable(todoId)),
+        TE.chain((id) => deleteTodo(id)(selectedHouseholdId)),
+        TE.map(navigation.goBack),
+      ),
+    );
+  }, []);
+
   return (
     <ScreenLayout
       onBack={navigation.goBack}
@@ -141,6 +153,9 @@ export const ManageTodoScreen = ({
         </Footer>
       }
     >
+      <NavigationButtonList>
+        <TouchableIcon icon="trash" onPress={handleDelete} />
+      </NavigationButtonList>
       <ContentContainer>
         {newTypeFieldVisible ? (
           <TextField label="Type" {...registerTextInput("title")} />

@@ -22,3 +22,5 @@
 - Fix all the TS errors
 - Move away from moment to datefns
 - Remove unnecessary state/selectors/effects/mutations
+- Fix styled components warnings and types
+- Remove unused theme properties

@@ -3,26 +3,26 @@ import { makeImageModel } from "@urban-jungle/shared/models/image";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { launchCameraAndTakePicture } from "../../../components/camera";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { PlantImageHeader } from "../../../components/plant-image-header";
 import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
+import { TouchableIcon } from "../../../components/touchable-icon";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { NavigationButtonList } from "../../../navigation/navigation-button-list";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
 import { useStore } from "../../../store/state";
-import { UIEffect, useRunWithUIState } from "../../../store/ui";
+import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
 import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { uploadPhoto } from "../../photos/storage";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { selectTodosForPlant } from "../../todos/store/state";
-import { deletePlantByHouseholdId, savePlantImage } from "../store/effects";
+import { deletePlantByHouseholdId } from "../store/effects";
 import { getPlantName, selectPlantByHouseholdId } from "../store/state";
 import { managePlantRoute } from "./manage-plant-screen";
 
@@ -93,49 +93,15 @@ export const PlantScreen = ({
     [plantId, selectedHouseholdId],
   );
 
-  const handleTakePicture = useCallback(() => {
-    pipe(
-      launchCameraAndTakePicture(),
-      TE.map(UIEffect.start),
-      TE.chain(uploadPhoto("plant")),
-      TE.chain((imageInfo) =>
-        savePlantImage(selectedHouseholdId, plantId, O.some(imageInfo)),
-      ),
-      TE.map(UIEffect.right),
-      TE.mapLeft(UIEffect.left),
-    )();
-  }, [plantId, selectedHouseholdId]);
-
-  const plantName = useMemo(
-    () =>
-      pipe(
-        plant,
-        O.map(getPlantName),
-        O.getOrElse(() => "Unknown"),
-      ),
-    [plant],
-  );
-
   return (
     <ScreenLayout
       onBack={navigation.goBack}
       stickyHeaderIndices={stickyHeaderIndices}
-      // headerRightButton={
-      //   <ContextMenuDotsButton menuId="plant-screen">
-      //     {[
-      //       <ContextMenuIconButton icon="camera" onPress={handleTakePicture}>
-      //         Snap {plantName}
-      //       </ContextMenuIconButton>,
-      //       <ContextMenuIconButton icon="trash" onPress={handleDelete}>
-      //         Delete {plantName}
-      //       </ContextMenuIconButton>,
-      //       <ContextMenuIconButton icon="edit-3" onPress={handleEdit}>
-      //         Edit {plantName}
-      //       </ContextMenuIconButton>,
-      //     ]}
-      //   </ContextMenuDotsButton>
-      // }
     >
+      <NavigationButtonList>
+        <TouchableIcon icon="edit-3" onPress={handleEdit} />
+        <TouchableIcon icon="trash" onPress={handleDelete} />
+      </NavigationButtonList>
       {pipe(
         plant,
         O.fold(
@@ -167,6 +133,7 @@ export const PlantScreen = ({
                     key={todo.id}
                     onPress={() =>
                       manageTodoRoute.navigateTo(navigation, {
+                        ...todo,
                         plantId: todo.plantId,
                         todoId: todo.id,
                       })
