@@ -74,11 +74,10 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   }, [doneTodoIds]);
 
   return (
-    <ScreenLayout>
+    <ScreenLayout scrollView={false}>
       <SectionList
         style={{
           flex: 1,
-          paddingTop: symbols.spacing.appVertical,
         }}
         ListHeaderComponent={
           <>
@@ -86,7 +85,7 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
               style={{
                 flexDirection: "row",
                 paddingHorizontal: symbols.spacing.appHorizontal,
-                marginBottom: symbols.spacing._20,
+                marginVertical: symbols.spacing.appVertical,
               }}
             >
               <Button
