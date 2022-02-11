@@ -8,11 +8,11 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { deletePlantByHouseholdId } from "../../../store/effects";
+import { selectedSelectedOrMostRecentHouseholdId } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { deletePlantByHouseholdId } from "../store/effects";
 
 export const DeletePlantScreen = ({
   route,

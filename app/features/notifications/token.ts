@@ -7,7 +7,7 @@ import { Platform } from "react-native";
 import {
   removeExpoPushTokenFromProfile,
   saveExpoPushTokenToProfile,
-} from "../profiles/store/effects";
+} from "../../store/effects";
 
 export const disablePushNotifications = (): TE.TaskEither<IErr, void> =>
   Constants.isDevice

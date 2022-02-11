@@ -12,9 +12,9 @@ import { ScreenLayout } from "../../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
+import { identifyPlantFromImages } from "../../../../store/effects";
 import { useRunWithUIState } from "../../../../store/ui";
 import { symbols } from "../../../../theme";
-import { identify } from "../../../identify/effects";
 import { newPlantNicknameRoute } from "./new-plant-nickname-screen";
 import { newPlantSuggestionRoute } from "./new-plant-suggestion-screen";
 import { setIdentificationResult, setPlantFields } from "./state";
@@ -50,7 +50,7 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
             setPlantFields({ avatar: trimBase64FromImage(images[0]) });
             return images;
           }),
-          TE.chain(identify),
+          TE.chain(identifyPlantFromImages),
           TE.map((result) => {
             setIdentificationResult(result);
             return result;
@@ -73,7 +73,7 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
             setPlantFields({ avatar: trimBase64FromImage(images[0]) });
             return images;
           }),
-          TE.chain(identify),
+          TE.chain(identifyPlantFromImages),
           TE.map((result) => {
             setIdentificationResult(result);
             return result;

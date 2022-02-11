@@ -4,11 +4,14 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useEffect } from "react";
 import { database } from "../../../database";
+import {
+  deleteProfiles,
+  selectCurrentUserId,
+  selectProfileIdsForHouseholds,
+  upsertProfiles,
+} from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { setFirestoreLoaded } from "../../../store/ui";
-import { selectCurrentUserId } from "../../auth/store/state";
-import { selectProfileIdsForHouseholds } from "../../households/store/state";
-import { deleteProfiles, upsertProfiles } from "../store/state";
 
 /**
  * Subscribes to current profile and any profiles associated with fetched

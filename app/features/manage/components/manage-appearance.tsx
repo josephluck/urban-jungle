@@ -9,11 +9,11 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { saveThemeSettingForProfile } from "../../../store/effects";
+import { selectCurrentProfileThemeSetting } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { saveThemeSettingForProfile } from "../../profiles/store/effects";
-import { selectCurrentProfileThemeSetting } from "../../profiles/store/state";
 
 export const ManageAppearanceScreen = ({}: StackScreenProps<
   Record<keyof ManageAppearanceRouteParams, undefined>

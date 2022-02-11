@@ -21,7 +21,7 @@ import {
   IdentificationResult,
   IdentificationSuggestion,
 } from "../features/identify/types";
-import { PlantFields } from "../features/plants/store/effects";
+import { PlantFields } from "./effects";
 import { FirestoreCollectionName } from "./ui";
 
 interface AuthState {

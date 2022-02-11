@@ -12,14 +12,14 @@ import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
-import { useRunWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
-import { useAuthMachine } from "../machine/machine";
 import {
   sendForgottenPasswordEmail,
   signInWithEmail,
   signUpWithEmail,
-} from "../store/effects";
+} from "../../../store/effects";
+import { useRunWithUIState } from "../../../store/ui";
+import { symbols } from "../../../theme";
+import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
 

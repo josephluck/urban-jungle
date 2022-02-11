@@ -15,12 +15,14 @@ import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
+import { upsertPlantForHousehold } from "../../../store/effects";
+import {
+  selectedSelectedOrMostRecentHouseholdId,
+  selectUniqueLocations,
+} from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { upsertPlantForHousehold } from "../store/effects";
-import { selectUniqueLocations } from "../store/state";
 
 type Fields = Required<Pick<PlantModel, "name" | "nickname" | "location">> & {
   avatar: ImageModel;

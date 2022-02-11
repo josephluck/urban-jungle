@@ -1,7 +1,7 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useMemo } from "react";
-import { TodoWithPlantModel } from "../features/todos/store/state";
+import { TodoWithPlantModel } from "../store/selectors";
 import { ListItem } from "./list-item";
 
 export const TodoListItem = React.memo(

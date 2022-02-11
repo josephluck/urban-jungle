@@ -11,7 +11,6 @@ import { signUpPhoneVerifyRoute } from "../features/auth/components/sign-up-phon
 import { signUpResetPasswordRoute } from "../features/auth/components/sign-up-reset-password";
 import { signUpResetPasswordInstructionsRoute } from "../features/auth/components/sign-up-reset-password-instructions";
 import { splashRoute } from "../features/auth/components/splash";
-import { selectHasAuthenticated } from "../features/auth/store/state";
 import { careRoute } from "../features/home/components/home"; // TODO: rename screen
 import { manageAppearanceRoute } from "../features/manage/components/manage-appearance";
 import { manageLogoutRoute } from "../features/manage/components/manage-logout";
@@ -33,6 +32,7 @@ import { plantRoute } from "../features/plants/components/plant-screen";
 import { plantsRoute } from "../features/plants/components/plants-screen";
 import { deleteTodoRoute } from "../features/todos/components/delete-todo";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
+import { selectHasAuthenticated } from "../store/selectors";
 import { useStore } from "../store/state";
 import { symbols } from "../theme";
 import { navigationDidNavigateBeacon } from "./beacon";

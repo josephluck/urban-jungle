@@ -2,7 +2,7 @@ import { PlantModel } from "@urban-jungle/shared/models/plant";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
-import { getPlantName } from "../features/plants/store/state";
+import { getPlantName } from "../store/selectors";
 import { ListItem } from "./list-item";
 
 export const PlantListItem = React.memo(

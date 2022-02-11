@@ -8,11 +8,11 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { deleteTodo } from "../../../store/effects";
+import { selectedSelectedOrMostRecentHouseholdId } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
-import { deleteTodo } from "../store/effects";
 
 export const DeleteTodoScreen = ({
   route,

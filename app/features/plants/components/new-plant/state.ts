@@ -1,13 +1,13 @@
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
-
+import { PlantFields } from "../../../../store/effects";
 import { store } from "../../../../store/state";
 import {
   IdentificationResult,
   IdentificationSuggestion,
 } from "../../../identify/types";
-import { PlantFields } from "../../store/effects";
 
+// TODO: move to global state
 export const selectIdentificationResult = store.createSelector(
   (s) => s.newPlantWorkflow.identificationResult,
 );

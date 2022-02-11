@@ -18,11 +18,11 @@ import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
+import { updateProfile } from "../../../store/effects";
+import { selectCurrentProfile } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { updateProfile } from "../../profiles/store/effects";
-import { selectCurrentProfile } from "../../profiles/store/state";
 
 type Fields = Required<Pick<ProfileModel, "name" | "avatar">>;
 

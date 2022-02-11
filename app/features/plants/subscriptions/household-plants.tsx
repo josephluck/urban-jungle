@@ -2,8 +2,8 @@ import { PlantModel } from "@urban-jungle/shared/models/plant";
 import firebase from "firebase";
 import { useEffect } from "react";
 import { database } from "../../../database";
+import { removePlants, upsertPlants } from "../../../store/selectors";
 import { setFirestoreLoaded } from "../../../store/ui";
-import { removePlants, upsertPlants } from "../store/state";
 
 /**
  * Subscribes to any plants for the given household

@@ -14,12 +14,15 @@ import { SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { NavigationButtonList } from "../../../navigation/navigation-button-list";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
+import {
+  getPlantName,
+  selectedSelectedOrMostRecentHouseholdId,
+  selectPlantByHouseholdId,
+  selectTodosForPlant,
+} from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { symbols } from "../../../theme";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
-import { selectTodosForPlant } from "../../todos/store/state";
-import { getPlantName, selectPlantByHouseholdId } from "../store/state";
 import { deletePlantRoute } from "./delete-plant";
 import { managePlantRoute } from "./manage-plant-screen";
 

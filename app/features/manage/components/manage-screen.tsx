@@ -12,20 +12,18 @@ import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
-import { useStore } from "../../../store/state";
-import { symbols } from "../../../theme";
+import { shareHouseholdInvitation } from "../../../store/effects";
 import {
+  MiniProfile,
   selectAuthProviderEmail,
   selectAuthProviderPhone,
   selectCurrentUserId,
-  selectManageAuthInitialContext,
-} from "../../auth/store/state";
-import { shareHouseholdInvitation } from "../../households/store/effects";
-import {
   selectedSelectedOrMostRecentHouseholdId,
+  selectManageAuthInitialContext,
   selectProfilesForHousehold,
-} from "../../households/store/state";
-import { MiniProfile } from "../../profiles/store/state";
+} from "../../../store/selectors";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
 import { useManageAuthMachine } from "../machine/machine";
 import { ManageAuthFlow } from "../machine/types";
 import { routeNames } from "../route-names";
@@ -101,7 +99,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
           </WelcomeMessageContainer>
           <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
             <TouchableOpacity
-              onPress={() => manageAppearanceRoute.navigateTo(navigation)}
+              onPress={() => manageAppearanceRoute.navigateTo(navigation, {})}
             >
               <ListItem
                 title="Appearance"
@@ -109,7 +107,9 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => manageNotificationsRoute.navigateTo(navigation)}
+              onPress={() =>
+                manageNotificationsRoute.navigateTo(navigation, {})
+              }
             >
               <ListItem
                 title="Push notifications"
@@ -182,7 +182,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
               ),
             )}
             <TouchableOpacity
-              onPress={() => manageLogoutRoute.navigateTo(navigation)}
+              onPress={() => manageLogoutRoute.navigateTo(navigation, {})}
             >
               <ListItem title="Logout" right={<Icon icon="chevron-right" />} />
             </TouchableOpacity>

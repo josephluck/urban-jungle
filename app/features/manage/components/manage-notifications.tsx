@@ -8,6 +8,7 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { selectPushNotificationsEnabled } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
@@ -15,7 +16,6 @@ import {
   disablePushNotifications,
   enablePushNotifications,
 } from "../../notifications/token";
-import { selectPushNotificationsEnabled } from "../../profiles/store/state";
 
 export const ManageNotificationsScreen = ({}: StackScreenProps<
   Record<keyof ManageNotificationsRouteParams, undefined>

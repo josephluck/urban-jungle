@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { makeMachineHooks } from "../../../hooks/machine";
+import { fetchOrCreateProfile } from "../../../store/effects";
 import { useRunWithUIState } from "../../../store/ui";
-import { fetchOrCreateProfile } from "../store/effects";
 import { states } from "./states";
-import { AdditionalEntryData, Context } from "./types";
+import { AdditionalEntryData, SignUpContext } from "./types";
 
-const authMachineHooks = makeMachineHooks<Context, AdditionalEntryData>({
+const authMachineHooks = makeMachineHooks<SignUpContext, AdditionalEntryData>({
   states,
   conditions: {},
   initialContext: {
@@ -24,7 +24,7 @@ export const AuthMachineProvider = authMachineHooks.MachineProvider;
 export const useAuthMachine = () => {
   const runWithUIState = useRunWithUIState();
   const handleFinished = useCallback(
-    (ctx: Context) => runWithUIState(fetchOrCreateProfile(ctx)),
+    (ctx: SignUpContext) => runWithUIState(fetchOrCreateProfile(ctx)),
     [],
   );
   return authMachineHooks.useMachine(handleFinished);

@@ -3,11 +3,11 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useEffect } from "react";
+import { fetchCurrentProfileIfNotFetched } from "../../../store/effects";
+import { setInitializing, setUser } from "../../../store/selectors";
 import { resetGlobalState } from "../../../store/state";
 import { setFirestoreLoaded, useRunWithUIState } from "../../../store/ui";
 import { useAuthMachine } from "../machine/machine";
-import { fetchCurrentProfileIfNotFetched } from "../store/effects";
-import { setInitializing, setUser } from "../store/state";
 
 export const AuthenticationSubscription = () => {
   const { execute } = useAuthMachine();
@@ -42,7 +42,6 @@ export const AuthenticationSubscription = () => {
             false,
           );
         } else {
-          console.log("Nope, no user");
           execute((ctx) => {
             ctx.isAuthenticated = false;
             ctx.authenticationFlow = "splash";

@@ -10,9 +10,9 @@ import { ScreenTitle } from "../../../../components/typography";
 import { constraints, useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
+import { PlantFields } from "../../../../store/effects";
 import { useStore } from "../../../../store/state";
 import { symbols } from "../../../../theme";
-import { PlantFields } from "../../store/effects";
 import { newPlantLocationRoute } from "./new-plant-location-screen";
 import { selectPlantFields, setPlantFields } from "./state";
 

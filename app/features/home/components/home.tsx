@@ -12,19 +12,19 @@ import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { HOME_STACK_NAME } from "../../../navigation/stack-names";
+import { updateTodosLastDone } from "../../../store/effects";
+import {
+  groupTodosByType,
+  selectCurrentUserId,
+  selectDueTodos,
+  selectedSelectedOrMostRecentHouseholdId,
+  selectTodosAndPlantsByIds,
+} from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { runWithUIState } from "../../../store/ui";
 import { symbols } from "../../../theme";
-import { selectCurrentUserId } from "../../auth/store/state";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import { manageRoute } from "../../manage/components/manage-screen";
 import { plantsRoute } from "../../plants/components/plants-screen";
-import { updateTodosLastDone } from "../../todos/store/effects";
-import {
-  groupTodosByType,
-  selectDueTodos,
-  selectTodosAndPlantsByIds,
-} from "../../todos/store/state";
 
 export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
   const selectedHouseholdId_ = useStore(
@@ -90,12 +90,12 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
               }}
             >
               <Button
-                onPress={() => plantsRoute.navigateTo(navigation)}
+                onPress={() => plantsRoute.navigateTo(navigation, {})}
                 style={{ marginRight: symbols.spacing._6 }}
               >
                 Plants
               </Button>
-              <Button onPress={() => manageRoute.navigateTo(navigation)}>
+              <Button onPress={() => manageRoute.navigateTo(navigation, {})}>
                 Settings
               </Button>
             </View>

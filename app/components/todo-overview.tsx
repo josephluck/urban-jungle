@@ -4,7 +4,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import styled from "styled-components/native";
-import { getPlantName } from "../features/plants/store/state";
+import { getPlantName } from "../store/selectors";
 import { symbols } from "../theme";
 import { PlantImage } from "./plant-image";
 import { PlantNameAndLocation } from "./plant-name-and-location";

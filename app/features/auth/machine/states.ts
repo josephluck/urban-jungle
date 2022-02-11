@@ -1,10 +1,10 @@
 import { Condition, State } from "@josephluck/machi/src/machine";
 import { routeNames } from "../components/route-names";
-import { AdditionalEntryData, Context } from "./types";
+import { AdditionalEntryData, SignUpContext } from "./types";
 
-type Conditions = Record<string, Condition<Context>>;
+type Conditions = Record<string, Condition<SignUpContext>>;
 
-export const states: State<Context, Conditions, AdditionalEntryData>[] = [
+export const states: State<SignUpContext, Conditions, AdditionalEntryData>[] = [
   {
     id: "Splash",
     routeName: routeNames.splashRoute,

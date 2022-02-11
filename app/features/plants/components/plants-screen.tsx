@@ -13,13 +13,13 @@ import { Heading, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { NavigationButtonList } from "../../../navigation/navigation-button-list";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
-import { useStore } from "../../../store/state";
-import { symbols } from "../../../theme";
-import { selectedSelectedOrMostRecentHouseholdId } from "../../households/store/state";
 import {
   groupPlantsByLocation,
+  selectedSelectedOrMostRecentHouseholdId,
   selectPlantsByHouseholdId,
-} from "../store/state";
+} from "../../../store/selectors";
+import { useStore } from "../../../store/state";
+import { symbols } from "../../../theme";
 import { newPlantPictureRoute } from "./new-plant/new-plant-picture-screen";
 import { plantRoute } from "./plant-screen";
 
@@ -87,15 +87,6 @@ export const plantsRoute = makeNavigationRoute({
   stackName: PLANTS_STACK_NAME,
   routeName: "PLANTS_SCREEN",
 });
-
-const ScreenContainer = styled.View`
-  flex-grow: 1;
-`;
-
-const PlantsList = styled.ScrollView`
-  flex: 1;
-  padding-bottom: ${symbols.spacing.appVertical}px;
-`;
 
 const SectionHeading = styled(SubHeading)`
   padding-top: ${symbols.spacing._20}px;

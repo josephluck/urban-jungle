@@ -3,7 +3,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
-import { savePlantImage } from "../features/plants/store/effects";
+import { savePlantImage } from "../store/effects";
 import { useRunWithUIState } from "../store/ui";
 import { symbols } from "../theme";
 import { CameraButton } from "./camera-button";

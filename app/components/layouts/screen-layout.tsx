@@ -62,16 +62,6 @@ const InnerContainer = styled.View<{ isRootScreen: boolean }>`
     props.isRootScreen ? 0 : symbols.spacing.appVertical};
 `;
 
-const ControlsContainer = styled.View<{ progress?: number }>`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  padding-vertical: ${symbols.spacing._8}px;
-  margin-bottom: ${(props) =>
-    typeof props.progress === "undefined" ? symbols.spacing._16 : 0}px;
-`;
-
 const ContentContainerScroll = styled.ScrollView`
   flex: 1;
 `;

@@ -1,10 +1,8 @@
-import { Linking } from "expo";
-import * as O from "fp-ts/lib/Option";
-import * as TE from "fp-ts/lib/TaskEither";
-import { pipe } from "fp-ts/lib/pipeable";
-
 import { IErr } from "@urban-jungle/shared/utils/err";
-
+import * as Linking from "expo-linking";
+import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/lib/pipeable";
+import * as TE from "fp-ts/lib/TaskEither";
 import { getInitialDeepLink } from "./deep-linking";
 
 const HOUSEHOLD_INVITATION_LINK = "auth/to-household";

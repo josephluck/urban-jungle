@@ -9,25 +9,23 @@ import { CameraProvider } from "./components/camera";
 import { GlobalLoading } from "./components/global-loading";
 import { AuthMachineProvider } from "./features/auth/machine/machine";
 // import * as reactotron from "./reactotron";
-import {
-  selectInitializing,
-  selectIsLoggedIn,
-} from "./features/auth/store/state";
 import { AuthenticationSubscription } from "./features/auth/subscriptions/auth";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
-import { selectedSelectedOrMostRecentHouseholdId } from "./features/households/store/state";
 import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
 import { ManageAuthMachineProvider } from "./features/manage/machine/machine";
 import { HouseholdPlantsSubscription } from "./features/plants/subscriptions/household-plants";
 import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/plant-photos";
-import {
-  hydrateThemeSetting,
-  selectCurrentProfileThemeIsDark,
-  selectThemeLoading,
-} from "./features/profiles/store/state";
 import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
 import { useFonts } from "./hooks/fonts";
 import { AppNavigation } from "./navigation/navigation";
+import {
+  hydrateThemeSetting,
+  selectCurrentProfileThemeIsDark,
+  selectedSelectedOrMostRecentHouseholdId,
+  selectInitializing,
+  selectIsLoggedIn,
+  selectThemeLoading,
+} from "./store/selectors";
 import { useStore } from "./store/state";
 import { GlobalErrorProvider, selectFirestoresInitialising } from "./store/ui";
 import { darkTheme, lightTheme } from "./theme";

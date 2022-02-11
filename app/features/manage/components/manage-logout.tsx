@@ -5,8 +5,8 @@ import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { ListItem } from "../../../components/list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
+import { signOut } from "../../../store/effects";
 import { symbols } from "../../../theme";
-import { signOut } from "../../auth/store/effects";
 
 export const ManageLogoutScreen = ({}: StackScreenProps<
   Record<keyof ManageLogoutRouteParams, undefined>

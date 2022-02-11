@@ -2,8 +2,8 @@ import { pipe } from "fp-ts/lib/function";
 import * as O from "fp-ts/lib/Option";
 import React, { useCallback } from "react";
 import { View } from "react-native";
-import { selectPhotosForPlant as selectPhotoForPlant } from "../features/photos/store/state";
-import { deletePlantPhoto } from "../features/plants/store/effects";
+import { deletePlantPhoto } from "../store/effects";
+import { selectPhotosForPlant } from "../store/selectors";
 import { useStore } from "../store/state";
 import { useRunWithUIState } from "../store/ui";
 import { symbols } from "../theme";
@@ -19,7 +19,7 @@ export const PlantImageHeader = ({
   householdId: string;
 }) => {
   const runWithUIState = useRunWithUIState();
-  const photo = useStore(() => selectPhotoForPlant(householdId, plantId), [
+  const photo = useStore(() => selectPhotosForPlant(householdId, plantId), [
     householdId,
     plantId,
   ]);

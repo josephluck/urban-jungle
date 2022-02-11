@@ -2,8 +2,8 @@ import { PhotoModel } from "@urban-jungle/shared/models/photo";
 import firebase from "firebase";
 import { useEffect } from "react";
 import { database } from "../../../database";
+import { removePhotos, upsertPhotos } from "../../../store/selectors";
 import { setFirestoreLoaded } from "../../../store/ui";
-import { removePhotos, upsertPhotos } from "../../photos/store/state";
 
 /**
  * Subscribes to any plant photos for the given household

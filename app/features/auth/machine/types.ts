@@ -1,6 +1,6 @@
 import { ImageModel } from "@urban-jungle/shared/models/image";
 
-export type Context = {
+export type SignUpContext = {
   authenticationFlow: "splash" | "signUp" | "signIn";
   authType: "phone" | "email";
   phoneNumber?: string;

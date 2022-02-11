@@ -62,6 +62,7 @@
     "expo-image-manipulator": "~10.2.0",
     "expo-image-picker": "~12.0.1",
     "expo-linear-gradient": "~11.0.3",
+    "expo-linking": "~3.0.0",
     "expo-notifications": "~0.14.0",
     "expo-permissions": "~13.1.0",
     "expo-updates": "~0.11.6",
