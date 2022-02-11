@@ -114,8 +114,8 @@ const PlantsStack = () => (
 );
 
 const ManageStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    {[
+  <Navigator
+    screens={[
       manageRoute,
       manageProfileRoute,
       manageProfileChooseAuthVerify,
@@ -123,14 +123,8 @@ const ManageStack = () => (
       manageProfilePassword,
       manageProfilePhone,
       manageProfilePhoneVerify,
-    ].map((route) => (
-      <Stack.Screen
-        key={route.routeName}
-        name={route.routeName}
-        component={route.screen}
-      />
-    ))}
-  </Stack.Navigator>
+    ]}
+  />
 );
 
 export const AppNavigation = () => {
