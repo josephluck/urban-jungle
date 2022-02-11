@@ -81,7 +81,27 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout
+      onBack={navigation.goBack}
+      footer={
+        <View
+          style={{
+            paddingHorizontal: symbols.spacing.appHorizontal,
+            paddingVertical: symbols.spacing._16,
+          }}
+        >
+          {context.authenticationFlow === "signIn" ? (
+            <EmailButton type="plain" onPress={handleForgottenPassword}>
+              I've forgotten my password
+            </EmailButton>
+          ) : null}
+
+          <Button onPress={handleSignUp} large>
+            Next
+          </Button>
+        </View>
+      }
+    >
       <SplashContainer>
         <ScreenTitle
           title="🌱 Urban Jungle"
@@ -98,22 +118,9 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
           secureTextEntry
           returnKeyType="send"
           onSubmitEditing={handleSignUp}
-          autoFocus
           autoCapitalize="none"
           autoCorrect={false}
         />
-
-        <View>
-          {context.authenticationFlow === "signIn" ? (
-            <EmailButton type="plain" onPress={handleForgottenPassword}>
-              I've forgotten my password
-            </EmailButton>
-          ) : null}
-
-          <Button onPress={handleSignUp} large>
-            Next
-          </Button>
-        </View>
       </SplashContainer>
     </ScreenLayout>
   );

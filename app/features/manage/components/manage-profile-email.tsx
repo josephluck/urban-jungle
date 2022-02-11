@@ -3,6 +3,7 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
@@ -55,7 +56,21 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout
+      onBack={navigation.goBack}
+      footer={
+        <View
+          style={{
+            paddingHorizontal: symbols.spacing.appHorizontal,
+            paddingVertical: symbols.spacing._16,
+          }}
+        >
+          <Button onPress={handleSubmit} large>
+            Next
+          </Button>
+        </View>
+      }
+    >
       <ContentContainer>
         <ScreenTitle
           title={getScreenTitle(context.flow)}
@@ -70,16 +85,11 @@ const ManageProfileEmail = ({ navigation }: StackScreenProps<{}>) => {
           textContentType="emailAddress"
           autoCompleteType="email"
           keyboardType="email-address"
-          autoFocus
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="send"
           onSubmitEditing={handleSubmit}
         />
-
-        <Button onPress={handleSubmit} large>
-          Next
-        </Button>
       </ContentContainer>
     </ScreenLayout>
   );

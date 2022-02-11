@@ -5,6 +5,7 @@ import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useRef } from "react";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
@@ -70,7 +71,21 @@ const ManageProfilePhone = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout
+      onBack={navigation.goBack}
+      footer={
+        <View
+          style={{
+            paddingHorizontal: symbols.spacing.appHorizontal,
+            paddingVertical: symbols.spacing._16,
+          }}
+        >
+          <Button onPress={handleSubmit} large>
+            Next
+          </Button>
+        </View>
+      }
+    >
       <ContentContainer>
         <ScreenTitle
           title={getScreenTitle(context.flow)}
@@ -89,12 +104,7 @@ const ManageProfilePhone = ({ navigation }: StackScreenProps<{}>) => {
           returnKeyType="send"
           autoCapitalize="none"
           autoCorrect={false}
-          autoFocus
         />
-
-        <Button onPress={handleSubmit} large>
-          Next
-        </Button>
       </ContentContainer>
 
       <FirebaseRecaptchaVerifierModal

@@ -69,7 +69,28 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
   }, [execute]);
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout
+      onBack={navigation.goBack}
+      scrollView={false}
+      footer={
+        <View
+          style={{
+            paddingHorizontal: symbols.spacing.appHorizontal,
+            paddingVertical: symbols.spacing._16,
+          }}
+        >
+          <EmailButton type="plain" onPress={handleUseEmail}>
+            {context.authenticationFlow === "signUp"
+              ? "Sign up with email"
+              : "Sign in with email"}
+          </EmailButton>
+
+          <Button onPress={handleSignUp} large>
+            Next
+          </Button>
+        </View>
+      }
+    >
       <SplashContainer>
         <ScreenTitle
           title="🌱 Urban Jungle"
@@ -83,22 +104,9 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
           keyboardType="phone-pad"
           returnKeyType="send"
           onSubmitEditing={handleSignUp}
-          autoFocus
           autoCapitalize="none"
           autoCorrect={false}
         />
-
-        <View>
-          <EmailButton type="plain" onPress={handleUseEmail}>
-            {context.authenticationFlow === "signUp"
-              ? "Sign up with email"
-              : "Sign in with email"}
-          </EmailButton>
-
-          <Button onPress={handleSignUp} large>
-            Next
-          </Button>
-        </View>
       </SplashContainer>
 
       {/* <FirebaseRecaptchaVerifierModal

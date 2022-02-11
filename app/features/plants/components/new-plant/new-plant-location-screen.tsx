@@ -107,7 +107,7 @@ export const NewPlantLocationScreen = ({
       <ScreenContent>
         <ScreenTitle title="Set a location" />
         {newLocationFieldVisible ? (
-          <TextField {...registerTextInput("location")} autoFocus />
+          <TextField {...registerTextInput("location")} />
         ) : (
           <PickerField
             multiValue={false}

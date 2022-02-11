@@ -3,6 +3,7 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
+import { View } from "react-native";
 import { Button } from "../../../components/button";
 import { ScreenLayout } from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
@@ -12,6 +13,7 @@ import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
 import { signInWithEmail } from "../../../store/effects";
 import { useRunWithUIState } from "../../../store/ui";
+import { symbols } from "../../../theme";
 import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
@@ -48,7 +50,21 @@ const SignUpResetPassword = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout
+      onBack={navigation.goBack}
+      footer={
+        <View
+          style={{
+            paddingHorizontal: symbols.spacing.appHorizontal,
+            paddingVertical: symbols.spacing._16,
+          }}
+        >
+          <Button onPress={handleSubmit} large>
+            Next
+          </Button>
+        </View>
+      }
+    >
       <SplashContainer>
         <ScreenTitle
           title="🌱 Urban Jungle"
@@ -61,14 +77,9 @@ const SignUpResetPassword = ({ navigation }: StackScreenProps<{}>) => {
           secureTextEntry
           returnKeyType="send"
           onSubmitEditing={handleSubmit}
-          autoFocus
           autoCapitalize="none"
           autoCorrect={false}
         />
-
-        <Button onPress={handleSubmit} large>
-          Next
-        </Button>
       </SplashContainer>
     </ScreenLayout>
   );
