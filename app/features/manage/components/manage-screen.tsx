@@ -94,7 +94,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
     <ScreenLayout isRootScreen>
       {selectedHouseholdId ? (
         <ScreenContainer>
-          <WelcomeMessageContainer first>
+          <WelcomeMessageContainer>
             <Heading>Settings</Heading>
           </WelcomeMessageContainer>
           <View style={{ paddingHorizontal: symbols.spacing.appHorizontal }}>
@@ -250,10 +250,9 @@ const ReleaseDateText = styled(TertiaryText)`
   font-size: ${symbols.font._8.size}px;
 `;
 
-const WelcomeMessageContainer = styled.View<{ first?: boolean }>`
+const WelcomeMessageContainer = styled.View`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  margin-top: ${(props) =>
-    props.first ? symbols.spacing._20 : symbols.spacing._16}px;
+  margin-top: ${symbols.spacing._20}px;
   margin-bottom: ${symbols.spacing._20}px;
   flex-direction: row;
   align-items: center;

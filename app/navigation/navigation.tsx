@@ -95,7 +95,10 @@ const Navigator: React.FC<{
               component={route.screen}
               options={{
                 cardStyle: {
-                  borderRadius: symbols.borderRadius.large,
+                  borderTopLeftRadius: symbols.borderRadius.large,
+                  borderTopRightRadius: symbols.borderRadius.large,
+                  borderBottomLeftRadius: 0,
+                  borderBottomRightRadius: 0,
                 },
                 headerStyle: {
                   backgroundColor: theme.modalBackground,
