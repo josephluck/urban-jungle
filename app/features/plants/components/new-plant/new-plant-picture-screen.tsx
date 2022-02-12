@@ -91,10 +91,8 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
     [],
   );
 
-  // TODO: support progress bar
   return (
     <ScreenLayout
-      onBack={navigation.goBack}
       progress={20}
       footer={
         <Footer>

@@ -82,10 +82,7 @@ export const PlantScreen = ({
   }, [plantId]);
 
   return (
-    <ScreenLayout
-      onBack={navigation.goBack}
-      stickyHeaderIndices={stickyHeaderIndices}
-    >
+    <ScreenLayout stickyHeaderIndices={stickyHeaderIndices}>
       <NavigationButtonList>
         <TouchableIcon icon="edit-3" onPress={handleEdit} />
         <TouchableIcon

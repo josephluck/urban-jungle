@@ -91,7 +91,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
     });
 
   return (
-    <ScreenLayout onBack={navigation.goBack} isRootScreen>
+    <ScreenLayout isRootScreen>
       {selectedHouseholdId ? (
         <ScreenContainer>
           <WelcomeMessageContainer first>

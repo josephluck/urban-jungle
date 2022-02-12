@@ -23,7 +23,7 @@ const ManageProfileChooseAuthVerifyScreen = ({
     });
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout scrollView={false}>
       <ContentContainer>
         <ScreenTitle
           title={getScreenTitle(context.flow)}

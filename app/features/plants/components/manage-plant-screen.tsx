@@ -80,7 +80,6 @@ export const ManagePlantScreen = ({
 
   return (
     <ScreenLayout
-      onBack={navigation.goBack}
       footer={
         <Footer>
           <Button large onPress={handleSubmit}>

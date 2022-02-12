@@ -91,7 +91,6 @@ export const NewPlantLocationScreen = ({
 
   return (
     <ScreenLayout
-      onBack={navigation.goBack}
       progress={90}
       footer={
         <Footer>

@@ -25,7 +25,7 @@ const SignUpResetPasswordInstructions = ({
   );
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false}>
+    <ScreenLayout scrollView={false}>
       <SplashContainer>
         <ScreenTitle title="🌱 Urban Jungle" />
 

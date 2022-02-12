@@ -1,5 +1,10 @@
 import React from "react";
-import { KeyboardAvoidingView, SafeAreaView, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  View,
+} from "react-native";
 import styled from "styled-components/native";
 import { symbols } from "../../theme";
 import { ProgressBar } from "../progress-bar";
@@ -15,8 +20,6 @@ export const ScreenLayout = ({
 }: {
   stickyHeaderIndices?: number[];
   children: React.ReactNode;
-  // TODO: DEPRECATE
-  onBack?: () => void;
   footer?: React.ReactNode;
   headerRightButton?: React.ReactNode;
   scrollView?: boolean;
@@ -26,7 +29,9 @@ export const ScreenLayout = ({
 }) => {
   return (
     <Container isModal={isModal}>
-      <AvoidingView behavior="padding">
+      <AvoidingView
+        behavior={Platform.select({ ios: "padding", android: "position" })}
+      >
         {typeof progress === "number" ? (
           <View style={{ marginTop: symbols.spacing._16 }}>
             <ProgressBar progress={progress} />

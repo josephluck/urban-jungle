@@ -70,7 +70,6 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
 
   return (
     <ScreenLayout
-      onBack={navigation.goBack}
       scrollView={false}
       footer={
         <View

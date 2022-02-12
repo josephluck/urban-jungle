@@ -51,7 +51,6 @@ const SignUpResetPassword = ({ navigation }: StackScreenProps<{}>) => {
 
   return (
     <ScreenLayout
-      onBack={navigation.goBack}
       footer={
         <View
           style={{

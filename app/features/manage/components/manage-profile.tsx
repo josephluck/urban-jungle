@@ -61,7 +61,6 @@ export const ManageProfileScreen = ({
 
   return (
     <ScreenLayout
-      onBack={navigation.goBack}
       footer={
         <Footer>
           <Button large onPress={handleSubmit}>

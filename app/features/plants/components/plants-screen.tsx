@@ -45,7 +45,7 @@ export const PlantsScreen = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <ScreenLayout onBack={navigation.goBack} scrollView={false} isRootScreen>
+    <ScreenLayout scrollView={false} isRootScreen>
       <NavigationButtonList withoutClose>
         <TouchableIcon icon="plus" onPress={handleAddNew} />
       </NavigationButtonList>

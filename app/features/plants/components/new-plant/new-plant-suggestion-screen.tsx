@@ -49,7 +49,6 @@ export const NewPlantSuggestionScreen = ({
 
   return (
     <ScreenLayout
-      onBack={navigation.goBack}
       scrollView={false}
       progress={40}
       footer={
