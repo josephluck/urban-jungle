@@ -4,11 +4,13 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { CameraButton } from "../../../components/camera-button";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
@@ -53,13 +55,9 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
   );
 
   return (
-    <ScreenLayout scrollView={false}>
-      <SplashContainer>
-        <ScreenTitle title="🌱 Urban Jungle" description="?" />
-
-        <CameraButton viewport {...registerCameraField("avatar")} />
-
-        <View>
+    <ScreenLayout
+      footer={
+        <Footer>
           <EmailButton type="plain" onPress={handleSkip}>
             Skip
           </EmailButton>
@@ -67,7 +65,13 @@ const SignUpName = ({ navigation }: StackScreenProps<{}>) => {
           <Button onPress={handleSignUp} large>
             Next
           </Button>
-        </View>
+        </Footer>
+      }
+    >
+      <SplashContainer>
+        <ScreenTitle title="🌱 Urban Jungle" description="?" />
+
+        <CameraButton viewport {...registerCameraField("avatar")} />
       </SplashContainer>
     </ScreenLayout>
   );

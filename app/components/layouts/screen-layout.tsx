@@ -30,7 +30,7 @@ export const ScreenLayout = ({
   return (
     <Container isModal={isModal}>
       <AvoidingView
-        behavior={Platform.select({ ios: "padding", android: "position" })}
+        behavior={Platform.select({ ios: "padding", android: "height" })}
       >
         {typeof progress === "number" ? (
           <View style={{ marginTop: symbols.spacing._16 }}>

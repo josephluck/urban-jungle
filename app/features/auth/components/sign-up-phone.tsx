@@ -72,7 +72,6 @@ const SignUpPhone = ({ navigation }: StackScreenProps<{}>) => {
 
   return (
     <ScreenLayout
-      scrollView={false}
       footer={
         <Footer>
           <EmailButton type="plain" onPress={handleUseEmail}>

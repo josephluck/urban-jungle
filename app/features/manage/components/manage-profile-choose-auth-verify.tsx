@@ -1,9 +1,11 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
-import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
@@ -23,26 +25,28 @@ const ManageProfileChooseAuthVerifyScreen = ({
     });
 
   return (
-    <ScreenLayout scrollView={false}>
+    <ScreenLayout
+      footer={
+        <Footer>
+          {context.currentAuthProviders.includes("EMAIL") ? (
+            <ProviderButton onPress={makeSubmitHandler("EMAIL")} large>
+              Use my email address
+            </ProviderButton>
+          ) : null}
+
+          {context.currentAuthProviders.includes("PHONE") ? (
+            <ProviderButton onPress={makeSubmitHandler("PHONE")} large>
+              Use my phone number
+            </ProviderButton>
+          ) : null}
+        </Footer>
+      }
+    >
       <ContentContainer>
         <ScreenTitle
           title={getScreenTitle(context.flow)}
           description="You must sign in to continue"
         />
-
-        <View style={{ flex: 1 }} />
-
-        {context.currentAuthProviders.includes("EMAIL") ? (
-          <ProviderButton onPress={makeSubmitHandler("EMAIL")} large>
-            Use my email address
-          </ProviderButton>
-        ) : null}
-
-        {context.currentAuthProviders.includes("PHONE") ? (
-          <ProviderButton onPress={makeSubmitHandler("PHONE")} large>
-            Use my phone number
-          </ProviderButton>
-        ) : null}
       </ContentContainer>
     </ScreenLayout>
   );
