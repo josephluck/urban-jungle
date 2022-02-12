@@ -1,6 +1,6 @@
 {
   "name": "@urban-jungle/app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "__generated__/AppEntry.js",
   "scripts": {
     "start": "ENV=dev expo start",
