@@ -8,7 +8,6 @@ import styled from "styled-components/native";
 import { CameraProvider } from "./components/camera";
 import { GlobalLoading } from "./components/global-loading";
 import { AuthMachineProvider } from "./features/auth/machine/machine";
-// import * as reactotron from "./reactotron";
 import { AuthenticationSubscription } from "./features/auth/subscriptions/auth";
 import { ProfilesSubscription } from "./features/auth/subscriptions/profiles";
 import { CurrentProfileHouseholdsSubscription } from "./features/households/subscriptions/current-profile-households";
@@ -18,6 +17,7 @@ import { HouseholdPhotosSubscription } from "./features/plants/subscriptions/pla
 import { HouseholdTodosSubscription } from "./features/todos/subscriptions/household-todos";
 import { useFonts } from "./hooks/fonts";
 import { AppNavigation } from "./navigation/navigation";
+import { initSentry } from "./sentry";
 import {
   hydrateThemeSetting,
   selectCurrentProfileThemeIsDark,
@@ -30,7 +30,7 @@ import { useStore } from "./store/state";
 import { GlobalErrorProvider, selectFirestoresInitialising } from "./store/ui";
 import { darkTheme, lightTheme } from "./theme";
 
-// reactotron.configure();
+initSentry();
 
 export default () => {
   const themeLoading = useStore(selectThemeLoading);

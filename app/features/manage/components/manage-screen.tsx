@@ -36,7 +36,7 @@ import { manageProfileRoute } from "./manage-profile";
  * NB: if this errors, it's likely because you haven't run a release yet.
  * run yarn deploy:prepare to generate it
  */
-const releaseDate = require("../../../release-date.json");
+const pjson = require("../../../package.json");
 
 export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
   const { execute } = useManageAuthMachine();
@@ -217,7 +217,7 @@ export const ManageScreen = ({ navigation }: StackScreenProps<{}>) => {
             )}
           />
           <ReleaseDateContainer>
-            <ReleaseDateText>v.{releaseDate.releaseDate}</ReleaseDateText>
+            <ReleaseDateText>v.{pjson.version}</ReleaseDateText>
           </ReleaseDateContainer>
         </ScreenContainer>
       ) : null}

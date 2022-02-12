@@ -19,7 +19,7 @@ web-report/
 
 # App specific 
 
-env.*.json
-release-date.json
+env.dev.json
+env.prod.json
 google-services.json
 GoogleService-Info.plist
