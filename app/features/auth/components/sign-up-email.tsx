@@ -89,7 +89,7 @@ const SignUpEmail = ({ navigation }: StackScreenProps<{}>) => {
 };
 
 const EmailButton = styled(Button)`
-  margin-bottom: ${symbols.spacing._8};
+  margin-bottom: ${symbols.spacing._8}px;
 `;
 
 export const signUpEmailRoute = makeNavigationRoute({

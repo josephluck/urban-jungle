@@ -75,28 +75,28 @@ const InputsContainer = styled.View`
 
 const Input = styled.TextInput`
   color: ${(props) => props.theme.defaultTextColor};
-  border-top-left-radius: ${symbols.borderRadius.small};
-  border-bottom-left-radius: ${symbols.borderRadius.small};
+  border-top-left-radius: ${symbols.borderRadius.small}px;
+  border-bottom-left-radius: ${symbols.borderRadius.small}px;
   font-size: ${symbols.font._16.size};
   line-height: ${symbols.font._16.lineHeight};
-  padding-horizontal: ${symbols.spacing._8};
-  padding-vertical: ${symbols.spacing._8};
-  border-width: 0;
-  border-right-width: 1;
+  padding-horizontal: ${symbols.spacing._8}px;
+  padding-vertical: ${symbols.spacing._8}px;
+  border-width: 0px;
+  border-right-width: 1px;
   border-color: ${(props) => props.theme.appBackground};
   flex: 2;
 `;
 
 const StyledPicker = styled.Picker`
   color: ${(props) => props.theme.defaultTextColor};
-  border-top-right-radius: ${symbols.borderRadius.small};
-  border-bottom-right-radius: ${symbols.borderRadius.small};
-  font-size: ${symbols.font._16.size};
-  line-height: ${symbols.font._16.lineHeight};
-  padding-horizontal: ${symbols.spacing._12};
-  padding-vertical: ${symbols.spacing._8};
+  border-top-right-radius: ${symbols.borderRadius.small}px;
+  border-bottom-right-radius: ${symbols.borderRadius.small}px;
+  font-size: ${symbols.font._16.size}px;
+  line-height: ${symbols.font._16.lineHeight}px;
+  padding-horizontal: ${symbols.spacing._12}px;
+  padding-vertical: ${symbols.spacing._8}px;
   background-color: ${(props) => props.theme.fieldBackground};
-  border-width: 0;
+  border-width: 0px;
   flex: 1;
   height: 100%;
 `;
@@ -106,8 +106,8 @@ const PickerIconWrapper = styled.View`
   right: 0;
   top: 0;
   height: 100%;
-  width: ${16 + symbols.spacing._8};
+  width: ${16 + symbols.spacing._8}px;
   justify-content: center;
   align-items: center;
-  padding-right: ${symbols.spacing._8};
+  padding-right: ${symbols.spacing._8}px;
 `;

@@ -68,7 +68,7 @@ export const ScreenTitle = ({
 const ScreenTitleContainer = styled.View`
   justify-content: center;
   align-items: center;
-  margin-bottom: ${symbols.spacing.appVertical};
+  margin-bottom: ${symbols.spacing.appVertical}px;
 `;
 
 const ScreenTitleHeading = styled(Heading)`
@@ -76,6 +76,6 @@ const ScreenTitleHeading = styled(Heading)`
 `;
 
 const ScreenTitleDescription = styled(Paragraph)`
-  margin-top: ${symbols.spacing._16};
+  margin-top: ${symbols.spacing._16}px;
   text-align: center;
 `;

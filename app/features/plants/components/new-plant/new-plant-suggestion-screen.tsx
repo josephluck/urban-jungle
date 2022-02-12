@@ -123,18 +123,18 @@ const SkipButton = styled(Button)`
 
 const SuggestionButton = styled(TouchableOpacity)`
   flex: 1;
-  margin-bottom: ${symbols.spacing._32};
-  margin-horizontal: ${symbols.spacing._16};
+  margin-bottom: ${symbols.spacing._32}px;
+  margin-horizontal: ${symbols.spacing._16}px;
   align-items: center;
 `;
 
 const SuggestionImage = styled(CircleImage)`
-  margin-bottom: ${symbols.spacing._8};
+  margin-bottom: ${symbols.spacing._8}px;
 `;
 
 const SuggestionName = styled(BodyText)`
   text-align: center;
-  max-width: 160;
+  max-width: 160px;
 `;
 
 export const newPlantSuggestionRoute = makeNavigationRoute({

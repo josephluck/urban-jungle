@@ -111,5 +111,5 @@ const BadgeWrapper = styled.View`
   justify-content: center;
   align-items: center;
   border-color: ${symbols.colors.pureWhite};
-  border-width: 2;
+  border-width: 2px;
 `;

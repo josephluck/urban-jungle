@@ -65,6 +65,6 @@ export const splashRoute = makeNavigationRoute({
 export const SplashContainer = styled.View`
   flex: 1;
   justify-content: space-between;
-  padding-horizontal: ${symbols.spacing.appHorizontal};
-  padding-bottom: ${symbols.spacing._16};
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-bottom: ${symbols.spacing._16}px;
 `;

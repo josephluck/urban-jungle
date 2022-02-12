@@ -65,7 +65,7 @@ const AvoidingView = styled(KeyboardAvoidingView)`
 const InnerContainer = styled.View<{ isRootScreen: boolean }>`
   flex: 1;
   padding-top: ${(props) =>
-    props.isRootScreen ? 0 : symbols.spacing.appVertical};
+    props.isRootScreen ? 0 : symbols.spacing.appVertical}px;
 `;
 
 const ContentContainerScroll = styled.ScrollView`

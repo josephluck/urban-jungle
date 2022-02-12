@@ -242,7 +242,7 @@ const ManageList = styled(FlatList as new () => FlatList<MiniProfile>)`
 const ReleaseDateContainer = styled.View`
   justify-content: center;
   align-items: center;
-  margin-vertical: ${symbols.spacing._16};
+  margin-vertical: ${symbols.spacing._16}px;
 `;
 
 const ReleaseDateText = styled(TertiaryText)`

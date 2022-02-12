@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleProp, TextInputProps, ViewProps } from "react-native";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
 
@@ -28,9 +27,9 @@ const Input = styled.TextInput`
   font-size: ${symbols.font._16.size};
   line-height: ${symbols.font._16.lineHeight};
   border-radius: ${symbols.borderRadius.small};
-  padding-horizontal: ${symbols.spacing._8};
-  padding-vertical: ${symbols.spacing._8};
+  padding-horizontal: ${symbols.spacing._8}px;
+  padding-vertical: ${symbols.spacing._8}px;
   background-color: ${(props) => props.theme.fieldBackground};
   color: ${(props) => props.theme.defaultTextColor};
-  border-width: 0;
+  border-width: 0px;
 `;

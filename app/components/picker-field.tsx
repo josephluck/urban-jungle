@@ -120,8 +120,8 @@ const OptionsContainer = styled.View<{ centered?: boolean }>`
 `;
 
 const Option = styled(TouchableOpacity)`
-  margin-bottom: ${symbols.spacing._4};
-  margin-right: ${symbols.spacing._4};
+  margin-bottom: ${symbols.spacing._4}px;
+  margin-right: ${symbols.spacing._4}px;
 `;
 
 const OptionLabel = styled(Label)<{
@@ -132,7 +132,7 @@ const OptionLabel = styled(Label)<{
     props.selected
       ? props.theme.optionBackgroundSelected
       : props.theme.optionBackground};
-  border-width: 2;
+  border-width: 2px;
   border-color: ${(props) =>
     props.selected
       ? props.theme.optionBorderSelected

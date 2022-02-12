@@ -160,8 +160,7 @@ const ImagesList = styled.View`
 `;
 
 const ImageWrapper = styled.View`
-  margin-horizontal: ${symbols.spacing._6};
-  margin-vertical: ${symbols.spacing._6};
+  margin: ${symbols.spacing._6}px;
 `;
 
 const SkipButton = styled(Button)`

@@ -1,7 +1,6 @@
 import React from "react";
 import { Picker, StyleProp, ViewProps } from "react-native";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
 import { FormField } from "./form-field";
 import { Icon } from "./icon";
@@ -67,9 +66,9 @@ const Input = styled.TextInput`
   border-bottom-left-radius: ${symbols.borderRadius.small};
   font-size: ${symbols.font._16.size};
   line-height: ${symbols.font._16.lineHeight};
-  padding-horizontal: ${symbols.spacing._8};
-  padding-vertical: ${symbols.spacing._8};
-  border-width: 0;
+  padding-horizontal: ${symbols.spacing._8}px;
+  padding-vertical: ${symbols.spacing._8}px;
+  border-width: 0px;
   border-right-width: 1;
   border-color: ${symbols.colors.appBackground};
   flex: 2;
@@ -80,10 +79,10 @@ const StyledPicker = styled.Picker`
   border-bottom-right-radius: ${symbols.borderRadius.small};
   font-size: ${symbols.font._16.size};
   line-height: ${symbols.font._16.lineHeight};
-  padding-horizontal: ${symbols.spacing._12};
-  padding-vertical: ${symbols.spacing._8};
+  padding-horizontal: ${symbols.spacing._12}px;
+  padding-vertical: ${symbols.spacing._8}px;
   background-color: ${symbols.colors.nearWhite};
-  border-width: 0;
+  border-width: 0px;
   flex: 1;
   height: 100%;
 `;
@@ -96,5 +95,5 @@ const PickerIconWrapper = styled.View`
   width: ${16 + symbols.spacing._8};
   justify-content: center;
   align-items: center;
-  padding-right: ${symbols.spacing._8};
+  padding-right: ${symbols.spacing._8}px;
 `;

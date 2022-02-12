@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-
 import { symbols } from "../theme";
 import { TertiaryText } from "./typography";
 
@@ -26,14 +25,14 @@ export const FormField = ({
 );
 
 const Container = styled.View`
-  margin-bottom: ${symbols.spacing._20};
+  margin-bottom: ${symbols.spacing._20}px;
 `;
 
 const LabelText = styled(TertiaryText)`
-  margin-bottom: ${symbols.spacing._6};
+  margin-bottom: ${symbols.spacing._6}px;
 `;
 
 const ErrorText = styled(TertiaryText)`
-  margin-top: ${symbols.spacing._6};
+  margin-top: ${symbols.spacing._6}px;
   color: ${symbols.colors.darkRed};
 `;

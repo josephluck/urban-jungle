@@ -60,7 +60,7 @@ const ContentContainer = styled.View`
 `;
 
 const ProviderButton = styled(Button)`
-  margin-top: ${symbols.spacing._8};
+  margin-top: ${symbols.spacing._8}px;
 `;
 
 export const manageProfileChooseAuthVerify = makeNavigationRoute({
