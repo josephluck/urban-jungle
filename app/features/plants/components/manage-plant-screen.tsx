@@ -6,10 +6,13 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { CameraButton } from "../../../components/camera-button";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { PickerField } from "../../../components/picker-field";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -22,7 +25,6 @@ import {
 } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
 
 type Fields = Required<Pick<PlantModel, "name" | "nickname" | "location">> & {
   avatar: ImageModel;
@@ -110,17 +112,6 @@ export const ManagePlantScreen = ({
     </ScreenLayout>
   );
 };
-
-const ContentContainer = styled.View`
-  flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-bottom: ${symbols.spacing.appHorizontal}px;
-`;
-
-const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
-`;
 
 type ManagePlantRouteParams = {
   plantId?: string;

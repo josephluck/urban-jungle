@@ -4,7 +4,11 @@ import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
-import { ScreenLayout } from "../../../../components/layouts/screen-layout";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "../../../../components/layouts/screen-layout";
 import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
 import { constraints, useForm } from "../../../../hooks/use-form";
@@ -77,30 +81,19 @@ export const NewPlantNicknameScreen = ({
         </Footer>
       }
     >
-      <ScreenContent>
+      <ContentContainer>
         <ScreenTitle
           title="Give it a name"
           description="Try something you'll remember easily."
         />
         <TextField {...registerTextInput("nickname")} />
-      </ScreenContent>
+      </ContentContainer>
     </ScreenLayout>
   );
 };
 
-const ScreenContent = styled.View`
-  flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
-`;
-
 const SkipButton = styled(Button)`
   margin-bottom: ${symbols.spacing._8}px;
-`;
-
-const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
 `;
 
 export const newPlantNicknameRoute = makeNavigationRoute({

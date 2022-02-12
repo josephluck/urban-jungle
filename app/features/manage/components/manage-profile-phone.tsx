@@ -5,10 +5,12 @@ import firebase from "firebase";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useRef } from "react";
-import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { env } from "../../../env";
@@ -73,16 +75,11 @@ const ManageProfilePhone = ({ navigation }: StackScreenProps<{}>) => {
   return (
     <ScreenLayout
       footer={
-        <View
-          style={{
-            paddingHorizontal: symbols.spacing.appHorizontal,
-            paddingVertical: symbols.spacing._16,
-          }}
-        >
+        <Footer>
           <Button onPress={handleSubmit} large>
             Next
           </Button>
-        </View>
+        </Footer>
       }
     >
       <ContentContainer>

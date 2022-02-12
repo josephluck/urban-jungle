@@ -10,10 +10,13 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { CameraButton } from "../../../components/camera-button";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
@@ -22,7 +25,6 @@ import { updateProfile } from "../../../store/effects";
 import { selectCurrentProfile } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
 
 type Fields = Required<Pick<ProfileModel, "name" | "avatar">>;
 
@@ -82,17 +84,6 @@ export const ManageProfileScreen = ({
     </ScreenLayout>
   );
 };
-
-const ContentContainer = styled.View`
-  flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-bottom: ${symbols.spacing.appHorizontal}px;
-`;
-
-const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
-`;
 
 type ManageProfileRouteParams = {
   profileId: string;

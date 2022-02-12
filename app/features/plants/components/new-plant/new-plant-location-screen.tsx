@@ -6,7 +6,11 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
-import { ScreenLayout } from "../../../../components/layouts/screen-layout";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "../../../../components/layouts/screen-layout";
 import { PickerField } from "../../../../components/picker-field";
 import { TextField } from "../../../../components/text-field";
 import { ScreenTitle } from "../../../../components/typography";
@@ -103,7 +107,7 @@ export const NewPlantLocationScreen = ({
         </Footer>
       }
     >
-      <ScreenContent>
+      <ContentContainer>
         <ScreenTitle title="Set a location" />
         {newLocationFieldVisible ? (
           <TextField {...registerTextInput("location")} />
@@ -120,24 +124,13 @@ export const NewPlantLocationScreen = ({
             {...registerSinglePickerInput("location")}
           />
         )}
-      </ScreenContent>
+      </ContentContainer>
     </ScreenLayout>
   );
 };
 
-const ScreenContent = styled.View`
-  flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
-`;
-
 const SkipButton = styled(Button)`
   margin-bottom: ${symbols.spacing._8}px;
-`;
-
-const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
 `;
 
 export const newPlantLocationRoute = makeNavigationRoute({

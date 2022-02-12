@@ -75,3 +75,13 @@ const ContentContainerScroll = styled.ScrollView`
 const ContentContainerView = styled.View`
   flex: 1;
 `;
+
+export const ContentContainer = styled.View`
+  flex: 1;
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+`;
+
+export const Footer = styled.View`
+  padding-horizontal: ${symbols.spacing.appHorizontal}px;
+  padding-vertical: ${symbols.spacing._20}px;
+`;

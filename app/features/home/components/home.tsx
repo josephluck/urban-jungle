@@ -6,7 +6,10 @@ import { SectionList, View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
 import { Icon } from "../../../components/icon";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { PlantListItem } from "../../../components/plant-list-item";
 import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { Heading, SubHeading } from "../../../components/typography";
@@ -165,11 +168,6 @@ export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {
 const WelcomeMessage = styled(Heading)`
   padding-horizontal: ${symbols.spacing.appHorizontal}px;
   margin-bottom: ${symbols.spacing._20}px;
-`;
-
-const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
 `;
 
 const SectionHeading = styled(SubHeading)`

@@ -3,9 +3,11 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import { View } from "react-native";
 import { Button } from "../../../components/button";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -13,7 +15,6 @@ import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
 import { signInWithEmail } from "../../../store/effects";
 import { useRunWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
 import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";
@@ -52,16 +53,11 @@ const SignUpResetPassword = ({ navigation }: StackScreenProps<{}>) => {
   return (
     <ScreenLayout
       footer={
-        <View
-          style={{
-            paddingHorizontal: symbols.spacing.appHorizontal,
-            paddingVertical: symbols.spacing._16,
-          }}
-        >
+        <Footer>
           <Button onPress={handleSubmit} large>
             Next
           </Button>
-        </View>
+        </Footer>
       }
     >
       <SplashContainer>

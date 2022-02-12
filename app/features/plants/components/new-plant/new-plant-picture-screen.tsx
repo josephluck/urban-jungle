@@ -8,7 +8,11 @@ import { Button } from "../../../../components/button";
 import { trimBase64FromImage, useCamera } from "../../../../components/camera";
 import { CircleButton, CircleImage } from "../../../../components/circle-image";
 import { Icon } from "../../../../components/icon";
-import { ScreenLayout } from "../../../../components/layouts/screen-layout";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "../../../../components/layouts/screen-layout";
 import { ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
@@ -115,7 +119,7 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
         </Footer>
       }
     >
-      <ScreenContent>
+      <ContentContainer>
         <ScreenTitle
           title={requiredImages > 1 ? "Grab some pictures" : "Grab a picture"}
           description={
@@ -143,16 +147,10 @@ export const NewPlantPictureScreen = ({ navigation }: StackScreenProps<{}>) => {
             </ImageWrapper>
           ) : null}
         </ImagesList>
-      </ScreenContent>
+      </ContentContainer>
     </ScreenLayout>
   );
 };
-
-const ScreenContent = styled.View`
-  flex: 1;
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
-`;
 
 const ImagesList = styled.View`
   align-items: center;
@@ -164,11 +162,6 @@ const ImagesList = styled.View`
 const ImageWrapper = styled.View`
   margin-horizontal: ${symbols.spacing._6};
   margin-vertical: ${symbols.spacing._6};
-`;
-
-const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
 `;
 
 const SkipButton = styled(Button)`

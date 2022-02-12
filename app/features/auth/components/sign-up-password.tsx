@@ -3,10 +3,12 @@ import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import { View } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../components/button";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
+import {
+  Footer,
+  ScreenLayout,
+} from "../../../components/layouts/screen-layout";
 import { TextField } from "../../../components/text-field";
 import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
@@ -83,12 +85,7 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
   return (
     <ScreenLayout
       footer={
-        <View
-          style={{
-            paddingHorizontal: symbols.spacing.appHorizontal,
-            paddingVertical: symbols.spacing._16,
-          }}
-        >
+        <Footer>
           {context.authenticationFlow === "signIn" ? (
             <EmailButton type="plain" onPress={handleForgottenPassword}>
               I've forgotten my password
@@ -98,7 +95,7 @@ const SignUpPassword = ({ navigation }: StackScreenProps<{}>) => {
           <Button onPress={handleSignUp} large>
             Next
           </Button>
-        </View>
+        </Footer>
       }
     >
       <SplashContainer>

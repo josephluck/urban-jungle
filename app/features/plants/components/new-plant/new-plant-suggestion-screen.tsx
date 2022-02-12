@@ -6,7 +6,10 @@ import { FlatList } from "react-native";
 import styled from "styled-components/native";
 import { Button } from "../../../../components/button";
 import { CircleImage } from "../../../../components/circle-image";
-import { ScreenLayout } from "../../../../components/layouts/screen-layout";
+import {
+  Footer,
+  ScreenLayout,
+} from "../../../../components/layouts/screen-layout";
 import { TouchableOpacity } from "../../../../components/touchable-opacity";
 import { BodyText, ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
@@ -116,11 +119,6 @@ export const NewPlantSuggestionScreen = ({
 
 const SkipButton = styled(Button)`
   margin-bottom: ${symbols.spacing._8}px;
-`;
-
-const Footer = styled.View`
-  padding-horizontal: ${symbols.spacing.appHorizontal}px;
-  padding-vertical: ${symbols.spacing._20}px;
 `;
 
 const SuggestionButton = styled(TouchableOpacity)`
