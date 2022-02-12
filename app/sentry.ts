@@ -12,3 +12,9 @@ export const initSentry = () => {
     release: pjson.version,
   });
 };
+
+export const sentryLogin = (user: Sentry.Browser.User) => {
+  Sentry.Browser.setUser(user);
+};
+
+export const sentryLogout = () => Sentry.Browser.setUser(null);

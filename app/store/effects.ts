@@ -28,6 +28,7 @@ import {
   getAndParseInitialHouseholdInvitationDeepLink,
   makeHouseholdInvitationDeepLink,
 } from "../linking/household-invitation";
+import { sentryLogin, sentryLogout } from "../sentry";
 import {
   selectAuthProviderEmail,
   selectAuthProviderPhone,
@@ -272,7 +273,10 @@ export const handleInitialHouseholdInvitationLink = (
     TE.chain(storeSelectedHouseholdIdToStorage), // TODO: the redirection happens before this is fired
   );
 
-export const signOut = store.createEffect(() => firebase.auth().signOut());
+export const signOut = store.createEffect(() => {
+  firebase.auth().signOut();
+  sentryLogout();
+});
 
 export const fetchOrCreateProfile = (
   signUpContext: SignUpContext,
@@ -766,6 +770,10 @@ export const fetchProfile = (id: string): TE.TaskEither<IErr, ProfileModel> =>
       }
       const profile = response.data() as ProfileModel;
       upsertProfile(profile);
+      sentryLogin({
+        id: profile.id,
+        email: profile.email,
+      });
       return profile;
     },
     () => "NOT_FOUND" as IErr,
