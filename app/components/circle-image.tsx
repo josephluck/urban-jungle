@@ -105,7 +105,7 @@ const CircleContainerButton = styled(TouchableOpacity)``;
 const BadgeWrapper = styled.View`
   position: absolute;
   background-color: ${symbols.colors.darkGreen};
-  border-radius: 999;
+  border-radius: 999px;
   width: ${badgeSize + 4}px;
   height: ${badgeSize + 4}px;
   justify-content: center;

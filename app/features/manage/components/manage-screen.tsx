@@ -247,7 +247,7 @@ const ReleaseDateContainer = styled.View`
 
 const ReleaseDateText = styled(TertiaryText)`
   color: ${symbols.colors.lightOffGray};
-  font-size: ${symbols.font._8.size};
+  font-size: ${symbols.font._8.size}px;
 `;
 
 const WelcomeMessageContainer = styled.View<{ first?: boolean }>`

@@ -69,7 +69,7 @@ export const DualNumberPickerField = <Pv extends any>({
 const InputsContainer = styled.View`
   background-color: ${(props) => props.theme.fieldBackground};
   flex-direction: row;
-  border-radius: ${symbols.borderRadius.small};
+  border-radius: ${symbols.borderRadius.small}px;
   overflow: hidden;
 `;
 
@@ -77,8 +77,8 @@ const Input = styled.TextInput`
   color: ${(props) => props.theme.defaultTextColor};
   border-top-left-radius: ${symbols.borderRadius.small}px;
   border-bottom-left-radius: ${symbols.borderRadius.small}px;
-  font-size: ${symbols.font._16.size};
-  line-height: ${symbols.font._16.lineHeight};
+  font-size: ${symbols.font._16.size}px;
+  line-height: ${symbols.font._16.lineHeight}px;
   padding-horizontal: ${symbols.spacing._8}px;
   padding-vertical: ${symbols.spacing._8}px;
   border-width: 0px;

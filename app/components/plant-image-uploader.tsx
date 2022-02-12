@@ -26,5 +26,5 @@ export const PlantImageUploader = ({
 };
 
 const PlantCameraButton = styled(CameraButton)`
-  border-radius: ${symbols.borderRadius.large};
+  border-radius: ${symbols.borderRadius.large}px;
 `;

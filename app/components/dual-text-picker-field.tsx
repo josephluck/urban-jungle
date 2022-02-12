@@ -57,15 +57,15 @@ export const DualTextPickerField = <Pv extends any>({
 const InputsContainer = styled.View`
   background-color: ${symbols.colors.nearWhite};
   flex-direction: row;
-  border-radius: ${symbols.borderRadius.small};
+  border-radius: ${symbols.borderRadius.small}px;
   overflow: hidden;
 `;
 
 const Input = styled.TextInput`
-  border-top-left-radius: ${symbols.borderRadius.small};
-  border-bottom-left-radius: ${symbols.borderRadius.small};
-  font-size: ${symbols.font._16.size};
-  line-height: ${symbols.font._16.lineHeight};
+  border-top-left-radius: ${symbols.borderRadius.small}px;
+  border-bottom-left-radius: ${symbols.borderRadius.small}px;
+  font-size: ${symbols.font._16.size}px;
+  line-height: ${symbols.font._16.lineHeight}px;
   padding-horizontal: ${symbols.spacing._8}px;
   padding-vertical: ${symbols.spacing._8}px;
   border-width: 0px;
@@ -75,10 +75,10 @@ const Input = styled.TextInput`
 `;
 
 const StyledPicker = styled.Picker`
-  border-top-right-radius: ${symbols.borderRadius.small};
-  border-bottom-right-radius: ${symbols.borderRadius.small};
-  font-size: ${symbols.font._16.size};
-  line-height: ${symbols.font._16.lineHeight};
+  border-top-right-radius: ${symbols.borderRadius.small}px;
+  border-bottom-right-radius: ${symbols.borderRadius.small}px;
+  font-size: ${symbols.font._16.size}px;
+  line-height: ${symbols.font._16.lineHeight}px;
   padding-horizontal: ${symbols.spacing._12}px;
   padding-vertical: ${symbols.spacing._8}px;
   background-color: ${symbols.colors.nearWhite};
@@ -92,7 +92,7 @@ const PickerIconWrapper = styled.View`
   right: 0;
   top: 0;
   height: 100%;
-  width: ${16 + symbols.spacing._8};
+  width: ${16 + symbols.spacing._8}px;
   justify-content: center;
   align-items: center;
   padding-right: ${symbols.spacing._8}px;

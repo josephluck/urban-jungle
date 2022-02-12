@@ -24,9 +24,9 @@ export const TextField = ({
 );
 
 const Input = styled.TextInput`
-  font-size: ${symbols.font._16.size};
-  line-height: ${symbols.font._16.lineHeight};
-  border-radius: ${symbols.borderRadius.small};
+  font-size: ${symbols.font._16.size}px;
+  line-height: ${symbols.font._16.lineHeight}px;
+  border-radius: ${symbols.borderRadius.small}px;
   padding-horizontal: ${symbols.spacing._8}px;
   padding-vertical: ${symbols.spacing._8}px;
   background-color: ${(props) => props.theme.fieldBackground};
