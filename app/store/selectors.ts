@@ -48,14 +48,14 @@ export const selectCurrentUserId = (): O.Option<string> =>
     O.map((u) => u.uid),
   );
 
-export const selectProfileById = (id: O.Option<string>) => (
-  profiles: Record<string, ProfileModel>,
-): O.Option<ProfileModel> =>
-  pipe(
-    id,
-    O.map((i) => O.fromNullable(profiles[i])),
-    O.flatten,
-  );
+export const selectProfileById =
+  (id: O.Option<string>) =>
+  (profiles: Record<string, ProfileModel>): O.Option<ProfileModel> =>
+    pipe(
+      id,
+      O.map((i) => O.fromNullable(profiles[i])),
+      O.flatten,
+    );
 
 export const selectCurrentProfile = store.createSelector(
   (s): O.Option<ProfileModel> =>
@@ -308,18 +308,16 @@ export const selectUniqueLocations = (householdId: string): string[] => [
   ),
 ];
 
-export const isPlantAvatarThisPhoto = (
-  householdId: string,
-  plantId: string,
-) => (photoId: string) =>
-  pipe(
-    selectPlantByHouseholdId(householdId, plantId),
-    O.chain((plant) => O.fromNullable(plant.avatar)),
-    O.fold(
-      () => false,
-      (photo) => photo.id === photoId,
-    ),
-  );
+export const isPlantAvatarThisPhoto =
+  (householdId: string, plantId: string) => (photoId: string) =>
+    pipe(
+      selectPlantByHouseholdId(householdId, plantId),
+      O.chain((plant) => O.fromNullable(plant.avatar)),
+      O.fold(
+        () => false,
+        (photo) => photo.id === photoId,
+      ),
+    );
 
 export const getPlantName = (plant: PlantModel) =>
   plant.nickname || plant.name || "";
@@ -513,7 +511,9 @@ export const upsertProfile = store.createMutator((s, profile: ProfileModel) => {
 export const setProfileTheme = store.createMutator(
   (s, profileId: string, theme: ThemeSetting) => {
     s.profiles.theme = theme;
-    s.profiles.profiles[profileId].theme = theme;
+    if (s.profiles.profiles?.[profileId]?.theme) {
+      s.profiles.profiles[profileId].theme = theme;
+    }
   },
 );
 
@@ -590,26 +590,26 @@ export const selectDueTodos = (householdId: string) => () =>
     .filter((todo) => moment(todo.nextDue).isSame(moment(), "date"))
     .map((todo) => todo.id);
 
-export const selectTodosForPlant = (plantId: string) => (
-  householdId: string,
-): TodoModel[] =>
-  selectTodosByHouseholdId(householdId).filter(
-    (todo) => todo.plantId === plantId,
-  );
+export const selectTodosForPlant =
+  (plantId: string) =>
+  (householdId: string): TodoModel[] =>
+    selectTodosByHouseholdId(householdId).filter(
+      (todo) => todo.plantId === plantId,
+    );
 
 export type TodoWithPlantModel = TodoModel & {
   plant: O.Option<PlantModel>;
 };
 
-export const selectTodosAndPlantsByIds = (householdId: string) => (
-  todoIds: string[],
-): TodoWithPlantModel[] =>
-  selectTodosByIds(householdId, todoIds)
-    .map((todo) => ({
-      ...todo,
-      plant: selectPlantByHouseholdId(householdId, todo.plantId),
-    }))
-    .filter((todo) => O.isSome(todo.plant));
+export const selectTodosAndPlantsByIds =
+  (householdId: string) =>
+  (todoIds: string[]): TodoWithPlantModel[] =>
+    selectTodosByIds(householdId, todoIds)
+      .map((todo) => ({
+        ...todo,
+        plant: selectPlantByHouseholdId(householdId, todo.plantId),
+      }))
+      .filter((todo) => O.isSome(todo.plant));
 
 export const sortTodosByLocationAndPlant = (
   { plant: plantA }: TodoWithPlantModel,
