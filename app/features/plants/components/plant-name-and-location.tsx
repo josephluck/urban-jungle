@@ -1,10 +1,9 @@
+import { Label } from "@urban-jungle/design/components/label";
+import { SubHeading } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-
-import { symbols } from "../theme";
-import { Label } from "./label";
-import { SubHeading } from "./typography";
 
 export const PlantNameAndLocation = ({
   name,

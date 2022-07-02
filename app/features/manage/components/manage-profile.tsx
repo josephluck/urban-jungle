@@ -1,4 +1,11 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "@urban-jungle/design/components/button";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { TextField } from "@urban-jungle/design/components/text-field";
 import { makeImageModel } from "@urban-jungle/shared/models/image";
 import {
   makeProfileModel,
@@ -10,14 +17,6 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import { Button } from "../../../components/button";
-import { CameraButton } from "../../../components/camera-button";
-import {
-  ContentContainer,
-  Footer,
-  ScreenLayout,
-} from "../../../components/layouts/screen-layout";
-import { TextField } from "../../../components/text-field";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
@@ -25,6 +24,7 @@ import { updateProfile } from "../../../store/effects";
 import { selectCurrentProfile } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
+import { CameraButton } from "../../camera/camera-button";
 
 type Fields = Required<Pick<ProfileModel, "name" | "avatar">>;
 

@@ -1,3 +1,9 @@
+import { Button } from "@urban-jungle/design/components/button";
+import { FormField } from "@urban-jungle/design/components/form-field";
+import { Icon } from "@urban-jungle/design/components/icon";
+import { ImagePreview } from "@urban-jungle/design/components/image-preview";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import { symbols } from "@urban-jungle/design/theme";
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import { Camera } from "expo-camera";
@@ -7,14 +13,8 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-import { useRunWithUIState } from "../store/ui";
-import { symbols } from "../theme";
-import { Button } from "./button";
+import { useRunWithUIState } from "../../store/ui";
 import { useCamera } from "./camera";
-import { FormField } from "./form-field";
-import { Icon } from "./icon";
-import { ImagePreview } from "./image-preview";
-import { TouchableOpacity } from "./touchable-opacity";
 
 export type CameraFieldProps = {
   value?: ImageModel;
@@ -40,13 +40,8 @@ export const CameraField = ({
   direction = Camera.Constants.Type.back,
   aspectRatio = symbols.aspectRatio.plantImage,
 }: CameraFieldProps) => {
-  const {
-    askForPermissions,
-    saving,
-    loading,
-    hasPermissions,
-    setRef,
-  } = useCamera();
+  const { askForPermissions, saving, loading, hasPermissions, setRef } =
+    useCamera();
 
   const handleClearResult = useCallback(() => {
     if (onTouched) {

@@ -1,15 +1,18 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useCallback } from "react";
-import { View } from "react-native";
-import { Button } from "../../../components/button";
+import { Button } from "@urban-jungle/design/components/button";
 import {
   Footer,
   ScreenLayout,
-} from "../../../components/layouts/screen-layout";
-import { BodyText, ScreenTitle } from "../../../components/typography";
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import {
+  BodyText,
+  ScreenTitle,
+} from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
+import React, { useCallback } from "react";
+import { View } from "react-native";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
-import { symbols } from "../../../theme";
 import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";

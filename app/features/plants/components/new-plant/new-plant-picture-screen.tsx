@@ -1,24 +1,27 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "@urban-jungle/design/components/button";
+import {
+  CircleButton,
+  CircleImage,
+} from "@urban-jungle/design/components/circle-image";
+import { Icon } from "@urban-jungle/design/components/icon";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { ScreenTitle } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
-import { Button } from "../../../../components/button";
-import { trimBase64FromImage, useCamera } from "../../../../components/camera";
-import { CircleButton, CircleImage } from "../../../../components/circle-image";
-import { Icon } from "../../../../components/icon";
-import {
-  ContentContainer,
-  Footer,
-  ScreenLayout,
-} from "../../../../components/layouts/screen-layout";
-import { ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
 import { identifyPlantFromImages } from "../../../../store/effects";
 import { useRunWithUIState } from "../../../../store/ui";
-import { symbols } from "../../../../theme";
+import { trimBase64FromImage, useCamera } from "../../../camera/camera";
 import { newPlantNicknameRoute } from "./new-plant-nickname-screen";
 import { newPlantSuggestionRoute } from "./new-plant-suggestion-screen";
 import { setIdentificationResult, setPlantFields } from "./state";

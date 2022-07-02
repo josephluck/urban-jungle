@@ -1,117 +1,7 @@
 import { useContext } from "react";
-import { Dimensions, StatusBarStyle } from "react-native";
+import { StatusBarStyle } from "react-native";
 import { ThemeContext } from "styled-components/native";
-
-type ScreenSize = "small" | "normal" | "large" | "xlarge";
-
-// NB: sizes from https://developer.android.com/guide/practices/screens_support.html
-const getScreenSize = (): ScreenSize => {
-  const { width, height } = Dimensions.get("window");
-
-  if (width <= 320 && height <= 426) {
-    return "small";
-  } else if (width <= 320 && height <= 470) {
-    return "normal";
-  } else if (width <= 480 && height <= 640) {
-    return "large";
-  }
-  return "xlarge";
-};
-
-type ScreenDimensions = {
-  baseSize: number;
-  baseFontSize: number;
-};
-
-const dimensions: Record<ScreenSize, ScreenDimensions> = {
-  small: { baseSize: 4, baseFontSize: 16 },
-  normal: { baseSize: 4, baseFontSize: 16 },
-  large: { baseSize: 6, baseFontSize: 20 },
-  xlarge: { baseSize: 6, baseFontSize: 20 },
-};
-
-const { baseSize, baseFontSize } = dimensions[getScreenSize()];
-
-const borderRadius = {
-  tiny: baseSize / 2,
-  small: baseSize,
-  medium: baseSize * 2,
-  large: baseSize * 3,
-  pill: 9999,
-};
-
-const font = {
-  _8: {
-    size: baseFontSize * 0.6,
-    lineHeight: baseFontSize * 0.6 * 1.2,
-  },
-  _12: {
-    size: baseFontSize * 0.8,
-    lineHeight: baseFontSize * 0.8 * 1.2,
-  },
-  _16: {
-    size: baseFontSize,
-    lineHeight: baseFontSize * 1.2,
-  },
-  _20: {
-    size: baseFontSize * 1.2,
-    lineHeight: baseFontSize * 1.2 * 1.2,
-  },
-  _28: {
-    size: baseFontSize * 1.6,
-    lineHeight: baseFontSize * 1.6 * 1.2,
-  },
-};
-
-const fontWeight = {
-  medium: 500,
-  bold: 700,
-};
-
-const size = {
-  _50: 50,
-  _80: 80,
-  iconChevron: 8,
-  iconBottomTabBar: 14,
-  filterActiveCheck: 18,
-  modalCloseCross: 18,
-  closeBarHeight: 4,
-  closeBarWidth: 26,
-  avatarSmall: 40,
-  avatarDefault: 50,
-  avatarLarge: 120,
-  bottomSheetHandleHeight: 4,
-  bottomSheetHandleWidth: 30,
-  minimumTouchableSize: 28,
-};
-
-export type AvatarSize = "small" | "default" | "large";
-
-export const avatarSizeToValue: Record<AvatarSize, number> = {
-  small: size.avatarSmall,
-  default: size.avatarDefault,
-  large: size.avatarLarge,
-};
-
-export const avatarSizeToBorderWidth: Record<AvatarSize, number> = {
-  small: 1,
-  default: 2,
-  large: 3,
-};
-
-const spacing = {
-  _2: baseSize / 2,
-  _4: baseSize,
-  _6: baseSize * 1.5,
-  _8: baseSize * 2,
-  _12: baseSize * 3,
-  _16: baseSize * 4,
-  _20: baseSize * 5,
-  _32: baseSize * 8,
-  appHorizontal: baseSize * 5,
-  appVertical: baseSize * 8,
-  tabBarHeight: 64,
-};
+import { Theme } from "../design/theme";
 
 const colors = {
   offBlack: "rgba(14, 19, 27, 1)",
@@ -136,22 +26,7 @@ const colors = {
   transparent: "transparent",
 };
 
-const aspectRatio = {
-  plantImage: 16 / 9,
-  profileImage: 1 / 1,
-};
-
-export const symbols = {
-  aspectRatio,
-  borderRadius,
-  colors,
-  font,
-  fontWeight,
-  size,
-  spacing,
-};
-
-export const darkTheme = {
+export const darkTheme: Theme = {
   type: "light-content" as StatusBarStyle,
   appBackground: colors.offBlack,
   modalBackground: colors.nearBlack,
@@ -170,24 +45,24 @@ export const darkTheme = {
   calendarDayBackground: colors.deepGray,
   calendarDayActive: colors.lightBlue,
   calendarDayText: colors.offWhite,
-  buttonBackground: symbols.colors.deepGray,
-  progressBackground: symbols.colors.midOffGray,
-  progressActive: symbols.colors.pureWhite,
-  switchThumb: symbols.colors.nearWhite,
-  switchBackgroundFalse: symbols.colors.deepGray,
-  switchBackgroundTrue: symbols.colors.paleGreen,
-  tabBarActive: symbols.colors.lightBlue,
-  tabBarInactive: symbols.colors.midOffGray,
-  labelBackground: symbols.colors.nearBlack,
-  labelText: symbols.colors.offWhite,
-  fieldBackground: symbols.colors.nearBlack,
-  optionBackgroundSelected: symbols.colors.deepGray,
-  optionBackground: symbols.colors.nearBlack,
-  optionBorderSelected: symbols.colors.deepGray,
+  buttonBackground: colors.deepGray,
+  progressBackground: colors.midOffGray,
+  progressActive: colors.pureWhite,
+  switchThumb: colors.nearWhite,
+  switchBackgroundFalse: colors.deepGray,
+  switchBackgroundTrue: colors.paleGreen,
+  tabBarActive: colors.lightBlue,
+  tabBarInactive: colors.midOffGray,
+  labelBackground: colors.nearBlack,
+  labelText: colors.offWhite,
+  fieldBackground: colors.nearBlack,
+  optionBackgroundSelected: colors.deepGray,
+  optionBackground: colors.nearBlack,
+  optionBorderSelected: colors.deepGray,
   optionBorder: "transparent",
-  loadingOverlayBackground: symbols.colors.blackTint08,
-  loadingOverlayBackgroundSolid: symbols.colors.offBlack,
-  loadingIndicator: symbols.colors.lightBlue,
+  loadingOverlayBackground: colors.blackTint08,
+  loadingOverlayBackgroundSolid: colors.offBlack,
+  loadingIndicator: colors.lightBlue,
 };
 
 export const lightTheme: Theme = {
@@ -209,26 +84,24 @@ export const lightTheme: Theme = {
   calendarDayBackground: colors.nearWhite,
   calendarDayActive: colors.solidBlue,
   calendarDayText: colors.offBlack,
-  buttonBackground: symbols.colors.nearBlack,
-  progressBackground: symbols.colors.nearWhite,
-  progressActive: symbols.colors.solidBlue,
-  switchThumb: symbols.colors.pureWhite,
-  switchBackgroundFalse: symbols.colors.nearWhite,
-  switchBackgroundTrue: symbols.colors.paleGreen,
-  tabBarActive: symbols.colors.solidBlue,
-  tabBarInactive: symbols.colors.midOffGray,
-  labelBackground: symbols.colors.nearWhite,
-  labelText: symbols.colors.deepGray,
-  fieldBackground: symbols.colors.nearWhite,
-  optionBackgroundSelected: symbols.colors.pureWhite,
-  optionBackground: symbols.colors.nearWhite,
-  optionBorderSelected: symbols.colors.darkGreen,
-  optionBorder: symbols.colors.nearWhite,
-  loadingOverlayBackground: symbols.colors.whiteTint05,
-  loadingOverlayBackgroundSolid: symbols.colors.pureWhite,
-  loadingIndicator: symbols.colors.solidBlue,
+  buttonBackground: colors.nearBlack,
+  progressBackground: colors.nearWhite,
+  progressActive: colors.solidBlue,
+  switchThumb: colors.pureWhite,
+  switchBackgroundFalse: colors.nearWhite,
+  switchBackgroundTrue: colors.paleGreen,
+  tabBarActive: colors.solidBlue,
+  tabBarInactive: colors.midOffGray,
+  labelBackground: colors.nearWhite,
+  labelText: colors.deepGray,
+  fieldBackground: colors.nearWhite,
+  optionBackgroundSelected: colors.pureWhite,
+  optionBackground: colors.nearWhite,
+  optionBorderSelected: colors.darkGreen,
+  optionBorder: colors.nearWhite,
+  loadingOverlayBackground: colors.whiteTint05,
+  loadingOverlayBackgroundSolid: colors.pureWhite,
+  loadingIndicator: colors.solidBlue,
 };
 
 export const useTheme = () => useContext(ThemeContext);
-
-export type Theme = typeof darkTheme;

@@ -1,18 +1,21 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "@urban-jungle/design/components/button";
+import { Icon } from "@urban-jungle/design/components/icon";
+import {
+  Footer,
+  ScreenLayout,
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import {
+  Heading,
+  SubHeading,
+} from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useMemo, useState } from "react";
 import { SectionList, View } from "react-native";
 import styled from "styled-components/native";
-import { Button } from "../../../components/button";
-import { Icon } from "../../../components/icon";
-import {
-  Footer,
-  ScreenLayout,
-} from "../../../components/layouts/screen-layout";
-import { PlantListItem } from "../../../components/plant-list-item";
-import { TouchableOpacity } from "../../../components/touchable-opacity";
-import { Heading, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { HOME_STACK_NAME } from "../../../navigation/stack-names";
 import { updateTodosLastDone } from "../../../store/effects";
@@ -25,8 +28,8 @@ import {
 } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { runWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
 import { manageRoute } from "../../manage/components/manage-screen";
+import { PlantListItem } from "../../plants/components/plant-list-item";
 import { plantsRoute } from "../../plants/components/plants-screen";
 
 export const CareScreen = ({ navigation }: StackScreenProps<{}>) => {

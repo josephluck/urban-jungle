@@ -24,42 +24,40 @@ type BasePickerProps<Pv extends PickerValue> = {
   onNewValuePress?: () => void;
 };
 
-export type SinglePickerFieldProps<
-  Pv extends PickerValue
-> = BasePickerProps<Pv> & {
-  value: Pv;
-  onChange: (value: Pv) => void;
-  multiValue: false;
-};
+export type SinglePickerFieldProps<Pv extends PickerValue> =
+  BasePickerProps<Pv> & {
+    value: Pv;
+    onChange: (value: Pv) => void;
+    multiValue: false;
+  };
 
-export type MultiPickerFieldProps<
-  Pv extends PickerValue
-> = BasePickerProps<Pv> & {
-  value: Pv[];
-  onChange: (value: Pv[]) => void;
-  multiValue: true;
-};
+export type MultiPickerFieldProps<Pv extends PickerValue> =
+  BasePickerProps<Pv> & {
+    value: Pv[];
+    onChange: (value: Pv[]) => void;
+    multiValue: true;
+  };
 
 export type PickerFieldProps<Pv extends PickerValue> =
   | SinglePickerFieldProps<Pv>
   | MultiPickerFieldProps<Pv>;
 
 function isMultiValue<Pv extends PickerValue>(
-  props: any,
+  props: any
 ): props is MultiPickerFieldProps<Pv> {
   return props.multiValue;
 }
 
 export function PickerField<Pv extends PickerValue>(
-  props: SinglePickerFieldProps<Pv>,
+  props: SinglePickerFieldProps<Pv>
 ): React.ReactElement;
 
 export function PickerField<Pv extends PickerValue>(
-  props: MultiPickerFieldProps<Pv>,
+  props: MultiPickerFieldProps<Pv>
 ): React.ReactElement;
 
 export function PickerField<Pv extends PickerValue>(
-  props: PickerFieldProps<Pv>,
+  props: PickerFieldProps<Pv>
 ) {
   const handleChange = (value: Pv) => {
     if (isMultiValue<Pv>(props)) {

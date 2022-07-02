@@ -12,6 +12,7 @@
   "workspaces": {
     "packages": [
       "app",
+      "design",
       "shared",
       "functions"
     ],

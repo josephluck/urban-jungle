@@ -10,7 +10,7 @@ import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useContext, useRef, useState } from "react";
-import { resizePhoto, uploadPhoto } from "../features/photos/storage";
+import { resizePhoto, uploadPhoto } from "../photos/storage";
 
 export const launchCameraAndTakePicture = (
   options: ImagePickerOptions = {

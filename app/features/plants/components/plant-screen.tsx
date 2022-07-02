@@ -1,16 +1,15 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { ScreenLayout } from "@urban-jungle/design/components/layouts/screen-layout";
+import { ListItem } from "@urban-jungle/design/components/list-item";
+import { TouchableIcon } from "@urban-jungle/design/components/touchable-icon";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import { SubHeading } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import { makeImageModel } from "@urban-jungle/shared/models/image";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
-import { ListItem } from "../../../components/list-item";
-import { PlantImageHeader } from "../../../components/plant-image-header";
-import { PlantNameAndLocation } from "../../../components/plant-name-and-location";
-import { TouchableIcon } from "../../../components/touchable-icon";
-import { TouchableOpacity } from "../../../components/touchable-opacity";
-import { SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { NavigationButtonList } from "../../../navigation/navigation-button-list";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
@@ -21,10 +20,11 @@ import {
   selectTodosForPlant,
 } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
-import { symbols } from "../../../theme";
 import { manageTodoRoute } from "../../todos/components/manage-todo-screen";
 import { deletePlantRoute } from "./delete-plant";
 import { managePlantRoute } from "./manage-plant-screen";
+import { PlantImageHeader } from "./plant-image-header";
+import { PlantNameAndLocation } from "./plant-name-and-location";
 
 export const PlantScreen = ({
   navigation,

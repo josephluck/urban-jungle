@@ -1,16 +1,17 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "@urban-jungle/design/components/button";
+import {
+  Footer,
+  ScreenLayout,
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { TextField } from "@urban-jungle/design/components/text-field";
+import { ScreenTitle } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
-import { Button } from "../../../components/button";
-import {
-  Footer,
-  ScreenLayout,
-} from "../../../components/layouts/screen-layout";
-import { TextField } from "../../../components/text-field";
-import { ScreenTitle } from "../../../components/typography";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { AUTH_STACK_NAME } from "../../../navigation/stack-names";
@@ -20,7 +21,6 @@ import {
   signUpWithEmail,
 } from "../../../store/effects";
 import { useRunWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
 import { useAuthMachine } from "../machine/machine";
 import { routeNames } from "./route-names";
 import { SplashContainer } from "./splash";

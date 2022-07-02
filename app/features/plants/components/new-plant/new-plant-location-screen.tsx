@@ -1,19 +1,20 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "@urban-jungle/design/components/button";
+import {
+  ContentContainer,
+  Footer,
+  ScreenLayout,
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { PickerField } from "@urban-jungle/design/components/picker-field";
+import { TextField } from "@urban-jungle/design/components/text-field";
+import { ScreenTitle } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useState } from "react";
 import styled from "styled-components/native";
-import { Button } from "../../../../components/button";
-import {
-  ContentContainer,
-  Footer,
-  ScreenLayout,
-} from "../../../../components/layouts/screen-layout";
-import { PickerField } from "../../../../components/picker-field";
-import { TextField } from "../../../../components/text-field";
-import { ScreenTitle } from "../../../../components/typography";
 import { useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
@@ -27,7 +28,6 @@ import {
 } from "../../../../store/selectors";
 import { useStore } from "../../../../store/state";
 import { useRunWithUIState } from "../../../../store/ui";
-import { symbols } from "../../../../theme";
 import { selectPlantFields } from "./state";
 
 type Fields = Pick<Required<PlantFields>, "location"> & { newLocation: string };
@@ -45,28 +45,26 @@ export const NewPlantLocationScreen = ({
     O.getOrElse(() => ""),
   );
 
-  const locations = useStore(() => selectUniqueLocations(selectedHouseholdId), [
-    selectedHouseholdId,
-  ]);
+  const locations = useStore(
+    () => selectUniqueLocations(selectedHouseholdId),
+    [selectedHouseholdId],
+  );
 
   const [newLocationFieldVisible, setNewLocationFieldVisible] = useState(
     locations.length === 0,
   );
 
-  const {
-    submit,
-    registerSinglePickerInput,
-    registerTextInput,
-  } = useForm<Fields>(
-    {
-      location: "",
-      newLocation: "",
-    },
-    {
-      location: [],
-      newLocation: [],
-    },
-  );
+  const { submit, registerSinglePickerInput, registerTextInput } =
+    useForm<Fields>(
+      {
+        location: "",
+        newLocation: "",
+      },
+      {
+        location: [],
+        newLocation: [],
+      },
+    );
 
   const plantFields = useStore(selectPlantFields);
 

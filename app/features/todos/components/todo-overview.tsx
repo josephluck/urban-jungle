@@ -1,11 +1,11 @@
+import { symbols } from "@urban-jungle/design/theme";
 import { PlantModel } from "@urban-jungle/shared/models/plant";
 import { TodoModel } from "@urban-jungle/shared/models/todo";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React from "react";
 import styled from "styled-components/native";
-import { getPlantName } from "../store/selectors";
-import { symbols } from "../theme";
+import { getPlantName } from "../../app/store/selectors";
 import { PlantImage } from "./plant-image";
 import { PlantNameAndLocation } from "./plant-name-and-location";
 import { Heading, Paragraph } from "./typography";

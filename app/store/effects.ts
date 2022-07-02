@@ -18,10 +18,10 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import { AsyncStorage, Share } from "react-native";
 import { v4 as uuid } from "uuid";
-import { trimBase64FromImage } from "../components/camera";
 import { database } from "../database";
 import { env } from "../env";
 import { SignUpContext as SignUpContext } from "../features/auth/machine/types";
+import { trimBase64FromImage } from "../features/camera/camera";
 import { IdentificationResult } from "../features/identify/types";
 import { ManageAuthContext } from "../features/manage/machine/types";
 import {
@@ -296,45 +296,46 @@ export const fetchCurrentProfileIfNotFetched = (): TE.TaskEither<
     TE.chain(fetchProfileIfNotFetched),
   );
 
-export const createAndSeedProfile = (
-  signUpContext: SignUpContext,
-) => (): TE.TaskEither<IErr, ProfileModel> =>
-  pipe(
-    selectAuthUser(),
-    TE.fromOption(() => "UNAUTHENTICATED" as IErr),
-    TE.chain(createProfileForUser(signUpContext)),
-    TE.map((profile) => profile.id),
-    // TODO: check initial deep link, and skip creating a household if there's a householdId in the deep link?
-    TE.chain(createHouseholdForProfile()),
-    TE.chain(fetchCurrentProfileIfNotFetched),
-  );
+export const createAndSeedProfile =
+  (signUpContext: SignUpContext) => (): TE.TaskEither<IErr, ProfileModel> =>
+    pipe(
+      selectAuthUser(),
+      TE.fromOption(() => "UNAUTHENTICATED" as IErr),
+      TE.chain(createProfileForUser(signUpContext)),
+      TE.map((profile) => profile.id),
+      // TODO: check initial deep link, and skip creating a household if there's a householdId in the deep link?
+      TE.chain(createHouseholdForProfile()),
+      TE.chain(fetchCurrentProfileIfNotFetched),
+    );
 
 /**
  * Creates a new household. Subsequently adds the current user relation to it.
  */
-export const createHouseholdForProfile = (
-  household: Partial<
-    Omit<HouseholdModel, "id" | "dateCreated">
-  > = defaultHousehold,
-) => (profileId: string): TE.TaskEither<IErr, HouseholdModel> =>
-  pipe(
-    TE.right({
-      ...defaultHousehold,
-      ...household,
-      id: uuid(),
-      dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-    }),
-    TE.chainFirst((household) =>
-      TE.tryCatch(
-        () => database.households.database.doc(household.id).set(household),
-        () => "BAD_REQUEST" as IErr,
+export const createHouseholdForProfile =
+  (
+    household: Partial<
+      Omit<HouseholdModel, "id" | "dateCreated">
+    > = defaultHousehold,
+  ) =>
+  (profileId: string): TE.TaskEither<IErr, HouseholdModel> =>
+    pipe(
+      TE.right({
+        ...defaultHousehold,
+        ...household,
+        id: uuid(),
+        dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+      }),
+      TE.chainFirst((household) =>
+        TE.tryCatch(
+          () => database.households.database.doc(household.id).set(household),
+          () => "BAD_REQUEST" as IErr,
+        ),
       ),
-    ),
-    TE.map((household) => household.id),
-    TE.chainFirst((id) => storeSelectedHouseholdIdToStorage(id)),
-    TE.chain(createProfileHouseholdRelation(profileId)),
-    TE.chain(fetchHousehold),
-  );
+      TE.map((household) => household.id),
+      TE.chainFirst((id) => storeSelectedHouseholdIdToStorage(id)),
+      TE.chain(createProfileHouseholdRelation(profileId)),
+      TE.chain(fetchHousehold),
+    );
 
 export const createHouseholdForCurrentProfile = (
   household: Partial<
@@ -356,7 +357,7 @@ export const fetchHousehold = (
       if (!response.exists) {
         throw new Error();
       }
-      return (response.data() as unknown) as HouseholdModel;
+      return response.data() as unknown as HouseholdModel;
     },
     () => "NOT_FOUND",
   );
@@ -384,43 +385,43 @@ export const addHouseholdToCurrentProfile = (
  *
  * Returns the household ID
  */
-export const createProfileHouseholdRelation = (profileId: string) => (
-  householdId: string,
-): TE.TaskEither<IErr, string> =>
-  pipe(
-    TE.right(householdId),
-    TE.chain(addProfileToHousehold(profileId)),
-    TE.chain(addHouseholdToCurrentProfile),
-    TE.map(() => householdId),
-  );
+export const createProfileHouseholdRelation =
+  (profileId: string) =>
+  (householdId: string): TE.TaskEither<IErr, string> =>
+    pipe(
+      TE.right(householdId),
+      TE.chain(addProfileToHousehold(profileId)),
+      TE.chain(addHouseholdToCurrentProfile),
+      TE.map(() => householdId),
+    );
 
 /**
  * Adds the provided profileId to the provided household (by householdId).
  * Returns the householdId.
  */
-const addProfileToHousehold = (profileId: string) => (
-  householdId: string,
-): TE.TaskEither<IErr, string> =>
-  TE.tryCatch(
-    async () => {
-      await database.households.database.doc(householdId).update({
-        profileIds: firebase.firestore.FieldValue.arrayUnion(profileId),
-      });
-      return householdId;
-    },
-    () => "BAD_REQUEST",
-  );
+const addProfileToHousehold =
+  (profileId: string) =>
+  (householdId: string): TE.TaskEither<IErr, string> =>
+    TE.tryCatch(
+      async () => {
+        await database.households.database.doc(householdId).update({
+          profileIds: firebase.firestore.FieldValue.arrayUnion(profileId),
+        });
+        return householdId;
+      },
+      () => "BAD_REQUEST",
+    );
 
-export const removeProfileFromHousehold = (profileId: string) => (
-  householdId: string,
-): TE.TaskEither<IErr, void> =>
-  TE.tryCatch(
-    () =>
-      database.households.database.doc(householdId).update({
-        profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
-      }),
-    () => "BAD_REQUEST",
-  );
+export const removeProfileFromHousehold =
+  (profileId: string) =>
+  (householdId: string): TE.TaskEither<IErr, void> =>
+    TE.tryCatch(
+      () =>
+        database.households.database.doc(householdId).update({
+          profileIds: firebase.firestore.FieldValue.arrayRemove(profileId),
+        }),
+      () => "BAD_REQUEST",
+    );
 
 /**
  * Removes a household.
@@ -576,36 +577,35 @@ export type PlantFields = Omit<
   avatar: ImageModel;
 };
 
-export const upsertPlantForHousehold = (
-  { avatar, ...fields }: Partial<PlantFields> = {},
-  plantId?: string,
-) => (householdId: string): TE.TaskEither<IErr, PlantModel> =>
-  pipe(
-    selectHouseholdById(householdId),
-    O.chain(() =>
-      plantId
-        ? selectPlantByHouseholdId(householdId, plantId)
-        : O.fromNullable(makePlantModel()),
-    ),
-    TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.map((plant) => ({
-      ...plant,
-      ...fields,
-      householdId,
-    })),
-    TE.chainFirst((plant) =>
-      TE.tryCatch(
-        () => database.plants.database(householdId).doc(plant.id).set(plant),
-        () => "BAD_REQUEST" as IErr,
+export const upsertPlantForHousehold =
+  ({ avatar, ...fields }: Partial<PlantFields> = {}, plantId?: string) =>
+  (householdId: string): TE.TaskEither<IErr, PlantModel> =>
+    pipe(
+      selectHouseholdById(householdId),
+      O.chain(() =>
+        plantId
+          ? selectPlantByHouseholdId(householdId, plantId)
+          : O.fromNullable(makePlantModel()),
       ),
-    ),
-    TE.chainFirst((plant) =>
-      pipe(
-        savePlantImage(householdId, plant.id, O.fromNullable(avatar)),
-        TE.orElse(() => TE.right(makePhotoModel())), // Swallow the error if there's no avatar
+      TE.fromOption(() => "NOT_FOUND" as IErr),
+      TE.map((plant) => ({
+        ...plant,
+        ...fields,
+        householdId,
+      })),
+      TE.chainFirst((plant) =>
+        TE.tryCatch(
+          () => database.plants.database(householdId).doc(plant.id).set(plant),
+          () => "BAD_REQUEST" as IErr,
+        ),
       ),
-    ),
-  );
+      TE.chainFirst((plant) =>
+        pipe(
+          savePlantImage(householdId, plant.id, O.fromNullable(avatar)),
+          TE.orElse(() => TE.right(makePhotoModel())), // Swallow the error if there's no avatar
+        ),
+      ),
+    );
 
 /**
  * Sets a photo in to storage and assigns it to the plant's primary avatar
@@ -637,101 +637,99 @@ export const savePlantImage = (
     TE.chainFirst(setPhotoAsPlantAvatar(householdId, plantId)),
   );
 
-export const setPhotoAsPlantAvatar = (householdId: string, plantId: string) => (
-  photo: PhotoModel,
-): TE.TaskEither<IErr, void> =>
-  pipe(
-    TE.right(photo),
-    TE.map(trimBase64FromImage),
-    TE.chain(() =>
-      TE.tryCatch(
-        () =>
-          database.plants
-            .database(householdId)
-            .doc(plantId)
-            .update({ avatar: photo }),
-        () => "BAD_REQUEST" as IErr,
+export const setPhotoAsPlantAvatar =
+  (householdId: string, plantId: string) =>
+  (photo: PhotoModel): TE.TaskEither<IErr, void> =>
+    pipe(
+      TE.right(photo),
+      TE.map(trimBase64FromImage),
+      TE.chain(() =>
+        TE.tryCatch(
+          () =>
+            database.plants
+              .database(householdId)
+              .doc(plantId)
+              .update({ avatar: photo }),
+          () => "BAD_REQUEST" as IErr,
+        ),
       ),
-    ),
-  );
+    );
 
 /**
  * Deletes a plant's image from the database.
  *
  * NB: doesn't remove the image from firebase storage.. should probably do that.
  */
-export const deletePlantPhoto = (householdId: string, plantId: string) => (
-  photoId: string,
-): TE.TaskEither<IErr, void> =>
-  pipe(
-    TE.tryCatch(
-      async () => {
-        await database.photos.database(householdId).doc(photoId).delete();
-      },
-      () => "BAD_REQUEST" as IErr,
-    ),
-    TE.chain(() => {
-      return pipe(deletePlantAvatar(householdId, plantId)());
-    }),
-  );
+export const deletePlantPhoto =
+  (householdId: string, plantId: string) =>
+  (photoId: string): TE.TaskEither<IErr, void> =>
+    pipe(
+      TE.tryCatch(
+        async () => {
+          await database.photos.database(householdId).doc(photoId).delete();
+        },
+        () => "BAD_REQUEST" as IErr,
+      ),
+      TE.chain(() => {
+        return pipe(deletePlantAvatar(householdId, plantId)());
+      }),
+    );
 
 /**
  * Deletes the avatar property from the plant.
  * NB: does not remove from the plant's photos subcollection, nor does it
  * actually remove the photo from firebase storage
  */
-export const deletePlantAvatar = (
-  householdId: string,
-  plantId: string,
-) => (): TE.TaskEither<IErr, void> =>
-  TE.tryCatch(
-    async () =>
-      database.plants
-        .database(householdId)
-        .doc(plantId)
-        .set(
-          { avatar: firebase.firestore.FieldValue.delete() },
-          { merge: true },
-        ),
-    () => "BAD_REQUEST" as IErr,
-  );
+export const deletePlantAvatar =
+  (householdId: string, plantId: string) => (): TE.TaskEither<IErr, void> =>
+    TE.tryCatch(
+      async () =>
+        database.plants
+          .database(householdId)
+          .doc(plantId)
+          .set(
+            { avatar: firebase.firestore.FieldValue.delete() },
+            { merge: true },
+          ),
+      () => "BAD_REQUEST" as IErr,
+    );
 
 // TODO: delete photos associated with this plant
-export const deletePlantByHouseholdId = (householdId: string) => (
-  plantId: string,
-): TE.TaskEither<IErr, string> =>
-  pipe(
-    TE.tryCatch(
-      async () => {
-        await database.plants.database(householdId).doc(plantId).delete();
-        return householdId;
-      },
-      () => "BAD_REQUEST" as IErr,
-    ),
-    TE.chainFirst(() => deleteTodosByPlant(plantId)(householdId)),
-  );
-
-export const createProfileForUser = (signUpContext: SignUpContext) => (
-  user: firebase.User,
-): TE.TaskEither<IErr, ProfileModel> =>
-  pipe(
-    TE.right(user),
-    TE.map((user) =>
-      makeProfileModel({
-        id: user.uid,
-        email: user.email || signUpContext.emailAddress,
-        phoneNumber: user.phoneNumber || signUpContext.phoneNumber,
-        name: signUpContext.name,
-        avatar: signUpContext.avatar,
-      }),
-    ),
-    TE.chainFirst((profile) =>
+export const deletePlantByHouseholdId =
+  (householdId: string) =>
+  (plantId: string): TE.TaskEither<IErr, string> =>
+    pipe(
       TE.tryCatch(
-        () => database.profiles.database.doc(profile.id).set(profile),
+        async () => {
+          await database.plants.database(householdId).doc(plantId).delete();
+          return householdId;
+        },
         () => "BAD_REQUEST" as IErr,
       ),
-    ),
-  );
+      TE.chainFirst(() => deleteTodosByPlant(plantId)(householdId)),
+    );
+
+export const createProfileForUser =
+  (signUpContext: SignUpContext) =>
+  (user: firebase.User): TE.TaskEither<IErr, ProfileModel> =>
+    pipe(
+      TE.right(user),
+      TE.map((user) =>
+        makeProfileModel({
+          id: user.uid,
+          email: user.email || signUpContext.emailAddress,
+          phoneNumber: user.phoneNumber || signUpContext.phoneNumber,
+          name: signUpContext.name,
+          avatar: signUpContext.avatar,
+        }),
+      ),
+      TE.chainFirst((profile) =>
+        TE.tryCatch(
+          () => database.profiles.database.doc(profile.id).set(profile),
+          () => "BAD_REQUEST" as IErr,
+        ),
+      ),
+    );
 
 export const syncAuthUserWithProfile = (userId: string) =>
   pipe(
@@ -818,9 +816,8 @@ export const removeHouseholdFromProfile = (
       TE.tryCatch(
         () =>
           database.profiles.database.doc(id).update({
-            householdIds: firebase.firestore.FieldValue.arrayRemove(
-              householdId,
-            ),
+            householdIds:
+              firebase.firestore.FieldValue.arrayRemove(householdId),
           }),
         () => "BAD_REQUEST" as IErr,
       ),
@@ -845,18 +842,17 @@ export const saveExpoPushTokenToProfile = (
     ),
   );
 
-export const persistThemeSettingOnDevice = (userId: string) => (
-  theme: ThemeSetting,
-) =>
-  pipe(
-    TE.tryCatch(
-      () => AsyncStorage.setItem(THEME_SETTING_ASYNC_STORAGE_KEY, theme),
-      () => "BAD_REQUEST" as IErr,
-    ),
-    TE.map(() => {
-      setProfileTheme(userId, theme);
-    }),
-  );
+export const persistThemeSettingOnDevice =
+  (userId: string) => (theme: ThemeSetting) =>
+    pipe(
+      TE.tryCatch(
+        () => AsyncStorage.setItem(THEME_SETTING_ASYNC_STORAGE_KEY, theme),
+        () => "BAD_REQUEST" as IErr,
+      ),
+      TE.map(() => {
+        setProfileTheme(userId, theme);
+      }),
+    );
 
 export const saveThemeSettingForProfile = (
   theme: ThemeSetting,
@@ -894,86 +890,86 @@ export const removeExpoPushTokenFromProfile = (): TE.TaskEither<IErr, void> =>
     ),
   );
 
-export const upsertTodoForPlant = (plantId: string, todoId?: string) => (
-  householdId: string,
-) => (fields: Partial<TodoModel> = {}): TE.TaskEither<IErr, TodoModel> =>
-  pipe(
-    selectHouseholdById(householdId),
-    O.chain(() =>
-      todoId
-        ? selectTodoByHouseholdId(householdId, todoId)
-        : O.fromNullable(makeTodoModel()),
-    ),
-    TE.fromOption(() => "NOT_FOUND" as IErr),
-    TE.map((todo) => ({ ...todo, ...fields, plantId, householdId })),
-    TE.chainFirst((todo) =>
-      TE.tryCatch(
-        () =>
-          database.todos
-            .database(householdId)
-            .doc(todo.id)
-            .set({
-              ...todo,
-              activeInMonths: [...todo.activeInMonths].sort((a, b) => a - b),
-            }),
-        () => "BAD_REQUEST" as IErr,
+export const upsertTodoForPlant =
+  (plantId: string, todoId?: string) =>
+  (householdId: string) =>
+  (fields: Partial<TodoModel> = {}): TE.TaskEither<IErr, TodoModel> =>
+    pipe(
+      selectHouseholdById(householdId),
+      O.chain(() =>
+        todoId
+          ? selectTodoByHouseholdId(householdId, todoId)
+          : O.fromNullable(makeTodoModel()),
       ),
-    ),
-  );
+      TE.fromOption(() => "NOT_FOUND" as IErr),
+      TE.map((todo) => ({ ...todo, ...fields, plantId, householdId })),
+      TE.chainFirst((todo) =>
+        TE.tryCatch(
+          () =>
+            database.todos
+              .database(householdId)
+              .doc(todo.id)
+              .set({
+                ...todo,
+                activeInMonths: [...todo.activeInMonths].sort((a, b) => a - b),
+              }),
+          () => "BAD_REQUEST" as IErr,
+        ),
+      ),
+    );
 
-export const deleteTodosByPlant = (plantId: string) => (
-  householdId: string,
-): TE.TaskEither<IErr, void> =>
-  TE.tryCatch(
-    async () => {
-      const todos = selectTodosByHouseholdIdAndPlantId(householdId, plantId);
-      const batch = firebase.firestore().batch();
-      todos.forEach((todo) =>
-        batch.delete(database.todos.database(householdId).doc(todo.id)),
-      );
-      await batch.commit();
-    },
-    () => "BAD_REQUEST" as IErr,
-  );
+export const deleteTodosByPlant =
+  (plantId: string) =>
+  (householdId: string): TE.TaskEither<IErr, void> =>
+    TE.tryCatch(
+      async () => {
+        const todos = selectTodosByHouseholdIdAndPlantId(householdId, plantId);
+        const batch = firebase.firestore().batch();
+        todos.forEach((todo) =>
+          batch.delete(database.todos.database(householdId).doc(todo.id)),
+        );
+        await batch.commit();
+      },
+      () => "BAD_REQUEST" as IErr,
+    );
 
-export const deleteTodo = (todoId: string) => (
-  householdId: string,
-): TE.TaskEither<IErr, void> =>
-  TE.tryCatch(
-    async () => {
-      await database.todos.database(householdId).doc(todoId).delete();
-    },
-    () => "BAD_REQUEST" as IErr,
-  );
+export const deleteTodo =
+  (todoId: string) =>
+  (householdId: string): TE.TaskEither<IErr, void> =>
+    TE.tryCatch(
+      async () => {
+        await database.todos.database(householdId).doc(todoId).delete();
+      },
+      () => "BAD_REQUEST" as IErr,
+    );
 
-export const updateTodoLastDone = (householdId: string, profileId: string) => (
-  todoId: string,
-): TE.TaskEither<IErr, void> =>
-  TE.tryCatch(
-    () =>
-      database.todos
-        .database(householdId)
-        .doc(todoId)
-        .update({
-          lastDoneBy: profileId,
-          dateLastDone: firebase.firestore.Timestamp.fromDate(new Date()),
-        } as Partial<TodoModel>),
-    () => "BAD_REQUEST" as IErr,
-  );
+export const updateTodoLastDone =
+  (householdId: string, profileId: string) =>
+  (todoId: string): TE.TaskEither<IErr, void> =>
+    TE.tryCatch(
+      () =>
+        database.todos
+          .database(householdId)
+          .doc(todoId)
+          .update({
+            lastDoneBy: profileId,
+            dateLastDone: firebase.firestore.Timestamp.fromDate(new Date()),
+          } as Partial<TodoModel>),
+      () => "BAD_REQUEST" as IErr,
+    );
 
-export const updateTodosLastDone = (householdId: string) => (
-  profileId: string,
-) => (todos: TodoModel[]) =>
-  TE.tryCatch(
-    async () => {
-      const batch = firebase.firestore().batch();
-      todos.forEach(({ id }) =>
-        batch.update(database.todos.database(householdId).doc(id), {
-          lastDoneBy: profileId,
-          dateLastDone: firebase.firestore.Timestamp.fromDate(new Date()),
-        } as Partial<TodoModel>),
-      );
-      await batch.commit();
-    },
-    () => "BAD_REQUEST" as IErr,
-  );
+export const updateTodosLastDone =
+  (householdId: string) => (profileId: string) => (todos: TodoModel[]) =>
+    TE.tryCatch(
+      async () => {
+        const batch = firebase.firestore().batch();
+        todos.forEach(({ id }) =>
+          batch.update(database.todos.database(householdId).doc(id), {
+            lastDoneBy: profileId,
+            dateLastDone: firebase.firestore.Timestamp.fromDate(new Date()),
+          } as Partial<TodoModel>),
+        );
+        await batch.commit();
+      },
+      () => "BAD_REQUEST" as IErr,
+    );

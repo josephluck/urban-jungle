@@ -1,15 +1,18 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { ScreenLayout } from "@urban-jungle/design/components/layouts/screen-layout";
+import { TouchableIcon } from "@urban-jungle/design/components/touchable-icon";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import {
+  Heading,
+  SubHeading,
+} from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import { sortByMostRecent } from "@urban-jungle/shared/utils/sort";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useMemo } from "react";
 import { SectionList, View } from "react-native";
 import styled from "styled-components/native";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
-import { PlantListItem } from "../../../components/plant-list-item";
-import { TouchableIcon } from "../../../components/touchable-icon";
-import { TouchableOpacity } from "../../../components/touchable-opacity";
-import { Heading, SubHeading } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { NavigationButtonList } from "../../../navigation/navigation-button-list";
 import { PLANTS_STACK_NAME } from "../../../navigation/stack-names";
@@ -19,7 +22,7 @@ import {
   selectPlantsByHouseholdId,
 } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
-import { symbols } from "../../../theme";
+import { PlantListItem } from "../../plants/components/plant-list-item";
 import { newPlantPictureRoute } from "./new-plant/new-plant-picture-screen";
 import { plantRoute } from "./plant-screen";
 

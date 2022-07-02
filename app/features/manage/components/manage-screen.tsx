@@ -1,15 +1,19 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Icon } from "@urban-jungle/design/components/icon";
+import { ScreenLayout } from "@urban-jungle/design/components/layouts/screen-layout";
+import { ListItem } from "@urban-jungle/design/components/list-item";
+import { TouchableIcon } from "@urban-jungle/design/components/touchable-icon";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import {
+  Heading,
+  TertiaryText,
+} from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import { FlatList, View } from "react-native";
 import styled from "styled-components/native";
-import { Icon } from "../../../components/icon";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
-import { ListItem } from "../../../components/list-item";
-import { TouchableIcon } from "../../../components/touchable-icon";
-import { TouchableOpacity } from "../../../components/touchable-opacity";
-import { Heading, TertiaryText } from "../../../components/typography";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
 import { shareHouseholdInvitation } from "../../../store/effects";
@@ -23,7 +27,6 @@ import {
   selectProfilesForHousehold,
 } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
-import { symbols } from "../../../theme";
 import { useManageAuthMachine } from "../machine/machine";
 import { ManageAuthFlow } from "../machine/types";
 import { routeNames } from "../route-names";

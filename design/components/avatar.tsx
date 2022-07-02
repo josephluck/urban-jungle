@@ -23,7 +23,7 @@ export const Avatar = ({
           size={size}
           letter={pipe(
             letter,
-            O.getOrElse(() => "👋"),
+            O.getOrElse(() => "👋")
           )}
         />
       ),
@@ -31,8 +31,8 @@ export const Avatar = ({
         <AvatarCircle size={size}>
           <AvatarImage size={size} source={{ uri }} />
         </AvatarCircle>
-      ),
-    ),
+      )
+    )
   );
 
 export const AvatarPlaceholder = ({

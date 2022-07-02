@@ -1,3 +1,8 @@
+import { FormField } from "@urban-jungle/design/components/form-field";
+import { Icon } from "@urban-jungle/design/components/icon";
+import { ImagePreview } from "@urban-jungle/design/components/image-preview";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import { symbols } from "@urban-jungle/design/theme";
 import { ImageModel } from "@urban-jungle/shared/models/image";
 import { StorageEntityType } from "@urban-jungle/shared/models/storage";
 import * as O from "fp-ts/lib/Option";
@@ -6,12 +11,7 @@ import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import styled from "styled-components/native";
-import { symbols } from "../theme";
 import { useCamera } from "./camera";
-import { FormField } from "./form-field";
-import { Icon } from "./icon";
-import { ImagePreview } from "./image-preview";
-import { TouchableOpacity } from "./touchable-opacity";
 
 export type CameraButtonProps = {
   value?: ImageModel;

@@ -1,8 +1,8 @@
+import { ListItem } from "@urban-jungle/design/components/list-item";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useMemo } from "react";
-import { TodoWithPlantModel } from "../store/selectors";
-import { ListItem } from "./list-item";
+import { TodoWithPlantModel } from "../../../store/selectors";
 
 export const TodoListItem = React.memo(
   ({ todo, right }: { todo: TodoWithPlantModel; right?: React.ReactNode }) => {

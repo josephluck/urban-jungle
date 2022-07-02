@@ -1,12 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
+import { ScreenLayout } from "@urban-jungle/design/components/layouts/screen-layout";
+import { ListItem } from "@urban-jungle/design/components/list-item";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import { symbols } from "@urban-jungle/design/theme";
 import React from "react";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
-import { ListItem } from "../../../components/list-item";
-import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { signOut } from "../../../store/effects";
-import { symbols } from "../../../theme";
 
 export const ManageLogoutScreen = ({}: StackScreenProps<
   Record<keyof ManageLogoutRouteParams, undefined>

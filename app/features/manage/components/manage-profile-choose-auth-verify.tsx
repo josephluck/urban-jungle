@@ -1,15 +1,15 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
-import styled from "styled-components/native";
-import { Button } from "../../../components/button";
+import { Button } from "@urban-jungle/design/components/button";
 import {
   Footer,
   ScreenLayout,
-} from "../../../components/layouts/screen-layout";
-import { ScreenTitle } from "../../../components/typography";
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { ScreenTitle } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
+import React from "react";
+import styled from "styled-components/native";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
-import { symbols } from "../../../theme";
 import { useManageAuthMachine } from "../machine/machine";
 import { AuthProvider, getScreenTitle } from "../machine/types";
 import { routeNames } from "../route-names";

@@ -1,6 +1,6 @@
+import { symbols } from "@urban-jungle/design/theme";
 import React from "react";
 import styled from "styled-components/native";
-import { symbols } from "../theme";
 
 // TODO: support uri?: ImageModel | string to avoid messing about at the call site
 export const PlantImage = ({ uri }: { uri?: string }) => (

@@ -1,21 +1,24 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "@urban-jungle/design/components/button";
+import { CircleImage } from "@urban-jungle/design/components/circle-image";
+import {
+  Footer,
+  ScreenLayout,
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import {
+  BodyText,
+  ScreenTitle,
+} from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback, useState } from "react";
 import { FlatList } from "react-native";
 import styled from "styled-components/native";
-import { Button } from "../../../../components/button";
-import { CircleImage } from "../../../../components/circle-image";
-import {
-  Footer,
-  ScreenLayout,
-} from "../../../../components/layouts/screen-layout";
-import { TouchableOpacity } from "../../../../components/touchable-opacity";
-import { BodyText, ScreenTitle } from "../../../../components/typography";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
 import { useStore } from "../../../../store/state";
-import { symbols } from "../../../../theme";
 import { IdentificationSuggestion } from "../../../identify/types";
 import { newPlantNicknameRoute } from "./new-plant-nickname-screen";
 import {

@@ -1,22 +1,22 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/pipeable";
-import React, { useCallback } from "react";
-import styled from "styled-components/native";
-import { Button } from "../../../../components/button";
+import { Button } from "@urban-jungle/design/components/button";
 import {
   ContentContainer,
   Footer,
   ScreenLayout,
-} from "../../../../components/layouts/screen-layout";
-import { TextField } from "../../../../components/text-field";
-import { ScreenTitle } from "../../../../components/typography";
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { TextField } from "@urban-jungle/design/components/text-field";
+import { ScreenTitle } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
+import * as E from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/pipeable";
+import React, { useCallback } from "react";
+import styled from "styled-components/native";
 import { constraints, useForm } from "../../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../../navigation/make-navigation-route";
 import { PLANTS_STACK_NAME } from "../../../../navigation/stack-names";
 import { PlantFields } from "../../../../store/effects";
 import { useStore } from "../../../../store/state";
-import { symbols } from "../../../../theme";
 import { newPlantLocationRoute } from "./new-plant-location-screen";
 import { selectPlantFields, setPlantFields } from "./state";
 

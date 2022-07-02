@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
+import { symbols } from "@urban-jungle/design/theme";
 import React, { useLayoutEffect } from "react";
 import { View } from "react-native";
-import { symbols } from "../theme";
 import { CloseButton } from "./close-button";
 
 export const NavigationButtonList: React.FC<{

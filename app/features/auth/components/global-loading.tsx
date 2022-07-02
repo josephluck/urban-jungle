@@ -1,8 +1,8 @@
 import React from "react";
 import { ActivityIndicator, Modal } from "react-native";
 import styled, { useTheme } from "styled-components/native";
-import { useStore } from "../store/state";
-import { selectLoading } from "../store/ui";
+import { useStore } from "../../../store/state";
+import { selectLoading } from "../../../store/ui";
 
 export const GlobalLoading = ({
   forceVisible,

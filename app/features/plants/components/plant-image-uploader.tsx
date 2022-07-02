@@ -1,12 +1,12 @@
+import { symbols } from "@urban-jungle/design/theme";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import React, { useCallback } from "react";
 import styled from "styled-components/native";
-import { savePlantImage } from "../store/effects";
-import { useRunWithUIState } from "../store/ui";
-import { symbols } from "../theme";
-import { CameraButton } from "./camera-button";
+import { savePlantImage } from "../../../store/effects";
+import { useRunWithUIState } from "../../../store/ui";
+import { CameraButton } from "../../camera/camera-button";
 
 export const PlantImageUploader = ({
   householdId,

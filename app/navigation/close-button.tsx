@@ -1,6 +1,6 @@
 import { StackActions, useNavigation } from "@react-navigation/native";
+import { TouchableIcon } from "@urban-jungle/design/components/touchable-icon";
 import { useCallback } from "react";
-import { TouchableIcon } from "../components/touchable-icon";
 
 export const CloseButton = () => {
   const navigation = useNavigation();

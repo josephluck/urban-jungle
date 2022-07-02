@@ -1,17 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
+import { Icon } from "@urban-jungle/design/components/icon";
+import { ScreenLayout } from "@urban-jungle/design/components/layouts/screen-layout";
+import { ListItem } from "@urban-jungle/design/components/list-item";
+import { TouchableOpacity } from "@urban-jungle/design/components/touchable-opacity";
+import { symbols } from "@urban-jungle/design/theme";
 import { pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback } from "react";
-import { Icon } from "../../../components/icon";
-import { ScreenLayout } from "../../../components/layouts/screen-layout";
-import { ListItem } from "../../../components/list-item";
-import { TouchableOpacity } from "../../../components/touchable-opacity";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { selectPushNotificationsEnabled } from "../../../store/selectors";
 import { useStore } from "../../../store/state";
 import { useRunWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
 import {
   disablePushNotifications,
   enablePushNotifications,
@@ -59,10 +59,9 @@ export const ManageNotificationsScreen = ({}: StackScreenProps<
 
 type ManageNotificationsRouteParams = {};
 
-export const manageNotificationsRoute = makeNavigationRoute<ManageNotificationsRouteParams>(
-  {
+export const manageNotificationsRoute =
+  makeNavigationRoute<ManageNotificationsRouteParams>({
     screen: ManageNotificationsScreen,
     stackName: null,
     routeName: "MANAGE_NOTIFICATIONS_SCREEN",
-  },
-);
+  });

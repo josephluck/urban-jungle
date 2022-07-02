@@ -1,8 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { TouchableIcon } from "@urban-jungle/design/components/touchable-icon";
+import { symbols } from "@urban-jungle/design/theme";
 import React from "react";
 import { useTheme } from "styled-components";
-import { TouchableIcon } from "../components/touchable-icon";
 import { signUpEmailRoute } from "../features/auth/components/sign-up-email";
 import { signUpNameRoute } from "../features/auth/components/sign-up-name";
 import { signUpPasswordRoute } from "../features/auth/components/sign-up-password";
@@ -34,7 +35,6 @@ import { deleteTodoRoute } from "../features/todos/components/delete-todo";
 import { manageTodoRoute } from "../features/todos/components/manage-todo-screen";
 import { selectHasAuthenticated } from "../store/selectors";
 import { useStore } from "../store/state";
-import { symbols } from "../theme";
 import { navigationDidNavigateBeacon } from "./beacon";
 import { CloseBackButton, CloseButton } from "./close-button";
 import { ScreenDefinition } from "./make-navigation-route";

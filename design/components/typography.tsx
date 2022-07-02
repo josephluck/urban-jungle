@@ -1,7 +1,14 @@
 import React from "react";
 import styled from "styled-components/native";
-import { CAROS_BOLD, CAROS_REGULAR, CAROS_SEMIBOLD } from "../hooks/fonts";
 import { symbols } from "../theme";
+
+/**
+ * TODO: these should be configurable from the consuming app
+ */
+export const CAROS_BLACK = "CAROS_BLACK";
+export const CAROS_BOLD = "CAROS_BOLD";
+export const CAROS_SEMIBOLD = "CAROS_SEMIBOLD";
+export const CAROS_REGULAR = "CAROS_REGULAR";
 
 type FontWeight = "regular" | "semibold" | "bold";
 

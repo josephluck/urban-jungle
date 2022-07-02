@@ -1,4 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { Button } from "@urban-jungle/design/components/button";
+import {
+  Footer,
+  ScreenLayout,
+} from "@urban-jungle/design/components/layouts/screen-layout";
+import { TextField } from "@urban-jungle/design/components/text-field";
+import { ScreenTitle } from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import firebase from "firebase";
@@ -6,19 +14,11 @@ import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { useCallback, useRef } from "react";
 import styled from "styled-components/native";
-import { Button } from "../../../components/button";
-import {
-  Footer,
-  ScreenLayout,
-} from "../../../components/layouts/screen-layout";
-import { TextField } from "../../../components/text-field";
-import { ScreenTitle } from "../../../components/typography";
 import { env } from "../../../env";
 import { constraints, useForm } from "../../../hooks/use-form";
 import { makeNavigationRoute } from "../../../navigation/make-navigation-route";
 import { MANAGE_STACK_NAME } from "../../../navigation/stack-names";
 import { useRunWithUIState } from "../../../store/ui";
-import { symbols } from "../../../theme";
 import { useManageAuthMachine } from "../machine/machine";
 import { getScreenTitle } from "../machine/types";
 import { routeNames } from "../route-names";

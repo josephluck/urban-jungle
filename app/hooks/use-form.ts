@@ -1,19 +1,19 @@
 import { FieldConstraintsMap, makeValidator } from "@josephluck/valley/lib/fp";
+import { DualNumberPickerFieldProps } from "@urban-jungle/design/components/dual-number-picker-field";
+import { DualTextPickerFieldProps } from "@urban-jungle/design/components/dual-text-picker-field";
+import { NumberFieldProps } from "@urban-jungle/design/components/number-field";
+import {
+  MultiPickerFieldProps,
+  PickerValue,
+  SinglePickerFieldProps,
+} from "@urban-jungle/design/components/picker-field";
+import { TextFieldProps } from "@urban-jungle/design/components/text-field";
 import { ImageModel, makeImageModel } from "@urban-jungle/shared/models/image";
 import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import { pipe } from "fp-ts/lib/pipeable";
 import { useState } from "react";
-import { CameraButtonProps } from "../components/camera-button";
-import { DualNumberPickerFieldProps } from "../components/dual-number-picker-field";
-import { DualTextPickerFieldProps } from "../components/dual-text-picker-field";
-import { NumberFieldProps } from "../components/number-field";
-import {
-  MultiPickerFieldProps,
-  PickerValue,
-  SinglePickerFieldProps,
-} from "../components/picker-field";
-import { TextFieldProps } from "../components/text-field";
+import { CameraButtonProps } from "../features/camera/camera-button";
 
 type Fields = Record<string, any>;
 
@@ -101,41 +101,43 @@ export function useForm<Fs extends Fields>(
     setErrors(getInitialErrors(initialValues));
   };
 
-  const registerBlur = <Fk extends keyof Fs>(fieldKey: Fk) => () => {
-    setTouched((current) => ({ ...current, [fieldKey]: true }));
-  };
+  const registerBlur =
+    <Fk extends keyof Fs>(fieldKey: Fk) =>
+    () => {
+      setTouched((current) => ({ ...current, [fieldKey]: true }));
+    };
 
-  const registerOnChangeText = <Fk extends keyof Fs>(fieldKey: Fk) => (
-    value: string,
-  ) => {
-    // @ts-ignore - Argument of type 'string' is not assignable to parameter of type 'Fs[Fk]'
-    setValue(fieldKey, value);
-  };
+  const registerOnChangeText =
+    <Fk extends keyof Fs>(fieldKey: Fk) =>
+    (value: string) => {
+      // @ts-ignore - Argument of type 'string' is not assignable to parameter of type 'Fs[Fk]'
+      setValue(fieldKey, value);
+    };
 
-  const registerOnChangeNumber = <Fk extends keyof Fs>(fieldKey: Fk) => (
-    value: number,
-  ) => {
-    // @ts-ignore - Argument of type 'number' is not assignable to parameter of type 'Fs[Fk]'
-    setValue(fieldKey, value);
-  };
+  const registerOnChangeNumber =
+    <Fk extends keyof Fs>(fieldKey: Fk) =>
+    (value: number) => {
+      // @ts-ignore - Argument of type 'number' is not assignable to parameter of type 'Fs[Fk]'
+      setValue(fieldKey, value);
+    };
 
-  const registerOnChangePickerMulti = <Fk extends MultiPickerKeys>(
-    fieldKey: Fk,
-  ) => (value: PickerValue[]) => {
-    setValue(fieldKey, value as Fs[Fk]);
-  };
+  const registerOnChangePickerMulti =
+    <Fk extends MultiPickerKeys>(fieldKey: Fk) =>
+    (value: PickerValue[]) => {
+      setValue(fieldKey, value as Fs[Fk]);
+    };
 
-  const registerOnChangePickerSingle = <Fk extends SinglePickerKeys>(
-    fieldKey: Fk,
-  ) => (value: Fs[Fk]) => {
-    setValue(fieldKey, value);
-  };
+  const registerOnChangePickerSingle =
+    <Fk extends SinglePickerKeys>(fieldKey: Fk) =>
+    (value: Fs[Fk]) => {
+      setValue(fieldKey, value);
+    };
 
-  const registerOnChangeCamera = <Fk extends CameraKeys>(fieldKey: Fk) => (
-    value: Fs[Fk],
-  ) => {
-    setValue(fieldKey, value);
-  };
+  const registerOnChangeCamera =
+    <Fk extends CameraKeys>(fieldKey: Fk) =>
+    (value: Fs[Fk]) => {
+      setValue(fieldKey, value);
+    };
 
   const registerTextInput = <Fk extends StringKeys>(
     fieldKey: Fk,
@@ -199,7 +201,7 @@ export function useForm<Fs extends Fields>(
 
   const registerDualTextPickerField = <
     Fk extends StringKeys,
-    Fk2 extends SinglePickerKeys
+    Fk2 extends SinglePickerKeys,
   >(
     textFieldKey: Fk,
     pickerFieldKey: Fk2,
@@ -227,7 +229,7 @@ export function useForm<Fs extends Fields>(
 
   const registerDualNumberPickerField = <
     Fk extends NumberKeys,
-    Fk2 extends SinglePickerKeys
+    Fk2 extends SinglePickerKeys,
   >(
     numberFieldKey: Fk,
     pickerFieldKey: Fk2,
@@ -291,26 +293,28 @@ const getInitialErrors = <Fs extends Record<string, any>>(
 const isRequired = <T>(value: T): E.Either<string, T> =>
   Boolean(value) ? E.right(value) : E.left("Required");
 
-const isOfType = (type: string) => <T>(value: T): E.Either<string, T> =>
-  typeof value === type ? E.right(value) : E.left(`Expected a ${type}`);
+const isOfType =
+  (type: string) =>
+  <T>(value: T): E.Either<string, T> =>
+    typeof value === type ? E.right(value) : E.left(`Expected a ${type}`);
 
 const isString = isOfType("string");
 
 const isNumber = isOfType("number");
 
-const isEqualTo = <T>(expected: T) => <V extends T>(
-  value: V,
-): E.Either<string, V> =>
-  value === expected
-    ? E.right(value)
-    : E.left(`Expected ${value} to equal ${expected}`);
+const isEqualTo =
+  <T>(expected: T) =>
+  <V extends T>(value: V): E.Either<string, V> =>
+    value === expected
+      ? E.right(value)
+      : E.left(`Expected ${value} to equal ${expected}`);
 
-const isLengthAtLeast = (length: number) => (
-  value: string,
-): E.Either<string, string> =>
-  value.length >= length
-    ? E.right(value)
-    : E.left(`Must be at least ${length} characters long`);
+const isLengthAtLeast =
+  (length: number) =>
+  (value: string): E.Either<string, string> =>
+    value.length >= length
+      ? E.right(value)
+      : E.left(`Must be at least ${length} characters long`);
 
 export const constraints = {
   isRequired,

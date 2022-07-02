@@ -1,12 +1,16 @@
+import { Button } from "@urban-jungle/design/components/button";
+import {
+  BodyText,
+  SubHeading,
+  SubScriptText,
+} from "@urban-jungle/design/components/typography";
+import { symbols } from "@urban-jungle/design/theme";
 import { IErr } from "@urban-jungle/shared/utils/err";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
 import * as TE from "fp-ts/lib/TaskEither";
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { Keyboard, Modal, View } from "react-native";
-import { Button } from "../components/button";
-import { BodyText, SubHeading, SubScriptText } from "../components/typography";
-import { symbols } from "../theme";
 import { store } from "./state";
 
 export type FirestoreCollectionName =
