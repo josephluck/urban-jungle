@@ -3,19 +3,35 @@
   "version": "1.0.0",
   "scripts": {
     "tsc": "tsc --noEmit",
-    "format": "prettier --write \"./**/*.*\""
+    "format": "prettier --write \"./**/*.*\"",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@urban-jungle/shared": "*",
     "fp-ts": "^2.12.1",
+    "react": "^18.2.0",
+    "react-native": "^0.69.1",
     "react-native-gesture-handler": "^2.5.0",
     "react-native-svg": "^12.3.0",
-    "react-native": "^0.69.1",
-    "react": "^18.2.0",
     "styled-components": "^5.3.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@storybook/addon-actions": "^6.5.9",
+    "@storybook/addon-essentials": "^6.5.9",
+    "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-links": "^6.5.9",
+    "@storybook/addon-react-native-web": "^0.0.18",
+    "@storybook/builder-webpack4": "^6.5.9",
+    "@storybook/manager-webpack4": "^6.5.9",
+    "@storybook/react": "^6.5.9",
+    "@storybook/testing-library": "^0.0.13",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-react-native-web": "^0.18.2",
+    "react-dom": "^18.2.0",
+    "react-native-web": "^0.18.2",
     "typescript": "4.5.5"
   },
   "private": true
