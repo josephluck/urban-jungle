@@ -17,6 +17,6 @@ jobs:
           yarn install
           yarn workspace @urban-jungle/design run build-storybook
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4
+        uses: JamesIves/github-pages-deploy-action@v4.3.4
         with:
           FOLDER: design/storybook-static;
