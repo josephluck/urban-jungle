@@ -7,4 +7,5 @@ import { TouchableOpacity as AndroidTouchableOpacity } from "react-native-gestur
 export const TouchableOpacity = Platform.select({
   ios: IosTouchableOpacity,
   android: AndroidTouchableOpacity as any,
+  web: IosTouchableOpacity,
 }) as typeof IosTouchableOpacity;
